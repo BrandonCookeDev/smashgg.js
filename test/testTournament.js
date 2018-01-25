@@ -123,4 +123,16 @@ describe('Smash GG Tournament', function(){
         return true;
     });
 
+    it('should get all events from a tournament', async function(){
+        let events = await tournament1.getAllEvents();
+        expect(events.length).to.be.equal(2);
+
+        var hasDuplicates = function(a) {
+            return _.uniq(a).length !== a.length;
+        };
+        expect(hasDuplicates(events)).to.be.false;
+
+        return true;
+    })
+
 });

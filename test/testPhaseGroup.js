@@ -36,7 +36,7 @@ describe('Smash GG Phase Group', function(){
         let players = phaseGroup3.getPlayers();
         expect(players.length).to.be.equal(15);
         done();
-    })
+    });
 
     it('should get all sets', function(done){
         let sets = phaseGroup3.getSets();

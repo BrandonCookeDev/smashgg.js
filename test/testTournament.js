@@ -99,5 +99,28 @@ describe('Smash GG Tournament', function(){
         done();
     });
 
+    it('should get all players from a tournament', async function(){
+        let players = await tournament1.getAllPlayers();
+        expect(players.length).to.be.equal(157);
+
+        var hasDuplicates = function(a) {
+            return _.uniq(a).length !== a.length;
+        };
+        expect(hasDuplicates(players)).to.be.false;
+
+        return true;
+    });
+
+    it('should get all sets from a tournament', async function(){
+        let sets = await tournament1.getAllSets();
+        expect(sets.length).to.be.equal(552);
+
+        var hasDuplicates = function(a) {
+            return _.uniq(a).length !== a.length;
+        };
+        expect(hasDuplicates(sets)).to.be.false;
+
+        return true;
+    });
 
 });

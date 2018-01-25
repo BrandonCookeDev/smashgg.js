@@ -1,0 +1,23 @@
+{
+  "name": "node-smashgg",
+  "version": "1.0.0",
+  "description": "Promise Library for interfacing with the Smash.GG API.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Brandon L Cooke",
+  "license": "ISC",
+  "dependencies": {
+    "co": "^4.6.0",
+    "lodash": "^4.17.4",
+    "node-cache": "^4.1.1",
+    "request": "^2.83.0",
+    "request-promise": "^4.2.2",
+    "winston": "^2.4.0"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "chai-as-promised": "^7.1.1"
+  }
+}

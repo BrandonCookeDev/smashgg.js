@@ -1,7 +1,7 @@
 {
   "name": "node-smashgg",
   "version": "1.0.0",
-  "description": "Promise Library for interfacing with the Smash.GG API.",
+  "description": "Node.JS wrapper for the Smash.gg public API Edit",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

@@ -30,6 +30,18 @@ describe('Smash GG Phase Group', function(){
     it('should correctly load Phase Group data', function(done){
         phaseGroup3 = new PhaseGroup(ID3);
         phaseGroup3.on('ready', done);
+    });
+
+    it('should get all entrants', function(done){
+        let players = phaseGroup3.getPlayers();
+        expect(players.length).to.be.equal();
+        done();
+    })
+
+    it('should get all sets', function(done){
+        let sets = phaseGroup3.getSets();
+        expect(sets.length).to.be.equal();
+        done();
     })
 
 });

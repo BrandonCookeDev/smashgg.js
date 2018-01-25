@@ -34,5 +34,23 @@ describe('Smash GG Event', function(){
         event1 = new Event(TOURNAMENT_NAME1, EVENT_NAME1);
 
         event1.on('ready', done)
+    });
+
+    it('should correctly get the event name', function(done){
+        let name1 = event1.getName();
+        expect(name1).to.be.equal('Melee Singles');
+        done();
+    });
+
+    it('should correctly get the event start time', function(done){
+        let startTime1 = event1.getStartTime();
+        expect(startTime1).to.be.equal('2017-04-01 11:00:00');
+        done();
+    });
+
+    it('should correctly get the event end time', function(done){
+        let endTime1 = event1.getEndTime();
+        expect(endTime1).to.be.equal('2017-04-01 12:00:00');
+        done();
     })
 });

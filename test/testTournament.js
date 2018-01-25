@@ -26,12 +26,21 @@ let expected = _.extend(
     require('./data/expectedTournaments')
 );
 
+function loadTournament(name, expands, isCached){
+    return new Promise(function(resolve, reject){
+        let t = new Tournament(name, expands, isCached);
+        t.on('ready', function(){
+            return resolve(t);
+        })
+    })
+}
+
 describe('Smash GG Tournament', function(){
 
-    it('should correctly load tournament data', function(done){
-        tournament1 = new Tournament(TOURNAMENT_NAME1);
-        tournament2 = new Tournament(TOURNAMENT_NAME2);
-        tournament3 = new Tournament(TOURNAMENT_NAME3,
+    it('should correctly load tournament data', async function(){
+        tournament1 = await loadTournament(TOURNAMENT_NAME1);
+        tournament2 = await loadTournament(TOURNAMENT_NAME2);
+        tournament3 = await loadTournament(TOURNAMENT_NAME3,
             {
                 event:true,
                 phase:true,
@@ -40,25 +49,10 @@ describe('Smash GG Tournament', function(){
             }
         );
 
-        let t1=false, t2=false, t3=false;
-        tournament1.on('ready', function(){
-            console.log('tournament1 loaded');
-            t1 = true;
-        });
+        // TODO expects
 
-        tournament2.on('ready', function(){
-            console.log('tournament2 loaded');
-            t2 = true;
-        });
+        return true;
 
-        tournament3.on('ready', function(){
-            console.log('tournament3 loaded');
-            t3 = true;
-        });
-
-        while(!t1 && !t2 && !t3){}
-
-        done();
     });
 
     it('should return the correct tournament id', function(done){

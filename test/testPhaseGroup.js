@@ -43,20 +43,26 @@ describe('Smash GG Phase Group', function(){
     });
 
     it('should correctly load Phase Group data', function(done){
+        this.timeout(5000);
+
         phaseGroup3 = new PhaseGroup(ID3);
         phaseGroup3.on('ready', done);
     });
 
-    it('should get all entrants', function(done){
-        let players = phaseGroup3.getPlayers();
+    it('should get all entrants', async function(){
+        this.timeout(5000);
+
+        let players = await phaseGroup3.getPlayers();
         expect(players.length).to.be.equal(15);
-        done();
+        return true;
     });
 
-    it('should get all sets', function(done){
-        let sets = phaseGroup3.getSets();
+    it('should get all sets', async function(){
+        this.timeout(5000);
+
+        let sets = await phaseGroup3.getSets();
         expect(sets.length).to.be.equal(27);
-        done();
+        return true;
     });
 
 });

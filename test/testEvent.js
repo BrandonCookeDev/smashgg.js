@@ -35,8 +35,9 @@ describe('Smash GG Event', function(){
     });
 
     it('should correctly load the data', function(done){
-        event1 = new Event(TOURNAMENT_NAME1, EVENT_NAME1);
+        this.timeout(10000);
 
+        event1 = new Event(TOURNAMENT_NAME1, EVENT_NAME1);
         event1.on('ready', done)
     });
 

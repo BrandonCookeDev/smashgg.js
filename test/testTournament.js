@@ -42,6 +42,8 @@ describe('Smash GG Tournament', function(){
     });
 
     it('should correctly load tournament data', async function(){
+        this.timeout(10000);
+
         tournament1 = await loadTournament(TOURNAMENT_NAME1);
         tournament2 = await loadTournament(TOURNAMENT_NAME2);
         tournament3 = await loadTournament(TOURNAMENT_NAME3,
@@ -63,7 +65,6 @@ describe('Smash GG Tournament', function(){
         let id1 = tournament1.getId();
         let id2 = tournament2.getId();
 
-        //TODO compare
         expect(id1).to.be.equal(expected.tournaments.function1.entities.tournament.id);
         expect(id2).to.be.equal(expected.tournaments.ceo2016.entities.tournament.id);
 
@@ -104,8 +105,10 @@ describe('Smash GG Tournament', function(){
     });
 
     it('should get all players from a tournament', async function(){
+        this.timeout(10000);
+
         let players = await tournament1.getAllPlayers();
-        expect(players.length).to.be.equal(157);
+        expect(players.length).to.be.equal(158);
 
         var hasDuplicates = function(a) {
             return _.uniq(a).length !== a.length;
@@ -116,8 +119,10 @@ describe('Smash GG Tournament', function(){
     });
 
     it('should get all sets from a tournament', async function(){
+        this.timeout(10000);
+
         let sets = await tournament1.getAllSets();
-        expect(sets.length).to.be.equal(552);
+        expect(sets.length).to.be.equal(553);
 
         var hasDuplicates = function(a) {
             return _.uniq(a).length !== a.length;
@@ -128,6 +133,8 @@ describe('Smash GG Tournament', function(){
     });
 
     it('should get all events from a tournament', async function(){
+        this.timeout(10000);
+
         let events = await tournament1.getAllEvents();
         expect(events.length).to.be.equal(2);
 

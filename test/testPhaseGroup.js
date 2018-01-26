@@ -42,6 +42,6 @@ describe('Smash GG Phase Group', function(){
         let sets = phaseGroup3.getSets();
         expect(sets.length).to.be.equal(27);
         done();
-    })
+    });
 
 });

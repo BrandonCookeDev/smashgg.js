@@ -5,7 +5,7 @@ let _ = require('lodash');
 let Set = require('../lib/Set');
 let Player = require('../lib/Player');
 let Tournament = require('../lib/Tournament');
-let Cache = require('../lib/util/Cache');
+let Cache = require('../lib/util/Cache').getInstance();
 
 let chai = require('chai');
 let cap = require('chai-as-promised');
@@ -27,6 +27,8 @@ let set1, set2, set3;
 describe('Smash GG Set', function(){
 
     before(function(done){
+        Cache.flush();
+
         let o1 = expected.sets[0];
         pWinkledink = new Player(o1.WinnerPlayer.id, o1.WinnerPlayer.tag, o1.WinnerPlayer.name,
             o1.WinnerPlayer.country, o1.WinnerPlayer.region, o1.WinnerPlayer.sponsor,

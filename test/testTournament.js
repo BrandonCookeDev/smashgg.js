@@ -3,7 +3,7 @@
 let _ = require('lodash');
 
 let Tournament = require('../lib/Tournament');
-let Cache = require('../lib/util/Cache');
+let Cache = require('../lib/util/Cache').getInstance();
 
 let chai = require('chai');
 let cap = require('chai-as-promised');
@@ -36,6 +36,10 @@ function loadTournament(name, expands, isCached){
 }
 
 describe('Smash GG Tournament', function(){
+
+    before(function(){
+        Cache.flush();
+    });
 
     it('should correctly load tournament data', async function(){
         tournament1 = await loadTournament(TOURNAMENT_NAME1);

@@ -3,7 +3,7 @@
 let _ = require('lodash');
 
 let Event = require('../lib/Event');
-let Cache = require('../lib/util/Cache');
+let Cache = require('../lib/util/Cache').getInstance();
 
 let chai = require('chai');
 let cap = require('chai-as-promised');
@@ -29,6 +29,10 @@ let expected = _.extend(
 );
 
 describe('Smash GG Event', function(){
+
+    before(function(){
+        Cache.flush();
+    });
 
     it('should correctly load the data', function(done){
         event1 = new Event(TOURNAMENT_NAME1, EVENT_NAME1);

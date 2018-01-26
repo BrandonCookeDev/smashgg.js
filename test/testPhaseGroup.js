@@ -3,7 +3,7 @@
 let _ = require('lodash');
 
 let PhaseGroup = require('../lib/PhaseGroup');
-let Cache = require('../lib/util/Cache');
+let Cache = require('../lib/util/Cache').getInstance();
 
 let chai = require('chai');
 let cap = require('chai-as-promised');
@@ -25,7 +25,22 @@ let expected = _.extend(
 
 );
 
+
+function loadPhaseGroup(id, expands, isCached){
+    return new Promise(function(resolve, reject){
+        let PG = new PhaseGroup(id, expands, isCached);
+        PG.on('ready', function(){
+            resolve(PG);
+        })
+    })
+}
+
+
 describe('Smash GG Phase Group', function(){
+
+    before(function(){
+        Cache.flush();
+    });
 
     it('should correctly load Phase Group data', function(done){
         phaseGroup3 = new PhaseGroup(ID3);

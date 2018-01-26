@@ -45,6 +45,8 @@ describe('Smash GG Phase', function(){
     });
 
     it('should correctly get all phase groups', async function(){
+        this.timeout(10000);
+
         let phaseGroups1 = await phase1.getGroups();
         let phaseGroups2 = await phase2.getGroups();
         let phaseGroups3 = await phase3.getGroups();

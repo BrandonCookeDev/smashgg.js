@@ -84,7 +84,7 @@ NIX placed 129 at the tournament
 ```
 
 ## Tournament
-```
+```javascript
 var tournament = new smashgg.Tournament('tipped-off-12');
 tournament.on('ready', function(){
     //tournament is populated with data
@@ -102,10 +102,10 @@ tournament.on('ready', function(){
         * a shortened name is a set abbreviation for a slug
             * to12 or ceo2016
     * **expands** - an object that defines which additional data is sent back. By default all values are marked true.
-        * event - condensed data for the events that comprise this tournament
-        * phase - condensed data for the phases that comprise the events
-        * groups - condensed data for the groups that comprise the phases
-        * stations - condensed data for the stations for each group
+        * event - boolean - condensed data for the events that comprise this tournament
+        * phase - boolean -condensed data for the phases that comprise the events
+        * groups - boolean -condensed data for the groups that comprise the phases
+        * stations - boolean -condensed data for the stations for each group
     * **isCached** - boolean parameter for if the api should cache the resulting object
 
 #### Events

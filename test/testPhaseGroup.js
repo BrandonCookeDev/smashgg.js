@@ -18,7 +18,7 @@ let phaseGroup3 = {};
 let phaseGroup4 = {};
 
 const ID1 = 0;
-const ID2 = 0;
+const ID2 = 44445;
 const ID3 = 301994;
 
 let expected = _.extend(

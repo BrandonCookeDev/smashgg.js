@@ -84,6 +84,10 @@ NIX placed 129 at the tournament
 ```
 
 ## Tournament
+A Tournament in smash.gg is a collection of Events, Phases, and Phases Groups that
+categorize different games played, game types within those games, and the matches that
+make up those games.
+
 ```javascript
 var to12 = new smashgg.Tournament('to12');
 to12.on('ready', function(){
@@ -170,6 +174,10 @@ ceo2016.on('ready'
     * return the cost of the processing fee to register for the tournament
 
 ## Event
+An Event in smash.gg is a broad collection of matches for a single game and game type.
+For instance, Melee Singles is an Event while Melee Doubles is another Event. Events
+are comprised of optional Phases and Phases Groups.
+
 ```javascript
 var event1 = new Event('to12', 'melee-singles');
 event1.on('ready', function(){
@@ -207,5 +215,104 @@ event2.on('ready', function(){
     * indicates when the Event object is populated with data
 
 ### Methods
+#### Promises
+* **getEventPhases([fromCacheTF])**
+    * Returns a Promise resolving an array of `Phase` objects for this Event
+    * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
+* **getEventPhaseGroups([fromCacheTF])**
+    * Returns a Promise resolving an array of `PhaseGroup` objects for this Event
+    * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
+
+#### Getters
+* **getName()**
+    * returns the name of the event
+* **getSlug()**
+    * returns the slug for the event
+* **getStartTime()**
+    * returns a date string (MM-DD-YYYY HH:mm:ss tz) for when the event is set to begin
+* **getEndTime()**
+    * returns a date string (MM-DD-YYYY HH:mm:ss tz) for when the event is set to end
+
+## Phase
+A phase in smash.gg is a subset of matches and brackets inside an Event. For example,
+a wave in pools is a Phase. Everything in that Phase is a Group (or Phase Group).
+
+```javascript
+var phase1 = new smashgg.Phase(111483);
+phase1.on('ready', function(){
+    //do stuff with phase1
+})
+
+var phase2 = new smashgg.Phase(
+    45262,
+    {
+        groups: false
+    },
+    false
+)
+phase2.on('ready', function(){
+    //do stuff with phase2
+})
+```
+
+### Constructor
+* **Phase(id [,expands, isCached])**
+    * **id** [required] - unique identifier for the Phase
+    * **expands** - an object that defines which additional data is sent back. By default all values are marked true.
+        * groups - boolean -condensed data for the groups that comprise the phases
+    * **isCached** - boolean parameter for if the api should cache the resulting object
+
+### Events
+* **'ready'**
+    * indicates when a Phase object is populated with data
+
+### Methods
+#### Promises
+* **getPhaseGroups([fromCacheTF])**
+    * Returns a Promise resolving an array of `PhaseGroup` objects belonging to this Phase
+    * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
+
+#### Getters
+* **getName()**
+    * returns the name of the Phase
+* **getEventId()**
+    * returns the id of the Event this Phase belongs to
+
+## PhaseGroup
+A Phase Group is the lowest unit on smash.gg. It is a bracket of some sort that belongs to a Phase.
+
+```javascript
+var phaseGroup1 = new smashgg.PhaseGroup(44445);
+phaseGroup1.on('ready', function(){
+    //do stuff with phaseGroup1
+})
+
+var phaseGroup2 = new smashgg.PhaseGroup(
+    301994,
+    {
+        sets: true,
+        entrants: true,
+        standings: true,
+        seeds: false
+    },
+    false
+);
+phaseGroup2.on('ready', function(){
+    //do stuff with phaseGroup2
+})
+```
+
+### Constructor
+* **PhaseGroup(id [, expands, isCached])**
+    * **id** [required] - unique identifier for this Phase Group
+    * **expands** - an object that defines which additional data is sent back. By default all values are marked true.
+        * sets - boolean - data for the sets that comprises the phase group
+        * entrants - boolean - data for the entrants that comprise the phase group
+        * standings - boolean - data for the standings of the entrants for the phase group
+        * seeds - boolean - data for the seeding of entrants for the for the phase group
+    * **isCached** - boolean value for if the resulting object should be cached
+
+### Methods
+#### Promises
 
 #### Getters

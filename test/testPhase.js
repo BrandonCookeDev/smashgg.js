@@ -3,6 +3,7 @@
 let _ = require('lodash');
 
 let Phase = require('../lib/Phase');
+let PhaseGroup = require('../lib/PhaseGroup');
 let Cache = require('../lib/util/Cache').getInstance();
 
 let chai = require('chai');
@@ -70,6 +71,23 @@ describe('Smash GG Phase', function(){
         expect(phaseGroups1.length).to.be.equal(16);
         expect(phaseGroups2.length).to.be.equal(32);
         expect(phaseGroups3.length).to.be.equal(16);
+
+        var hasDuplicates = function(a) {
+            return _.uniq(a).length !== a.length;
+        };
+        expect(hasDuplicates(phaseGroups1)).to.be.false;
+        expect(hasDuplicates(phaseGroups2)).to.be.false;
+        expect(hasDuplicates(phaseGroups3)).to.be.false;
+
+        phaseGroups1.forEach(set => {
+            expect(set).to.be.an.instanceof(PhaseGroup);
+        });
+        phaseGroups2.forEach(set => {
+            expect(set).to.be.an.instanceof(PhaseGroup);
+        });
+        phaseGroups3.forEach(set => {
+            expect(set).to.be.an.instanceof(PhaseGroup);
+        });
 
         return true;
     });

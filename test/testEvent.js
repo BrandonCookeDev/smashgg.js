@@ -81,7 +81,7 @@ describe('Smash GG Event', function(){
     });
 
     it('should correctly get the phases', async function(){
-        this.timeout(10000);
+        this.timeout(15000);
 
         let phases1 = await event1.getEventPhases();
         let phases2 = await event2.getEventPhases();
@@ -107,7 +107,7 @@ describe('Smash GG Event', function(){
     });
 
     it('should correctly get the phase groups', async function(){
-        this.timeout(10000);
+        this.timeout(15000);
 
         let groups1 = await event1.getEventPhaseGroups();
         let groups2 = await event2.getEventPhaseGroups();

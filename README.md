@@ -10,7 +10,7 @@ with data about tournament brackets that have occurred on their platform.
 
 ```javascript
 var smashgg = require('smashgg.js');
-var tournament = new Tournament('ceo-2016');
+var tournament = new smashgg.Tournament('ceo-2016');
 
 tournament.on('ready', async function(){
     var players = await tournament.getAllPlayers();
@@ -95,7 +95,8 @@ to12.on('ready', function(){
     console.log('Got tournament ' + tournament.getName();
 });
 
-var ceo2016 = new smashgg.Tournament('ceo-2016',
+var ceo2016 = new smashgg.Tournament(
+    'ceo-2016',
     {
         event: true,
         phase: false,

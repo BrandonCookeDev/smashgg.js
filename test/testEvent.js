@@ -47,6 +47,12 @@ describe('Smash GG Event', function(){
         done();
     });
 
+    it('should correctly get the event slug', function(done){
+        let slug = event1.getSlug();
+        expect(slug).to.be.equal('tournament/function-1-recursion-regional/event/melee-singles');
+        done();
+    });
+
     it('should correctly get the event start time', function(done){
         let startTime1 = event1.getStartTime();
         expect(startTime1).to.be.equal('2017-04-01 11:00:00');

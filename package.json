@@ -1,5 +1,5 @@
 {
-  "name": "smashgg.js",
+  "slug": "smashgg.js",
   "version": "1.0.0",
   "description": "Node.JS wrapper for the Smash.gg public API Edit",
   "main": "index.js",

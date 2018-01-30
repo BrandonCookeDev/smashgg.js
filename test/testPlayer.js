@@ -52,6 +52,10 @@ describe('Smash GG Player', function(){
         expect(p2.sponsor).to.be.equal('Test2');
         expect(p3.sponsor).to.be.equal('Test3');
 
+        expect(p1.data).to.be.equal(expected.players[0]);
+        expect(p2.data).to.be.equal(expected.players[1]);
+        expect(p3.data).to.be.equal(expected.players[2]);
+
         done();
     })
 

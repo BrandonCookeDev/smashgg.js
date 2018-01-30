@@ -61,7 +61,7 @@ describe('Smash GG Phase Group', function(){
         this.timeout(5000);
 
         let sets = await phaseGroup3.getSets();
-        expect(sets.length).to.be.equal(27);
+        expect(sets.length).to.be.equal(26);
         return true;
     });
 

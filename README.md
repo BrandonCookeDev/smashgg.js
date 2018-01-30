@@ -83,3 +83,78 @@ NIX placed 129 at the tournament
 
 ```
 
+## Tournament
+```
+var tournament = new smashgg.Tournament('tipped-off-12');
+tournament.on('ready', function(){
+    //tournament is populated with data
+    console.log('Got tournament ' + tournament.getName();
+    var sets = tournament.getSets();
+});
+```
+
+#### Constructor
+* **Tournament(tournamentName [,expands, isCached]);**
+
+    * **tournamentName** [required] - name slug or short tournament name
+        * a slug is a string that uniquely identifies a tournament on the platform
+            * tipped-off-12 or ceo-2016
+        * a shortened name is a set abbreviation for a slug
+            * to12 or ceo2016
+    * **expands** - an object that defines which additional data is sent back. By default all values are marked true.
+        * event - condensed data for the events that comprise this tournament
+        * phase - condensed data for the phases that comprise the events
+        * groups - condensed data for the groups that comprise the phases
+        * stations - condensed data for the stations for each group
+    * **isCached** - boolean parameter for if the api should cache the resulting object
+
+#### Events
+* **'ready'**
+    * indicates when a Tournament object is populated with data
+
+#### Methods
+##### Promises
+* **getAllPlayers([fromCacheTF])**
+    * Returns a Promise that resolves an array of all `Player` objects that partook in the Tournament
+    * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
+
+* **getAllSets([fromCacheTF])**
+    * Returns a Promise that resolves an array of all `Set` objects that took place in the Tournament
+    * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
+
+
+* **getAllEvents([fromCacheTF])**
+    * Returns a Promise that resolves an array of all `Events` objects that are part of the Tournament.
+    * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
+
+##### Getters
+* **getId()**
+    * returns the id of the tournament
+* **getName()**
+    * returns the name of the tournament
+* **getSlug()**
+    * returns the slug for the tournament
+* **getTimezone()**
+    * returns the string timezone the tournament occurred in
+* **getStartTime()**
+    * returns a string 'MM-DD-YYYY HH:mm:ss tz' for the start time of the tournament
+* **getEndTime()**
+    * returns a string 'MM-DD-YYYY HH:mm:ss tz' for the end time of the tournament
+* **getWhenRegistrationCloses()**
+    * returns a string 'MM-DD-YYYY HH:mm:ss tz' for the time registration is set to close
+* **getCity()**
+    * returns the city where the tournament occurred
+* **getState()**
+    * returns the state where the tournament occurred
+* **getZipCode()**
+    * returns the zip code where the tournament occurred
+* **getContactEmail()**
+    * return the email address listed for contacting
+* **getContactTwitter()**
+    * return the twitter handle listed for contacting
+* **getOwnerId()**
+    * return the id of the tournament owner
+* **getVenueFee()**
+    * return the cost of the venue fee for the tournament
+* **getProcessingFee()**
+    * return the cost of the processing fee to register for the tournament

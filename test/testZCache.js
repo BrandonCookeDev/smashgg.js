@@ -1,6 +1,7 @@
 'use strict';
 
 let _ = require('lodash');
+let Promise = require('bluebird');
 
 let Tournament  = require('../lib/Tournament');
 let Event       = require('../lib/Event');
@@ -55,13 +56,17 @@ describe('Test Caching', function(){
         let t2 = await loadTournament(TOURNAMENT_NAME2);
 
         let keys = await Cache.keys();
-        expect(keys.length).to.be.equal(2);
+        expect(keys.length).to.be.equal(4);
 
         let key1 = 'tournament::function1::expand[]=event&expand[]=phase&expand[]=groups&expand[]=stations&';
         let key2 = 'tournament::ceo2016::expand[]=event&expand[]=phase&expand[]=groups&expand[]=stations&';
+        let key1data = 'tournament::function1::expand[]=event&expand[]=phase&expand[]=groups&expand[]=stations&::data';
+        let key2data = 'tournament::ceo2016::expand[]=event&expand[]=phase&expand[]=groups&expand[]=stations&::data';
 
         expect(keys).to.include(key1);
         expect(keys).to.include(key2);
+        expect(keys).to.include(key1data);
+        expect(keys).to.include(key2data);
 
         let t1Cached = await Cache.get(key1);
         let t2Cached = await Cache.get(key2);
@@ -73,13 +78,13 @@ describe('Test Caching', function(){
     });
 
     it('should correctly cache tournament players', async function(){
-        this.timeout(10000);
+        this.timeout(25000);
 
         let t1 = await loadTournament(TOURNAMENT_NAME1);
         let t2 = await loadTournament(TOURNAMENT_NAME2);
 
-        let t1Players = await t1.getPlayers();
-        let t2Players = await t2.getPlayers();
+        let t1Players = await t1.getAllPlayers();
+        let t2Players = await t2.getAllPlayers();
 
         let keys = await Cache.keys();
 
@@ -103,13 +108,13 @@ describe('Test Caching', function(){
     });
 
     it('should correctly cache tournament sets', async function(){
-        this.timeout(10000);
+        this.timeout(25000);
 
         let t1 = await loadTournament(TOURNAMENT_NAME1);
         let t2 = await loadTournament(TOURNAMENT_NAME2);
         
-        let t1Sets = await t1.getSets();
-        let t2Sets = await t2.getSets();
+        let t1Sets = await t1.getAllSets();
+        let t2Sets = await t2.getAllSets();
 
         let keys = await Cache.keys();
 
@@ -133,13 +138,13 @@ describe('Test Caching', function(){
     });
 
     it('should correctly cache tournament events', async function(){
-        this.timeout(10000);
+        this.timeout(25000);
 
         let t1 = await loadTournament(TOURNAMENT_NAME1);
         let t2 = await loadTournament(TOURNAMENT_NAME2);
 
-        let t1Events = await t1.getSets();
-        let t2Events = await t2.getSets();
+        let t1Events = await t1.getAllEvents();
+        let t2Events = await t2.getAllEvents();
 
         let keys = await Cache.keys();
 
@@ -164,18 +169,23 @@ describe('Test Caching', function(){
 
 
     it('should correctly cache events', async function(){
-        this.timeout(10000);
+        this.timeout(25000);
 
         let e1 = await loadEvent(TOURNAMENT_NAME1, EVENT_NAME1);
         let e2 = await loadEvent(TOURNAMENT_NAME2, EVENT_NAME1);
 
         let key1 = 'event::function1::melee-singles::expand[]=phase&expand[]=groups&';
+        let key1data = 'event::function1::melee-singles::expand[]=phase&expand[]=groups&::data';
         let key2 = 'event::ceo2016::melee-singles::expand[]=phase&expand[]=groups&';
+        let key2data = 'event::ceo2016::melee-singles::expand[]=phase&expand[]=groups&::data';
 
         let keys = await Cache.keys();
+        expect(keys.length).to.be.equal(4);
 
         expect(keys).to.include(key1);
         expect(keys).to.include(key2);
+        expect(keys).to.include(key1data);
+        expect(keys).to.include(key2data);
 
         let e1Cached = await Cache.get(key1);
         let e2Cached = await Cache.get(key2);
@@ -187,7 +197,7 @@ describe('Test Caching', function(){
     });
 
     it('should correctly cache the event phases', async function(){
-        this.timeout(10000);
+        this.timeout(25000);
 
         let e1 = await loadEvent(TOURNAMENT_NAME1, EVENT_NAME1);
         let e2 = await loadEvent(TOURNAMENT_NAME2, EVENT_NAME1);
@@ -213,7 +223,7 @@ describe('Test Caching', function(){
     });
 
     it('should correctly cache the event groups', async function(){
-        this.timeout(10000);
+        this.timeout(25000);
 
         let e1 = await loadEvent(TOURNAMENT_NAME1, EVENT_NAME1);
         let e2 = await loadEvent(TOURNAMENT_NAME2, EVENT_NAME1);
@@ -229,7 +239,7 @@ describe('Test Caching', function(){
         expect(keys).to.include(key1);
         expect(keys).to.include(key2);
 
-        let e2GroupsCached = await Cache.get(key6);
+        let e2GroupsCached = await Cache.get(key1);
         let e1GroupsCached = await Cache.get(key2);
 
         expect(e1GroupsCached).to.be.instanceof(PhaseGroup);
@@ -240,16 +250,23 @@ describe('Test Caching', function(){
 
 
     it('should correctly cache phases', async function(){
-        this.timeout(10000);
+        this.timeout(25000);
 
         let p1 = await loadPhase(PHASEID1);
         let p2 = await loadPhase(PHASEID2);
 
-        let keys = await Cache.keys();
-        expect(keys.length).to.be.equal(2);
-
         let key1 = 'phase::'+PHASEID1+'::expand[]=groups';
         let key2 = 'phase::'+PHASEID2+'::expand[]=groups';
+        let key1data = 'phase::'+PHASEID1+'::expand[]=groups::data';
+        let key2data = 'phase::'+PHASEID2+'::expand[]=groups::data';
+
+        let keys = await Cache.keys();
+        expect(keys.length).to.be.equal(4);
+
+        expect(keys).to.include(key1);
+        expect(keys).to.include(key2);
+        expect(keys).to.include(key1data);
+        expect(keys).to.include(key2data);
 
         let p1Cached = await Cache.get(key1);
         let p2Cached = await Cache.get(key2);
@@ -261,7 +278,7 @@ describe('Test Caching', function(){
     });
 
     it('should correctly cache groups from phases', async function(){
-        this.timeout(10000);
+        this.timeout(25000);
 
         let p1 = await loadPhase(PHASEID1);
         let p2 = await loadPhase(PHASEID2);
@@ -269,10 +286,12 @@ describe('Test Caching', function(){
         let pg1 = p1.getPhaseGroups();
         let pg2 = p2.getPhaseGroups();
 
-        let keys = await Cache.keys();
-
         let key1 = 'phase::'+PHASEID1+'::groups';
         let key2 = 'phase::'+PHASEID2+'::groups';
+
+        let keys = await Cache.keys();
+        expect(keys).to.include(key1);
+        expect(keys).to.include(key2);
 
         let groups1Cached = await Cache.get(key1);
         let groups2Cached = await Cache.get(key2);
@@ -288,16 +307,18 @@ describe('Test Caching', function(){
     });
 
     it('should correctly cache phase groups', async function(){
-        this.timeout(10000);
+        this.timeout(25000);
 
         let pg1 = await loadPhaseGroup(GROUPID1);
         let pg2 = await loadPhaseGroup(GROUPID2);
 
+        let key1 = 'phasegroup::' + GROUPID1 + '::expand[]=sets&expand[]=entrants&expand[]=standings&expand[]=seeds&';
+        let key2 = 'phasegroup::' + GROUPID2 + '::expand[]=sets&expand[]=entrants&expand[]=standings&expand[]=seeds&';
+        let key1data = 'phasegroup::' + GROUPID1 + '::expand[]=sets&expand[]=entrants&expand[]=standings&expand[]=seeds&::data';
+        let key2data = 'phasegroup::' + GROUPID2 + '::expand[]=sets&expand[]=entrants&expand[]=standings&expand[]=seeds&::data';
+
         let keys = await Cache.keys();
         expect(keys.length).to.be.equal(2);
-
-        let key1 = 'phasegroup::'+GROUPID1+'::expand[]=sets&expand[]=entrants&expand[]=standings&expand[]=seeds&';
-        let key2 = 'phasegroup::'+GROUPID2+'::expand[]=sets&expand[]=entrants&expand[]=standings&expand[]=seeds&';
 
         expect(keys).to.include(key1);
         expect(keys).to.include(key2);
@@ -306,14 +327,14 @@ describe('Test Caching', function(){
         let pg2Cached = await Cache.get(key2);
 
         expect(pg1Cached).to.be.instanceof(PhaseGroup);
-        expect(pg1Cached).to.be.instanceof(PhaseGroup)
+        expect(pg1Cached).to.be.instanceof(PhaseGroup);
 
         return true;
     });
 
 
     it('should correctly cache players from Phase Group', async function(){
-        this.timeout(10000);
+        this.timeout(25000);
 
         let pg1 = await loadPhaseGroup(GROUPID1);
         let pg2 = await loadPhaseGroup(GROUPID2);
@@ -344,7 +365,7 @@ describe('Test Caching', function(){
 
 
     it('should correctly cache sets from Phase Group', async function(){
-        this.timeout(10000);
+        this.timeout(25000);
 
         let pg1 = await loadPhaseGroup(GROUPID1);
         let pg2 = await loadPhaseGroup(GROUPID2);

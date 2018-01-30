@@ -9,6 +9,7 @@
   "author": "Brandon L Cooke",
   "license": "ISC",
   "dependencies": {
+    "bluebird": "^3.5.1",
     "co": "^4.6.0",
     "lodash": "^4.17.4",
     "moment": "^2.20.1",

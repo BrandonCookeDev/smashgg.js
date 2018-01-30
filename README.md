@@ -85,22 +85,32 @@ NIX placed 129 at the tournament
 
 ## Tournament
 ```javascript
-var tournament = new smashgg.Tournament('tipped-off-12');
-tournament.on('ready', function(){
+var to12 = new smashgg.Tournament('to12');
+to12.on('ready', function(){
     //tournament is populated with data
     console.log('Got tournament ' + tournament.getName();
-    var sets = tournament.getSets();
 });
+
+var ceo2016 = new smashgg.Tournament('ceo-2016',
+    {
+        event: true,
+        phase: false,
+        groups: false,
+        stations: false
+    },
+    false
+);
+ceo2016.on('ready'
 ```
 
-#### Constructor
+### Constructor
 * **Tournament(tournamentName [,expands, isCached]);**
 
     * **tournamentName** [required] - name slug or short tournament name
         * a slug is a string that uniquely identifies a tournament on the platform
-            * tipped-off-12 or ceo-2016
+            * ex: ceo-2016
         * a shortened name is a set abbreviation for a slug
-            * to12 or ceo2016
+            * ex: to12
     * **expands** - an object that defines which additional data is sent back. By default all values are marked true.
         * event - boolean - condensed data for the events that comprise this tournament
         * phase - boolean -condensed data for the phases that comprise the events
@@ -108,11 +118,11 @@ tournament.on('ready', function(){
         * stations - boolean -condensed data for the stations for each group
     * **isCached** - boolean parameter for if the api should cache the resulting object
 
-#### Events
+### Events
 * **'ready'**
     * indicates when a Tournament object is populated with data
 
-#### Methods
+### Methods
 ##### Promises
 * **getAllPlayers([fromCacheTF])**
     * Returns a Promise that resolves an array of all `Player` objects that partook in the Tournament
@@ -158,3 +168,45 @@ tournament.on('ready', function(){
     * return the cost of the venue fee for the tournament
 * **getProcessingFee()**
     * return the cost of the processing fee to register for the tournament
+
+## Event
+```javascript
+var event1 = new Event('to12', 'melee-singles');
+event1.on('ready', function(){
+
+})
+
+var event2 = new Event(
+    'ceo-2106',
+    'melee-singles',
+    {
+        phase: true,
+        groups: false
+    },
+    false
+```
+
+### Constructor
+* **Event(tournamentName, eventName [, expands, isCached])**
+    * **tournamentName** [required] - tournament slug or shorthand name of the tournament
+        * slug: ceo-2016
+        * shorthand: to12 (for tipped-off-12-presented-by-the-lab-gaming-center)
+    * **eventName** [required] - event slug
+        * ex: melee-singles or bracket-pools
+    * **expands** - an object that defines which additional data is sent back. By default all values are marked true.
+        * phase - boolean -condensed data for the phases that comprises the event
+        * groups - boolean -condensed data for the groups that comprise the phases
+    * **isCached** - boolean value for if the resulting object should be cached
+
+### Events
+* **'ready'**
+    * indicates when the Event object is populated with data
+
+### Methods
+##### Promises
+
+
+##### Getters
+
+
+

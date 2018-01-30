@@ -49,6 +49,12 @@ describe('Smash GG Phase Group', function(){
         phaseGroup3.on('ready', done);
     });
 
+    it('should correctly return the phase id', function(done){
+        let phaseId1 = phaseGroup3.getPhaseId();
+        expect(phaseId1).to.be.equal(100046);
+        done();
+    });
+
     it('should get all entrants', async function(){
         this.timeout(5000);
 

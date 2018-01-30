@@ -125,7 +125,7 @@ ceo2016.on('ready'
 
 ### Events
 * **'ready'**
-    * indicates when a Tournament object is populated with data
+    * indicates when the Tournament object is populated with data
 
 ### Methods
 #### Promises
@@ -265,7 +265,7 @@ phase2.on('ready', function(){
 
 ### Events
 * **'ready'**
-    * indicates when a Phase object is populated with data
+    * indicates when the Phase object is populated with data
 
 ### Methods
 #### Promises
@@ -313,7 +313,17 @@ phaseGroup2.on('ready', function(){
         * seeds - boolean - data for the seeding of entrants for the for the phase group
     * **isCached** - boolean value for if the resulting object should be cached
 
+### Events
+* **'ready'**
+    * indicates when the PhaseGroup object is populated with data
+
 ### Methods
 #### Promises
+* **getPlayers([fromCacheTF])
+    * Returns a Promise that resolves an array of `Player` objects for the Phase Group.
+    * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
+* **getSets([fromCacheTF])**
+    * Return a Promise that resolves an array of `Set` objects for the Phase Group.
+    * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
 
 #### Getters

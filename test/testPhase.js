@@ -46,20 +46,6 @@ describe('Smash GG Phase', function(){
         return true;
     });
 
-    it('should correctly get all phase groups', async function(){
-        this.timeout(20000);
-
-        let phaseGroups1 = await phase1.getGroups();
-        let phaseGroups2 = await phase2.getGroups();
-        let phaseGroups3 = await phase3.getGroups();
-
-        expect(phaseGroups1.length).to.be.equal(16);
-        expect(phaseGroups2.length).to.be.equal(32);
-        expect(phaseGroups3.length).to.be.equal(16);
-
-        return true;
-    });
-
     it('should get the name of the Phase', function(done){
         expect(phase1.getName()).to.be.equal('Pools');
         expect(phase2.getName()).to.be.equal('Pools');
@@ -74,4 +60,17 @@ describe('Smash GG Phase', function(){
         done();
     });
 
+    it('should correctly get all phase groups', async function(){
+        this.timeout(20000);
+
+        let phaseGroups1 = await phase1.getPhaseGroups();
+        let phaseGroups2 = await phase2.getPhaseGroups();
+        let phaseGroups3 = await phase3.getPhaseGroups();
+
+        expect(phaseGroups1.length).to.be.equal(16);
+        expect(phaseGroups2.length).to.be.equal(32);
+        expect(phaseGroups3.length).to.be.equal(16);
+
+        return true;
+    });
 });

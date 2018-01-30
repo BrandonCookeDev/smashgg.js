@@ -123,7 +123,7 @@ ceo2016.on('ready'
     * indicates when a Tournament object is populated with data
 
 ### Methods
-##### Promises
+#### Promises
 * **getAllPlayers([fromCacheTF])**
     * Returns a Promise that resolves an array of all `Player` objects that partook in the Tournament
     * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
@@ -137,7 +137,7 @@ ceo2016.on('ready'
     * Returns a Promise that resolves an array of all `Events` objects that are part of the Tournament.
     * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
 
-##### Getters
+#### Getters
 * **getId()**
     * returns the id of the tournament
 * **getName()**
@@ -173,7 +173,7 @@ ceo2016.on('ready'
 ```javascript
 var event1 = new Event('to12', 'melee-singles');
 event1.on('ready', function(){
-
+    //do stuff with event1
 })
 
 var event2 = new Event(
@@ -184,6 +184,10 @@ var event2 = new Event(
         groups: false
     },
     false
+);
+event2.on('ready', function(){
+    //do stuff with event2
+}
 ```
 
 ### Constructor
@@ -203,10 +207,5 @@ var event2 = new Event(
     * indicates when the Event object is populated with data
 
 ### Methods
-##### Promises
 
-
-##### Getters
-
-
-
+#### Getters

@@ -123,6 +123,14 @@ ceo2016.on('ready'
         * stations - boolean -condensed data for the stations for each group
     * **isCached** - boolean parameter for if the api should cache the resulting object
 
+### Properties
+* **data** - a copy of the raw Tournament JSON that comprises this object
+* **name** - the tournament name from the constructor
+* **isCached** - True/False value of if the object should be cached
+* **expands** - Object that asks smash.gg for more info when api is called
+* **expandsString** - url encoded string version of the expands object
+* **url** - smash.gg api url used to create this Tournament object
+
 ### Events
 * **'ready'**
     * indicates when the Tournament object is populated with data
@@ -211,6 +219,16 @@ event2.on('ready', function(){
         * groups - boolean -condensed data for the groups that comprise the phases
     * **isCached** - boolean value for if the resulting object should be cached
 
+### Properties
+* **data** - a copy of the raw Event JSON that comprises this object
+* **tournamentName** - the tournament name from the constructor, to which this event belongs
+* **eventName** - the event name from the constructor
+* **isCached** - True/False value of if the object should be cached
+* **expands** - Object that asks smash.gg for more info when api is called
+* **expandsString** - url encoded string version of the expands object
+* **url** - smash.gg api url used to create this Event object
+* **tournamentSlug** - the api slug for the tournament to which this event belongs
+
 ### Events
 * **'ready'**
     * indicates when the Event object is populated with data
@@ -263,6 +281,14 @@ phase2.on('ready', function(){
         * groups - boolean -condensed data for the groups that comprise the phases
     * **isCached** - boolean parameter for if the api should cache the resulting object
 
+### Properties
+* **data** - a copy of the raw Phase JSON that comprises this object
+* **id** - the id from the constructor, a unique identifier for the phase
+* **isCached** - True/False value of if the object should be cached
+* **expands** - Object that asks smash.gg for more info when api is called
+* **expandsString** - url encoded string version of the expands object
+* **url** - smash.gg api url used to create this Phase object
+
 ### Events
 * **'ready'**
     * indicates when the Phase object is populated with data
@@ -313,6 +339,14 @@ phaseGroup2.on('ready', function(){
         * seeds - boolean - data for the seeding of entrants for the for the phase group
     * **isCached** - boolean value for if the resulting object should be cached
 
+### Properties
+* **data** - a copy of the raw PhaseGroup JSON that comprises this object
+* **id** - the id from the constructor, a unique identifier for the Phase Group
+* **isCached** - True/False value of if the object should be cached
+* **expands** - Object that asks smash.gg for more info when api is called
+* **expandsString** - url encoded string version of the expands object
+* **url** - smash.gg api url used to create this PhaseGroup object
+
 ### Events
 * **'ready'**
     * indicates when the PhaseGroup object is populated with data
@@ -353,6 +387,9 @@ tournament.on('ready', async function(){
     * **sponsor/prefix** - the sponsor (or user selected prefix) of the player
     * **participantId** - the participant id the player was assigned upon registering for a tournament
     * **data** - the raw player data from smash.gg
+
+### Properties
+* no additional properties for Player
 
 ### Methods
 #### Statics
@@ -403,6 +440,9 @@ tournament.on('ready', async function(){
     * **round** [required] - round name of the Set
     * **WinnerPlayer** [required] - Player object of the winner of the Set
     * **LoserPlayer** [required] - Player object of the loser of the Set
+
+### Properties
+* no additional properties for Set
 
 ### Methods
 #### Getters

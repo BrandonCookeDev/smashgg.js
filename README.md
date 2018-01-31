@@ -52,6 +52,10 @@ tournament.on('ready', async function(){
     console.log('Done!');
     return process.exit(0);
 });
+
+tournament.on('error', function(err){
+    console.error('An error occurred: ' + err);
+})
 ```
 
 ##### Output
@@ -88,6 +92,35 @@ NIX placed 129 at the tournament
 
 ```
 
+## Integrations
+### Winston
+If you would like to add a Winston log that accesses the API's Winston implementation, you may do the following
+```javascript
+let log = require('winston');
+let transports = {
+    file: {
+        level: info,
+        filename: '/tmp/smashgg.js.log',
+        handleExceptions: true,
+        json: false,
+        maxsize: 5242880, //5MB
+        colorize: false
+    },
+    console: {
+        level: debug,
+        json: false,
+        colorize: true,
+        handleExceptions: true
+    }
+};
+
+log.remove(log.transports.Console); //Remove the default implementation
+
+log.add(log.transports.Console, transports.console); //Add new Console implementation
+log.add(log.transports.File, transports.file); //Add new File implementation
+```
+
+# Docs
 ## Tournament
 A Tournament in smash.gg is a collection of Events, Phases, and Phases Groups that
 categorize different games played, game types within those games, and the matches that
@@ -139,6 +172,9 @@ ceo2016.on('ready'
 ### Events
 * **'ready'**
     * indicates when the Tournament object is populated with data
+* **'error'**
+    * indicates an error occurred when creating the Tournament
+    * returns an Error object to be used by the user
 
 ### Methods
 #### Promises
@@ -237,6 +273,9 @@ event2.on('ready', function(){
 ### Events
 * **'ready'**
     * indicates when the Event object is populated with data
+* **'error'**
+    * indicates an error occurred when creating the Event
+    * returns an Error object to be used by the user
 
 ### Methods
 #### Promises
@@ -297,6 +336,9 @@ phase2.on('ready', function(){
 ### Events
 * **'ready'**
     * indicates when the Phase object is populated with data
+* **'error'**
+    * indicates an error occurred when creating the Phase
+    * returns an Error object to be used by the user
 
 ### Methods
 #### Promises
@@ -355,6 +397,9 @@ phaseGroup2.on('ready', function(){
 ### Events
 * **'ready'**
     * indicates when the PhaseGroup object is populated with data
+* **'error'**
+    * indicates an error occurred when creating the Phase Group
+    * returns an Error object to be used by the user
 
 ### Methods
 #### Promises

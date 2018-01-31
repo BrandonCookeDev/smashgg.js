@@ -1,8 +1,12 @@
 {
-  "slug": "smashgg.js",
-  "version": "1.0.0",
+  "name": "smashgg.js",
+  "version": "1.0.2",
   "description": "Node.JS wrapper for the Smash.gg public API Edit",
   "main": "index.js",
+  "repository":{
+    "type": "git",
+    "url": "https://github.com/BrandonCookeDev/smashgg.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

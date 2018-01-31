@@ -58,7 +58,9 @@ describe('Smash GG Tournament', function(){
             }
         );
 
-        // TODO expects
+
+        // TODO BAD TOURNAMENT TEST
+        //tournament4 = await loadTournament(BAD_TOURNAMENT_NAME);
 
         return true;
 
@@ -189,7 +191,7 @@ describe('Smash GG Tournament', function(){
         let venueFee2 = tournament2.getVenueFee();
 
         expect(venueFee1).to.be.equal(20);
-        expect(venueFee2).to.be.equal('Venue Fee not available for tournament CEO 2016');
+        expect(venueFee2).to.be.equal(null);
 
         done();
     });

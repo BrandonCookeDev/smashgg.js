@@ -1,0 +1,13 @@
+/** Patch Notes **/
+
+/** 1.0.2 :: 01-30-2018 **/
+* Refactored errors on SmashGG Object instantiation to emit an 'error' event coupled with an Error object.
+* Refactored the simple getters to no longer return a string on null, but instead to Winston log the error.
+This should make the getters more dev friendly
+* Refactored the simple getters to all reference a similar function since they're all doing the same thing,
+unless they return an object property
+* Included changes to overall docu. Added a section about integrating a Winston log file.
+
+/** 1.0.1 :: 01-29-2018 **/
+* Included the github repository in package.json
+

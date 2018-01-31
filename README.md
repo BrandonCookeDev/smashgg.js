@@ -180,12 +180,12 @@ For instance, Melee Singles is an Event while Melee Doubles is another Event. Ev
 are comprised of optional Phases and Phases Groups.
 
 ```javascript
-var event1 = new Event('to12', 'melee-singles');
+var event1 = new smashgg.Event('to12', 'melee-singles');
 event1.on('ready', function(){
     //do stuff with event1
 })
 
-var event2 = new Event(
+var event2 = new smashgg.Event(
     'ceo-2106',
     'melee-singles',
     {
@@ -327,3 +327,106 @@ phaseGroup2.on('ready', function(){
     * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
 
 #### Getters
+* **getPhaseId()**
+    * returns the Phase Id that owns this Phase Group
+
+## Player
+A Player is a data object that holds information about players who
+went to a tournament using smash.gg.
+```javascript
+var player = new smashgg.Player(000000, 'cookiE', 'Brandon Cooke', 'US', 'GA', 'Recursion');
+
+var tournament = smashgg.Tournament('to12');
+tournament.on('ready', async function(){
+    var players = await tournament.getAllPlayers();
+    //returns all players in a tournament as Player objects
+});
+```
+
+### Constructor
+* **Player(id [, tag, name, country, state/region, sponsor/prefix, participantId, data])**
+    * **id** [required] - the global id for the player in smash.gg
+    * **tag** - smash tag of the player
+    * **name** - real name of the player
+    * **country** - country the player hails from
+    * **state/region** - state or region the player is from in the country
+    * **sponsor/prefix** - the sponsor (or user selected prefix) of the player
+    * **participantId** - the participant id the player was assigned upon registering for a tournament
+    * **data** - the raw player data from smash.gg
+
+### Methods
+#### Statics
+* **resolve(data)**
+    * **data** - the raw player data from smash.gg
+    * this method takes the raw json payload of a single player in the system and returns a player object
+
+#### Getters
+* getId
+    * return the id of the Player
+* getTag
+    * return the tag of the Player
+* getName
+    * return the name of the Player
+* getCountry
+    * return the country of the Player
+* getState
+    * return the state of the Player
+* getSponsor
+    * return the Sponsor of the Player
+* getParticipantId
+    * return the participant id of the Player
+* getFinalPlacement
+    * requires **data** property
+    * return the final placement of the Player
+
+## Set
+A Set is a data object that holds information about a tournament set
+that took place at a tournament.
+
+```javascript
+var Winner = new smashgg.Player(000000, 'BootyBlastWarrior', 'Andy', 'US', 'GA', null);
+var Loser = new smashgg.Player(000000, 'cookiE', 'Brandon Cooke', 'US', 'GA', 'Recursion');
+
+var set = new smashgg.Set(000001, 000002, 'Losers Semis', Winner, Loser);
+
+var tournament = new smashgg.Tournament('to12');
+tournament.on('ready', async function(){
+    var sets = await tournament.getAllSets();
+    //returns a list of Set objects from the tournament
+})
+```
+
+### Constructor
+* **Set(id, round, WinnerPlayer, LoserPlayer [, eventId, data])**
+    * **id** [required] - unique identifier of the Set object
+    * **eventId** [required] - id of the event this Set belongs to
+    * **round** [required] - round name of the Set
+    * **WinnerPlayer** [required] - Player object of the winner of the Set
+    * **LoserPlayer** [required] - Player object of the loser of the Set
+
+### Methods
+#### Getters
+* getRound
+    * return the round name for the Set
+* getWinner
+    * return the Winner Player object for the Set
+* getLoser
+    * return the Loser Player object for the Set
+* getGames
+    * return the list of Games for the Set if available
+* getBestOfCount
+    * return the best-of count for the Set
+* getWinnerScore
+    * return the winner's score for the Set
+* getLoserScore
+    * return the loser's score for the Set
+* getBracketId
+    * return the bracket id for the Set
+* getMidsizeRoundText
+    * return the midsize round text for the Set
+* getPhaseGroupId
+    * return the phase id for the Phase which this Set belongs to
+* getWinnersTournamentPlacement
+    * return the Set winner's final tournament placing
+* getLosersTournamentPlacement
+    * return the Set loser's final tournament placing

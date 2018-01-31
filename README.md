@@ -319,7 +319,7 @@ phaseGroup2.on('ready', function(){
 
 ### Methods
 #### Promises
-* **getPlayers([fromCacheTF])
+* **getPlayers([fromCacheTF])**
     * Returns a Promise that resolves an array of `Player` objects for the Phase Group.
     * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
 * **getSets([fromCacheTF])**
@@ -361,21 +361,21 @@ tournament.on('ready', async function(){
     * this method takes the raw json payload of a single player in the system and returns a player object
 
 #### Getters
-* getId
+* **getId**
     * return the id of the Player
-* getTag
+* **getTag**
     * return the tag of the Player
-* getName
+* **getName**
     * return the name of the Player
-* getCountry
+* **getCountry**
     * return the country of the Player
-* getState
+* **getState**
     * return the state of the Player
-* getSponsor
+* **getSponsor**
     * return the Sponsor of the Player
-* getParticipantId
+* **getParticipantId**
     * return the participant id of the Player
-* getFinalPlacement
+* **getFinalPlacement**
     * requires **data** property
     * return the final placement of the Player
 
@@ -406,27 +406,27 @@ tournament.on('ready', async function(){
 
 ### Methods
 #### Getters
-* getRound
+* **getRound**
     * return the round name for the Set
-* getWinner
+* **getWinner**
     * return the Winner Player object for the Set
-* getLoser
+* **getLoser**
     * return the Loser Player object for the Set
-* getGames
+* **getGames**
     * return the list of Games for the Set if available
-* getBestOfCount
+* **getBestOfCount**
     * return the best-of count for the Set
-* getWinnerScore
+* **getWinnerScore**
     * return the winner's score for the Set
-* getLoserScore
+* **getLoserScore**
     * return the loser's score for the Set
-* getBracketId
+* **getBracketId**
     * return the bracket id for the Set
-* getMidsizeRoundText
+* **getMidsizeRoundText**
     * return the midsize round text for the Set
-* getPhaseGroupId
+* **getPhaseGroupId**
     * return the phase id for the Phase which this Set belongs to
-* getWinnersTournamentPlacement
+* **getWinnersTournamentPlacement**
     * return the Set winner's final tournament placing
-* getLosersTournamentPlacement
+* **getLosersTournamentPlacement**
     * return the Set loser's final tournament placing

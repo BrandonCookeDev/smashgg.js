@@ -9,7 +9,7 @@ with data about tournament brackets that have occurred on their platform.
 npm install --save smashgg.js
 ```
 
-# Requirements
+## Requirements
 * Node.js 7+
 * ecmascript 6
 

@@ -4,7 +4,7 @@
 smashgg.js is a Node.js wrapper for the public Smash.gg API, which is rich
 with data about tournament brackets that have occurred on their platform.
 
-* Installation
+## Installation
 ```bash
 npm install --save smashgg.js
 ```
@@ -12,6 +12,9 @@ npm install --save smashgg.js
 ## Requirements
 * Node.js 7+
 * ecmascript 6
+
+## Issues
+* Please submit any issues or feature requests to the [Issues Section of the Github](https://github.com/BrandonCookeDev/smashgg.js/issues)
 
 ## Contents
 - [Example](#example)

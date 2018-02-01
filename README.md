@@ -498,7 +498,7 @@ tournament.on('ready', async function(){
 ```
 
 ### Constructor
-* **Set(id, round, WinnerPlayer, LoserPlayer [, eventId, data])**
+* **Set(id, eventId, round, WinnerPlayer, LoserPlayer [, data])**
     * **id** [required] - unique identifier of the Set object
     * **eventId** [required] - id of the event this Set belongs to
     * **round** [required] - round name of the Set

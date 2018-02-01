@@ -1,5 +1,11 @@
 /** Patch Notes **/
 
+/** 1.0.4 :: 02-01-2018 **/
+* Fixed documentation for Set constructor.
+
+/** 1.0.3 :: 01-31-2018 **/
+* Updated documentation with a Table of Contents. Fixed incomplete example in Tournament docs.
+
 /** 1.0.2 :: 01-30-2018 **/
 * Refactored errors on SmashGG Object instantiation to emit an 'error' event coupled with an Error object.
 * Refactored the simple getters to no longer return a string on null, but instead to Winston log the error.

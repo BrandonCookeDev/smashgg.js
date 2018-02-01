@@ -1,6 +1,6 @@
 {
   "name": "smashgg.js",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "description": "Node.JS wrapper for the Smash.gg public API Edit",
   "main": "index.js",
   "repository":{

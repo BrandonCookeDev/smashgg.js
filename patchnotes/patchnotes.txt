@@ -1,5 +1,12 @@
 /** Patch Notes **/
 
+/** 1.0.6 **/
+* Added ability for Event to take an ID for an event. 
+At the end of the constructor, an optional ID can now be added. 
+The rest of the params can even be null.
+* Added unit test capability for this addition, but it needs to be
+really fleshed out. However it proves the functionality works.
+
 /** 1.0.5 :: 02-01-2018 **/
 * Fixed documentation for Set constructor.
 * Added section to README about submitting issues or feature requests.

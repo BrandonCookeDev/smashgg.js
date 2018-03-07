@@ -1,6 +1,6 @@
 /** Patch Notes **/
 
-/** 1.0.6 **/
+/** 1.0.6 :: 03-07-2018 **/
 * Added ability for Event to take an ID for an event. 
 At the end of the constructor, an optional ID can now be added. 
 The rest of the params can even be null.

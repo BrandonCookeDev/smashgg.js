@@ -263,6 +263,13 @@ var event2 = new smashgg.Event(
 event2.on('ready', function(){
     //do stuff with event2
 }
+
+//additional constructor for id-only pulling
+var eventId = 14335;
+var event3 = new smashgg.Event(null, null, null, null, eventId);
+event3.on('ready', function(){
+    //do stuff with event3
+})
 ```
 
 ### Constructor
@@ -276,6 +283,7 @@ event2.on('ready', function(){
         * phase - boolean -condensed data for the phases that comprises the event
         * groups - boolean -condensed data for the groups that comprise the phases
     * **isCached** - boolean value for if the resulting object should be cached
+    * **id** - UID for the event in question
 
 ### Properties
 * **data** - a copy of the raw Event JSON that comprises this object

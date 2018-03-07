@@ -1,2 +1,3 @@
 .hgcheck/
 .vscode/
+node_modules/

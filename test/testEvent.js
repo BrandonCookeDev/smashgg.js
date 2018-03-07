@@ -26,6 +26,8 @@ const TOURNAMENT_NAME2 = 'ceo2016';
 const TOURNAMENT_NAME3 = 'to12';
 const BAD_TOURNAMENT_NAME = 'badnamedotexe';
 
+const EVENT_ID_1 = 14335;
+
 let expected = _.extend(
 
 );
@@ -35,6 +37,18 @@ function loadEvent(tournamentName, eventName){
         let event = new Event(tournamentName, eventName);
         event.on('ready', function(){
             resolve(event);
+        })
+    })
+}
+
+function loadEventViaId(id){
+    return new Promise(function(resolve, reject){
+        let event = new Event(null, null, null, null, id);
+        event.on('ready', function(){
+            resolve(event);
+        })
+        event.on('error', function(err){
+            console.error(err);
         })
     })
 }
@@ -50,13 +64,16 @@ describe('Smash GG Event', function(){
 
         event1 = await loadEvent(TOURNAMENT_NAME1, EVENT_NAME1);
         event2 = await loadEvent(TOURNAMENT_NAME2, EVENT_NAME1);
+        event3 = await loadEventViaId(EVENT_ID_1);
 
         return true;
     });
 
     it('should correctly get the event name', function(done){
         let name1 = event1.getName();
+        let name3 = event3.getName();
         expect(name1).to.be.equal('Melee Singles');
+        expect(name3).to.be.equal('Rocket League 3v3');
         done();
     });
 

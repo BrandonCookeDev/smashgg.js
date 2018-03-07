@@ -3,7 +3,7 @@
   "version": "1.0.5",
   "description": "Node.JS wrapper for the Smash.gg public API Edit",
   "main": "index.js",
-  "repository":{
+  "repository": {
     "type": "git",
     "url": "https://github.com/BrandonCookeDev/smashgg.js"
   },
@@ -11,9 +11,22 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "super", "smash", "bros", "brothers", "melee", "wiiU",
-    "tournament", "bracket", "smashgg", "smash.gg", "api",
-    "fgc", "street", "fighter", "teken", "wrapper"
+    "super",
+    "smash",
+    "bros",
+    "brothers",
+    "melee",
+    "wiiU",
+    "tournament",
+    "bracket",
+    "smashgg",
+    "smash.gg",
+    "api",
+    "fgc",
+    "street",
+    "fighter",
+    "teken",
+    "wrapper"
   ],
   "author": "Brandon L Cooke",
   "license": "ISC",

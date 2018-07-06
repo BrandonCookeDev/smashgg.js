@@ -47,6 +47,20 @@ describe('Smash GG Phase', function(){
         return true;
     });
 
+    it('should implement the convenience methods correctly', async function(){
+        this.timeout(10000);
+
+        let cPhase1 = await Phase.getPhase(ID1);
+        let cPhase2 = await Phase.getPhase(ID2);
+        let cPhase3 = await Phase.getPhase(ID3);
+
+        expect(cPhase1).to.deep.equal(phase1);
+        expect(cPhase2).to.deep.equal(phase2);
+        expect(cPhase3).to.deep.equal(phase3);
+
+        return true;
+    })
+
     it('should get the name of the Phase', function(done){
         expect(phase1.getName()).to.be.equal('Pools');
         expect(phase2.getName()).to.be.equal('Pools');

@@ -1,5 +1,6 @@
 'use strict';
 
+Promise = require('bluebird');
 let _ = require('lodash');
 
 let PhaseGroup = require('../lib/PhaseGroup');
@@ -48,6 +49,13 @@ describe('Smash GG Phase Group', function(){
         phaseGroup3 = new PhaseGroup(ID3);
         phaseGroup3.on('ready', done);
     });
+
+    it('should implement the convenience methods correctly', async function(){
+        this.timeout(5000);
+        let cPhaseGroup3 = PhaseGroup.getPhaseGroup(ID3);
+        expect(cPhaseGroup3).to.deep.equal(phaseGroup3);
+        return true;
+    })
 
     it('should correctly return the phase id', function(done){
         let phaseId1 = phaseGroup3.getPhaseId();

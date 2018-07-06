@@ -1,5 +1,7 @@
 'use strict';
 
+Promise = require('bluebird');
+
 let _ = require('lodash');
 
 let Event = require('../lib/Event');
@@ -68,6 +70,20 @@ describe('Smash GG Event', function(){
 
         return true;
     });
+
+    it('should correctly implement convenience methods', async function(done){
+        this.timeout(15000);
+
+        let cEvent1 = await Event.getEvent(TOURNAMENT_NAME1, EVENT_NAME1);
+        let cEvent2 = await Event.getEvent(TOURNAMENT_NAME2, EVENT_NAME1);
+        let cEvent3 = await Event.getEventById(EVENT_ID_1);
+
+        expect(cEvent1).to.deep.equal(event1);
+        expect(cEvent2).to.deep.equal(event2);
+        expect(cEvent3).to.deep.equal(event3);
+
+        return true;
+    })
 
     it('should correctly get the event name', function(done){
         let name1 = event1.getName();

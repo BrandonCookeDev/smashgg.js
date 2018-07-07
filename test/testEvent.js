@@ -115,6 +115,19 @@ describe('Smash GG Event', function(){
         done();
     });
 
+    it('should correctly print the toString', function(){
+        let ts3 = event3.toString();
+        let ts2 = event2.toString();
+
+        let expected3 = `Event: \
+            \nID: ${EVENT_ID_1} \
+            \nName: ${event1.getName()} \
+            \nTournament: ${event1.getTournamentId()} \
+            \nStart Time: ${event1.getStartTime()}`
+        
+        expect(ts3).to.be.equal(expected3);
+    })
+
     it('should correctly get the phases', async function(){
         this.timeout(15000);
 

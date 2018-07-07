@@ -16,6 +16,10 @@ chai.use(cap);
 let expect = chai.expect;
 let assert = chai.assert;
 
+let winston = require('winston');
+winston.remove(winston.transports.Console);
+winston.add(winston.transports.Console, require('./log-options.json'))
+
 let event1 = {};
 let event2 = {};
 let event3 = {};

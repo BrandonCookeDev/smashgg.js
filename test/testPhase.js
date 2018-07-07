@@ -54,9 +54,9 @@ describe('Smash GG Phase', function(){
         let cPhase2 = await Phase.getPhase(ID2);
         let cPhase3 = await Phase.getPhase(ID3);
 
-        expect(cPhase1).to.deep.equal(phase1);
-        expect(cPhase2).to.deep.equal(phase2);
-        expect(cPhase3).to.deep.equal(phase3);
+        expect(cPhase1.data).to.deep.equal(phase1.data);
+        expect(cPhase2.data).to.deep.equal(phase2.data);
+        expect(cPhase3.data).to.deep.equal(phase3.data);
 
         return true;
     })

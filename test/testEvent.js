@@ -34,9 +34,9 @@ let expected = _.extend(
 
 );
 
-function loadEvent(tournamentName, eventName){
+function loadEvent(eventName, tournamentName){
     return new Promise(function(resolve, reject){
-        let event = new Event(tournamentName, eventName);
+        let event = new Event(eventName, tournamentName);
         event.on('ready', function(){
             resolve(event);
         })
@@ -45,7 +45,9 @@ function loadEvent(tournamentName, eventName){
 
 function loadEventViaId(id){
     return new Promise(function(resolve, reject){
-        let event = new Event(null, null, null, null, id);
+        if(isNaN(id))
+            return reject('ID must be an integer');
+        let event = new Event(id);
         event.on('ready', function(){
             resolve(event);
         })
@@ -64,23 +66,23 @@ describe('Smash GG Event', function(){
     it('should correctly load the data', async function(){
         this.timeout(15000);
 
-        event1 = await loadEvent(TOURNAMENT_NAME1, EVENT_NAME1);
-        event2 = await loadEvent(TOURNAMENT_NAME2, EVENT_NAME1);
+        event1 = await loadEvent(EVENT_NAME1, TOURNAMENT_NAME1);
+        event2 = await loadEvent(EVENT_NAME1, TOURNAMENT_NAME2);
         event3 = await loadEventViaId(EVENT_ID_1);
 
         return true;
     });
 
-    it('should correctly implement convenience methods', async function(done){
+    it('should correctly implement convenience methods', async function(){
         this.timeout(15000);
 
-        let cEvent1 = await Event.getEvent(TOURNAMENT_NAME1, EVENT_NAME1);
-        let cEvent2 = await Event.getEvent(TOURNAMENT_NAME2, EVENT_NAME1);
+        let cEvent1 = await Event.getEvent(EVENT_NAME1, TOURNAMENT_NAME1);
+        let cEvent2 = await Event.getEvent(EVENT_NAME1, TOURNAMENT_NAME2);
         let cEvent3 = await Event.getEventById(EVENT_ID_1);
 
-        expect(cEvent1).to.deep.equal(event1);
-        expect(cEvent2).to.deep.equal(event2);
-        expect(cEvent3).to.deep.equal(event3);
+        expect(cEvent1.data).to.deep.equal(event1.data);
+        expect(cEvent2.data).to.deep.equal(event2.data);
+        expect(cEvent3.data).to.deep.equal(event3.data);
 
         return true;
     })

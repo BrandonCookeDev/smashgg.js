@@ -73,8 +73,8 @@ describe('Smash GG Tournament', function(){
         let cTournament1 = await Tournament.getTournament(TOURNAMENT_NAME1);
         let cTournament2 = await Tournament.getTournament(TOURNAMENT_NAME2);
 
-        expect(cTournament1).to.deep.equal(tournament1);
-        expect(cTournament2).to.deep.equal(tournament2);
+        expect(cTournament1.data).to.deep.equal(tournament1.data);
+        expect(cTournament2.data).to.deep.equal(tournament2.data);
 
         return true;
     })

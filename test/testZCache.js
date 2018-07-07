@@ -173,8 +173,8 @@ describe('Test Caching', function(){
     it('should correctly cache events', async function(){
         this.timeout(25000);
 
-        let e1 = await loadEvent(TOURNAMENT_NAME1, EVENT_NAME1);
-        let e2 = await loadEvent(TOURNAMENT_NAME2, EVENT_NAME1);
+        let e1 = await loadEvent(EVENT_NAME1, TOURNAMENT_NAME1);
+        let e2 = await loadEvent(EVENT_NAME1, TOURNAMENT_NAME2);
 
         let key1 = 'event::function1::melee-singles::expand[]=phase&expand[]=groups&';
         let key1data = 'event::function1::melee-singles::expand[]=phase&expand[]=groups&::data';
@@ -201,8 +201,8 @@ describe('Test Caching', function(){
     it('should correctly cache the event phases', async function(){
         this.timeout(25000);
 
-        let e1 = await loadEvent(TOURNAMENT_NAME1, EVENT_NAME1);
-        let e2 = await loadEvent(TOURNAMENT_NAME2, EVENT_NAME1);
+        let e1 = await loadEvent(EVENT_NAME1, TOURNAMENT_NAME1);
+        let e2 = await loadEvent(EVENT_NAME1, TOURNAMENT_NAME2);
 
         let phases1 = await e1.getEventPhases();
         let phases2 = await e2.getEventPhases();
@@ -232,8 +232,8 @@ describe('Test Caching', function(){
     it('should correctly cache the event groups', async function(){
         this.timeout(25000);
 
-        let e1 = await loadEvent(TOURNAMENT_NAME1, EVENT_NAME1);
-        let e2 = await loadEvent(TOURNAMENT_NAME2, EVENT_NAME1);
+        let e1 = await loadEvent(EVENT_NAME1, TOURNAMENT_NAME1);
+        let e2 = await loadEvent(EVENT_NAME1, TOURNAMENT_NAME2);
 
         let groups1 = await e1.getEventPhaseGroups();
         let groups2 = await e2.getEventPhaseGroups();
@@ -414,9 +414,9 @@ function loadTournament(name, expands, isCached){
         })
     })
 }
-function loadEvent(tournamentName, eventName){
+function loadEvent(eventName, tournamentName){
     return new Promise(function(resolve, reject){
-        let event = new Event(tournamentName, eventName);
+        let event = new Event(eventName, tournamentName);
         event.on('ready', function(){
             resolve(event);
         })

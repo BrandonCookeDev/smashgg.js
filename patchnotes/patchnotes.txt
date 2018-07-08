@@ -21,7 +21,7 @@ alongside getDateString methods that return the strings from V1
 * Added eslint for format linting
 * Event object creation now by default gets Tournament data to which the Event belongs to
 
-/** 1.0.6 **/
+/** 1.0.6 :: 03-07-2018 **/
 * Added ability for Event to take an ID for an event. 
 At the end of the constructor, an optional ID can now be added. 
 The rest of the params can even be null.
@@ -45,4 +45,3 @@ unless they return an object property
 
 /** 1.0.1 :: 01-29-2018 **/
 * Included the github repository in package.json
-

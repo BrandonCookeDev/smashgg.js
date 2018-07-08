@@ -27,9 +27,9 @@ let expected = _.extend(
 );
 
 
-function loadPhaseGroup(id, expands, isCached){
+function loadPhaseGroup(id, options){
     return new Promise(function(resolve, reject){
-        let PG = new PhaseGroup(id, expands, isCached);
+        let PG = new PhaseGroup(id, options);
         PG.on('ready', function(){
             resolve(PG);
         })
@@ -46,7 +46,7 @@ describe('Smash GG Phase Group', function(){
     it('should correctly load Phase Group data', function(done){
         this.timeout(5000);
 
-        phaseGroup3 = new PhaseGroup(ID3);
+        phaseGroup3 = new PhaseGroup(ID3, {rawEncoding: 'base64'});
         phaseGroup3.on('ready', done);
     });
 

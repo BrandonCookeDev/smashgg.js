@@ -23,9 +23,9 @@ let ID3 = 100046;
 
 let phase1, phase2, phase3;
 
-function loadPhase(id, expands, isCached){
+function loadPhase(id, options){
     return new Promise(function(resolve, reject){
-        let P = new Phase(id, expands, isCached);
+        let P = new Phase(id, options);
         P.on('ready', function(){
             resolve(P);
         })
@@ -41,9 +41,9 @@ describe('Smash GG Phase', function(){
     it('should correctly load the Phase', async function(){
         this.timeout(10000);
 
-        phase1 = await loadPhase(ID1);
+        phase1 = await loadPhase(ID1, {rawEncoding: 'utf8'});
         phase2 = await loadPhase(ID2);
-        phase3 = await loadPhase(ID3);
+        phase3 = await loadPhase(ID3, {rawEncoding: 'base64'});
         return true;
     });
 

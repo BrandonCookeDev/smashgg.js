@@ -21,6 +21,8 @@ let tournament1 = {};
 let tournament2 = {};
 let tournament3 = {};
 let tournament4 = {};
+let tournament5 = {};
+let tournament6 = {};
 
 const TOURNAMENT_NAME1 = 'function1';
 const TOURNAMENT_NAME2 = 'ceo2016';
@@ -31,9 +33,9 @@ let expected = _.extend(
     require('./data/expectedTournaments')
 );
 
-function loadTournament(name, expands, isCached){
+function loadTournament(name, options){
     return new Promise(function(resolve, reject){
-        let t = new Tournament(name, expands, isCached);
+        let t = new Tournament(name, options);
         t.on('ready', function(){
             return resolve(t);
         })
@@ -49,16 +51,28 @@ describe('Smash GG Tournament', function(){
     it('should correctly load tournament data', async function(){
         this.timeout(10000);
 
-        tournament1 = await loadTournament(TOURNAMENT_NAME1);
-        tournament2 = await loadTournament(TOURNAMENT_NAME2);
-        tournament3 = await loadTournament(TOURNAMENT_NAME3,
-            {
-                event:true,
-                phase:true,
-                groups:true,
-                stations:true
+        tournament1 = await loadTournament(TOURNAMENT_NAME1, {rawEncoding: 'utf8'});
+        tournament2 = await loadTournament(TOURNAMENT_NAME2, {rawEncoding: 'base64'});
+        tournament3 = await loadTournament(TOURNAMENT_NAME3, {
+                expands: {
+                    event:true,
+                    phase:true,
+                    groups:true,
+                    stations:true
+                }
             }
         );
+
+        /*
+        tournament4 = await loadTournament(TOURNAMENT_NAME1, {
+            isCached: false,
+            rawEncoding: 'utf8'
+        })
+        tournament5 = await loadTournament(TOURNAMENT_NAME2, {
+            isCached: false,
+            rawEncoding: 'base64'
+        })
+        */
 
 
         // TODO BAD TOURNAMENT TEST

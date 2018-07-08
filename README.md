@@ -26,51 +26,46 @@ npm install --save smashgg.js
     -  [PhaseGroup](#phasegroup)
     -  [Player](#player)
     -  [Set](#set)
+- [Transitioning to V2](#transition)
 
 ## Example 
 ```javascript
 var smashgg = require('smashgg.js');
-var tournament = new smashgg.Tournament('ceo-2016');
+var tournament = await Tournament.getTournament('ceo-2016');
 
-tournament.on('ready', async function(){
-    var players = await tournament.getAllPlayers();
-    var sets = await tournament.getAllSets();
+var players = await tournament.getAllPlayers();
+var sets = await tournament.getAllSets();
 
-    console.log(players.length + ' players entered ' + tournament.getName() +  ' overall');
-    players.forEach(player => {
-        console.log(
-            'Tag: ' + player.getTag() + '\n',
-            'Name: ' + player.getName() + '\n',
-            'State: ' + player.getState() + '\n'
-        )
-    });
-
-    console.log(sets.length + ' sets were played at ' + tournament.getName());
-    sets.forEach(set => {
-            console.log(
-                '[%s: %s %s - %s %s]',
-            set.getRound(),
-            set.getWinner().getTag(), //Player object
-            set.getWinnerScore(),
-            set.getLoserScore(),
-            set.getLoser().getTag()
-        );
-        console.log(
-            '%s placed %s at the tournament \n%s placed %s at the tournament\n',
-            set.getWinner().getTag(),
-            set.getWinnersTournamentPlacement(),
-            set.getLoser().getTag(),
-            set.getLosersTournamentPlacement()
-        )
-    })
-
-    console.log('Done!');
-    return process.exit(0);
+console.log(players.length + ' players entered ' + tournament.getName() +  ' overall');
+players.forEach(player => {
+    console.log(
+        'Tag: ' + player.getTag() + '\n',
+        'Name: ' + player.getName() + '\n',
+        'State: ' + player.getState() + '\n'
+    )
 });
 
-tournament.on('error', function(err){
-    console.error('An error occurred: ' + err);
+console.log(sets.length + ' sets were played at ' + tournament.getName());
+sets.forEach(set => {
+        console.log(
+            '[%s: %s %s - %s %s]',
+        set.getRound(),
+        set.getWinner().getTag(), //Player object
+        set.getWinnerScore(),
+        set.getLoserScore(),
+        set.getLoser().getTag()
+    );
+    console.log(
+        '%s placed %s at the tournament \n%s placed %s at the tournament\n',
+        set.getWinner().getTag(),
+        set.getWinnersTournamentPlacement(),
+        set.getLoser().getTag(),
+        set.getLosersTournamentPlacement()
+    )
 })
+
+console.log('Done!');
+return process.exit(0);
 ```
 
 ##### Output
@@ -272,6 +267,17 @@ For instance, Melee Singles is an Event while Melee Doubles is another Event. Ev
 are comprised of optional Phases and Phases Groups.
 
 ```javascript
+/** NEW CONVENIENCE METHODS **/
+Event.getEvent('to12', 'melee-singles')
+    .then(event1 => {
+        //do stuff with event
+    })
+Event.getEventById(14335, {rawEncoding: 'base64'})
+    .then(event => {
+        //do stuff with event
+    })
+
+/** OLD METHODS **/
 var event1 = new smashgg.Event('to12', 'melee-singles');
 event1.on('ready', function(){
     //do stuff with event1
@@ -281,10 +287,12 @@ var event2 = new smashgg.Event(
     'ceo-2106',
     'melee-singles',
     {
-        phase: true,
-        groups: false
-    },
-    false
+        rawEncoding: 'base64',
+        expands:{
+            phase: true,
+            groups: false
+        },
+        isCached: false
 );
 event2.on('ready', function(){
     //do stuff with event2
@@ -292,7 +300,7 @@ event2.on('ready', function(){
 
 //additional constructor for id-only pulling
 var eventId = 14335;
-var event3 = new smashgg.Event(eventId);
+var event3 = new smashgg.Event(eventId, {rawEncoding: 'utf8'});
 event3.on('ready', function(){
     //do stuff with event3
 })
@@ -370,6 +378,21 @@ A phase in smash.gg is a subset of matches and brackets inside an Event. For exa
 a wave in pools is a Phase. Everything in that Phase is a Group (or Phase Group).
 
 ```javascript
+/** NEW CONVENIENCE METHODS **/
+Phase.getPhase(111483)
+    .then(phase => {
+        //do stuff with phase
+    })
+Phase.getPhase(45262, {
+    rawEncoding: 'base64',
+    expands: {
+        groups: false
+    },
+    isCached: false
+}).then(phase =>{
+    //do stuff with phase
+})
+
 var phase1 = new smashgg.Phase(111483);
 phase1.on('ready', function(){
     //do stuff with phase1
@@ -378,9 +401,12 @@ phase1.on('ready', function(){
 var phase2 = new smashgg.Phase(
     45262,
     {
-        groups: false
-    },
-    false
+        rawEncoding: 'base64',
+        expands: {
+            groups: false
+        },
+        isCached: false
+    }
 )
 phase2.on('ready', function(){
     //do stuff with phase2
@@ -438,6 +464,24 @@ phase2.on('ready', function(){
 A Phase Group is the lowest unit on smash.gg. It is a bracket of some sort that belongs to a Phase.
 
 ```javascript
+/** NEW CONVENIENCE METHODS **/
+PhaseGroup.getPhaseGroup(44445)
+    .then(phaseGroup => {
+        //do stuff with phaseGroup
+    })
+PhaseGroup.getPhaseGroup(301994, {
+    rawEncoding: 'base64',  
+    expands: {
+        sets: true,
+        entrants: true,
+        standings: true,
+        seeds: false
+    },
+    isCached: false
+}).then(phaseGroup => {
+    //do stuff with phaseGroup
+})
+
 var phaseGroup1 = new smashgg.PhaseGroup(44445);
 phaseGroup1.on('ready', function(){
     //do stuff with phaseGroup1
@@ -446,12 +490,15 @@ phaseGroup1.on('ready', function(){
 var phaseGroup2 = new smashgg.PhaseGroup(
     301994,
     {
-        sets: true,
-        entrants: true,
-        standings: true,
-        seeds: false
-    },
-    false
+        rawEncoding: 'base64',
+        expands: {
+            sets: true,
+            entrants: true,
+            standings: true,
+            seeds: false
+        },
+        isCached: false
+    }
 );
 phaseGroup2.on('ready', function(){
     //do stuff with phaseGroup2
@@ -615,3 +662,14 @@ tournament.on('ready', async function(){
     * return the Set winner's final tournament placing
 * **getLosersTournamentPlacement()**
     * return the Set loser's final tournament placing
+
+## Transition
+This section is for detailing the transition between major versions. 
+### V1 to V2
+In order to transition successfully from V1 to V2, please ensure the following 
+* Event constructors now take eventId parameter before tournamentId parameter.
+    * Additionally, you can give the constructor an Id number for the event, and null tournamentId.
+* `Tournament`, `Event`, `Phase`, and `PhaseGroup` constructors now take an `options` object that encapsulates the previous `isCached` and `expands` parameters. 
+    * Please see documentation for further implementation.
+* It is suggested you move to the Promise returning convenience methods, as the previous `ready` event will be deprecated from this point on.
+    * Please see documentation for the convenience methods. They take the same parameters as the constructor.

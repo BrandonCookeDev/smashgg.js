@@ -1,6 +1,6 @@
 /** Patch Notes **/
 
-/** 2.0 **/
+/** 2.0 :: 07-08-2018 **/
 # MAJOR
 * Added Convenience methods to Tournament, Event, Phase, and PhaseGroup
 These functions now return Promises that resolve the respective expected object. 

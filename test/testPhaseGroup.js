@@ -52,7 +52,7 @@ describe('Smash GG Phase Group', function(){
 
     it('should implement the convenience methods correctly', async function(){
         this.timeout(5000);
-        let cPhaseGroup3 = PhaseGroup.getPhaseGroup(ID3);
+        let cPhaseGroup3 = await PhaseGroup.getPhaseGroup(ID3);
         expect(cPhaseGroup3.data).to.deep.equal(phaseGroup3.data);
         return true;
     })

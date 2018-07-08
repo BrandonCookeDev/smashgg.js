@@ -3,6 +3,7 @@
 Promise = require('bluebird');
 
 let _ = require('lodash');
+let moment = require('moment');
 
 let Event = require('../lib/Event');
 let Phase = require('../lib/Phase');
@@ -107,29 +108,50 @@ describe('Smash GG Event', function(){
 
     it('should correctly get the event start time', function(done){
         let startTime1 = event1.getStartTime();
-        expect(startTime1).to.be.equal('04-01-2017 11:00:00 EST');
+        let expected = moment('04-01-2017 11:00:00').toDate();
+        expect(startTime1.getTime()).to.be.equal(expected.getTime());
+        done();
+    });
+
+    it('should correctly get the event start time string', function(done){
+        let startTime1 = event1.getStartTimeString();
+
+        try {
+            expect(startTime1).to.be.equal('04-01-2017 11:00:00 EST');
+        }
+        catch(e){
+            expect(startTime1).to.be.equal('04-01-2017 11:00:00 EDT');
+        }
         done();
     });
 
     it('should correctly get the event end time', function(done){
         let endTime1 = event1.getEndTime();
-        let endTime2 = event2.getEndTime();
-
-        expect(endTime1).to.be.equal('04-01-2017 12:00:00 EST');
+        let expected = moment('04-01-2017 12:00:00').toDate();
+        expect(endTime1.getTime()).to.be.equal(expected.getTime());
         done();
     });
 
-    it('should correctly print the toString', function(){
-        let ts3 = event3.toString();
-        let ts2 = event2.toString();
+    it('should correctly get the event end time string', function(done){
+        let endTime1 = event1.getEndTimeString();
 
-        let expected3 = `Event: \
-            \nID: ${EVENT_ID_1} \
-            \nName: ${event1.getName()} \
-            \nTournament: ${event1.getTournamentId()} \
-            \nStart Time: ${event1.getStartTime()}`
-        
-        expect(ts3).to.be.equal(expected3);
+        try {
+            expect(endTime1).to.be.equal('04-01-2017 12:00:00 EST');
+        }
+        catch(e){
+            expect(endTime1).to.be.equal('04-01-2017 12:00:00 EDT');
+        }
+        done();
+    });
+
+    it('should correctly get the tournament slugs', function(){
+        let slug1 = event1.getTournamentSlug();
+        let slug2 = event2.getTournamentSlug();
+        let slug3 = event3.getTournamentSlug();
+
+        expect(slug1).to.be.equal('function-1-recursion-regional');
+        expect(slug2).to.be.equal('ceo-2016');
+        expect(slug3).to.be.equal('pulsar-premier-league');
     })
 
     it('should correctly get the phases', async function(){

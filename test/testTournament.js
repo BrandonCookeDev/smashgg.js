@@ -1,7 +1,8 @@
 'use strict';
 
 Promise = require('bluebird');
-let _ = require('lodash');
+let _ = require('lodash');3
+let moment = require('moment');
 
 let Tournament = require('../lib/Tournament');
 let Player = require('../lib/Player');
@@ -113,8 +114,32 @@ describe('Smash GG Tournament', function(){
         let startTime1 = tournament1.getStartTime();
         let startTime2 = tournament2.getStartTime();
 
-        expect(startTime1).to.be.equal('04-01-2017 11:00:00 EST');
-        expect(startTime2).to.be.equal('06-24-2016 00:00:00 EST');
+        let expected1 = moment('04-01-2017 11:00:00').toDate();
+        let expected2 = moment('06-24-2016 00:00:00').toDate();
+
+        expect(startTime1.getTime()).to.be.equal(expected1.getTime());
+        expect(startTime2.getTime()).to.be.equal(expected2.getTime());
+
+        done();
+    });
+
+    it('should return the correct starting time string', function(done){
+        let startTime1 = tournament1.getStartTimeString();
+        let startTime2 = tournament2.getStartTimeString();
+
+        try {
+            expect(startTime1).to.be.equal('04-01-2017 11:00:00 EST');
+        }
+        catch(e){
+            expect(startTime1).to.be.equal('04-01-2017 11:00:00 EDT');
+        }
+
+        try {
+            expect(startTime2).to.be.equal('06-24-2016 00:00:00 EST');
+        }
+        catch(e){
+            expect(startTime2).to.be.equal('06-24-2016 00:00:00 EDT');
+        }
 
         done();
     });
@@ -123,8 +148,32 @@ describe('Smash GG Tournament', function(){
         let endTime1 = tournament1.getEndTime();
         let endTime2 = tournament2.getEndTime();
 
-        expect(endTime1).to.be.equal('04-01-2017 23:00:00 EST');
-        expect(endTime2).to.be.equal('06-27-2016 00:00:00 EST');
+        let expected1 = moment('04-01-2017 23:00:00').toDate();
+        let expected2 = moment('06-27-2016 00:00:00').toDate();
+
+        expect(endTime1.getTime()).to.be.equal(expected1.getTime());
+        expect(endTime2.getTime()).to.be.equal(expected2.getTime());
+
+        done();
+    });
+
+    it('should return the correct end time string', function(done){
+        let endTime1 = tournament1.getEndTimeString();
+        let endTime2 = tournament2.getEndTimeString();
+
+        try {
+            expect(endTime1).to.be.equal('04-01-2017 23:00:00 EST');
+        }
+        catch(e){
+            expect(endTime1).to.be.equal('04-01-2017 23:00:00 EDT');
+        }
+
+        try {
+            expect(endTime2).to.be.equal('06-27-2016 00:00:00 EST');
+        }
+        catch(e){
+            expect(endTime2).to.be.equal('06-27-2016 00:00:00 EDT');
+        }
 
         done();
     });
@@ -133,8 +182,32 @@ describe('Smash GG Tournament', function(){
         let closesTime1 = tournament1.getWhenRegistrationCloses();
         let closesTime2 = tournament2.getWhenRegistrationCloses();
 
-        expect(closesTime1).to.be.equal('03-30-2017 02:00:00 EST');
-        expect(closesTime2).to.be.equal('06-13-2016 08:00:00 EST');
+        let expected1 = moment('03-30-2017 02:00:00').toDate();
+        let expected2 = moment('06-13-2016 08:00:00').toDate();
+
+        expect(closesTime1.getTime()).to.be.equal(expected1.getTime());
+        expect(closesTime2.getTime()).to.be.equal(expected2.getTime());
+
+        done();
+    });
+
+    it('should return the correct time registration closes string', function(done){
+        let closesTime1 = tournament1.getWhenRegistrationClosesString();
+        let closesTime2 = tournament2.getWhenRegistrationClosesString();
+
+        try {
+            expect(closesTime1).to.be.equal('03-30-2017 02:00:00 EST');
+        }
+        catch(e){
+            expect(closesTime1).to.be.equal('03-30-2017 02:00:00 EDT');
+        }
+
+        try {
+            expect(closesTime2).to.be.equal('06-13-2016 08:00:00 EST');
+        }
+        catch(e){
+            expect(closesTime2).to.be.equal('06-13-2016 08:00:00 EDT');
+        }
 
         done();
     });

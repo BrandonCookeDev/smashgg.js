@@ -1,6 +1,6 @@
 {
   "name": "smashgg.js",
-  "version": "1.0.6",
+  "version": "2.0.0",
   "description": "Node.JS wrapper for the Smash.gg public API Edit",
   "main": "index.js",
   "repository": {
@@ -8,7 +8,8 @@
     "url": "https://github.com/BrandonCookeDev/smashgg.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha ./test",
+    "lint": "./node_modules/.bin/eslint ."
   },
   "keywords": [
     "super",
@@ -33,6 +34,7 @@
   "dependencies": {
     "bluebird": "^3.5.1",
     "co": "^4.6.0",
+    "eslint": "^5.0.1",
     "lodash": "^4.17.10",
     "moment": "^2.22.2",
     "moment-timezone": "^0.5.21",

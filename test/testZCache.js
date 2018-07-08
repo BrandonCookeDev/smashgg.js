@@ -182,7 +182,7 @@ describe('Test Caching', function(){
         let key2data = 'event::ceo2016::melee-singles::expand[]=phase&expand[]=groups&::data';
 
         let keys = await Cache.keys();
-        expect(keys.length).to.be.equal(6);
+        expect(keys.length).to.be.equal(8, `Current cache keys: ${JSON.stringify(keys)}`);
 
         expect(keys).to.include(key1);
         expect(keys).to.include(key2);

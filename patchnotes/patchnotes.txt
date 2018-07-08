@@ -19,6 +19,7 @@ alongside getDateString methods that return the strings from V1
 * Better error handling for non-existent smashgg objects coming back with 404s
 * Added sample2 which uses convenience method
 * Added eslint for format linting
+* Event object creation now by default gets Tournament data to which the Event belongs to
 
 /** 1.0.6 **/
 * Added ability for Event to take an ID for an event. 

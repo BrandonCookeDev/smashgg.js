@@ -9,7 +9,7 @@ These functions now return Promises that resolve the respective expected object.
 * Altered Tournament, Event, Phase, and PhaseGroup constructors to now implement an options object
 This options object now consumes the previous isCached and expands parameters
 Options object now includes optional rawEncoding parameter allowing for space optimization by storing raw data in base64 or utf8 string
-* Added fuinctions to get Date objects back from date getters in SmashGG objects, 
+* Added functions to get Date objects back from date getters in SmashGG objects, 
 alongside getDateString methods that return the strings from V1
 
 # MINOR

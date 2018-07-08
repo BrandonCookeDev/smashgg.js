@@ -1,5 +1,26 @@
 /** Patch Notes **/
 
+/** 2.0 :: 07-08-2018 **/
+# MAJOR
+* Added Convenience methods to Tournament, Event, Phase, and PhaseGroup
+These functions now return Promises that resolve the respective expected object. 
+'ready' event will now be deprecated.
+* Event
+* Altered Tournament, Event, Phase, and PhaseGroup constructors to now implement an options object
+This options object now consumes the previous isCached and expands parameters
+Options object now includes optional rawEncoding parameter allowing for space optimization by storing raw data in base64 or utf8 string
+* Added fuinctions to get Date objects back from date getters in SmashGG objects, 
+alongside getDateString methods that return the strings from V1
+
+# MINOR
+* Altered some logic that pulls bulk data like Players and Sets to be more optimized for async/await
+* Now verbose log all smashgg api urls use in object creation
+* All smashgg objects now have convenient toString methods
+* Better error handling for non-existent smashgg objects coming back with 404s
+* Added sample2 which uses convenience method
+* Added eslint for format linting
+* Event object creation now by default gets Tournament data to which the Event belongs to
+
 /** 1.0.6 :: 03-07-2018 **/
 * Added ability for Event to take an ID for an event. 
 At the end of the constructor, an optional ID can now be added. 
@@ -24,4 +45,3 @@ unless they return an object property
 
 /** 1.0.1 :: 01-29-2018 **/
 * Included the github repository in package.json
-

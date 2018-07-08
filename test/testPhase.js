@@ -1,3 +1,4 @@
+/* eslint-disable */
 'use strict';
 
 let _ = require('lodash');
@@ -14,7 +15,7 @@ let expect = chai.expect;
 let assert = chai.assert;
 
 let expected = _.extend(
-    require('./data/testSets')
+	require('./data/testSets')
 );
 
 let ID1 = 111483;
@@ -23,72 +24,86 @@ let ID3 = 100046;
 
 let phase1, phase2, phase3;
 
-function loadPhase(id, expands, isCached){
-    return new Promise(function(resolve, reject){
-        let P = new Phase(id, expands, isCached);
-        P.on('ready', function(){
-            resolve(P);
-        })
-    })
+function loadPhase(id, options){
+	return new Promise(function(resolve, reject){
+		let P = new Phase(id, options);
+		P.on('ready', function(){
+			resolve(P);
+		})
+	})
 }
 
 describe('Smash GG Phase', function(){
 
-    before(function(){
-        Cache.flush();
-    });
+	before(function(){
+		Cache.flush();
+	});
 
-    it('should correctly load the Phase', async function(){
-        this.timeout(10000);
+	it('should correctly load the Phase', async function(){
+		this.timeout(10000);
 
-        phase1 = await loadPhase(ID1);
-        phase2 = await loadPhase(ID2);
-        phase3 = await loadPhase(ID3);
-        return true;
-    });
+		phase1 = await loadPhase(ID1, {rawEncoding: 'utf8'});
+		phase2 = await loadPhase(ID2);
+		phase3 = await loadPhase(ID3, {rawEncoding: 'base64'});
+		return true;
+	});
 
-    it('should get the name of the Phase', function(done){
-        expect(phase1.getName()).to.be.equal('Pools');
-        expect(phase2.getName()).to.be.equal('Pools');
-        expect(phase3.getName()).to.be.equal('Bracket Pools');
-        done();
-    });
+	it('should implement the convenience methods correctly', async function(){
+		this.timeout(10000);
 
-    it('should get the event id', function(done){
-        expect(phase1.getEventId()).to.be.equal(25545);
-        expect(phase2.getEventId()).to.be.equal(11787);
-        expect(phase3.getEventId()).to.be.equal(23596);
-        done();
-    });
+		let cPhase1 = await Phase.getPhase(ID1);
+		let cPhase2 = await Phase.getPhase(ID2);
+		let cPhase3 = await Phase.getPhase(ID3);
 
-    it('should correctly get all phase groups', async function(){
-        this.timeout(30000);
+		expect(cPhase1.data).to.deep.equal(phase1.data);
+		expect(cPhase2.data).to.deep.equal(phase2.data);
+		expect(cPhase3.data).to.deep.equal(phase3.data);
 
-        let phaseGroups1 = await phase1.getPhaseGroups();
-        let phaseGroups2 = await phase2.getPhaseGroups();
-        let phaseGroups3 = await phase3.getPhaseGroups();
+		return true;
+	})
 
-        expect(phaseGroups1.length).to.be.equal(16);
-        expect(phaseGroups2.length).to.be.equal(32);
-        expect(phaseGroups3.length).to.be.equal(16);
+	it('should get the name of the Phase', function(done){
+		expect(phase1.getName()).to.be.equal('Pools');
+		expect(phase2.getName()).to.be.equal('Pools');
+		expect(phase3.getName()).to.be.equal('Bracket Pools');
+		done();
+	});
 
-        var hasDuplicates = function(a) {
-            return _.uniq(a).length !== a.length;
-        };
-        expect(hasDuplicates(phaseGroups1)).to.be.false;
-        expect(hasDuplicates(phaseGroups2)).to.be.false;
-        expect(hasDuplicates(phaseGroups3)).to.be.false;
+	it('should get the event id', function(done){
+		expect(phase1.getEventId()).to.be.equal(25545);
+		expect(phase2.getEventId()).to.be.equal(11787);
+		expect(phase3.getEventId()).to.be.equal(23596);
+		done();
+	});
 
-        phaseGroups1.forEach(set => {
-            expect(set).to.be.an.instanceof(PhaseGroup);
-        });
-        phaseGroups2.forEach(set => {
-            expect(set).to.be.an.instanceof(PhaseGroup);
-        });
-        phaseGroups3.forEach(set => {
-            expect(set).to.be.an.instanceof(PhaseGroup);
-        });
+	it('should correctly get all phase groups', async function(){
+		this.timeout(30000);
 
-        return true;
-    });
+		let phaseGroups1 = await phase1.getPhaseGroups();
+		let phaseGroups2 = await phase2.getPhaseGroups();
+		let phaseGroups3 = await phase3.getPhaseGroups();
+
+		expect(phaseGroups1.length).to.be.equal(16);
+		expect(phaseGroups2.length).to.be.equal(32);
+		expect(phaseGroups3.length).to.be.equal(16);
+
+		var hasDuplicates = function(a) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(phaseGroups1)).to.be.false;
+		expect(hasDuplicates(phaseGroups2)).to.be.false;
+		expect(hasDuplicates(phaseGroups3)).to.be.false;
+
+		phaseGroups1.forEach(set => {
+			expect(set).to.be.an.instanceof(PhaseGroup);
+		});
+		phaseGroups2.forEach(set => {
+			expect(set).to.be.an.instanceof(PhaseGroup);
+		});
+		phaseGroups3.forEach(set => {
+			expect(set).to.be.an.instanceof(PhaseGroup);
+		});
+
+		return true;
+	});
 });

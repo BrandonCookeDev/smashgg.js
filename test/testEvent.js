@@ -39,20 +39,20 @@ let expected = _.extend(
 
 );
 
-function loadEvent(eventName, tournamentName){
+function loadEvent(eventName, tournamentName, options){
     return new Promise(function(resolve, reject){
-        let event = new Event(eventName, tournamentName);
+        let event = new Event(eventName, tournamentName, options);
         event.on('ready', function(){
             resolve(event);
         })
     })
 }
 
-function loadEventViaId(id){
+function loadEventViaId(id, options){
     return new Promise(function(resolve, reject){
         if(isNaN(id))
             return reject('ID must be an integer');
-        let event = new Event(id);
+        let event = new Event(id, null, options);
         event.on('ready', function(){
             resolve(event);
         })
@@ -71,9 +71,9 @@ describe('Smash GG Event', function(){
     it('should correctly load the data', async function(){
         this.timeout(15000);
 
-        event1 = await loadEvent(EVENT_NAME1, TOURNAMENT_NAME1);
-        event2 = await loadEvent(EVENT_NAME1, TOURNAMENT_NAME2);
-        event3 = await loadEventViaId(EVENT_ID_1);
+        event1 = await loadEvent(EVENT_NAME1, TOURNAMENT_NAME1, { rawEncoding: 'utf8'});
+        event2 = await loadEvent(EVENT_NAME1, TOURNAMENT_NAME2,);
+        event3 = await loadEventViaId(EVENT_ID_1, {rawEncoding: 'base64'});
 
         return true;
     });
@@ -81,9 +81,9 @@ describe('Smash GG Event', function(){
     it('should correctly implement convenience methods', async function(){
         this.timeout(15000);
 
-        let cEvent1 = await Event.getEvent(EVENT_NAME1, TOURNAMENT_NAME1);
+        let cEvent1 = await Event.getEvent(EVENT_NAME1, TOURNAMENT_NAME1, { rawEncoding: 'utf8'});
         let cEvent2 = await Event.getEvent(EVENT_NAME1, TOURNAMENT_NAME2);
-        let cEvent3 = await Event.getEventById(EVENT_ID_1);
+        let cEvent3 = await Event.getEventById(EVENT_ID_1, {rawEncoding: 'base64'});
 
         expect(cEvent1.data).to.deep.equal(event1.data);
         expect(cEvent2.data).to.deep.equal(event2.data);

@@ -26,51 +26,46 @@ npm install --save smashgg.js
     -  [PhaseGroup](#phasegroup)
     -  [Player](#player)
     -  [Set](#set)
+- [Transitioning to V2](#transition)
 
 ## Example 
 ```javascript
 var smashgg = require('smashgg.js');
-var tournament = new smashgg.Tournament('ceo-2016');
+var tournament = await Tournament.getTournament('ceo-2016');
 
-tournament.on('ready', async function(){
-    var players = await tournament.getAllPlayers();
-    var sets = await tournament.getAllSets();
+var players = await tournament.getAllPlayers();
+var sets = await tournament.getAllSets();
 
-    console.log(players.length + ' players entered ' + tournament.getName() +  ' overall');
-    players.forEach(player => {
-        console.log(
-            'Tag: ' + player.getTag() + '\n',
-            'Name: ' + player.getName() + '\n',
-            'State: ' + player.getState() + '\n'
-        )
-    });
-
-    console.log(sets.length + ' sets were played at ' + tournament.getName());
-    sets.forEach(set => {
-            console.log(
-                '[%s: %s %s - %s %s]',
-            set.getRound(),
-            set.getWinner().getTag(), //Player object
-            set.getWinnerScore(),
-            set.getLoserScore(),
-            set.getLoser().getTag()
-        );
-        console.log(
-            '%s placed %s at the tournament \n%s placed %s at the tournament\n',
-            set.getWinner().getTag(),
-            set.getWinnersTournamentPlacement(),
-            set.getLoser().getTag(),
-            set.getLosersTournamentPlacement()
-        )
-    })
-
-    console.log('Done!');
-    return process.exit(0);
+console.log(players.length + ' players entered ' + tournament.getName() +  ' overall');
+players.forEach(player => {
+    console.log(
+        'Tag: ' + player.getTag() + '\n',
+        'Name: ' + player.getName() + '\n',
+        'State: ' + player.getState() + '\n'
+    )
 });
 
-tournament.on('error', function(err){
-    console.error('An error occurred: ' + err);
+console.log(sets.length + ' sets were played at ' + tournament.getName());
+sets.forEach(set => {
+        console.log(
+            '[%s: %s %s - %s %s]',
+        set.getRound(),
+        set.getWinner().getTag(), //Player object
+        set.getWinnerScore(),
+        set.getLoserScore(),
+        set.getLoser().getTag()
+    );
+    console.log(
+        '%s placed %s at the tournament \n%s placed %s at the tournament\n',
+        set.getWinner().getTag(),
+        set.getWinnersTournamentPlacement(),
+        set.getLoser().getTag(),
+        set.getLosersTournamentPlacement()
+    )
 })
+
+console.log('Done!');
+return process.exit(0);
 ```
 
 ##### Output
@@ -142,6 +137,13 @@ categorize different games played, game types within those games, and the matche
 make up those games.
 
 ```javascript
+/* NEW CONVENIENCE FUNCTIONS! */
+//Returns a tournament resolving promise
+Tournament.getTournament('to12')
+    .then(to12 => {
+        // do stuff with TO12
+    }))
+
 var to12 = new smashgg.Tournament('to12');
 to12.on('ready', function(){
     //tournament is populated with data
@@ -164,23 +166,30 @@ ceo2016.on('ready', function(){
 ```
 
 ### Constructor
-* **Tournament(tournamentName [,expands, isCached]);**
+* **Tournament(tournamentName [,options]);**
 
     * **tournamentName** [required] - name slug or short tournament name
         * a slug is a string that uniquely identifies a tournament on the platform
             * ex: ceo-2016
         * a shortened name is a set abbreviation for a slug
             * ex: to12
-    * **expands** - an object that defines which additional data is sent back. By default all values are marked true.
-        * event - boolean - condensed data for the events that comprise this tournament
-        * phase - boolean -condensed data for the phases that comprise the events
-        * groups - boolean -condensed data for the groups that comprise the phases
-        * stations - boolean -condensed data for the stations for each group
-    * **isCached** - boolean parameter for if the api should cache the resulting object
+    * **options** - object determining options of the Tournament object
+        * **rawEncoding** - string value for what encoding the raw Smashgg data should be in
+            * Legal values:
+                * 'json' - *default* the raw should be kept in JSON format
+                * 'utf8' - the raw should be a utf8 string
+                * 'base64' - the raw should be a base64 string
+        * **expands** - an object that defines which additional data is sent back. By default all values are marked true.
+            * event - boolean - condensed data for the events that comprise this tournament
+            * phase - boolean -condensed data for the phases that comprise the events
+            * groups - boolean -condensed data for the groups that comprise the phases
+            * stations - boolean -condensed data for the stations for each group
+        * **isCached** - boolean parameter for if the api should cache the resulting object
 
 ### Properties
 * **data** - a copy of the raw Tournament JSON that comprises this object
 * **name** - the tournament name from the constructor
+* **rawEncoding** - the encoding type the smashgg raw is in
 * **isCached** - True/False value of if the object should be cached
 * **expands** - Object that asks smash.gg for more info when api is called
 * **expandsString** - url encoded string version of the expands object
@@ -194,6 +203,12 @@ ceo2016.on('ready', function(){
     * returns an Error object to be used by the user
 
 ### Methods
+### Convenience
+* **static getTournament(tournamentId [,options])**
+    * Returns a Promise that resolves a `Tournament` object
+    * **tournamentId** - [*required*] tournament name/slug
+    * **options** - options for the Tournament object
+
 #### Promises
 * **getAllPlayers([fromCacheTF])**
     * Returns a Promise that resolves an array of all `Player` objects that partook in the Tournament
@@ -218,10 +233,16 @@ ceo2016.on('ready', function(){
 * **getTimezone()**
     * returns the string timezone the tournament occurred in
 * **getStartTime()**
+    * returns a JS Date object for the start time of the tournament
+* **getStartTimeString()**
     * returns a string 'MM-DD-YYYY HH:mm:ss tz' for the start time of the tournament
 * **getEndTime()**
+    * returns a JS Date object for the end time of the tournament
+* **getEndTimeString()**
     * returns a string 'MM-DD-YYYY HH:mm:ss tz' for the end time of the tournament
 * **getWhenRegistrationCloses()**
+    * returns a JS Date object for the time registration is set to close
+* **getWhenRegistrationClosesString()**
     * returns a string 'MM-DD-YYYY HH:mm:ss tz' for the time registration is set to close
 * **getCity()**
     * returns the city where the tournament occurred
@@ -246,6 +267,17 @@ For instance, Melee Singles is an Event while Melee Doubles is another Event. Ev
 are comprised of optional Phases and Phases Groups.
 
 ```javascript
+/** NEW CONVENIENCE METHODS **/
+Event.getEvent('to12', 'melee-singles')
+    .then(event1 => {
+        //do stuff with event
+    })
+Event.getEventById(14335, {rawEncoding: 'base64'})
+    .then(event => {
+        //do stuff with event
+    })
+
+/** OLD METHODS **/
 var event1 = new smashgg.Event('to12', 'melee-singles');
 event1.on('ready', function(){
     //do stuff with event1
@@ -255,10 +287,12 @@ var event2 = new smashgg.Event(
     'ceo-2106',
     'melee-singles',
     {
-        phase: true,
-        groups: false
-    },
-    false
+        rawEncoding: 'base64',
+        expands:{
+            phase: true,
+            groups: false
+        },
+        isCached: false
 );
 event2.on('ready', function(){
     //do stuff with event2
@@ -266,29 +300,36 @@ event2.on('ready', function(){
 
 //additional constructor for id-only pulling
 var eventId = 14335;
-var event3 = new smashgg.Event(null, null, null, null, eventId);
+var event3 = new smashgg.Event(eventId, {rawEncoding: 'utf8'});
 event3.on('ready', function(){
     //do stuff with event3
 })
 ```
 
 ### Constructor
-* **Event(tournamentName, eventName [, expands, isCached])**
-    * **tournamentName** [required] - tournament slug or shorthand name of the tournament
+* **Event(eventId [,tournamentId, options])**
+    * **eventId** [required] - event id number or slug
+        * id ex: 14335
+        * slug ex: melee-singles or bracket-pools
+    * **tournamentId** [required] - tournament slug or shorthand name of the tournament
         * slug: ceo-2016
         * shorthand: to12 (for tipped-off-12-presented-by-the-lab-gaming-center)
-    * **eventName** [required] - event slug
-        * ex: melee-singles or bracket-pools
-    * **expands** - an object that defines which additional data is sent back. By default all values are marked true.
-        * phase - boolean -condensed data for the phases that comprises the event
-        * groups - boolean -condensed data for the groups that comprise the phases
-    * **isCached** - boolean value for if the resulting object should be cached
-    * **id** - UID for the event in question
+    * **options** - object determining options of the Event object
+        * **rawEncoding** - string value for what encoding the raw Smashgg data should be in
+            * Legal values:
+                * 'json' - *default* the raw should be kept in JSON format
+                * 'utf8' - the raw should be a utf8 string
+                * 'base64' - the raw should be a base64 string
+        * **expands** - an object that defines which additional data is sent back. By default all values are marked true.
+            * phase - boolean -condensed data for the phases that comprises the event
+            * groups - boolean -condensed data for the groups that comprise the phases
+        * **isCached** - boolean value for if the resulting object should be cached
 
 ### Properties
 * **data** - a copy of the raw Event JSON that comprises this object
 * **tournamentName** - the tournament name from the constructor, to which this event belongs
 * **eventName** - the event name from the constructor
+* **rawEncoding** - the encoding type the smashgg raw is in
 * **isCached** - True/False value of if the object should be cached
 * **expands** - Object that asks smash.gg for more info when api is called
 * **expandsString** - url encoded string version of the expands object
@@ -303,6 +344,13 @@ event3.on('ready', function(){
     * returns an Error object to be used by the user
 
 ### Methods
+#### Convenience Methods
+* **static getEvent(eventId, tournamentId [, options])**
+    * Returns a Promise resolving an Event object
+    * **eventId** - [*required*] event name/slug
+    * **tournamentId** - [*required*] tournament slug/shorthand
+    * **options** - options for the Event [in constructor]
+
 #### Promises
 * **getEventPhases([fromCacheTF])**
     * Returns a Promise resolving an array of `Phase` objects for this Event
@@ -317,8 +365,12 @@ event3.on('ready', function(){
 * **getSlug()**
     * returns the slug for the event
 * **getStartTime()**
+    * returns a JS Date object for when the event is set to begin
+* **getStartTimeString()**
     * returns a date string (MM-DD-YYYY HH:mm:ss tz) for when the event is set to begin
 * **getEndTime()**
+    * returns a JS Date object for when the event is set to end
+* **getEndTimeString()**
     * returns a date string (MM-DD-YYYY HH:mm:ss tz) for when the event is set to end
 
 ## Phase
@@ -326,6 +378,21 @@ A phase in smash.gg is a subset of matches and brackets inside an Event. For exa
 a wave in pools is a Phase. Everything in that Phase is a Group (or Phase Group).
 
 ```javascript
+/** NEW CONVENIENCE METHODS **/
+Phase.getPhase(111483)
+    .then(phase => {
+        //do stuff with phase
+    })
+Phase.getPhase(45262, {
+    rawEncoding: 'base64',
+    expands: {
+        groups: false
+    },
+    isCached: false
+}).then(phase =>{
+    //do stuff with phase
+})
+
 var phase1 = new smashgg.Phase(111483);
 phase1.on('ready', function(){
     //do stuff with phase1
@@ -334,9 +401,12 @@ phase1.on('ready', function(){
 var phase2 = new smashgg.Phase(
     45262,
     {
-        groups: false
-    },
-    false
+        rawEncoding: 'base64',
+        expands: {
+            groups: false
+        },
+        isCached: false
+    }
 )
 phase2.on('ready', function(){
     //do stuff with phase2
@@ -344,15 +414,22 @@ phase2.on('ready', function(){
 ```
 
 ### Constructor
-* **Phase(id [,expands, isCached])**
+* **Phase(id [, options])**
     * **id** [required] - unique identifier for the Phase
-    * **expands** - an object that defines which additional data is sent back. By default all values are marked true.
-        * groups - boolean -condensed data for the groups that comprise the phases
-    * **isCached** - boolean parameter for if the api should cache the resulting object
+    * **options** - object determining options of the Phase object
+        * **rawEncoding** - string value for what encoding the raw Smashgg data should be in
+            * Legal values:
+                * 'json' - *default* the raw should be kept in JSON format
+                * 'utf8' - the raw should be a utf8 string
+                * 'base64' - the raw should be a base64 string
+        * **expands** - an object that defines which additional data is sent back. By default all values are marked true.
+            * groups - boolean -condensed data for the groups that comprise the phases
+        * **isCached** - boolean parameter for if the api should cache the resulting object
 
 ### Properties
 * **data** - a copy of the raw Phase JSON that comprises this object
 * **id** - the id from the constructor, a unique identifier for the phase
+* **rawEncoding** - the encoding type the smashgg raw is in
 * **isCached** - True/False value of if the object should be cached
 * **expands** - Object that asks smash.gg for more info when api is called
 * **expandsString** - url encoded string version of the expands object
@@ -366,6 +443,12 @@ phase2.on('ready', function(){
     * returns an Error object to be used by the user
 
 ### Methods
+#### Convenience Methods
+* **static getPhase(id [, options])**
+    * Returns a Promise resolving a Phase object
+    * **id** - [*required*] Id of the Phase
+    * **options** - options for the Phase object
+
 #### Promises
 * **getPhaseGroups([fromCacheTF])**
     * Returns a Promise resolving an array of `PhaseGroup` objects belonging to this Phase
@@ -381,6 +464,24 @@ phase2.on('ready', function(){
 A Phase Group is the lowest unit on smash.gg. It is a bracket of some sort that belongs to a Phase.
 
 ```javascript
+/** NEW CONVENIENCE METHODS **/
+PhaseGroup.getPhaseGroup(44445)
+    .then(phaseGroup => {
+        //do stuff with phaseGroup
+    })
+PhaseGroup.getPhaseGroup(301994, {
+    rawEncoding: 'base64',  
+    expands: {
+        sets: true,
+        entrants: true,
+        standings: true,
+        seeds: false
+    },
+    isCached: false
+}).then(phaseGroup => {
+    //do stuff with phaseGroup
+})
+
 var phaseGroup1 = new smashgg.PhaseGroup(44445);
 phaseGroup1.on('ready', function(){
     //do stuff with phaseGroup1
@@ -389,12 +490,15 @@ phaseGroup1.on('ready', function(){
 var phaseGroup2 = new smashgg.PhaseGroup(
     301994,
     {
-        sets: true,
-        entrants: true,
-        standings: true,
-        seeds: false
-    },
-    false
+        rawEncoding: 'base64',
+        expands: {
+            sets: true,
+            entrants: true,
+            standings: true,
+            seeds: false
+        },
+        isCached: false
+    }
 );
 phaseGroup2.on('ready', function(){
     //do stuff with phaseGroup2
@@ -402,18 +506,25 @@ phaseGroup2.on('ready', function(){
 ```
 
 ### Constructor
-* **PhaseGroup(id [, expands, isCached])**
+* **PhaseGroup(id, options)**
     * **id** [required] - unique identifier for this Phase Group
-    * **expands** - an object that defines which additional data is sent back. By default all values are marked true.
-        * sets - boolean - data for the sets that comprises the phase group
-        * entrants - boolean - data for the entrants that comprise the phase group
-        * standings - boolean - data for the standings of the entrants for the phase group
-        * seeds - boolean - data for the seeding of entrants for the for the phase group
-    * **isCached** - boolean value for if the resulting object should be cached
+    * **options** - object determining options of the Tournament object
+        * **rawEncoding** - string value for what encoding the raw Smashgg data should be in
+            * Legal values:
+                * 'json' - *default* the raw should be kept in JSON format
+                * 'utf8' - the raw should be a utf8 string
+                * 'base64' - the raw should be a base64 string
+        * **expands** - an object that defines which additional data is sent back. By default all values are marked true.
+            * sets - boolean - data for the sets that comprises the phase group
+            * entrants - boolean - data for the entrants that comprise the phase group
+            * standings - boolean - data for the standings of the entrants for the phase group
+            * seeds - boolean - data for the seeding of entrants for the for the phase group
+        * **isCached** - boolean value for if the resulting object should be cached
 
 ### Properties
 * **data** - a copy of the raw PhaseGroup JSON that comprises this object
 * **id** - the id from the constructor, a unique identifier for the Phase Group
+* **rawEncoding** - the encoding type the smashgg raw is in
 * **isCached** - True/False value of if the object should be cached
 * **expands** - Object that asks smash.gg for more info when api is called
 * **expandsString** - url encoded string version of the expands object
@@ -427,6 +538,12 @@ phaseGroup2.on('ready', function(){
     * returns an Error object to be used by the user
 
 ### Methods
+#### Convenience Methods
+* **static getPhaseGroup(id [, options])**
+    * Returns a Promise resolving a PhaseGroup object
+    * **id** - [*required*] id of the Phase Group
+    * **options** - options for the PhaseGroup object
+
 #### Promises
 * **getPlayers([fromCacheTF])**
     * Returns a Promise that resolves an array of `Player` objects for the Phase Group.
@@ -545,3 +662,14 @@ tournament.on('ready', async function(){
     * return the Set winner's final tournament placing
 * **getLosersTournamentPlacement()**
     * return the Set loser's final tournament placing
+
+## Transition
+This section is for detailing the transition between major versions. 
+### V1 to V2
+In order to transition successfully from V1 to V2, please ensure the following 
+* Event constructors now take eventId parameter before tournamentId parameter.
+    * Additionally, you can give the constructor an Id number for the event, and null tournamentId.
+* `Tournament`, `Event`, `Phase`, and `PhaseGroup` constructors now take an `options` object that encapsulates the previous `isCached` and `expands` parameters. 
+    * Please see documentation for further implementation.
+* It is suggested you move to the Promise returning convenience methods, as the previous `ready` event will be deprecated from this point on.
+    * Please see documentation for the convenience methods. They take the same parameters as the constructor.

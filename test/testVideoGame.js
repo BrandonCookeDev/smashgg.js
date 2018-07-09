@@ -8,8 +8,28 @@ let VideoGame = require('../lib/VideoGame');
 let Cache = require('../lib/util/Cache');
 
 let expected = {
-	Melee: {id:1,name:'Super Smash Bros. Melee',abbrev:'Melee',displayName:'Melee',minPerEntry:1,maxPerEntry:2,approved:true,slug:'melee',isCardGame:null},
-	PM: {id:2,name:'Project M',abbrev:'pm',displayName:'PM',minPerEntry:null,maxPerEntry:null,approved:true,slug:'pm',isCardGame:null}
+	Melee: {
+		id:1,
+		name:'Super Smash Bros. Melee',
+		abbrev:'Melee',
+		displayName:'Melee',
+		minPerEntry:1,
+		maxPerEntry:2,
+		approved:true,
+		slug:'melee',
+		isCardGame:null
+	},
+	PM: {
+		id:2,
+		name:'Project M',
+		abbrev:'pm',
+		displayName:'PM',
+		minPerEntry:null,
+		maxPerEntry:null,
+		approved:true,
+		slug:'pm',
+		isCardGame:null
+	}
 }
 
 describe('SmashGG VideoGame', function(){
@@ -37,11 +57,15 @@ describe('SmashGG VideoGame', function(){
 	})
 
 	it('should get correct video game by name', async function(){
-		let vg1 = await VideoGame.getByName('Super Smash Bros. Melee');
-		let vg2 = await VideoGame.getByName('pm');
+		let melee1 = await VideoGame.getByName('Super Smash Bros. Melee', {isCached:false});
+		let melee2 = await VideoGame.getByName('melee', {isCached:false});
+		let pm1 = await VideoGame.getByName('pm');
+		let pm2 = await VideoGame.getByName('Project M')
 
-		expect(vg1).to.deep.equal(expected.Melee);
-		expect(vg2).to.deep.equal(expected.PM);
+		expect(melee1).to.deep.equal(expected.Melee);
+		expect(melee2).to.deep.equal(expected.Melee);
+		expect(pm1).to.deep.equal(expected.PM);
+		expect(pm2).to.deep.equal(expected.PM);
 
 		return true;
 	})

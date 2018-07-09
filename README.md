@@ -26,6 +26,7 @@ npm install --save smashgg.js
     -  [PhaseGroup](#phasegroup)
     -  [Player](#player)
     -  [Set](#set)
+    -  [VideoGame](#videogame)
 - [Transitioning to V2](#transition)
 
 ## Example 
@@ -662,6 +663,96 @@ tournament.on('ready', async function(){
     * return the Set winner's final tournament placing
 * **getLosersTournamentPlacement()**
     * return the Set loser's final tournament placing
+
+
+## VideoGame
+A VideoGame object encapsulates data about VideoGames respective to how they are known in Smash GG's system
+```javascript
+let melee = await VideoGame.getByName('melee');
+/* produces: 
+{   id:1,
+    name:'Super Smash Bros. Melee',
+    abbrev:'Melee',
+    displayName:'Melee',
+    minPerEntry:1,
+    maxPerEntry:2,
+    approved:true,
+    slug:'melee',
+    isCardGame:null
+}
+*/
+
+let pm = await VideoGame.getById(2);
+/* produces:
+{
+    id:2,
+    name:'Project M',
+    abbrev:'pm',
+    displayName:'PM',
+    minPerEntry:null,
+    maxPerEntry:null,
+    approved:true,
+    slug:'pm',
+    isCardGame:null
+}
+*/
+
+let allGames = await VideoGame.getAll()
+/* produces array of all VideoGame objects in SmashGG */
+```
+
+### Constructor
+* **VideoGame(id, name, abbrev, displayName, minPerEntry, maxPerEntry, approved, slug, isCardGame)**
+    * **id** - id number of the game
+    * **name** - full name of the game
+    * **abbrev** - abbreviated name of the game
+    * **displayName** - display name of the game on smashgg's site
+    * **minPerEntry** - minimum number of entrants that can sign up
+    * **maxPerEntry** - maximum number of entrants that can sign up
+        * eg: Melee is 2 because of doubles, two individuals can sign up at once
+    * **approved** - boolean if the game has been approved in smashgg's system
+    * **slug** - the game's url slug
+    * **isCardGame** - boolean for if the game is a card game
+
+### Methods
+#### Statics
+* **static async getAll([options])**
+    * Returns an array of VideoGame objects representing every game in smashgg's system
+    * **options** - optional options object
+        * **isCached** - boolean for if the value should be cached/pulled from cache
+
+* **static async getByName(name [,options])**
+    * Returns a VideoGame object representing the video game belonging to the given name
+        * This value will match the games `name`, `abbrev`, `displayName`, and `slug` properties
+    * **name** - [*required*] - name, abbrev, displayName, or slug of the desired game
+    * **options** - optional options object
+        * **isCached** - boolean for if the value should be cached/pulled from cache
+
+* **static async getById(id [,options])**
+    * Returns a VideoGame object representing the video game belonging to the given id
+    * **id** - [*required*] - id of the desired game
+    * **options** - optional options object
+        * **isCached** - boolean for if the value should be cached/pulled from cache
+
+#### Getters
+* **getId()**
+    * return the id of the Video Game
+* **getName()**
+    * return the full name of the Video Game
+* **getAbbreviation()**
+    * return the abbreviation of the Video Game
+* **getDisplayName()**
+    * return the smashgg display name of the Video Game
+* **getMinPerEntry()**
+    * return the minimum number of participants for an entry of the Video Game
+* **getMaxPerEntry()**
+    * return the maximum number of participants for an entry of the Video Game
+* **getApproved()**
+    * return the boolean value of if the Video Game has been approved for smashgg
+* **getSlug()**
+    * return the url slug of the Video Game
+* **getIsCardGame()**
+    * return the boolean value of if the Video Game is a card game
 
 ## Transition
 This section is for detailing the transition between major versions. 

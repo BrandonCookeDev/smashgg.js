@@ -1,5 +1,10 @@
 /** Patch Notes **/
 
+/** 2.1.2 **/
+* Added methods that get sets and players for a given phase
+* Added methods that get sets and players for a given event
+* Fixed unit test logic that was still caching old results
+
 /** 2.1.1 **/
 * Whoops... Forgot to expose VideoGame to index.js
 

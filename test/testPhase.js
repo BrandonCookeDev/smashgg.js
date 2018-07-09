@@ -6,6 +6,8 @@ let _ = require('lodash');
 let Phase = require('../lib/Phase');
 let PhaseGroup = require('../lib/PhaseGroup');
 let Cache = require('../lib/util/Cache').getInstance();
+let Set = require('../lib/Set');
+let Player = require('../lib/Player');
 
 let chai = require('chai');
 let cap = require('chai-as-promised');
@@ -35,7 +37,7 @@ function loadPhase(id, options){
 
 describe('Smash GG Phase', function(){
 
-	before(function(){
+	beforeEach(function(){
 		Cache.flush();
 	});
 
@@ -51,9 +53,9 @@ describe('Smash GG Phase', function(){
 	it('should implement the convenience methods correctly', async function(){
 		this.timeout(10000);
 
-		let cPhase1 = await Phase.getPhase(ID1);
+		let cPhase1 = await Phase.getPhase(ID1, {rawEncoding: 'utf8'});
 		let cPhase2 = await Phase.getPhase(ID2);
-		let cPhase3 = await Phase.getPhase(ID3);
+		let cPhase3 = await Phase.getPhase(ID3, {rawEncoding: 'base64'});
 
 		expect(cPhase1.data).to.deep.equal(phase1.data);
 		expect(cPhase2.data).to.deep.equal(phase2.data);
@@ -106,4 +108,42 @@ describe('Smash GG Phase', function(){
 
 		return true;
 	});
+
+	it('should correctly get all sets for a phase', async function(){
+		this.timeout(30000);
+
+		let sets1 = await phase1.getSets();
+		let sets2 = await phase2.getSets();
+
+		expect(sets1.length).to.be.equal(216);
+		expect(sets2.length).to.be.equal(1260);
+
+		sets1.forEach(set => {
+			expect(set).to.be.instanceof(Set);
+		})
+		sets2.forEach(set => {
+			expect(set).to.be.instanceof(Set);
+		})
+
+		return true;
+	})
+
+	it('should correctly get all players for a phase', async function(){
+		this.timeout(30000);
+		
+		let players1 = await phase1.getPlayers();
+		let players2 = await phase2.getPlayers();
+
+		expect(players1.length).to.be.equal(156);
+		expect(players2.length).to.be.equal(678);
+
+		players1.forEach(set => {
+			expect(set).to.be.instanceof(Player);
+		})
+		players2.forEach(set => {
+			expect(set).to.be.instanceof(Player);
+		})
+
+		return true;
+	})
 });

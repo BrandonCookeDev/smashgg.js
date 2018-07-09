@@ -4,7 +4,7 @@
     "name": "Brandon L Cooke",
     "url": "http://linkedin.com/in/BrandonCookeDev"
   },
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Node.JS wrapper for the Smash.gg public API Edit",
   "main": "index.js",
   "engines": {

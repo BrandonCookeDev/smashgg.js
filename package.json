@@ -1,14 +1,21 @@
 {
   "name": "smashgg.js",
-  "version": "2.0.0",
+  "author": {
+    "name": "Brandon L Cooke",
+    "url": "http://linkedin.com/in/BrandonCookeDev"
+  },
+  "version": "2.0.1",
   "description": "Node.JS wrapper for the Smash.gg public API Edit",
   "main": "index.js",
+  "engines": {
+    "node": ">=7.0.0"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/BrandonCookeDev/smashgg.js"
   },
   "scripts": {
-    "test": "mocha ./test",
+    "test": "./node_modules/.bin/mocha ./test",
     "lint": "./node_modules/.bin/eslint ."
   },
   "keywords": [
@@ -29,12 +36,9 @@
     "teken",
     "wrapper"
   ],
-  "author": "Brandon L Cooke",
   "license": "ISC",
   "dependencies": {
     "bluebird": "^3.5.1",
-    "co": "^4.6.0",
-    "eslint": "^5.0.1",
     "lodash": "^4.17.10",
     "moment": "^2.22.2",
     "moment-timezone": "^0.5.21",
@@ -47,6 +51,7 @@
   "devDependencies": {
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
+    "eslint": "^5.0.1",
     "mocha": "^5.2.0"
   }
 }

@@ -210,19 +210,22 @@ ceo2016.on('ready', function(){
     * **tournamentId** - [*required*] tournament name/slug
     * **options** - options for the Tournament object
 
-#### Promises
-* **getAllPlayers([fromCacheTF])**
+#### Bulk Pull Promises
+* **getAllPlayers([options])**
     * Returns a Promise that resolves an array of all `Player` objects that partook in the Tournament
-    * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
-
-* **getAllSets([fromCacheTF])**
+    * **options** - options for the bulk pull proceedure
+        * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
+        * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
+* **getAllSets([options])**
     * Returns a Promise that resolves an array of all `Set` objects that took place in the Tournament
-    * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
-
-
-* **getAllEvents([fromCacheTF])**
+    * **options** - options for the bulk pull proceedure
+        * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
+        * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
+* **getAllEvents([options])**
     * Returns a Promise that resolves an array of all `Events` objects that are part of the Tournament.
-    * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
+    * **options** - options for the bulk pull proceedure
+        * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
+        * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
 
 #### Getters
 * **getId()**
@@ -352,19 +355,27 @@ event3.on('ready', function(){
     * **tournamentId** - [*required*] tournament slug/shorthand
     * **options** - options for the Event [in constructor]
 
-#### Promises
-* **getEventPhases([fromCacheTF])**
+#### Bulk Pull Promises
+* **getEventPhases([options])**
     * Returns a Promise resolving an array of `Phase` objects for this Event
-    * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
-* **getEventPhaseGroups([fromCacheTF])**
+    * **options** - options for the bulk pull proceedure
+        * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
+        * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
+* **getEventPhaseGroups([options])**
     * Returns a Promise resolving an array of `PhaseGroup` objects for this Event
-    * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
-* **getSets([fromCacheTF])**
+    * **options** - options for the bulk pull proceedure
+        * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
+        * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
+* **getSets([options])**
     * Returns a Promise resolving an array of `Set` objects belonging to this Event
-    * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
-* **getPlayers([fromCacheTF])**
+    * **options** - options for the bulk pull proceedure
+        * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
+        * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
+* **getPlayers([options])**
     * Returns a Promise resolving an array of `Player` objects belonging to this Event
-    * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
+    * **options** - options for the bulk pull proceedure
+        * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
+        * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
 
 #### Getters
 * **getName()**
@@ -456,16 +467,23 @@ phase2.on('ready', function(){
     * **id** - [*required*] Id of the Phase
     * **options** - options for the Phase object
 
-#### Promises
-* **getPhaseGroups([fromCacheTF])**
+#### Bulk Pull Promises
+* **getPhaseGroups([options])**
     * Returns a Promise resolving an array of `PhaseGroup` objects belonging to this Phase
-    * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
-* **getSets([fromCacheTF])**
+    * **options** - options for the bulk pull proceedure
+        * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
+        * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
+* **getSets([options])**
     * Returns a Promise resolving an array of `Set` objects belonging to this Phase
-    * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
-* **getPlayers([fromCacheTF])**
+    * **options** - options for the bulk pull proceedure
+        * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
+        * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
+* **getPlayers([options])**
     * Returns a Promise resolving an array of `Player` objects belonging to this Phase
-    * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
+    * **options** - options for the bulk pull proceedure
+        * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
+        * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
+
 
     
 
@@ -559,13 +577,15 @@ phaseGroup2.on('ready', function(){
     * **id** - [*required*] id of the Phase Group
     * **options** - options for the PhaseGroup object
 
-#### Promises
-* **getPlayers([fromCacheTF])**
+#### Bulk Pull Promises
+* **getPlayers([options])**
     * Returns a Promise that resolves an array of `Player` objects for the Phase Group.
-    * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
-* **getSets([fromCacheTF])**
+    * **options** - options for the bulk pull proceedure
+        * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
+* **getSets([options])**
     * Return a Promise that resolves an array of `Set` objects for the Phase Group.
-    * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
+    * **options** - options for the bulk pull proceedure
+        * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
 
 #### Getters
 * **getPhaseId()**

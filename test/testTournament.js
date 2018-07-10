@@ -34,6 +34,8 @@ let expected = _.extend(
 	require('./data/expectedTournaments')
 );
 
+let concurrency = 2;
+
 function loadTournament(name, options){
 	return new Promise(function(resolve, reject){
 		let t = new Tournament(name, options);
@@ -44,6 +46,8 @@ function loadTournament(name, options){
 }
 
 describe('Smash GG Tournament', function(){
+
+	before( () => console.log('concurrency set to %s', concurrency))
 
 	beforeEach(function(){
 		Cache.flush();
@@ -312,7 +316,7 @@ describe('Smash GG Tournament', function(){
 	it('should get all players from a tournament', async function(){
 		this.timeout(10000);
 
-		let players = await tournament1.getAllPlayers();
+		let players = await tournament1.getAllPlayers({concurrency: concurrency});
 		expect(players.length).to.be.equal(157);
 
 		var hasDuplicates = function(a) {
@@ -330,7 +334,7 @@ describe('Smash GG Tournament', function(){
 	it('should get all sets from a tournament', async function(){
 		this.timeout(10000);
 
-		let sets = await tournament1.getAllSets();
+		let sets = await tournament1.getAllSets({concurrency: concurrency});
 		expect(sets.length).to.be.equal(504);
 
 		var hasDuplicates = function(a) {
@@ -348,7 +352,7 @@ describe('Smash GG Tournament', function(){
 	it('should get all events from a tournament', async function(){
 		this.timeout(10000);
 
-		let events = await tournament1.getAllEvents();
+		let events = await tournament1.getAllEvents({concurrency: concurrency});
 		expect(events.length).to.be.equal(2);
 
 		var hasDuplicates = function(a) {

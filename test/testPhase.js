@@ -25,6 +25,8 @@ let ID2 = 45262;
 let ID3 = 100046;
 
 let phase1, phase2, phase3;
+let concurrency = 4;
+
 
 function loadPhase(id, options){
 	return new Promise(function(resolve, reject){
@@ -36,6 +38,8 @@ function loadPhase(id, options){
 }
 
 describe('Smash GG Phase', function(){
+
+	before( () => console.log('concurrency set to %s', concurrency) );
 
 	beforeEach(function(){
 		Cache.flush();
@@ -79,11 +83,11 @@ describe('Smash GG Phase', function(){
 	});
 
 	it('should correctly get all phase groups', async function(){
-		this.timeout(30000);
+		this.timeout(45000);
 
-		let phaseGroups1 = await phase1.getPhaseGroups();
-		let phaseGroups2 = await phase2.getPhaseGroups();
-		let phaseGroups3 = await phase3.getPhaseGroups();
+		let phaseGroups1 = await phase1.getPhaseGroups({concurrency: concurrency});
+		let phaseGroups2 = await phase2.getPhaseGroups({concurrency: concurrency});
+		let phaseGroups3 = await phase3.getPhaseGroups({concurrency: concurrency});
 
 		expect(phaseGroups1.length).to.be.equal(16);
 		expect(phaseGroups2.length).to.be.equal(32);
@@ -112,8 +116,8 @@ describe('Smash GG Phase', function(){
 	it('should correctly get all sets for a phase', async function(){
 		this.timeout(30000);
 
-		let sets1 = await phase1.getSets();
-		let sets2 = await phase2.getSets();
+		let sets1 = await phase1.getSets({concurrency: concurrency});
+		let sets2 = await phase2.getSets({concurrency: concurrency});
 
 		expect(sets1.length).to.be.equal(216);
 		expect(sets2.length).to.be.equal(1260);
@@ -131,8 +135,8 @@ describe('Smash GG Phase', function(){
 	it('should correctly get all players for a phase', async function(){
 		this.timeout(30000);
 		
-		let players1 = await phase1.getPlayers();
-		let players2 = await phase2.getPlayers();
+		let players1 = await phase1.getPlayers({concurrency: concurrency});
+		let players2 = await phase2.getPlayers({concurrency: concurrency});
 
 		expect(players1.length).to.be.equal(156);
 		expect(players2.length).to.be.equal(678);

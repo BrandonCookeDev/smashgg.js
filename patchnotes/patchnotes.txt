@@ -1,6 +1,6 @@
 /** Patch Notes **/
 
-/** 2.1.2 **/
+/** 2.1.2 :: 07-09-2018 **/
 * Added methods that get sets and players for a given phase
 * Added methods that get sets and players for a given event
 * Fixed unit test logic that was still caching old results

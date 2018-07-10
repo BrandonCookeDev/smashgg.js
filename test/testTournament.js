@@ -45,7 +45,7 @@ function loadTournament(name, options){
 
 describe('Smash GG Tournament', function(){
 
-	before(function(){
+	beforeEach(function(){
 		Cache.flush();
 	});
 
@@ -86,11 +86,13 @@ describe('Smash GG Tournament', function(){
 	it('should implement convenience methods correctly', async function(){
 		this.timeout(15000);
 
-		let cTournament1 = await Tournament.getTournament(TOURNAMENT_NAME1);
-		let cTournament2 = await Tournament.getTournament(TOURNAMENT_NAME2);
+		let cTournament1 = await Tournament.getTournament(TOURNAMENT_NAME1, {rawEncoding: 'utf8'});
+		let cTournament2 = await Tournament.getTournament(TOURNAMENT_NAME2, {rawEncoding: 'base64'});
+		let cTournament3 = await Tournament.getTournament(TOURNAMENT_NAME3);
 
 		expect(cTournament1.data).to.deep.equal(tournament1.data);
 		expect(cTournament2.data).to.deep.equal(tournament2.data);
+		expect(cTournament3.data).to.deep.equal(tournament3.data);
 
 		return true;
 	})

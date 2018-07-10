@@ -359,6 +359,12 @@ event3.on('ready', function(){
 * **getEventPhaseGroups([fromCacheTF])**
     * Returns a Promise resolving an array of `PhaseGroup` objects for this Event
     * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
+* **getSets([fromCacheTF])**
+    * Returns a Promise resolving an array of `Set` objects belonging to this Event
+    * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
+* **getPlayers([fromCacheTF])**
+    * Returns a Promise resolving an array of `Player` objects belonging to this Event
+    * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
 
 #### Getters
 * **getName()**
@@ -454,6 +460,14 @@ phase2.on('ready', function(){
 * **getPhaseGroups([fromCacheTF])**
     * Returns a Promise resolving an array of `PhaseGroup` objects belonging to this Phase
     * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
+* **getSets([fromCacheTF])**
+    * Returns a Promise resolving an array of `Set` objects belonging to this Phase
+    * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
+* **getPlayers([fromCacheTF])**
+    * Returns a Promise resolving an array of `Player` objects belonging to this Phase
+    * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
+
+    
 
 #### Getters
 * **getName()**

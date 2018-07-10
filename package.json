@@ -16,6 +16,13 @@
   },
   "scripts": {
     "test": "./node_modules/.bin/mocha ./test",
+    "testTournament": "./node_modules/.bin/mocha ./test/testTournament",
+    "testEvent": "./node_modules/.bin/mocha ./test/testEvent",
+    "testPhase": "./node_modules/.bin/mocha ./test/testPhase",
+    "testPhaseGroup": "./node_modules/.bin/mocha ./test/testPhaseGroup",
+    "testPlayer": "./node_modules/.bin/mocha ./test/testPlayer",
+    "testSet": "./node_modules/.bin/mocha ./test/testSet",
+    "testVideoGame": "./node_modules/.bin/mocha ./test/testVideoGame",
     "lint": "./node_modules/.bin/eslint ."
   },
   "keywords": [

@@ -6,6 +6,8 @@ Promise = require('bluebird');
 let _ = require('lodash');
 let moment = require('moment');
 
+let Set = require('../lib/Set');
+let Player = require('../lib/Player');
 let Event = require('../lib/Event');
 let Phase = require('../lib/Phase');
 let PhaseGroup = require('../lib/PhaseGroup');
@@ -65,7 +67,7 @@ function loadEventViaId(id, options){
 
 describe('Smash GG Event', function(){
 
-	before(function(){
+	beforeEach(function(){
 		Cache.flush();
 	});
 
@@ -202,6 +204,44 @@ describe('Smash GG Event', function(){
 		groups2.forEach(group => {
 			expect(group).to.be.instanceof(PhaseGroup);
 		});
+
+		return true;
+	})
+
+	it('should correctly get all sets from an event', async function(){
+		this.timeout(30000);
+
+		let sets1 = await event1.getSets();
+		let sets2 = await event2.getSets();
+
+		expect(sets1.length).to.be.equal(429);
+		expect(sets2.length).to.be.equal(1354);
+
+		sets1.forEach(set => {
+			expect(set).to.be.instanceof(Set);
+		})
+		sets2.forEach(set => {
+			expect(set).to.be.instanceof(Set);
+		})
+
+		return true;
+	})
+
+	it('should correctly get all players from an event', async function(){
+		this.timeout(30000);
+		
+		let players1 = await event1.getPlayers();
+		let players2 = await event2.getPlayers();
+
+		expect(players1.length).to.be.equal(156);
+		expect(players2.length).to.be.equal(678);
+
+		players1.forEach(set => {
+			expect(set).to.be.instanceof(Player);
+		})
+		players2.forEach(set => {
+			expect(set).to.be.instanceof(Player);
+		})
 
 		return true;
 	})

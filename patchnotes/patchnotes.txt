@@ -4,6 +4,7 @@
 * Added methods that get sets and players for a given phase
 * Added methods that get sets and players for a given event
 * Fixed unit test logic that was still caching old results
+* Added individual tests to the package json scripts
 
 /** 2.1.1 **/
 * Whoops... Forgot to expose VideoGame to index.js

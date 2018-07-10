@@ -42,6 +42,8 @@ let expected = _.extend(
 
 );
 
+let concurrency = 2;
+
 function loadEvent(eventName, tournamentName, options){
 	return new Promise(function(resolve, reject){
 		let event = new Event(eventName, tournamentName, options);
@@ -67,15 +69,17 @@ function loadEventViaId(id, options){
 
 describe('Smash GG Event', function(){
 
+	before( () => console.log('concurrency set to %s', concurrency) );
+
 	beforeEach(function(){
 		Cache.flush();
 	});
 
 	it('should correctly load the data', async function(){
-		this.timeout(15000);
+		this.timeout(30000);
 
 		event1 = await loadEvent(EVENT_NAME1, TOURNAMENT_NAME1, { rawEncoding: 'utf8'});
-		event2 = await loadEvent(EVENT_NAME1, TOURNAMENT_NAME2,);
+		event2 = await loadEvent(EVENT_NAME1, TOURNAMENT_NAME2);
 		event3 = await loadEventViaId(EVENT_ID_1, {rawEncoding: 'base64'});
 
 		return true;
@@ -160,8 +164,8 @@ describe('Smash GG Event', function(){
 	it('should correctly get the phases', async function(){
 		this.timeout(15000);
 
-		let phases1 = await event1.getEventPhases();
-		let phases2 = await event2.getEventPhases();
+		let phases1 = await event1.getEventPhases({concurrency: concurrency});
+		let phases2 = await event2.getEventPhases({concurrency: concurrency});
 
 		expect(phases1.length).to.be.equal(4);
 		expect(phases2.length).to.be.equal(2);
@@ -186,8 +190,8 @@ describe('Smash GG Event', function(){
 	it('should correctly get the phase groups', async function(){
 		this.timeout(25000);
 
-		let groups1 = await event1.getEventPhaseGroups();
-		let groups2 = await event2.getEventPhaseGroups();
+		let groups1 = await event1.getEventPhaseGroups({concurrency: concurrency});
+		let groups2 = await event2.getEventPhaseGroups({concurrency: concurrency});
 
 		expect(groups1.length).to.be.equal(22);
 		expect(groups2.length).to.be.equal(33);
@@ -211,8 +215,8 @@ describe('Smash GG Event', function(){
 	it('should correctly get all sets from an event', async function(){
 		this.timeout(30000);
 
-		let sets1 = await event1.getSets();
-		let sets2 = await event2.getSets();
+		let sets1 = await event1.getSets({concurrency: concurrency});
+		let sets2 = await event2.getSets({concurrency: concurrency});
 
 		expect(sets1.length).to.be.equal(429);
 		expect(sets2.length).to.be.equal(1354);
@@ -230,8 +234,8 @@ describe('Smash GG Event', function(){
 	it('should correctly get all players from an event', async function(){
 		this.timeout(30000);
 		
-		let players1 = await event1.getPlayers();
-		let players2 = await event2.getPlayers();
+		let players1 = await event1.getPlayers({concurrency: concurrency});
+		let players2 = await event2.getPlayers({concurrency: concurrency});
 
 		expect(players1.length).to.be.equal(156);
 		expect(players2.length).to.be.equal(678);

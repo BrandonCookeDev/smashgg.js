@@ -26,6 +26,7 @@ npm install --save smashgg.js
     -  [PhaseGroup](#phasegroup)
     -  [Player](#player)
     -  [Set](#set)
+    -  [Character](#character)
     -  [VideoGame](#videogame)
 - [Transitioning to V2](#transition)
 
@@ -697,6 +698,79 @@ tournament.on('ready', async function(){
     * return the Set winner's final tournament placing
 * **getLosersTournamentPlacement()**
     * return the Set loser's final tournament placing
+
+
+## Character
+A Character object encapsulates data about a fighting game character in the smashgg system
+```javascript
+let meleeCharacters = await Character.getByGameName('melee');
+let pmCharacters = await Character.getByGameId(2);
+
+let allBowsers = await Character.getByName('bowser');
+allBowsers.forEach(bowser => {
+    console.log(bowser);
+});
+
+let allCharacters = await Character.getAll({isCached: false});
+allCharacters.forEach(character => {
+    console.log(character)
+})
+
+let meleeBowser = await Character.getByNameAndGame('bowser', 'melee');
+let wolfPM = await Character.getByNameAndGameId('wolf', 2);
+```
+
+### Constructor
+* **Character(id, name, isCommon, videogameId)**
+    * **id** - ID number of the character in the smashgg system
+    * **name** - Name of the character
+    * **isCommon** - T/F value for if the character is a common one
+    * **videogameId** - ID of the SmashGG VideoGame this character belongs to
+
+### Methods
+#### Promises
+* **static async getAll([options])**
+    * Returns a Promise resolving an array of `Character` objects representing all characters in SmashGG
+    * **options** - object containing options for the function
+        * **isCached** - boolean value for if the results should be fetched/put into cache. Default is true
+* **static async getById(id [, options])**
+    * Returns a Promise resolving a `Character` object representing the character in SmashGG with the given id
+    * **id** - [*required*] ID number of the character in SmashGG's system
+    * **options** - object containing options for the function
+        * **isCached** - boolean value for if the results should be fetched/put into cache. Default is true
+* **static async getByName(name [, options])**
+    * Returns a Promise resolving an Array of `Character` objects representing the character in SmashGG that match the given name
+    * **name** - [*required*] Name of the desired character in SmashGG's system
+    * **options** - object containing options for the function
+        * **isCached** - boolean value for if the results should be fetched/put into cache. Default is true
+* **static async getByGameId(id [, options])**
+    * Returns a Promise resolving an Array of `Character` objects representing all the characters from the given Smashgg videogame Id
+    * **id** - [*required*] Id of the SmashGG VideoGame which to fetch all characters from
+    * **options** - object containing options for the function
+        * **isCached** - boolean value for if the results should be fetched/put into cache. Default is true
+* **static async getByGameName(name [, options])**
+    * Returns a Promise resolving an Array of `Character` objects representing all the characters from the given Smashgg videogame name/slug/displayname
+    * **name** - [*required*] Display Name/short name/nickname of the game in SmashGG's system
+    * **options** - object containing options for the function
+        * **isCached** - boolean value for if the results should be fetched/put into cache. Default is true
+* **static async getByNameAndGameId(name, videogameId [, options])**
+    * Returns a Promise resolving a `Character` object from the SmashGG Character name and the VideoGame ID
+    * **name** - [*required*] Name of the character in SmashGG's system
+    * **videogameId** - [*required*] ID number of the videogame in SmashGG's system
+    * **options** - object containing options for the function
+        * **isCached** - boolean value for if the results should be fetched/put into cache. Default is true
+* **static async getByNameAndGame(name, gameName [, options])**
+    * Returns a Promise resolving a `Character` object from the SmashGG Character name and the Videogame name
+    * **name** - [*required*] Name of the character in SmashGG"s system
+    * **gameName** - [*required*] Display name/name/slug of the SmashGG video game
+    * **options** - object containing options for the function
+        * **isCached** - boolean value for if the results should be fetched/put into cache. Default is true
+
+#### Getters
+* **getId()** - returns the SmashGG Character ID 
+* **getName()** - returns the Name of the character
+* **getIsCommon()** - returns the T/F isCommon value of the character
+* **getVideoGameId()** - return the SmashGG VideoGame ID that the character belongs to
 
 
 ## VideoGame

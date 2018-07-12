@@ -4,7 +4,7 @@
     "name": "Brandon L Cooke",
     "url": "http://linkedin.com/in/BrandonCookeDev"
   },
-  "version": "2.1.3",
+  "version": "2.2.0",
   "description": "Node.JS wrapper for the Smash.gg public API Edit",
   "main": "index.js",
   "engines": {
@@ -23,6 +23,7 @@
     "testPlayer": "./node_modules/.bin/mocha ./test/testPlayer",
     "testSet": "./node_modules/.bin/mocha ./test/testSet",
     "testVideoGame": "./node_modules/.bin/mocha ./test/testVideoGame",
+    "testCharacter": "./node_modules/.bin/mocha ./test/testCharacter",
     "lint": "./node_modules/.bin/eslint ."
   },
   "keywords": [

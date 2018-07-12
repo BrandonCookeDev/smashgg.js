@@ -5,3 +5,4 @@ exports.Player	  	= require('./lib/Player');
 exports.Tournament  = require('./lib/Tournament');
 exports.PhaseGroup  = require('./lib/PhaseGroup');
 exports.VideoGame	= require('./lib/VideoGame');
+exports.Character	= require('./lib/Character');

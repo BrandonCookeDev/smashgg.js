@@ -26,6 +26,7 @@ npm install --save smashgg.js
     -  [PhaseGroup](#phasegroup)
     -  [Player](#player)
     -  [Set](#set)
+    -  [Character](#character)
     -  [VideoGame](#videogame)
 - [Transitioning to V2](#transition)
 
@@ -697,6 +698,24 @@ tournament.on('ready', async function(){
     * return the Set winner's final tournament placing
 * **getLosersTournamentPlacement()**
     * return the Set loser's final tournament placing
+
+
+## Character
+A Character object encapsulates data about a fighting game character in the smashgg system
+```javascript
+let meleeCharacters = await Character.getCharactersByGameName('melee');
+let pmCharacters = await Character.getCharactersByGameId(2);
+
+let allBowsers = await Character.getCharactersByName('bowser');
+allBowsers.forEach(bowser => {
+    console.log(bowser);
+});
+
+let allCharacters = await Character.getAll({isCached: false});
+allCharacters.forEach(character => {
+    console.log(character)
+})
+```
 
 
 ## VideoGame

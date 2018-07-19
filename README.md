@@ -33,6 +33,7 @@ npm install --save smashgg.js
 ## Example 
 ```javascript
 var smashgg = require('smashgg.js');
+var { Tournament } = smashgg;
 var tournament = await Tournament.getTournament('ceo-2016');
 
 var players = await tournament.getAllPlayers();

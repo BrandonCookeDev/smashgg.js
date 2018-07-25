@@ -1,5 +1,8 @@
 /** Patch Notes **/
 
+/** 2.3.2 :: 07-25-2018 **/
+* Updated README for options in getIncompleteSets and getCompleteSets
+
 /** 2.3.1 :: 07-25-2018 **/
 * Added getIncompleteSets and getCompleteSets to Tournament, Event, and Phase objects
 * Bug fix: data loading cache keys now account for raw encoding type so that no issues arise where

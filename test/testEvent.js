@@ -218,8 +218,8 @@ describe('Smash GG Event', function(){
 		let sets1 = await event1.getSets({concurrency: concurrency});
 		let sets2 = await event2.getSets({concurrency: concurrency});
 
-		expect(sets1.length).to.be.equal(429);
-		expect(sets2.length).to.be.equal(1354);
+		expect(sets1.length).to.be.equal(469);
+		expect(sets2.length).to.be.equal(1386);
 
 		sets1.forEach(set => {
 			expect(set).to.be.instanceof(Set);

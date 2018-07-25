@@ -119,8 +119,8 @@ describe('Smash GG Phase', function(){
 		let sets1 = await phase1.getSets({concurrency: concurrency});
 		let sets2 = await phase2.getSets({concurrency: concurrency});
 
-		expect(sets1.length).to.be.equal(216);
-		expect(sets2.length).to.be.equal(1260);
+		expect(sets1.length).to.be.equal(248);
+		expect(sets2.length).to.be.equal(1292);
 
 		sets1.forEach(set => {
 			expect(set).to.be.instanceof(Set);

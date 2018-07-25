@@ -587,6 +587,11 @@ phaseGroup2.on('ready', function(){
     * Return a Promise that resolves an array of `Set` objects for the Phase Group.
     * **options** - options for the bulk pull proceedure
         * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
+* **getCompleteSets()**
+    * Returns a Promise that resolves an array of `Set` objects that are completed
+* **getIncompleteSets()**
+    * Returns a Promise that resolves an array of `Set` objects that are not completed yet
+
 
 #### Getters
 * **getPhaseId()**
@@ -649,10 +654,11 @@ A Set is a data object that holds information about a tournament set
 that took place at a tournament.
 
 ```javascript
-var Winner = new smashgg.Player(000000, 'BootyBlastWarrior', 'Andy', 'US', 'GA', null);
-var Loser = new smashgg.Player(000000, 'cookiE', 'Brandon Cooke', 'US', 'GA', 'Recursion');
+var Player1 = new smashgg.Player(000000, 'BootyBlastWarrior', 'Andy', 'US', 'GA', null);
+var Player2 = new smashgg.Player(000001, 'cookiE', 'Brandon Cooke', 'US', 'GA', 'Recursion');
 
-var set = new smashgg.Set(000001, 000002, 'Losers Semis', Winner, Loser);
+var set = new smashgg.Set(000001, 000002, 'Losers Semis', Player1, Player2, true, 3, 2, 000000, 000001);
+var set2 = new smashgg.Set(000002, 000003, 'Grand Finals', Player1, Player2, false)
 
 var tournament = new smashgg.Tournament('to12');
 tournament.on('ready', async function(){
@@ -662,12 +668,18 @@ tournament.on('ready', async function(){
 ```
 
 ### Constructor
-* **Set(id, eventId, round, WinnerPlayer, LoserPlayer [, data])**
+* **Set(id, eventId, round, Player1, Player2 [, isComplete, score1, score2, winnerId, loserId, data])**
     * **id** [required] - unique identifier of the Set object
     * **eventId** [required] - id of the event this Set belongs to
     * **round** [required] - round name of the Set
-    * **WinnerPlayer** [required] - Player object of the winner of the Set
-    * **LoserPlayer** [required] - Player object of the loser of the Set
+    * **Player1** [required] - Player object of the first player of the Set
+    * **Player2** [required] - Player object of the second player of the Set
+    * **isComplete** - Boolean for if the set is complete
+    * **score1** - Integer score for player1 of the set
+    * **score2** - Integer score for player2 of the set
+    * **winnerId** - ID of the Winning Player of the set
+    * **loserId** - ID of the Losing Player of the set
+    * **data** - Raw data of the Set back from Smash.gg
 
 ### Properties
 * no additional properties for Set
@@ -680,6 +692,10 @@ tournament.on('ready', async function(){
     * return the Winner Player object for the Set
 * **getLoser()**
     * return the Loser Player object for the Set
+* **getWinnerId()**
+    * return the Winner Player ID for the Set
+* **getLoserId()**
+    * return the Loser Player ID for the Set
 * **getGames()**
     * return the list of Games for the Set if available
 * **getBestOfCount()**

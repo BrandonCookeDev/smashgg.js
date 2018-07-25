@@ -61,8 +61,8 @@ describe('Test Caching', function(){
 
 		let key1 = 'tournament::function1::expand[]=event&expand[]=phase&expand[]=groups&expand[]=stations&';
 		let key2 = 'tournament::ceo2016::expand[]=event&expand[]=phase&expand[]=groups&expand[]=stations&';
-		let key1data = 'tournament::function1::expand[]=event&expand[]=phase&expand[]=groups&expand[]=stations&::data';
-		let key2data = 'tournament::ceo2016::expand[]=event&expand[]=phase&expand[]=groups&expand[]=stations&::data';
+		let key1data = 'tournament::function1::json::expand[]=event&expand[]=phase&expand[]=groups&expand[]=stations&::data';
+		let key2data = 'tournament::ceo2016::json::expand[]=event&expand[]=phase&expand[]=groups&expand[]=stations&::data';
 
 		expect(keys).to.include(key1);
 		expect(keys).to.include(key2);
@@ -178,9 +178,9 @@ describe('Test Caching', function(){
 		let e2 = await loadEvent(EVENT_NAME1, TOURNAMENT_NAME2);
 
 		let key1 = 'event::function1::melee-singles::expand[]=phase&expand[]=groups&';
-		let key1data = 'event::function1::melee-singles::expand[]=phase&expand[]=groups&::data';
+		let key1data = 'event::function1::melee-singles::json::expand[]=phase&expand[]=groups&::data';
 		let key2 = 'event::ceo2016::melee-singles::expand[]=phase&expand[]=groups&';
-		let key2data = 'event::ceo2016::melee-singles::expand[]=phase&expand[]=groups&::data';
+		let key2data = 'event::ceo2016::melee-singles::json::expand[]=phase&expand[]=groups&::data';
 
 		let keys = await Cache.keys();
 		expect(keys.length).to.be.equal(8, `Current cache keys: ${JSON.stringify(keys)}`);
@@ -269,8 +269,8 @@ describe('Test Caching', function(){
 
 		let key1 = 'phase::'+PHASEID1+'::expand[]=groups&';
 		let key2 = 'phase::'+PHASEID2+'::expand[]=groups&';
-		let key1data = 'phase::'+PHASEID1+'::expand[]=groups&::data';
-		let key2data = 'phase::'+PHASEID2+'::expand[]=groups&::data';
+		let key1data = 'phase::'+PHASEID1+'::json::expand[]=groups&::data';
+		let key2data = 'phase::'+PHASEID2+'::json::expand[]=groups&::data';
 
 		let keys = await Cache.keys();
 		expect(keys.length).to.be.equal(4);
@@ -326,8 +326,8 @@ describe('Test Caching', function(){
 
 		let key1 = 'phasegroup::' + GROUPID1 + '::expand[]=sets&expand[]=entrants&expand[]=standings&expand[]=seeds&';
 		let key2 = 'phasegroup::' + GROUPID2 + '::expand[]=sets&expand[]=entrants&expand[]=standings&expand[]=seeds&';
-		let key1data = 'phasegroup::' + GROUPID1 + '::expand[]=sets&expand[]=entrants&expand[]=standings&expand[]=seeds&::data';
-		let key2data = 'phasegroup::' + GROUPID2 + '::expand[]=sets&expand[]=entrants&expand[]=standings&expand[]=seeds&::data';
+		let key1data = 'phasegroup::' + GROUPID1 + '::json::expand[]=sets&expand[]=entrants&expand[]=standings&expand[]=seeds&::data';
+		let key2data = 'phasegroup::' + GROUPID2 + '::json::expand[]=sets&expand[]=entrants&expand[]=standings&expand[]=seeds&::data';
 
 		let keys = await Cache.keys();
 

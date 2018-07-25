@@ -367,4 +367,22 @@ describe('Smash GG Tournament', function(){
 		return true;
 	})
 
+	it('should resolve the correct amount of incomplete sets', async function(){
+		this.timeout(10000);
+
+		let t = await Tournament.getTournament('21xx-cameron-s-birthday-bash-1');
+		let sets = await t.getIncompleteSets();
+		expect(sets.length).to.be.equal(2);
+		return true;
+	})
+
+	it('should resolve the correct amount of complete sets', async function(){
+		this.timeout(10000);
+
+		let t = await Tournament.getTournament('21xx-cameron-s-birthday-bash-1');
+		let sets = await t.getCompleteSets();
+		expect(sets.length).to.be.equal(72);
+		return true;
+	})
+
 });

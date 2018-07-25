@@ -216,27 +216,27 @@ ceo2016.on('ready', function(){
 * **getAllPlayers([options])**
     * Returns a Promise that resolves an array of all `Player` objects that partook in the Tournament
     * **options** - options for the bulk pull proceedure
-        * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
+        * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
         * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
 * **getAllSets([options])**
     * Returns a Promise that resolves an array of all `Set` objects that took place in the Tournament
     * **options** - options for the bulk pull proceedure
-        * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
+        * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
         * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
 * **getAllEvents([options])**
     * Returns a Promise that resolves an array of all `Events` objects that are part of the Tournament.
     * **options** - options for the bulk pull proceedure
-        * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
+        * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
         * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
 * **getCompleteSets([options])**
     * Returns a Promise that resolves an array of `Set` objects that are completed
     * **options** - options for the bulk pull proceedure
-        * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
+        * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
         * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
-* **getIncompleteSets()**
+* **getIncompleteSets([options])**
     * Returns a Promise that resolves an array of `Set` objects that are not completed yet
     * **options** - options for the bulk pull proceedure
-        * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
+        * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
         * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
 
 #### Getters
@@ -371,32 +371,32 @@ event3.on('ready', function(){
 * **getEventPhases([options])**
     * Returns a Promise resolving an array of `Phase` objects for this Event
     * **options** - options for the bulk pull proceedure
-        * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
+        * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
         * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
 * **getEventPhaseGroups([options])**
     * Returns a Promise resolving an array of `PhaseGroup` objects for this Event
     * **options** - options for the bulk pull proceedure
-        * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
+        * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
         * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
 * **getSets([options])**
     * Returns a Promise resolving an array of `Set` objects belonging to this Event
     * **options** - options for the bulk pull proceedure
-        * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
+        * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
         * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
 * **getPlayers([options])**
     * Returns a Promise resolving an array of `Player` objects belonging to this Event
     * **options** - options for the bulk pull proceedure
-        * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
+        * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
         * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
-* **getCompleteSets()**
+* **getCompleteSets([options])**
     * Returns a Promise that resolves an array of `Set` objects that are completed
     * **options** - options for the bulk pull proceedure
-        * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
+        * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
         * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
-* **getIncompleteSets()**
+* **getIncompleteSets([options])**
     * Returns a Promise that resolves an array of `Set` objects that are not completed yet
     * **options** - options for the bulk pull proceedure
-        * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
+        * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
         * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
 
 #### Getters
@@ -493,27 +493,27 @@ phase2.on('ready', function(){
 * **getPhaseGroups([options])**
     * Returns a Promise resolving an array of `PhaseGroup` objects belonging to this Phase
     * **options** - options for the bulk pull proceedure
-        * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
+        * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
         * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
 * **getSets([options])**
     * Returns a Promise resolving an array of `Set` objects belonging to this Phase
     * **options** - options for the bulk pull proceedure
-        * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
+        * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
         * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
 * **getPlayers([options])**
     * Returns a Promise resolving an array of `Player` objects belonging to this Phase
     * **options** - options for the bulk pull proceedure
-        * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
+        * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
         * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
-* **getCompleteSets()**
+* **getCompleteSets([options])**
     * Returns a Promise that resolves an array of `Set` objects that are completed
     * **options** - options for the bulk pull proceedure
-        * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
+        * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
         * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
-* **getIncompleteSets()**
+* **getIncompleteSets([options])**
     * Returns a Promise that resolves an array of `Set` objects that are not completed yet
     * **options** - options for the bulk pull proceedure
-        * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
+        * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
         * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
 
     
@@ -612,15 +612,21 @@ phaseGroup2.on('ready', function(){
 * **getPlayers([options])**
     * Returns a Promise that resolves an array of `Player` objects for the Phase Group.
     * **options** - options for the bulk pull proceedure
-        * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
+        * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
 * **getSets([options])**
     * Return a Promise that resolves an array of `Set` objects for the Phase Group.
     * **options** - options for the bulk pull proceedure
-        * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
-* **getCompleteSets()**
+        * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
+* **getCompleteSets([options])**
     * Returns a Promise that resolves an array of `Set` objects that are completed
-* **getIncompleteSets()**
+    * **options** - options for the bulk pull proceedure
+        * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
+        * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
+* **getIncompleteSets([options])**
     * Returns a Promise that resolves an array of `Set` objects that are not completed yet
+    * **options** - options for the bulk pull proceedure
+        * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
+        * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
 
 
 #### Getters

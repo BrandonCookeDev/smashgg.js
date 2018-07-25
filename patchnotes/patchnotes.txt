@@ -1,5 +1,9 @@
 /** Patch Notes **/
 
+/** 2.3.3 :: 07-25-2018 **/
+* Updated getIncompleteSets and getCompleteSets all to use the included options.
+* Fixed bad options listed in the README
+
 /** 2.3.2 :: 07-25-2018 **/
 * Updated README for options in getIncompleteSets and getCompleteSets
 

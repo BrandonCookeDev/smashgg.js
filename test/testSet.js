@@ -54,9 +54,9 @@ describe('Smash GG Set', function(){
 			o3.LoserPlayer.country, o3.LoserPlayer.region, o3.LoserPlayer.sponsor,
 			o3.LoserPlayer.participantId, o3.LoserPlayer.data);
 
-		set1 = new Set(o1.id, o1.eventId, o1.round, pWinkledink, pAmarula, o1.data);
-		set2 = new Set(o2.id, o2.eventId, o2.round, pWizzrobe, pWinkledink, o2.data);
-		set3 = new Set(o3.id, o3.eventId, o3.round, pBootyBlast, pVasculinity, o3.data);
+		set1 = new Set(o1.id, o1.eventId, o1.round, pWinkledink, pAmarula, true, 3, 2, pWinkledink.id, pAmarula.id, o1.data);
+		set2 = new Set(o2.id, o2.eventId, o2.round, pWizzrobe, pWinkledink, true, 2, 1, pWizzrobe.id, pWinkledink.id, o2.data);
+		set3 = new Set(o3.id, o3.eventId, o3.round, pBootyBlast, pVasculinity, true, 3, 1, pBootyBlast.id, pVasculinity.id, o3.data);
 
 		done();
 	});
@@ -111,16 +111,16 @@ describe('Smash GG Set', function(){
 	});
 
 	it('should give the correct Winners Tournament Placement', function(done){
-		expect(set1.getWinnersTournamentPlacement()).to.be.equal(set1.WinnerPlayer.data.finalPlacement);
-		expect(set2.getWinnersTournamentPlacement()).to.be.equal(set2.WinnerPlayer.data.finalPlacement);
-		expect(set3.getWinnersTournamentPlacement()).to.be.equal(set3.WinnerPlayer.data.finalPlacement);
+		expect(set1.getWinnersTournamentPlacement()).to.be.equal(set1.getWinner().data.finalPlacement);
+		expect(set2.getWinnersTournamentPlacement()).to.be.equal(set2.getWinner().data.finalPlacement);
+		expect(set3.getWinnersTournamentPlacement()).to.be.equal(set3.getWinner().data.finalPlacement);
 		done();
 	});
 
 	it('should give the correct Losers Tournament Placement', function(done){
-		expect(set1.getLosersTournamentPlacement()).to.be.equal(set1.LoserPlayer.data.finalPlacement);
-		expect(set2.getLosersTournamentPlacement()).to.be.equal(set2.LoserPlayer.data.finalPlacement);
-		expect(set3.getLosersTournamentPlacement()).to.be.equal(set3.LoserPlayer.data.finalPlacement);
+		expect(set1.getLosersTournamentPlacement()).to.be.equal(set1.getLoser().data.finalPlacement);
+		expect(set2.getLosersTournamentPlacement()).to.be.equal(set2.getLoser().data.finalPlacement);
+		expect(set3.getLosersTournamentPlacement()).to.be.equal(set3.getLoser().data.finalPlacement);
 		done();
 	});
 

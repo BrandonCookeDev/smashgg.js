@@ -335,7 +335,7 @@ describe('Smash GG Tournament', function(){
 		this.timeout(10000);
 
 		let sets = await tournament1.getAllSets({concurrency: concurrency});
-		expect(sets.length).to.be.equal(504);
+		expect(sets.length).to.be.equal(552);
 
 		var hasDuplicates = function(a) {
 			return _.uniq(a).length !== a.length;

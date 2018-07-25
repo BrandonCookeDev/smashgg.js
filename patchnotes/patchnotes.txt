@@ -1,5 +1,13 @@
 /** Patch Notes **/
 
+/** 2.3.0 :: 07-25-2018 **/
+* Set object has been refactored. Now accepts two players instead of Winner Loser. 
+This allows for in-progress sets to be valid objects.
+
+/** 2.2.1 :: 07-24-2018 **/
+* Hotfix in Tournament.js no longer parses leading number tournament names as Id numbers
+	* previously tournaments like "21xx-cameron-s-birthday-bash-1" parsed "21" as the Tournament ID
+
 /** 2.2.0 :: 07-12-2018 **/
 * Added the Character class supporting the SmashGG Character API
 * Added unit tests for Character class

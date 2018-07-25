@@ -228,6 +228,10 @@ ceo2016.on('ready', function(){
     * **options** - options for the bulk pull proceedure
         * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
         * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
+* **getCompleteSets()**
+    * Returns a Promise that resolves an array of `Set` objects that are completed
+* **getIncompleteSets()**
+    * Returns a Promise that resolves an array of `Set` objects that are not completed yet
 
 #### Getters
 * **getId()**
@@ -378,6 +382,10 @@ event3.on('ready', function(){
     * **options** - options for the bulk pull proceedure
         * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
         * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
+* **getCompleteSets()**
+    * Returns a Promise that resolves an array of `Set` objects that are completed
+* **getIncompleteSets()**
+    * Returns a Promise that resolves an array of `Set` objects that are not completed yet
 
 #### Getters
 * **getName()**
@@ -485,7 +493,10 @@ phase2.on('ready', function(){
     * **options** - options for the bulk pull proceedure
         * **fromCacheTF** - boolean value for if the value should be retrieved from cache. Defaults to true
         * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
-
+* **getCompleteSets()**
+    * Returns a Promise that resolves an array of `Set` objects that are completed
+* **getIncompleteSets()**
+    * Returns a Promise that resolves an array of `Set` objects that are not completed yet
 
     
 

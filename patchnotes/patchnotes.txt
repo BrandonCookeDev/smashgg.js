@@ -1,5 +1,10 @@
 /** Patch Notes **/
 
+/** 2.3.1 :: 07-25-2018 **/
+* Added getIncompleteSets and getCompleteSets to Tournament, Event, and Phase objects
+* Bug fix: data loading cache keys now account for raw encoding type so that no issues arise where
+pulling a different encoding type crashes the pulling process
+
 /** 2.3.0 :: 07-25-2018 **/
 * Set object has been refactored. Now accepts two players instead of Winner Loser. 
 This allows for in-progress sets to be valid objects.

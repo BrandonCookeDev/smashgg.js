@@ -32,43 +32,46 @@ npm install --save smashgg.js
 
 ## Example 
 ```javascript
-var smashgg = require('smashgg.js');
-var { Tournament } = smashgg;
-var tournament = await Tournament.getTournament('ceo-2016');
+// Will not work on < NodeJS 7+
+(async function(){
+    var smashgg = require('smashgg.js');
+    var { Tournament } = smashgg;
+    var tournament = await Tournament.getTournament('ceo-2016');
 
-var players = await tournament.getAllPlayers();
-var sets = await tournament.getAllSets();
+    var players = await tournament.getAllPlayers();
+    var sets = await tournament.getAllSets();
 
-console.log(players.length + ' players entered ' + tournament.getName() +  ' overall');
-players.forEach(player => {
-    console.log(
-        'Tag: ' + player.getTag() + '\n',
-        'Name: ' + player.getName() + '\n',
-        'State: ' + player.getState() + '\n'
-    )
-});
-
-console.log(sets.length + ' sets were played at ' + tournament.getName());
-sets.forEach(set => {
+    console.log(players.length + ' players entered ' + tournament.getName() +  ' overall');
+    players.forEach(player => {
         console.log(
-            '[%s: %s %s - %s %s]',
-        set.getRound(),
-        set.getWinner().getTag(), //Player object
-        set.getWinnerScore(),
-        set.getLoserScore(),
-        set.getLoser().getTag()
-    );
-    console.log(
-        '%s placed %s at the tournament \n%s placed %s at the tournament\n',
-        set.getWinner().getTag(),
-        set.getWinnersTournamentPlacement(),
-        set.getLoser().getTag(),
-        set.getLosersTournamentPlacement()
-    )
-})
+            'Tag: ' + player.getTag() + '\n',
+            'Name: ' + player.getName() + '\n',
+            'State: ' + player.getState() + '\n'
+        )
+    });
 
-console.log('Done!');
-return process.exit(0);
+    console.log(sets.length + ' sets were played at ' + tournament.getName());
+    sets.forEach(set => {
+            console.log(
+                '[%s: %s %s - %s %s]',
+            set.getRound(),
+            set.getWinner().getTag(), //Player object
+            set.getWinnerScore(),
+            set.getLoserScore(),
+            set.getLoser().getTag()
+        );
+        console.log(
+            '%s placed %s at the tournament \n%s placed %s at the tournament\n',
+            set.getWinner().getTag(),
+            set.getWinnersTournamentPlacement(),
+            set.getLoser().getTag(),
+            set.getLosersTournamentPlacement()
+        )
+    })
+
+    console.log('Done!');
+    return process.exit(0);
+})()
 ```
 
 ##### Output

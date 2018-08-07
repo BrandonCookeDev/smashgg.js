@@ -15,7 +15,8 @@ tournament.on('ready', async function(){
 		console.log(
 			'Tag: ' + player.getTag() + '\n',
 			'Name: ' + player.getName() + '\n',
-			'State: ' + player.getState() + '\n'
+			'State: ' + player.getState() + '\n',
+			'ID: ' + player.getId()
 		);
 	});
 	

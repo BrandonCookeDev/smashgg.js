@@ -7,6 +7,7 @@ let _ = require('lodash');
 let PhaseGroup = require('../lib/PhaseGroup');
 let Cache = require('../lib/util/Cache').getInstance();
 
+let sinon = require('sinon');
 let chai = require('chai');
 let cap = require('chai-as-promised');
 chai.use(cap);
@@ -79,5 +80,20 @@ describe('Smash GG Phase Group', function(){
 		expect(sets.length).to.be.equal(27);
 		return true;
 	});
+
+	it('should get sets completed within x minutes ago', async function(){
+		this.timeout(5000);
+
+		let clock = sinon.useFakeTimers(new Date('Sat Nov 11 2017 11:43:47 GMT-0500 (EST)'));
+		let sets = await phaseGroup3.getSetsXMinutesBack(5);
+
+		expect(sets.length).to.be.equal();
+		sets.forEach(set => {
+			expect(set).to.be.instanceof(Set);
+		})
+
+		clock.restore();
+		return true;
+	})
 
 });

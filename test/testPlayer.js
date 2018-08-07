@@ -60,4 +60,11 @@ describe('Smash GG Player', function(){
 		done();
 	})
 
+	it('should get player by id correctly', async function(){
+		let player1 = await Player.getPlayer(61838);
+		let player2 = await Player.getPlayer(61839);
+
+		return true;
+	})
+
 });

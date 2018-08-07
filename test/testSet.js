@@ -60,6 +60,16 @@ describe('Smash GG Set', function(){
 
 		done();
 	});
+	
+	it('should get a set by id', async function(){
+		let set1 = await Set.getSet(15896650);
+		let set2 = await Set.getSet(15896651);
+
+		expect(set1).to.be.instanceof(Set);
+		expect(set2).to.be.instanceof(Set);
+
+		return true;
+	})
 
 	it('should give the correct Winner', function(done){
 		expect(set1.getWinner()).to.deep.equal(pWinkledink);

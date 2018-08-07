@@ -17,7 +17,7 @@ let Event   = require('../lib/Event');
 		console.log(`${players.length} participated in the event ${event.name}`);
 		console.log('All participants for this event: \n');
 		players.forEach(player => {
-			console.log(player.toString());
+			console.log(player);
 		});
 
 		process.exit(0);

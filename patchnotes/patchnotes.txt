@@ -1,5 +1,8 @@
 /** Patch Notes **/
 
+/** 2.3.5 :: 08-08-2018 **/
+* Critical bug fix. Event's conditional data loading was broken due to an incorrect calling of async/await
+
 /** 2.3.4 :: 08-07-2018 **/
 * Added methods to resolve Set and Player objects via an ID and static method
 * Added functions to get started and completed times for a set

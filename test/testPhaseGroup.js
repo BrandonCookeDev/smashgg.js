@@ -4,6 +4,7 @@
 Promise = require('bluebird');
 let _ = require('lodash');
 
+let Set = require('../lib/Set');
 let PhaseGroup = require('../lib/PhaseGroup');
 let Cache = require('../lib/util/Cache').getInstance();
 
@@ -84,10 +85,10 @@ describe('Smash GG Phase Group', function(){
 	it('should get sets completed within x minutes ago', async function(){
 		this.timeout(5000);
 
-		let clock = sinon.useFakeTimers(new Date('Sat Nov 11 2017 11:43:47 GMT-0500 (EST)'));
+		let clock = sinon.useFakeTimers(new Date('Sat Nov 11 2017 11:50:47 GMT-0500 (EST)'));
 		let sets = await phaseGroup3.getSetsXMinutesBack(5);
 
-		expect(sets.length).to.be.equal();
+		expect(sets.length).to.be.equal(4);
 		sets.forEach(set => {
 			expect(set).to.be.instanceof(Set);
 		})

@@ -13,6 +13,7 @@ let Phase = require('../lib/Phase');
 let PhaseGroup = require('../lib/PhaseGroup');
 let Cache = require('../lib/util/Cache').getInstance();
 
+let sinon = require('sinon');
 let chai = require('chai');
 let cap = require('chai-as-promised');
 chai.use(cap);
@@ -247,6 +248,27 @@ describe('Smash GG Event', function(){
 			expect(set).to.be.instanceof(Player);
 		})
 
+		return true;
+	})
+
+	it('should correctly get all sets x minutes back', async function(){
+		this.timeout(30000);
+
+		let minutesBack = 15;
+		let eventDate = new Date('Wed Dec 31 1969 19:00:00 GMT-0500 (EST)');
+		//moment(event1.getStartTime()).add(30, 'minutes').toDate();
+		sinon.useFakeTimers(eventDate);
+		let sets = await event1.getSetsXMinutesBack(minutesBack);
+		expect(sets.length).to.be.equal(3);
+		sets.forEach(set => {
+			expect(set).to.be.instanceof(Set);
+
+			let now = moment();
+			let then = moment(set.getCompletedAt());
+			let diff = moment.duration(now.diff(then)).minutes();
+			expect(diff <= minutesBack && diff >= 0 && set.getIsComplete()).to.be.true;
+		})
+		sinon.restore();
 		return true;
 	})
 });

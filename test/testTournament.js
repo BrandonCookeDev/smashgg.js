@@ -11,6 +11,7 @@ let Set = require('../lib/Set');
 let Event = require('../lib/Event');
 let Cache = require('../lib/util/Cache').getInstance();
 
+let sinon = require('sinon');
 let chai = require('chai');
 let cap = require('chai-as-promised');
 chai.use(cap);
@@ -382,6 +383,27 @@ describe('Smash GG Tournament', function(){
 		let t = await Tournament.getTournament('21xx-cameron-s-birthday-bash-1');
 		let sets = await t.getCompleteSets();
 		expect(sets.length).to.be.equal(72);
+		return true;
+	})
+
+	it('should resolve the correct number of sets x minutes ago', async function(){
+		this.timeout(10000);
+
+		let minutesBack = 15;
+		let t = await Tournament.getTournament('21xx-cameron-s-birthday-bash-1');
+		let tournamentDate = moment(t.getStartTime()).add(30, 'minutes').toDate();
+		let clock = sinon.useFakeTimers(tournamentDate);
+		let sets = await t.getSetsXMinutesBack(minutesBack);
+		expect(sets.length).to.be.equal(1);
+		sets.forEach(set => {
+			expect(set).to.be.instanceof(Set);
+			
+			let now = moment();
+			let then = moment(set.getCompletedAt());
+			let diff = moment.duration(now.diff(then)).minutes();
+			expect(diff <= minutesBack && diff >= 0 && set.getIsComplete()).to.be.true;
+		})
+		clock.restore();
 		return true;
 	})
 

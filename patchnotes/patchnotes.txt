@@ -1,5 +1,9 @@
 /** Patch Notes **/
 
+/** 2.3.4 :: 08-07-2018 **/
+* Added methods to resolve Set and Player objects via an ID and static method
+* Added functions to get started and completed times for a set
+
 /** 2.3.3 :: 07-25-2018 **/
 * Updated getIncompleteSets and getCompleteSets all to use the included options.
 * Fixed bad options listed in the README

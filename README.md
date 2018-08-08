@@ -664,6 +664,13 @@ tournament.on('ready', async function(){
 * no additional properties for Player
 
 ### Methods
+#### Convenience
+* **static async getPlayer(id [, options])**
+    * This method returns a Promise resolving a Player object for the given ID
+    * **id** [required] -  Global ID number in smashgg
+    * **options**
+        * **isCached** - Boolean for if the value should be pulled from cache or put in cache
+
 #### Statics
 * **resolve(data)**
     * **data** - the raw player data from smash.gg
@@ -724,6 +731,13 @@ tournament.on('ready', async function(){
 * no additional properties for Set
 
 ### Methods
+#### Convenience
+* **static async getSet(id [, options])**
+    * This method returns a Promise that resolves a Set object from the given ID
+    * **id** [required] - ID number of the set in smashgg's system
+    * **options** 
+        * **isCached** - Boolean value for if the set should be pulled from cache or put in
+
 #### Getters
 * **getRound()**
     * return the round name for the Set
@@ -753,7 +767,10 @@ tournament.on('ready', async function(){
     * return the Set winner's final tournament placing
 * **getLosersTournamentPlacement()**
     * return the Set loser's final tournament placing
-
+* **getStartedAt()**
+    * returns a Date object for the time the Set was begun
+* **getCompletedAt()**
+    * returns a Date object for the time the Set was completed
 
 ## Character
 A Character object encapsulates data about a fighting game character in the smashgg system

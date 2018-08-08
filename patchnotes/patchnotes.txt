@@ -1,5 +1,8 @@
 /** Patch Notes **/
 
+/** 2.3.6 :: 08-08-2018 **/
+* Fixed bug where data doesn't store for an event if not cached option selected
+
 /** 2.3.5 :: 08-08-2018 **/
 * Critical bug fix. Event's conditional data loading was broken due to an incorrect calling of async/await
 

@@ -110,7 +110,7 @@ describe('Test Caching', function(){
 	});
 
 	it('should correctly cache tournament sets', async function(){
-		this.timeout(2500);
+		this.timeout(25000);
 
 		let t1 = await loadTournament(TOURNAMENT_NAME1);
 		let t1Sets = await t1.getAllSets();

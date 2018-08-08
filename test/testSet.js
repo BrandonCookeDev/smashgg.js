@@ -62,6 +62,8 @@ describe('Smash GG Set', function(){
 	});
 	
 	it('should get a set by id', async function(){
+		this.timeout(5000);
+
 		let set1 = await Set.getSet(15896650);
 		let set2 = await Set.getSet(15896651);
 

@@ -3,12 +3,15 @@
 
 let _ = require('lodash');
 
+let Event = require('../lib/Event');
 let Phase = require('../lib/Phase');
 let PhaseGroup = require('../lib/PhaseGroup');
 let Cache = require('../lib/util/Cache').getInstance();
 let Set = require('../lib/Set');
 let Player = require('../lib/Player');
 
+let moment = require('moment');
+let sinon = require('sinon');
 let chai = require('chai');
 let cap = require('chai-as-promised');
 chai.use(cap);
@@ -148,6 +151,28 @@ describe('Smash GG Phase', function(){
 			expect(set).to.be.instanceof(Player);
 		})
 
+		return true;
+	})
+
+	it('should correctly get sets x minutes back', async function(){
+		this.timeout(30000);
+
+		let minutesBack = 5;
+		let event = await Event.getEvent(phase1.getEventId());
+		let eventDate = moment(event.getStartTime()).add(30, 'minutes').toDate();
+
+		let clock = sinon.useFakeTimers(eventDate);
+		let sets = await phase1.getSetsXMinutesBack(minutesBack);
+		expect(sets.length).to.be.equal(5);
+		sets.forEach(set=> {
+			expect(set).to.be.instanceof(Set);
+
+			let now = moment();
+			let then = moment(set.getCompletedAt());
+			let diff = moment.duration(now.diff(then)).minutes();
+			expect(diff <= minutesBack && diff >= 0 && set.getIsComplete()).to.be.true;
+		})
+		clock.restore();
 		return true;
 	})
 });

@@ -1,3 +1,5 @@
+exports.setToken 	= require('./lib/util/Initializer');
+
 exports.Set		 	= require('./lib/Set');
 exports.Event	   	= require('./lib/Event');
 exports.Phase	   	= require('./lib/Phase');

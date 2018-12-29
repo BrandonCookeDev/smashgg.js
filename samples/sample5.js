@@ -10,5 +10,7 @@ let token = process.env.API_TOKEN;
 	setToken(token);
 	let t = await Tournament.getTournament('to12');
 	console.log(t.getName());
+	console.log(t.getState());
+	console.log(t.getCity());
 	process.exit(0);
 })();

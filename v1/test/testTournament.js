@@ -1,8 +1,5 @@
 /* eslint-disable */
 'use strict';
-const path = require('path');
-require('dotenv').config({path: path.join(__dirname, '..', '.env')});
-require('../lib/util/Initializer')(process.env.API_TOKEN || '<insert your token here>');
 
 Promise = require('bluebird');
 let _ = require('lodash');
@@ -12,8 +9,7 @@ let Tournament = require('../lib/Tournament');
 let Player = require('../lib/Player');
 let Set = require('../lib/Set');
 let Event = require('../lib/Event');
-let Cache = require('../lib/util/Cache');
-let Common = require('../lib/util/Common');
+let Cache = require('../lib/util/Cache').getInstance();
 
 let sinon = require('sinon');
 let chai = require('chai');
@@ -39,24 +35,39 @@ let expected = _.extend(
 	require('./data/expectedTournaments')
 );
 
+let concurrency = 2;
+
+function loadTournament(name, options){
+	return new Promise(function(resolve, reject){
+		let t = new Tournament(name, options);
+		t.on('ready', function(){
+			return resolve(t);
+		})
+	})
+}
+
 describe('Smash GG Tournament', function(){
 
-	before( () => console.log('concurrency set to %s', 0))
+	before( () => console.log('concurrency set to %s', concurrency))
 
 	beforeEach(function(){
-
+		Cache.flush();
 	});
 
 	it('should correctly load tournament data', async function(){
 		this.timeout(10000);
 
-		tournament1 = await Tournament.getTournament(TOURNAMENT_NAME1, {rawEncoding: 'utf8'});
-		await Common.sleep(1000);
-
-		tournament2 = await Tournament.getTournament(TOURNAMENT_NAME2, {rawEncoding: 'base64'});
-		await Common.sleep(1000);
-		
-		tournament3 = await Tournament.getTournament(TOURNAMENT_NAME3);
+		tournament1 = await loadTournament(TOURNAMENT_NAME1, {rawEncoding: 'utf8'});
+		tournament2 = await loadTournament(TOURNAMENT_NAME2, {rawEncoding: 'base64'});
+		tournament3 = await loadTournament(TOURNAMENT_NAME3, {
+				expands: {
+					event:true,
+					phase:true,
+					groups:true,
+					stations:true
+				}
+			}
+		);
 
 		/*
 		tournament4 = await loadTournament(TOURNAMENT_NAME1, {
@@ -77,7 +88,7 @@ describe('Smash GG Tournament', function(){
 
 	});
 
-	xit('should implement convenience methods correctly', async function(){
+	it('should implement convenience methods correctly', async function(){
 		this.timeout(15000);
 
 		let cTournament1 = await Tournament.getTournament(TOURNAMENT_NAME1, {rawEncoding: 'utf8'});
@@ -189,7 +200,7 @@ describe('Smash GG Tournament', function(){
 		done();
 	});
 
-	xit('should return the correct time registration closes', function(done){
+	it('should return the correct time registration closes', function(done){
 		let closesTime1 = tournament1.getWhenRegistrationCloses();
 		let closesTime2 = tournament2.getWhenRegistrationCloses();
 
@@ -202,7 +213,7 @@ describe('Smash GG Tournament', function(){
 		done();
 	});
 
-	xit('should return the correct time registration closes string', function(done){
+	it('should return the correct time registration closes string', function(done){
 		let closesTime1 = tournament1.getWhenRegistrationClosesString();
 		let closesTime2 = tournament2.getWhenRegistrationClosesString();
 
@@ -243,7 +254,7 @@ describe('Smash GG Tournament', function(){
 		done();
 	});
 
-	xit('should return the correct zip code', function(done){
+	it('should return the correct zip code', function(done){
 		let zip1 = tournament1.getZipCode();
 		let zip2 = tournament2.getZipCode();
 
@@ -253,7 +264,7 @@ describe('Smash GG Tournament', function(){
 		done()
 	});
 
-	xit('should return the correct owner id', function(done){
+	it('should return the correct owner id', function(done){
 		let ownerId1 = tournament1.getOwnerId();
 		let ownerId2 = tournament2.getOwnerId();
 
@@ -283,7 +294,7 @@ describe('Smash GG Tournament', function(){
 		done()
 	});
 
-	xit('should return the correct venue fee', function(done){
+	it('should return the correct venue fee', function(done){
 		let venueFee1 = tournament1.getVenueFee();
 		let venueFee2 = tournament2.getVenueFee();
 
@@ -293,7 +304,7 @@ describe('Smash GG Tournament', function(){
 		done();
 	});
 
-	xit('should return the correct processing fee', function(done){
+	it('should return the correct processing fee', function(done){
 		let processingFee1 = tournament1.getProcessingFee();
 		let processingFee2 = tournament2.getProcessingFee();
 
@@ -306,7 +317,7 @@ describe('Smash GG Tournament', function(){
 	it('should get all players from a tournament', async function(){
 		this.timeout(10000);
 
-		let players = await tournament1.getAllPlayers();
+		let players = await tournament1.getAllPlayers({concurrency: concurrency});
 		expect(players.length).to.be.equal(157);
 
 		var hasDuplicates = function(a) {
@@ -324,7 +335,7 @@ describe('Smash GG Tournament', function(){
 	it('should get all sets from a tournament', async function(){
 		this.timeout(10000);
 
-		let sets = await tournament1.getAllSets();
+		let sets = await tournament1.getAllSets({concurrency: concurrency});
 		expect(sets.length).to.be.equal(552);
 
 		var hasDuplicates = function(a) {
@@ -342,7 +353,7 @@ describe('Smash GG Tournament', function(){
 	it('should get all events from a tournament', async function(){
 		this.timeout(10000);
 
-		let events = await tournament1.getAllEvents();
+		let events = await tournament1.getAllEvents({concurrency: concurrency});
 		expect(events.length).to.be.equal(2);
 
 		var hasDuplicates = function(a) {

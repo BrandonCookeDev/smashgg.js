@@ -6,7 +6,7 @@ let _ = require('lodash');
 
 let Set = require('../lib/Set');
 let PhaseGroup = require('../lib/PhaseGroup');
-let Cache = require('../lib/util/Cache');
+let Cache = require('../lib/util/Cache').getInstance();
 
 let sinon = require('sinon');
 let chai = require('chai');

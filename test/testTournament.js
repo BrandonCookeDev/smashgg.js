@@ -51,11 +51,7 @@ describe('Smash GG Tournament', function(){
 		this.timeout(10000);
 
 		tournament1 = await Tournament.getTournament(TOURNAMENT_NAME1, {rawEncoding: 'utf8'});
-		await Common.sleep(1000);
-
-		tournament2 = await Tournament.getTournament(TOURNAMENT_NAME2, {rawEncoding: 'base64'});
-		await Common.sleep(1000);
-		
+		tournament2 = await Tournament.getTournament(TOURNAMENT_NAME2, {rawEncoding: 'base64'});		
 		tournament3 = await Tournament.getTournament(TOURNAMENT_NAME3);
 
 		/*
@@ -125,8 +121,8 @@ describe('Smash GG Tournament', function(){
 		let startTime1 = tournament1.getStartTime();
 		let startTime2 = tournament2.getStartTime();
 
-		let expected1 = moment('04-01-2017 11:00:00').toDate();
-		let expected2 = moment('06-24-2016 00:00:00').toDate();
+		let expected1 = moment('04-01-2017 11:00:00', 'MM-DD-YYYY HH:mm:ss').toDate();
+		let expected2 = moment('06-24-2016 00:00:00', 'MM-DD-YYYY HH:mm:ss').toDate();
 
 		expect(startTime1.getTime()).to.be.equal(expected1.getTime());
 		expect(startTime2.getTime()).to.be.equal(expected2.getTime());
@@ -159,8 +155,8 @@ describe('Smash GG Tournament', function(){
 		let endTime1 = tournament1.getEndTime();
 		let endTime2 = tournament2.getEndTime();
 
-		let expected1 = moment('04-01-2017 23:00:00').toDate();
-		let expected2 = moment('06-27-2016 00:00:00').toDate();
+		let expected1 = moment('04-01-2017 23:00:00', 'MM-DD-YYYY HH:mm:ss').toDate();
+		let expected2 = moment('06-27-2016 00:00:00', 'MM-DD-YYYY HH:mm:ss').toDate();
 
 		expect(endTime1.getTime()).to.be.equal(expected1.getTime());
 		expect(endTime2.getTime()).to.be.equal(expected2.getTime());
@@ -193,8 +189,8 @@ describe('Smash GG Tournament', function(){
 		let closesTime1 = tournament1.getWhenRegistrationCloses();
 		let closesTime2 = tournament2.getWhenRegistrationCloses();
 
-		let expected1 = moment('03-30-2017 02:00:00').toDate();
-		let expected2 = moment('06-13-2016 08:00:00').toDate();
+		let expected1 = moment('03-30-2017 02:00:00', 'MM-DD-YYYY HH:mm:ss').toDate();
+		let expected2 = moment('06-13-2016 08:00:00', 'MM-DD-YYYY HH:mm:ss').toDate();
 
 		expect(closesTime1.getTime()).to.be.equal(expected1.getTime());
 		expect(closesTime2.getTime()).to.be.equal(expected2.getTime());
@@ -306,8 +302,26 @@ describe('Smash GG Tournament', function(){
 	it('should get all players from a tournament', async function(){
 		this.timeout(10000);
 
-		let players = await tournament1.getAllPlayers();
-		expect(players.length).to.be.equal(157);
+		let players = await tournament2.getAllPlayers();
+		expect(players.length).to.be.equal(3101);
+
+		var hasDuplicates = function(a) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(players)).to.be.false;
+
+		players.forEach(player => {
+			expect(player).to.be.an.instanceof(Player);
+		});
+
+		return true;
+	});
+
+	it('should get all players from a tournament 2', async function(){
+		this.timeout(10000);
+
+		let players = await tournament3.getAllPlayers();
+		expect(players.length).to.be.equal(394);
 
 		var hasDuplicates = function(a) {
 			return _.uniq(a).length !== a.length;

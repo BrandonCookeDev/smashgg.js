@@ -10,12 +10,11 @@ let request  = require('request-promise');
 
 let Cache = require('./util/Cache').getInstance();
 let EventEmitter = require('events');
-let NI = require('./util/NetworkInterface');
-let graphQueries = require('./scripts/graphQueries');
 
 let Event = require('./Event');
 let PhaseGroup = require('./PhaseGroup');
 
+const TOURNAMENT_URL = 'https://api.smash.gg/tournament/%s?%s';
 const LEGAL_ENCODINGS = ['json', 'utf8', 'base64'];
 const DEFAULT_ENCODING = 'json';
 const DEFAULT_CONCURRENCY = 4;
@@ -31,6 +30,7 @@ class Tournament extends EventEmitter{
 			throw new Error('Due to Smashgg limitations, currently Tournaments may only be retrieved by tournament name (slug)');
 
 		// parse options
+		let expands = options.expands || {};
 		let isCached = options.isCached != undefined ? options.isCached === true : true;
 		let rawEncoding = options.rawEncoding || DEFAULT_ENCODING;
 
@@ -40,8 +40,24 @@ class Tournament extends EventEmitter{
 		this.isCached = isCached;
 		this.rawEncoding = LEGAL_ENCODINGS.includes(rawEncoding) ? rawEncoding : DEFAULT_ENCODING;
 
+		// create expands 
+		this.expandsString = '';
+		this.expands = {
+			event: (expands && expands.event == false) ? false : true,
+			phase: (expands && expands.phase == false) ? false : true,
+			groups: (expands && expands.groups == false) ? false : true,
+			stations: (expands && expands.stations == false) ? false : true
+		};
+		for(let property in this.expands){
+			if(this.expands[property])
+				this.expandsString += format('expand[]=%s&', property);
+		}
+
+		// format api url
+		this.url = format(TOURNAMENT_URL, this.name, this.expandsString);
+
 		let ThisTournament = this;
-		NI.query(graphQueries.tournament, {'slug': this.name})
+		this.load()
 			.then(function(){
 				let cacheKey = format('tournament::%s::%s', ThisTournament.name, ThisTournament.expandsString);
 				Cache.set(cacheKey, ThisTournament);

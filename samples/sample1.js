@@ -1,4 +1,6 @@
 'use strict';
+const path = require('path');
+require('dotenv').config({path: path.join(__dirname, '..', '.env')});
 
 var log = require('winston');
 log.level = 'info';

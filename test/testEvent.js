@@ -1,5 +1,8 @@
 /* eslint-disable */
 'use strict';
+const path = require('path');
+require('dotenv').config({path: path.join(__dirname, '..', '.env')});
+require('../lib/util/Initializer')(process.env.API_TOKEN || '<insert your token here>');
 
 Promise = require('bluebird');
 
@@ -11,7 +14,7 @@ let Player = require('../lib/Player');
 let Event = require('../lib/Event');
 let Phase = require('../lib/Phase');
 let PhaseGroup = require('../lib/PhaseGroup');
-let Cache = require('../lib/util/Cache').getInstance();
+let Cache = require('../lib/util/Cache');
 
 let sinon = require('sinon');
 let chai = require('chai');
@@ -79,9 +82,9 @@ describe('Smash GG Event', function(){
 	it('should correctly load the data', async function(){
 		this.timeout(30000);
 
-		event1 = await loadEvent(EVENT_NAME1, TOURNAMENT_NAME1, { rawEncoding: 'utf8'});
-		event2 = await loadEvent(EVENT_NAME1, TOURNAMENT_NAME2);
-		event3 = await loadEventViaId(EVENT_ID_1, {rawEncoding: 'base64'});
+		event1 = await Event.getEvent(EVENT_NAME1, TOURNAMENT_NAME1, { rawEncodng: 'utf8'});
+		event2 = await Event.getEvent(EVENT_NAME1, TOURNAMENT_NAME2);
+		event3 = await Event.getEventById(EVENT_ID_1, {rawEncoding: 'base64'});
 
 		return true;
 	});

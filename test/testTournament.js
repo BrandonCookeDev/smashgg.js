@@ -12,6 +12,8 @@ let Tournament = require('../lib/Tournament');
 let Player = require('../lib/Player');
 let Set = require('../lib/Set');
 let Event = require('../lib/Event');
+let Phase = require('../lib/Phase');
+let PhaseGroup = require('../lib/PhaseGroup');
 let Cache = require('../lib/util/Cache');
 let Common = require('../lib/util/Common');
 
@@ -299,8 +301,8 @@ describe('Smash GG Tournament', function(){
 		done();
 	});
 
-	it('should get all players from a tournament', async function(){
-		this.timeout(10000);
+	it('should get all players from a tournament 2', async function(){
+		this.timeout(15000);
 
 		let players = await tournament2.getAllPlayers();
 		expect(players.length).to.be.equal(3101);
@@ -317,8 +319,8 @@ describe('Smash GG Tournament', function(){
 		return true;
 	});
 
-	it('should get all players from a tournament 2', async function(){
-		this.timeout(10000);
+	it('should get all players from a tournament 3', async function(){
+		this.timeout(15000);
 
 		let players = await tournament3.getAllPlayers();
 		expect(players.length).to.be.equal(394);
@@ -338,7 +340,7 @@ describe('Smash GG Tournament', function(){
 	it('should get all sets from a tournament', async function(){
 		this.timeout(10000);
 
-		let sets = await tournament1.getAllSets();
+		let sets = await tournament.getAllSets();
 		expect(sets.length).to.be.equal(552);
 
 		var hasDuplicates = function(a) {
@@ -366,6 +368,60 @@ describe('Smash GG Tournament', function(){
 
 		events.forEach(event => {
 			expect(event).to.be.an.instanceof(Event);
+		});
+
+		return true;
+	})
+
+	it('should get all events from a tournament 2', async function(){
+		this.timeout(15000);
+
+		let events = await tournament2.getAllEvents();
+		expect(events.length).to.be.equal(12);
+
+		var hasDuplicates = function(a) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(events)).to.be.false;
+
+		events.forEach(event => {
+			expect(event).to.be.an.instanceof(Event);
+		});
+
+		return true;
+	})
+
+	it('should get all phases from a tournament 2', async function(){
+		this.timeout(10000);
+
+		let phases = await tournament2.getPhases();
+		expect(phases.length).to.be.equal(24);
+
+		var hasDuplicates = function(a) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(phases)).to.be.false;
+
+		phases.forEach(event => {
+			expect(event).to.be.an.instanceof(Phase);
+		});
+
+		return true;
+	})
+	
+	it('should get all phase groups from a tournament 2', async function(){
+		this.timeout(10000);
+
+		let groups = await tournament2.getPhaseGroups();
+		expect(groups.length).to.be.equal(188);
+
+		var hasDuplicates = function(a) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(groups)).to.be.false;
+
+		groups.forEach(event => {
+			expect(event).to.be.an.instanceof(PhaseGroup);
 		});
 
 		return true;

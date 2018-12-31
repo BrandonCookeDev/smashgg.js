@@ -338,10 +338,11 @@ describe('Smash GG Tournament', function(){
 	});
 
 	it('should get all sets from a tournament', async function(){
-		this.timeout(10000);
+		this.timeout(90000);
 
-		let sets = await tournament.getAllSets();
-		expect(sets.length).to.be.equal(552);
+		let sets = await tournament3.getAllSets();
+		//expect(sets.length).to.be.equal(552);
+		expect(sets.length).to.be.equal(2158);
 
 		var hasDuplicates = function(a) {
 			return _.uniq(a).length !== a.length;

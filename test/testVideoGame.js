@@ -1,11 +1,11 @@
 /* eslint-disable */
-'use strict';
+'use strict'
 
-let chai = require('chai');
-let expect = chai.expect;
+let chai = require('chai')
+let expect = chai.expect
 
-let VideoGame = require('../lib/VideoGame');
-let Cache = require('../lib/util/Cache');
+let VideoGame = require('../lib/VideoGame')
+let Cache = require('../lib/util/Cache')
 
 let expected = {
 	Melee: {
@@ -35,38 +35,38 @@ let expected = {
 describe('SmashGG VideoGame', function(){
 	
 	before(async function(){
-		Cache.getInstance().flush();
+		Cache.getInstance().flush()
 	})
 
 	it('should get all video games from api', async function(){
-		let videoGames = await VideoGame.getAll();
+		let videoGames = await VideoGame.getAll()
 		videoGames.forEach(e => {
-			expect(e).to.be.instanceof(VideoGame);
+			expect(e).to.be.instanceof(VideoGame)
 		})
-		return true;
+		return true
 	})
 
 	it('should get correct video game by id', async function(){
-		let vg1 = await VideoGame.getById(1);
-		let vg2 = await VideoGame.getById(2);
+		let vg1 = await VideoGame.getById(1)
+		let vg2 = await VideoGame.getById(2)
 
-		expect(vg1).to.deep.equal(expected.Melee);
-		expect(vg2).to.deep.equal(expected.PM);
+		expect(vg1).to.deep.equal(expected.Melee)
+		expect(vg2).to.deep.equal(expected.PM)
 
-		return true;
+		return true
 	})
 
 	it('should get correct video game by name', async function(){
-		let melee1 = await VideoGame.getByName('Super Smash Bros. Melee', {isCached:false});
-		let melee2 = await VideoGame.getByName('melee', {isCached:false});
-		let pm1 = await VideoGame.getByName('pm');
+		let melee1 = await VideoGame.getByName('Super Smash Bros. Melee', {isCached:false})
+		let melee2 = await VideoGame.getByName('melee', {isCached:false})
+		let pm1 = await VideoGame.getByName('pm')
 		let pm2 = await VideoGame.getByName('Project M')
 
-		expect(melee1).to.deep.equal(expected.Melee);
-		expect(melee2).to.deep.equal(expected.Melee);
-		expect(pm1).to.deep.equal(expected.PM);
-		expect(pm2).to.deep.equal(expected.PM);
+		expect(melee1).to.deep.equal(expected.Melee)
+		expect(melee2).to.deep.equal(expected.Melee)
+		expect(pm1).to.deep.equal(expected.PM)
+		expect(pm2).to.deep.equal(expected.PM)
 
-		return true;
+		return true
 	})
 })

@@ -34,23 +34,23 @@ npm install --save smashgg.js
 ```javascript
 // Will not work on < NodeJS 7+
 (async function(){
-    var smashgg = require('smashgg.js');
-    var { Tournament } = smashgg;
-    var tournament = await Tournament.getTournament('ceo-2016');
+    var smashgg = require('smashgg.js')
+    var { Tournament } = smashgg
+    var tournament = await Tournament.getTournament('ceo-2016')
 
-    var players = await tournament.getAllPlayers();
-    var sets = await tournament.getAllSets();
+    var players = await tournament.getAllPlayers()
+    var sets = await tournament.getAllSets()
 
-    console.log(players.length + ' players entered ' + tournament.getName() +  ' overall');
+    console.log(players.length + ' players entered ' + tournament.getName() +  ' overall')
     players.forEach(player => {
         console.log(
             'Tag: ' + player.getTag() + '\n',
             'Name: ' + player.getName() + '\n',
             'State: ' + player.getState() + '\n'
         )
-    });
+    })
 
-    console.log(sets.length + ' sets were played at ' + tournament.getName());
+    console.log(sets.length + ' sets were played at ' + tournament.getName())
     sets.forEach(set => {
             console.log(
                 '[%s: %s %s - %s %s]',
@@ -59,7 +59,7 @@ npm install --save smashgg.js
             set.getWinnerScore(),
             set.getLoserScore(),
             set.getLoser().getTag()
-        );
+        )
         console.log(
             '%s placed %s at the tournament \n%s placed %s at the tournament\n',
             set.getWinner().getTag(),
@@ -69,8 +69,8 @@ npm install --save smashgg.js
         )
     })
 
-    console.log('Done!');
-    return process.exit(0);
+    console.log('Done!')
+    return process.exit(0)
 })()
 ```
 
@@ -112,7 +112,7 @@ NIX placed 129 at the tournament
 ### Winston
 If you would like to add a Winston log that accesses the API's Winston implementation, you may do the following
 ```javascript
-let log = require('winston');
+let log = require('winston')
 let transports = {
     file: {
         level: info,
@@ -128,7 +128,7 @@ let transports = {
         colorize: true,
         handleExceptions: true
     }
-};
+}
 
 log.remove(log.transports.Console); //Remove the default implementation
 
@@ -150,11 +150,11 @@ Tournament.getTournament('to12')
         // do stuff with TO12
     }))
 
-var to12 = new smashgg.Tournament('to12');
+var to12 = new smashgg.Tournament('to12')
 to12.on('ready', function(){
     //tournament is populated with data
-    console.log('Got tournament ' + tournament.getName();
-});
+    console.log('Got tournament ' + tournament.getName()
+})
 
 var ceo2016 = new smashgg.Tournament(
     'ceo-2016',
@@ -165,7 +165,7 @@ var ceo2016 = new smashgg.Tournament(
         stations: false
     },
     false
-);
+)
 ceo2016.on('ready', function(){
     //do stuff with ceo2016
 })
@@ -297,7 +297,7 @@ Event.getEventById(14335, {rawEncoding: 'base64'})
     })
 
 /** OLD METHODS **/
-var event1 = new smashgg.Event('to12', 'melee-singles');
+var event1 = new smashgg.Event('to12', 'melee-singles')
 event1.on('ready', function(){
     //do stuff with event1
 })
@@ -312,14 +312,14 @@ var event2 = new smashgg.Event(
             groups: false
         },
         isCached: false
-);
+)
 event2.on('ready', function(){
     //do stuff with event2
 }
 
 //additional constructor for id-only pulling
-var eventId = 14335;
-var event3 = new smashgg.Event(eventId, {rawEncoding: 'utf8'});
+var eventId = 14335
+var event3 = new smashgg.Event(eventId, {rawEncoding: 'utf8'})
 event3.on('ready', function(){
     //do stuff with event3
 })
@@ -436,7 +436,7 @@ Phase.getPhase(45262, {
     //do stuff with phase
 })
 
-var phase1 = new smashgg.Phase(111483);
+var phase1 = new smashgg.Phase(111483)
 phase1.on('ready', function(){
     //do stuff with phase1
 })
@@ -549,7 +549,7 @@ PhaseGroup.getPhaseGroup(301994, {
     //do stuff with phaseGroup
 })
 
-var phaseGroup1 = new smashgg.PhaseGroup(44445);
+var phaseGroup1 = new smashgg.PhaseGroup(44445)
 phaseGroup1.on('ready', function(){
     //do stuff with phaseGroup1
 })
@@ -566,7 +566,7 @@ var phaseGroup2 = new smashgg.PhaseGroup(
         },
         isCached: false
     }
-);
+)
 phaseGroup2.on('ready', function(){
     //do stuff with phaseGroup2
 })
@@ -640,13 +640,13 @@ phaseGroup2.on('ready', function(){
 A Player is a data object that holds information about players who
 went to a tournament using smash.gg.
 ```javascript
-var player = new smashgg.Player(000000, 'cookiE', 'Brandon Cooke', 'US', 'GA', 'Recursion');
+var player = new smashgg.Player(000000, 'cookiE', 'Brandon Cooke', 'US', 'GA', 'Recursion')
 
-var tournament = smashgg.Tournament('to12');
+var tournament = smashgg.Tournament('to12')
 tournament.on('ready', async function(){
-    var players = await tournament.getAllPlayers();
+    var players = await tournament.getAllPlayers()
     //returns all players in a tournament as Player objects
-});
+})
 ```
 
 ### Constructor
@@ -700,15 +700,15 @@ A Set is a data object that holds information about a tournament set
 that took place at a tournament.
 
 ```javascript
-var Player1 = new smashgg.Player(000000, 'BootyBlastWarrior', 'Andy', 'US', 'GA', null);
-var Player2 = new smashgg.Player(000001, 'cookiE', 'Brandon Cooke', 'US', 'GA', 'Recursion');
+var Player1 = new smashgg.Player(000000, 'BootyBlastWarrior', 'Andy', 'US', 'GA', null)
+var Player2 = new smashgg.Player(000001, 'cookiE', 'Brandon Cooke', 'US', 'GA', 'Recursion')
 
-var set = new smashgg.Set(000001, 000002, 'Losers Semis', Player1, Player2, true, 3, 2, 000000, 000001);
+var set = new smashgg.Set(000001, 000002, 'Losers Semis', Player1, Player2, true, 3, 2, 000000, 000001)
 var set2 = new smashgg.Set(000002, 000003, 'Grand Finals', Player1, Player2, false)
 
-var tournament = new smashgg.Tournament('to12');
+var tournament = new smashgg.Tournament('to12')
 tournament.on('ready', async function(){
-    var sets = await tournament.getAllSets();
+    var sets = await tournament.getAllSets()
     //returns a list of Set objects from the tournament
 })
 ```
@@ -775,21 +775,21 @@ tournament.on('ready', async function(){
 ## Character
 A Character object encapsulates data about a fighting game character in the smashgg system
 ```javascript
-let meleeCharacters = await Character.getByGameName('melee');
-let pmCharacters = await Character.getByGameId(2);
+let meleeCharacters = await Character.getByGameName('melee')
+let pmCharacters = await Character.getByGameId(2)
 
-let allBowsers = await Character.getByName('bowser');
+let allBowsers = await Character.getByName('bowser')
 allBowsers.forEach(bowser => {
-    console.log(bowser);
-});
+    console.log(bowser)
+})
 
-let allCharacters = await Character.getAll({isCached: false});
+let allCharacters = await Character.getAll({isCached: false})
 allCharacters.forEach(character => {
     console.log(character)
 })
 
-let meleeBowser = await Character.getByNameAndGame('bowser', 'melee');
-let wolfPM = await Character.getByNameAndGameId('wolf', 2);
+let meleeBowser = await Character.getByNameAndGame('bowser', 'melee')
+let wolfPM = await Character.getByNameAndGameId('wolf', 2)
 ```
 
 ### Constructor
@@ -848,7 +848,7 @@ let wolfPM = await Character.getByNameAndGameId('wolf', 2);
 ## VideoGame
 A VideoGame object encapsulates data about VideoGames respective to how they are known in Smash GG's system
 ```javascript
-let melee = await VideoGame.getByName('melee');
+let melee = await VideoGame.getByName('melee')
 /* produces: 
 {   id:1,
     name:'Super Smash Bros. Melee',
@@ -862,7 +862,7 @@ let melee = await VideoGame.getByName('melee');
 }
 */
 
-let pm = await VideoGame.getById(2);
+let pm = await VideoGame.getById(2)
 /* produces:
 {
     id:2,

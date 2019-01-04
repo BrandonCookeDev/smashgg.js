@@ -337,11 +337,33 @@ describe('Smash GG Tournament', function(){
 		return true
 	})
 
-	xit('should get all sets from a tournament', async function(){
+	it('should get all sets from a tournament', async function(){
 		this.timeout(90000)
 
-		let sets = await tournament1.getAllSets()
-		expect(sets.length).to.be.equal(0)
+		let sets = await tournament1.getAllSetsWithoutEntrants()
+		//let sets = await tournament1.getAllSetsWithEntrants()
+		expect(sets.length).to.be.equal(67)
+		//expect(sets.length).to.be.equal(552) //function 1
+		//expect(sets.length).to.be.equal(2158) //ceo 2016
+
+		var hasDuplicates = function(a) {
+			return _.uniq(a).length !== a.length
+		}
+		expect(hasDuplicates(sets)).to.be.false
+
+		sets.forEach(set => {
+			expect(set).to.be.an.instanceof(Set)
+		})
+
+		return true
+	})
+
+	xit('should get all sets from a tournament 3', async function(){
+		this.timeout(90000)
+
+		let sets = await tournament2.getAllSetsWithoutEntrants()
+		//let sets = await tournament1.getAllSetsWithEntrants()
+		expect(sets.length).to.be.equal(67)
 		//expect(sets.length).to.be.equal(552) //function 1
 		//expect(sets.length).to.be.equal(2158) //ceo 2016
 

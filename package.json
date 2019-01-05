@@ -24,7 +24,8 @@
     "testSet": "./node_modules/.bin/mocha ./test/testSet",
     "testVideoGame": "./node_modules/.bin/mocha ./test/testVideoGame",
     "testCharacter": "./node_modules/.bin/mocha ./test/testCharacter",
-    "lint": "./node_modules/.bin/eslint ."
+    "lint": "./node_modules/.bin/eslint .",
+    "tsc": "tsc"
   },
   "keywords": [
     "super",
@@ -54,10 +55,14 @@
     "p-map": "^1.2.0",
     "request": "^2.87.0",
     "request-promise": "^4.2.2",
+    "typescript-eslint-parser": "^21.0.2",
     "when": "^3.7.8",
-    "winston": "^2.4.3"
+    "winston": "^2.4.4"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.119",
+    "@types/node": "^10.12.18",
+    "@types/winston": "^2.4.4",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
     "chalk": "^2.4.1",

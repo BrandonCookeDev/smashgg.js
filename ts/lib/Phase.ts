@@ -7,7 +7,7 @@ import {format} from 'util'
 import request from 'request-promise'
 import { EventEmitter } from 'events'
 
-import Common from './util/Common'
+import * as Common from './util/Common'
 import Cache from './util/Cache'
 import PhaseGroup from './PhaseGroup'
 

@@ -8,6 +8,7 @@ import request from 'request-promise'
 import { format } from 'util'
 import { EventEmitter } from 'events'
 
+import * as Common from './util/Common'
 import Cache from './util/Cache'
 import Event from './Event'
 import Phase from './Phase'
@@ -22,16 +23,10 @@ const DEFAULT_ENCODING = 'json';
 const DEFAULT_CONCURRENCY = 4;
 
 declare namespace Tournament{
-	interface TOptions{
-		expands?: TournamentExpands, 
+	interface Options{
+		expands?: Expands, 
 		isCached?: boolean, 
 		rawEncoding?: string
-	}
-
-	interface Options{
-		isCached?: boolean, 
-		rawEncoding?: string,
-		concurrency?: number    
 	}
 
 	interface Expands{
@@ -39,15 +34,6 @@ declare namespace Tournament{
 		phase: boolean,
 		groups: boolean,
 		stations: boolean
-	}
-
-	interface Data{		
-		[x: string]: any 
-	}
-
-	interface Entity{
-		id: number,
-		[x: string]: any
 	}
 
 	/*
@@ -76,22 +62,15 @@ declare namespace Tournament{
 	interface Tournament{
 
 	}
+	
 }
 
-import Entity = Tournament.Entity;
-import Options = Tournament.Options;
-import TournamentOptions = Tournament.TOptions;
+import Data = Common.Data;
+import Entity = Common.Entity;
+import Options = Common.Options;
+import TournamentOptions = Tournament.Options;
 import TournamentExpands = Tournament.Expands;
-import TournamentData = Tournament.Data;
-
-function parseOptions(options: Options) : Options {
-
-	return {
-		isCached: options.isCached != undefined ? options.isCached === true : true,
-		concurrency: options.concurrency || DEFAULT_CONCURRENCY,
-		rawEncoding: Encoder.determineEncoding(options.rawEncoding)
-	}
-}
+import parseOptions = Common.parseOptions;
 
 function parseTournamentOptions(options: TournamentOptions) : TournamentOptions {
 	return {

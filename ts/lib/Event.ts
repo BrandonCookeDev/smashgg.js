@@ -6,47 +6,45 @@ import request from 'request-promise'
 import { EventEmitter } from 'events'
 import { format } from 'util'
 
+import * as Common from './util/Common'
 import Cache from './util/Cache'
 import Phase from './Phase'
 import PhaseGroup from './PhaseGroup'
-import Tournament from './Tournament'
 import GGSet from './GGSet'
 import Player from './Player'
 import Encoder from './util/Encoder'
 
 const EVENT_URL = 'https://api.smash.gg/event/%s?%s';
 const EVENT_SLUG_URL = 'https://api.smash.gg/%s/event/%s?%s';
-const EVENT_TOURNAMENT_CACHE_KEY = 'event::%s::%s::%s';
+const TOURNAMENT_URL = 'https://api.smash.gg/tournament/%s';
+const EVENT_TOURNAMENT_CACHE_KEY = 'event::%s::%s';
 const EVENT_ID_CACHE_KEY = 'event::%s::%s';
 const LEGAL_ENCODINGS = ['json', 'utf8', 'base64'];
 const DEFAULT_ENCODING = 'json';
 const DEFAULT_CONCURRENCY = 4;
 
 declare namespace Event{
-	interface Options{
-		isCached?: boolean,
-		concurrency?: number,
-		rawEncoding?: string
-	}
 
-	interface EventOptions{
+	interface Options{
 		isCached?: boolean,
 		rawEncoding?: string,
 		expands?: Expands
-	}
+	}	
 
 	interface Expands{
 		phase: boolean,
 		groups: boolean 
 	}
 
-	interface Data{
-		[x: string]: any
+	interface Tournament{
+		tournamentId: string,
+		options?: TOptions
 	}
 
-	interface Entity{
-		id: number,
-		[x: string]: any
+	interface TOptions{
+		isCached?: boolean,
+		rawEncoding?: string,
+		expands?: TExpands
 	}
 
 	interface TExpands{
@@ -61,29 +59,35 @@ declare namespace Event{
 	}
 }
 
-import Data = Event.Data;
-import Entity = Event.Entity;
-import Options = Event.Options;
-import TExpands = Event.TExpands;
+import Data = Common.Data;
+import Entity = Common.Entity;
+import Options = Common.Options;
 import EventExpands = Event.Expands;
-import EventOptions = Event.EventOptions;
+import EventOptions = Event.Options;
+import TournamentOptions = Event.TOptions
+import TournamentExpands = Event.TExpands;
 
-function parseTournamentOptions(options: EventOptions) : EventOptions {
+function parseTournamentOptions(options: TournamentOptions) : TournamentOptions {
 	return {
 		expands: {
+			event: (options.expands != undefined  && options.expands.event == false) ? false : true,
 			phase: (options.expands != undefined  && options.expands.phase == false) ? false : true,
 			groups: (options.expands != undefined && options.expands.groups == false) ? false : true,
+			stations: (options.expands != undefined && options.expands.stations == false) ? false : true
 		},
 		isCached: options.isCached != undefined ? options.isCached === true : true,
 		rawEncoding: Encoder.determineEncoding(options.rawEncoding)
 	}
 }
 
-function parseOptions(options: Options = {}) : Options{
+function parseEventOptions(options: EventOptions) : EventOptions {
 	return{
+		expands: {
+			phase: (options.expands != undefined  && options.expands.phase == false) ? false : true,
+			groups: (options.expands != undefined && options.expands.groups == false) ? false : true
+		},
 		isCached: options.isCached != undefined ? options.isCached === true : true,
-		concurrency: options.concurrency || DEFAULT_CONCURRENCY,
-		rawEncoding: Encoder.determineEncoding(options.rawEncoding) 
+		rawEncoding: Encoder.determineEncoding(options.rawEncoding)
 	}
 }
 
@@ -131,12 +135,34 @@ export default class Event extends EventEmitter implements Event.Event{
 		this.loadEventData().then();
 	}
 
+	async loadTournamentData(tournamentId: string, options: TournamentOptions = {}): Promise<Entity>{
+		try{
+			options = parseTournamentOptions(options);
+			
+			let cacheKey: string = format(EVENT_TOURNAMENT_CACHE_KEY, tournamentId, options.rawEncoding);
+			if(options.isCached){
+				let cached: Entity = await Cache.get(cacheKey) as Entity;
+				return cached;
+			}
+
+			let url: string = format(TOURNAMENT_URL, tournamentId);
+			let data: Entity = JSON.parse(await request(url));
+			await Cache.set(cacheKey, data);
+			return data;
+		} catch(err){
+			console.error('Error creating Tournament. For more info, implement Event.on(\'error\')');
+			log.error('Event error: %s', err.message);
+			this.emitEventError(err);
+			throw err;
+		}
+	}
+
 	async loadEventData(): Promise<string | object>{
 		try{
 			if(typeof this.eventId === 'string' && this.tournamentId){
-				let T: Tournament = await Tournament.getTournament(this.tournamentId);
+				let T: Entity = await this.loadTournamentData(this.tournamentId);
 
-				this.tournamentSlug = T.getSlug();
+				this.tournamentSlug = T.tournament.slug;
 				this.url = format(EVENT_SLUG_URL, this.tournamentSlug, this.eventId, this.expandsString);
 				await this.load();
 			
@@ -147,9 +173,9 @@ export default class Event extends EventEmitter implements Event.Event{
 			else{
 				this.url = format(EVENT_URL, this.eventId, this.expandsString);
 				await this.load();
-				let cacheKey = format(EVENT_ID_CACHE_KEY,this.eventId, this.expandsString);
+				let cacheKey = format(EVENT_ID_CACHE_KEY, this.eventId, this.expandsString);
 				Cache.set(cacheKey, this);
-				await this.loadTournamentData();
+				let tournamentData = await this.loadTournamentData();
 				this.emitEventReady();
 			}
 			return this.data;
@@ -245,19 +271,6 @@ export default class Event extends EventEmitter implements Event.Event{
 				log.error(s);
 			}
 			
-			throw e;
-		}
-	}
-	
-	async loadTournamentData(expands: TExpands, isCached: boolean = true) : Promise<boolean>{
-		log.debug('loadTournamentData called');
-		try {
-			let Tournament : Tournament = require('./Tournament');
-			let slug = this.getTournamentSlug();
-			this.Tournament = await Tournament.getTournament(slug, expands, isCached);
-			return true;
-		} catch(e){
-			log.error('loadTournamentData error: %s', e);
 			throw e;
 		}
 	}

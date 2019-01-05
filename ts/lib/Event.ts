@@ -7,10 +7,11 @@ import * as request from 'request-promise'
 import { EventEmitter } from 'events'
 import { format } from 'util'
 
-import * as Cache from './util/Cache'
-import * as Phase from './Phase'
-import * as PhaseGroup from './PhaseGroup'
-import * as Set from './GGSet';
+import Cache from './util/Cache'
+import Phase from './Phase'
+import PhaseGroup from './PhaseGroup'
+import Tournament from './Tournament'
+import GGSet from './GGSet';
 
 const EVENT_URL = 'https://api.smash.gg/event/%s?%s';
 const EVENT_SLUG_URL = 'https://api.smash.gg/%s/event/%s?%s';
@@ -20,50 +21,89 @@ const LEGAL_ENCODINGS = ['json', 'utf8', 'base64'];
 const DEFAULT_ENCODING = 'json';
 const DEFAULT_CONCURRENCY = 4;
 
-export default class Event extends EventEmitter{
+declare namespace Event{
+	interface Options{
+		isCached?: boolean,
+		concurrency?: number,
+		rawEncoding?: string
+	}
 
-	constructor(eventId, tournamentId=undefined, options = {}){
+	interface EventOptions{
+		isCached?: boolean,
+		rawEncoding?: string,
+		expands?: Expands
+	}
+
+	interface Expands{
+		phase: boolean,
+		groups: boolean 
+	}
+
+	interface Data{
+		[x: string]: any
+	}
+
+	interface Entity{
+		id: number,
+		[x: string]: any
+	}
+
+	interface Event{
+
+	}
+}
+
+import Data = Event.Data;
+import Options = Event.Options;
+import EventExpands = Event.Expands;
+import EventOptions = Event.EventOptions;
+
+export default class Event extends EventEmitter implements Event.Event{
+
+	url: string = ''
+	data: object = {}
+	eventId: string | number
+	expands: EventExpands = {
+		phase: true,
+		groups: true
+	};
+	expandsString: string = ''
+	tournamentId: string | undefined
+	tournamentSlug: string = ''
+	isCached: boolean = true
+	rawEncoding: string = DEFAULT_ENCODING
+
+	constructor(eventId: string, tournamentId?: string, options: EventOptions={}){
 		super();
 		
-
 		if(!eventId)
 			throw new Error('Event Constructor: Event Name/ID cannot be null for Event');
-		if(isNaN(eventId) && !tournamentId)
-			throw new Error('Event Constructor: Event name must be paired with a Tournament name');
-
-		// parse options
-		let expands = options.expands || {};
-		let isCached = options.isCached != undefined ? options.isCached === true : true;
-		let rawEncoding = options.rawEncoding || DEFAULT_ENCODING;
 
 		// set properties
 		this.data = {};// if it's NaN, we have an event Name not ID number
 		this.tournamentId = tournamentId;
-		this.isCached = isCached;
-		this.eventId = isNaN(parseInt(eventId)) ? eventId : parseInt(eventId); 
-		this.rawEncoding = LEGAL_ENCODINGS.includes(rawEncoding) ? rawEncoding : DEFAULT_ENCODING;
+		this.isCached = options.isCached != undefined ? options.isCached === true : true;;
+		this.eventId = typeof(eventId) === 'string' ? eventId : +eventId; 
+		this.rawEncoding = LEGAL_ENCODINGS.includes(this.rawEncoding) ? this.rawEncoding : DEFAULT_ENCODING;
 
 		// create expands
 		this.expandsString = '';
-		this.expands = {
-			phase: (expands && expands.phase == false) ? false : true,
-			groups: (expands && expands.groups == false) ? false : true
-		};
+		if(options.expands){
+			this.expands = Object.assign(this.expands, options.expands);
+		}
 		for(let property in this.expands){
-			if(this.expands[property])
+			if(this.expands.hasOwnProperty(property))
 				this.expandsString += format('expand[]=%s&', property);
 		}
 
 		this.loadEventData().then();
 	}
 
-	async loadEventData(){
+	async loadEventData(): Promise<Data>{
 		try{
-			let Tournament = require('./Tournament');
-			if(isNaN(this.eventId)){
-				let T = await Tournament.getTournament(this.tournamentId);
+			if(typeof this.eventId === 'string' && this.tournamentId){
+				let T: Tournament = await Tournament.getTournament(this.tournamentId);
 
-				this.Tournament = T;
 				this.tournamentSlug = T.getSlug();
 				this.url = format(EVENT_SLUG_URL, this.tournamentSlug, this.eventId, this.expandsString);
 				await this.load();
@@ -80,11 +120,12 @@ export default class Event extends EventEmitter{
 				await this.loadTournamentData();
 				this.emitEventReady();
 			}
-			return true;
+			return this.data;
 		} catch(err){
 			console.error('Error creating Tournament. For more info, implement Event.on(\'error\')');
 			log.error('Event error: %s', err.message);
 			this.emitEventError(err);
+			throw err;
 		}
 	}
 
@@ -181,7 +222,7 @@ export default class Event extends EventEmitter{
 		}
 	}
 	
-	async loadTournamentData(expands, isCached){
+	async loadTournamentData(expands, isCached) : Promise<boolean>{
 		log.debug('loadTournamentData called');
 		try {
 			let Tournament = require('./Tournament');

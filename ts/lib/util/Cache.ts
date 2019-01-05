@@ -1,7 +1,8 @@
 'use strict';
+import Promise from 'bluebird'
 
-import * as log from '../util/Logger'
-import * as NodeCache from 'node-cache'
+import * as log from 'winston'
+import NodeCache from 'node-cache'
 
 class Cache{
 
@@ -55,4 +56,4 @@ class Cache{
 	}
 }
 
-module.exports = Cache;
+exports = Cache;

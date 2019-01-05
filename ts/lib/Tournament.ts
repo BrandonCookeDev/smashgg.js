@@ -1,11 +1,12 @@
-import * as _ from 'lodash'
+import _ from 'lodash'
+import moment from 'moment-timezone'
+
 import * as log from 'winston'
-import * as when from 'when'
 import * as pmap from 'p-map'
-import { format } from 'util'
-import * as moment from 'moment-timezone'
 import * as request from 'request-promise'
-import * as EventEmitter from 'events'
+
+import { format } from 'util'
+import { EventEmitter } from 'events'
 
 import * as Cache from './util/Cache'
 import * as Event from './Event'
@@ -13,78 +14,79 @@ import * as Phase from './Phase'
 import * as PhaseGroup from './PhaseGroup'
 import * as Player from './Player'
 import * as Set from './Set'
-import { object, string } from 'sinon/lib/sinon/match';
 
 const TOURNAMENT_URL = 'https://api.smash.gg/tournament/%s?%s';
 const LEGAL_ENCODINGS = ['json', 'utf8', 'base64'];
 const DEFAULT_ENCODING = 'json';
 const DEFAULT_CONCURRENCY = 4;
 
-interface TournamentOptions{
-    expands?: TournamentExpands, 
-    isCached?: boolean, 
-    rawEncoding?: string
-}
+declare namespace Tournament{
+	interface TournamentOptions{
+		expands?: TournamentExpands, 
+		isCached?: boolean, 
+		rawEncoding?: string
+	}
 
-interface Options{
-    isCached?: boolean, 
-    rawEncoding?: string,
-    concurrency?: number    
-}
+	interface Options{
+		isCached?: boolean, 
+		rawEncoding?: string,
+		concurrency?: number    
+	}
 
-interface TournamentExpands{
-	event: boolean,
-	phase: boolean,
-	groups: boolean,
-	stations: boolean
-}
+	interface TournamentExpands{
+		event: boolean,
+		phase: boolean,
+		groups: boolean,
+		stations: boolean
+	}
 
-interface TournamentData{
-	entities: {
-		tournament: {
-			id: string,
-			[x: string]: any 
+	interface TournamentData{
+		entities: {
+			tournament: {
+				id: string,
+				[x: string]: any 
+			}
+			event?: [{
+				id: string
+				[x: string]: any 
+			}],
+			phases?: [{
+				id: string
+				[x: string]: any 
+			}],
+			groups?: [{
+				id: string
+				[x: string]: any 
+			}]
 		}
-		event?: [{
-			id: string
-			[x: string]: any 
-		}],
-		phases?: [{
-			id: string
-			[x: string]: any 
-		}],
-		groups?: [{
-			id: string
-			[x: string]: any 
-		}]
 	}
-}
 
 
-function parseOptions(options: Options) : Options {
-    let isCached: boolean = options.isCached != undefined ? options.isCached === true : true;
-    let concurrency: number = options.concurrency || DEFAULT_CONCURRENCY;
-	let rawEncoding: string = options.rawEncoding || DEFAULT_ENCODING
-	return {
-		isCached: isCached,
-		concurrency: concurrency,
-		rawEncoding: rawEncoding
+	function parseOptions(options: Options) : Options {
+		let isCached: boolean = options.isCached != undefined ? options.isCached === true : true;
+		let concurrency: number = options.concurrency || DEFAULT_CONCURRENCY;
+		let rawEncoding: string = options.rawEncoding || DEFAULT_ENCODING
+		return {
+			isCached: isCached,
+			concurrency: concurrency,
+			rawEncoding: rawEncoding
+		}
 	}
-}
 
-function parseTournamentOptions(options: TournamentOptions) : TournamentOptions {
-	let isCached: boolean = options.isCached != undefined ? options.isCached === true : true;
-	let rawEncoding: string = options.rawEncoding || DEFAULT_ENCODING;
-	let expands = {
-		event: (options.expands != undefined && options.expands.event == false) ? false : true,
-		phase: (options.expands != undefined  && options.expands.phase == false) ? false : true,
-		groups: (options.expands != undefined && options.expands.groups == false) ? false : true,
-		stations: (options.expands != undefined && options.expands.stations == false) ? false : true
-	};
-	return {
-		expands: expands,
-		isCached: isCached,
-		rawEncoding: rawEncoding
+	function parseTournamentOptions(options: TournamentOptions) : TournamentOptions {
+		let isCached: boolean = options.isCached != undefined ? options.isCached === true : true;
+		let rawEncoding: string = options.rawEncoding || DEFAULT_ENCODING;
+		let expands = {
+			event: (options.expands != undefined && options.expands.event == false) ? false : true,
+			phase: (options.expands != undefined  && options.expands.phase == false) ? false : true,
+			groups: (options.expands != undefined && options.expands.groups == false) ? false : true,
+			stations: (options.expands != undefined && options.expands.stations == false) ? false : true
+		};
+		return {
+			expands: expands,
+			isCached: isCached,
+			rawEncoding: rawEncoding
+		}
 	}
 }
 
@@ -107,7 +109,7 @@ class Tournament extends EventEmitter{
 
 	constructor(
         tournamentId: string | number, 
-        options?: TournamentOptions
+        options: TournamentOptions = {}
     ){
 		super();
 

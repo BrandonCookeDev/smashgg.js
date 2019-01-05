@@ -1,9 +1,8 @@
 import _ from 'lodash'
 import moment from 'moment'
-
-import * as log from 'winston'
-import * as pmap from 'p-map'
-import * as request from 'request-promise'
+import log from 'winston'
+import pmap from 'p-map'
+import request from 'request-promise'
 import { EventEmitter } from 'events'
 import { format } from 'util'
 
@@ -11,7 +10,9 @@ import Cache from './util/Cache'
 import Phase from './Phase'
 import PhaseGroup from './PhaseGroup'
 import Tournament from './Tournament'
-import GGSet from './GGSet';
+import GGSet from './GGSet'
+import Player from './Player'
+import Encoder from './util/Encoder'
 
 const EVENT_URL = 'https://api.smash.gg/event/%s?%s';
 const EVENT_SLUG_URL = 'https://api.smash.gg/%s/event/%s?%s';
@@ -48,20 +49,49 @@ declare namespace Event{
 		[x: string]: any
 	}
 
+	interface TExpands{
+		event: boolean,
+		phase: boolean,
+		groups: boolean,
+		stations: boolean
+	}
+
 	interface Event{
 
 	}
 }
 
 import Data = Event.Data;
+import Entity = Event.Entity;
 import Options = Event.Options;
+import TExpands = Event.TExpands;
 import EventExpands = Event.Expands;
 import EventOptions = Event.EventOptions;
 
+function parseTournamentOptions(options: EventOptions) : EventOptions {
+	return {
+		expands: {
+			phase: (options.expands != undefined  && options.expands.phase == false) ? false : true,
+			groups: (options.expands != undefined && options.expands.groups == false) ? false : true,
+		},
+		isCached: options.isCached != undefined ? options.isCached === true : true,
+		rawEncoding: Encoder.determineEncoding(options.rawEncoding)
+	}
+}
+
+function parseOptions(options: Options = {}) : Options{
+	return{
+		isCached: options.isCached != undefined ? options.isCached === true : true,
+		concurrency: options.concurrency || DEFAULT_CONCURRENCY,
+		rawEncoding: Encoder.determineEncoding(options.rawEncoding) 
+	}
+}
+
 export default class Event extends EventEmitter implements Event.Event{
 
+	id: number = 0
 	url: string = ''
-	data: object = {}
+	data: object | string = {}
 	eventId: string | number
 	expands: EventExpands = {
 		phase: true,
@@ -72,8 +102,10 @@ export default class Event extends EventEmitter implements Event.Event{
 	tournamentSlug: string = ''
 	isCached: boolean = true
 	rawEncoding: string = DEFAULT_ENCODING
+	phases: Array<Phase> = [];
+	groups: Array<PhaseGroup> = [];
 
-	constructor(eventId: string, tournamentId?: string, options: EventOptions={}){
+	constructor(eventId: string | number, tournamentId?: string, options: EventOptions={}){
 		super();
 		
 		if(!eventId)
@@ -99,7 +131,7 @@ export default class Event extends EventEmitter implements Event.Event{
 		this.loadEventData().then();
 	}
 
-	async loadEventData(): Promise<Data>{
+	async loadEventData(): Promise<string | object>{
 		try{
 			if(typeof this.eventId === 'string' && this.tournamentId){
 				let T: Tournament = await Tournament.getTournament(this.tournamentId);
@@ -129,57 +161,52 @@ export default class Event extends EventEmitter implements Event.Event{
 		}
 	}
 
-	loadData(data){
-		let encoded = this.rawEncoding == 'json' ? data : new Buffer(JSON.stringify(data)).toString(this.rawEncoding);
+	loadData(data: object): object | string {
+		let encoded : object | string = this.rawEncoding == 'json' ? data : new Buffer(JSON.stringify(data)).toString(this.rawEncoding);
 		this.data = encoded;
 		return encoded;
 	}
 
-	getData(){
-		let decoded = this.rawEncoding == 'json' ? this.data : JSON.parse(new Buffer(this.data, this.rawEncoding).toString('utf8'));
+	getData() : Data {
+		let decoded : object= this.rawEncoding == 'json' ? this.data : JSON.parse(new Buffer(this.data.toString(), this.rawEncoding).toString('utf8'));
 		return decoded;
 	}
 
 	// Convenience methods	
-	static getEvent(eventName, tournamentName, options={}){
-		let deferred = when.defer();
-		try{
-			let E = new Event(eventName, tournamentName, options);
-			E.on('ready', function(){
-				deferred.resolve(E);
-			});
-			E.on('error', function(e){
+	static getEvent(eventName: string, tournamentName: string, options: EventOptions={}){
+		return new Promise(function(resolve, reject){
+			try{
+				let E = new Event(eventName, tournamentName, options);
+				E.on('ready', function(){
+					resolve(E);
+				});
+				E.on('error', function(e){
+					log.error('getEvent error: %s', e);
+					reject(e);
+				});
+			} catch(e){
 				log.error('getEvent error: %s', e);
-				deferred.reject(e);
-			});
-		} catch(e){
-			log.error('getEvent error: %s', e);
-			deferred.reject(e);
-		}
-		return deferred.promise;
+				reject(e);
+			}
+		});
 	}
 
-	static getEventById(id, options={}){
-		let deferred = when.defer();
-		try{
-			if(isNaN(id)){
-				deferred.reject(new Error('ID must be an integer for this method'));
-				return deferred.promise;
-			}
-
-			let E = new Event(id, undefined, options);
-			E.on('ready', function(){
-				deferred.resolve(E);
-			});
-			E.on('error', function(e){
+	static getEventById(id: number, options: EventOptions={}){
+		return new Promise(function(resolve, reject){
+			try{
+				let E = new Event(id, undefined, options);
+				E.on('ready', function(){
+					resolve(E);
+				});
+				E.on('error', function(e){
+					log.error('getEventById error: %s', e);
+					reject(e);
+				});
+			} catch(e){
 				log.error('getEventById error: %s', e);
-				deferred.reject(e);
-			});
-		} catch(e){
-			log.error('getEventById error: %s', e);
-			deferred.reject(e);
-		}
-		return deferred.promise;
+				reject(e);
+			}
+		})
 	}
 
 	// Methods
@@ -222,10 +249,10 @@ export default class Event extends EventEmitter implements Event.Event{
 		}
 	}
 	
-	async loadTournamentData(expands, isCached) : Promise<boolean>{
+	async loadTournamentData(expands: TExpands, isCached: boolean = true) : Promise<boolean>{
 		log.debug('loadTournamentData called');
 		try {
-			let Tournament = require('./Tournament');
+			let Tournament : Tournament = require('./Tournament');
 			let slug = this.getTournamentSlug();
 			this.Tournament = await Tournament.getTournament(slug, expands, isCached);
 			return true;
@@ -236,28 +263,24 @@ export default class Event extends EventEmitter implements Event.Event{
 	}
 
 	/** BULK PULL PROMISES **/
-	async getEventPhases(options={}){
+	async getEventPhases(options: Options={}) : Promise<Array<Phase>>{
 		log.debug('Event.getEventPhases called');
 
-		let fromCacheTF = options.isCached != undefined ? options.isCached === true : true;
-		let concurrency = options.concurrency || DEFAULT_CONCURRENCY;
+		options = parseOptions();
 
 		try{
 			log.info('Getting Phases for Event ' + this.tournamentId);
 			let cacheKey = format('event::%s::%s::phases', this.tournamentId, this.eventId);
-			if(fromCacheTF){
-				let cached = await Cache.get(cacheKey);
-				if(cached){
-					this.phases = cached;
-					return cached;
-				}
+			if(options.isCached){
+				let cached: Array<Phase> = await Cache.get(cacheKey) as Array<Phase>;
+				if(cached) return cached;
 			}
 
-			let phases = this.getData().entities.phase;
-			let fn = async (phase) => {
+			let phases: Array<Entity> = this.getData().entities.phase;
+			let fn = async (phase: Entity) => {
 				return await Phase.getPhase(phase.id);
 			};
-			let allPhases = await pmap(phases, fn, {concurrency: concurrency});
+			let allPhases = await pmap(phases, fn, {concurrency: options.concurrency});
 
 			allPhases = _.uniqBy(allPhases, 'id');
 			this.phases = allPhases;
@@ -269,33 +292,28 @@ export default class Event extends EventEmitter implements Event.Event{
 		}
 	}
 
-	async getEventPhaseGroups(options={}){
+	async getEventPhaseGroups(options: Options={}) : Promise<Array<PhaseGroup>>{
 		log.debug('Event.getEventPhaseGroups called');
 
 		// parse options
-		let fromCacheTF = options.isCached != undefined ? options.isCached === true : true;
-		let concurrency = options.concurrency || DEFAULT_CONCURRENCY;
+		options = parseOptions(options)
 
 		try{
 			log.info('Getting Phase Groups for Event ' + this.tournamentId);
 			let cacheKey = format('event::%s::%s::groups', this.tournamentId, this.eventId);
-			if(fromCacheTF){
-				let cached = await Cache.get(cacheKey);
-				if(cached){
-					this.phaseGroups = cached;
-					return cached;
-				}
+			if(options.isCached){
+				let cached: Array<PhaseGroup> = await Cache.get(cacheKey) as Array<PhaseGroup>;
+				if(cached) return cached;
 			}
 
-			let groups = this.getData().entities.groups;
-			let fn = async (group) => {
+			let groups: Array<Entity> = this.getData().entities.groups;
+			let fn = async (group: Entity) => {
 				return await PhaseGroup.getPhaseGroup(group.id);
 			};
-			let allGroups = await pmap(groups, fn, {concurrency: concurrency});
+			let allGroups: Array<PhaseGroup> = await pmap(groups, fn, {concurrency: options.concurrency});
 
 			allGroups = _.uniqBy(allGroups, 'id');
-			this.phaseGroups = allGroups;
-			await Cache.set(cacheKey, this.phaseGroups);
+			await Cache.set(cacheKey, allGroups);
 			return allGroups;
 
 		} catch(err){
@@ -304,27 +322,26 @@ export default class Event extends EventEmitter implements Event.Event{
 		}
 	}
 
-	async getSets(options={}){
+	async getSets(options: Options={}) : Promise<Array<GGSet>>{
 		log.debug('Event.getSets called');
 		try{
 			// parse options
-			let fromCacheTF = options.isCached != undefined ? options.isCached === true : true;
-			let concurrency = options.concurrency || DEFAULT_CONCURRENCY;
+			options = parseOptions(options);
 
 			let cacheKey = format('event::%s::%s::sets', this.tournamentId, this.eventId);
-			if(fromCacheTF){
-				let cached = await Cache.get(cacheKey);
+			if(options.isCached){
+				let cached: Array<GGSet> = await Cache.get(cacheKey) as Array<GGSet>;
 				if(cached) return cached;
 			}
 
-			let phases = await this.getEventPhases(options);
-			let fn = async (phase) => {
+			let phases: Array<Phase> = await this.getEventPhases(options);
+			let fn = async (phase: Phase) => {
 				return await phase.getSets();
 			};
-			let sets = await pmap(phases, fn, {concurrency: concurrency});
+			let sets = await pmap(phases, fn, {concurrency: options.concurrency});
 
 			sets = _.flatten(sets);
-			if(fromCacheTF) await Cache.set(cacheKey, sets);
+			if(options.isCached) await Cache.set(cacheKey, sets);
 			return sets;
 		} catch(e){
 			log.error('Event.getSets error: %s', e);
@@ -332,28 +349,27 @@ export default class Event extends EventEmitter implements Event.Event{
 		}
 	}
 
-	async getPlayers(options={}){
+	async getPlayers(options: Options={}) : Promise<Array<Player>>{
 		log.debug('Event.getSets called');
 		try{
 			// parse options
-			let fromCacheTF = options.isCached != undefined ? options.isCached === true : true;
-			let concurrency = options.concurrency || DEFAULT_CONCURRENCY;
+			options = parseOptions(options);
 
 			let cacheKey = format('event::%s::%s::players', this.tournamentId, this.eventId);
-			if(fromCacheTF){
-				let cached = await Cache.get(cacheKey);
+			if(options.isCached){
+				let cached: Array<Player> = await Cache.get(cacheKey) as Array<Player>;
 				if(cached) return cached;
 			}
 
-			let phases = await this.getEventPhases(options);
-			let fn = async (phase) => {
+			let phases: Array<Phase> = await this.getEventPhases(options);
+			let fn = async (phase: Phase) => {
 				return await phase.getPlayers();
 			};
-			let players = await pmap(phases, fn, {concurrency: concurrency});
+			let players: Array<Player> = await pmap(phases, fn, {concurrency: options.concurrency});
 
 			players = _.flatten(players);
 			players = _.uniqBy(players, 'id');
-			if(fromCacheTF) await Cache.set(cacheKey, players);
+			if(options.isCached) await Cache.set(cacheKey, players);
 			return players;
 		} catch(e){
 			log.error('Event.getSets error: %s', e);
@@ -361,18 +377,17 @@ export default class Event extends EventEmitter implements Event.Event{
 		}
 	}
 
-	async getIncompleteSets(options={}){
+	async getIncompleteSets(options: Options={}) : Promise<Array<GGSet>>{
 		log.debug('Event.getIncompleteSets called');
 		try{
 			//parse options
-			//let isCached = options.isCached != undefined ? options.isCached == true : true;
-			let concurrency = options.concurrency || DEFAULT_CONCURRENCY;
+			options = parseOptions(options)
 
-			let phases = await this.getEventPhases(options);
-			let fn = async (phase) => {
+			let phases: Array<Phase> = await this.getEventPhases(options);
+			let fn = async (phase: Phase) => {
 				return await phase.getIncompleteSets(options);
 			};
-			let sets = await pmap(phases, fn, {concurrency: concurrency});
+			let sets: Array<GGSet> = await pmap(phases, fn, {concurrency: options.concurrency});
 			sets = _.flatten(sets);
 			return sets;
 		} catch(e){
@@ -381,18 +396,17 @@ export default class Event extends EventEmitter implements Event.Event{
 		}
 	}
 
-	async getCompleteSets(options={}){
+	async getCompleteSets(options: Options={}) : Promise<Array<GGSet>>{
 		log.debug('Event.getIncompleteSets called');
 		try{
 			//parse options
-			//let isCached = options.isCached != undefined ? options.isCached == true : true;
-			let concurrency = options.concurrency || DEFAULT_CONCURRENCY;
+			options = parseOptions(options);
 
-			let phases = await this.getEventPhases(options);
-			let fn = async (phase) => {
+			let phases: Array<Phase> = await this.getEventPhases(options);
+			let fn = async (phase: Phase) => {
 				return await phase.getCompleteSets(options);
 			};
-			let sets = await pmap(phases, fn, {concurrency: concurrency});
+			let sets: Array<GGSet> = await pmap(phases, fn, {concurrency: options.concurrency});
 			sets = _.flatten(sets);
 			return sets;
 		} catch(e){
@@ -401,18 +415,17 @@ export default class Event extends EventEmitter implements Event.Event{
 		}
 	}
 
-	async getSetsXMinutesBack(minutesBack: number, options={}) : Promise<Array<Set>> {
+	async getSetsXMinutesBack(minutesBack: number, options: Options={}) : Promise<Array<GGSet>> {
 		log.verbose('Event.getSetsXMinutesBack called');
 		try{
 			// parse options
-			let concurrency = options.concurrency || DEFAULT_CONCURRENCY;
-			options.isCached = false;
+			options=parseOptions(options);
 
-			let groups = await this.getEventPhases(options);
-			let fn = async (group) => {
+			let groups: Array<Phase> = await this.getEventPhases(options);
+			let fn = async (group: Phase) => {
 				return await group.getSetsXMinutesBack(minutesBack, options);
 			};
-			let sets = await pmap(groups, fn, {concurrency: concurrency});
+			let sets: Array<GGSet> = await pmap(groups, fn, {concurrency: options.concurrency});
 			sets = _.flatten(sets);
 			return sets;
 		} catch(e){
@@ -422,7 +435,7 @@ export default class Event extends EventEmitter implements Event.Event{
 	}
 
 	/** SIMPLE GETTERS **/
-	getFromDataEntities(prop){
+	getFromDataEntities(prop: string){
 		let data = this.getData();
 		if(data && data.entities && data.entities.event) {
 			if (!data.entities.event[prop])
@@ -516,7 +529,7 @@ export default class Event extends EventEmitter implements Event.Event{
 	}
 
 	/** NULL VALUES **/
-	nullValueString(prop){
+	nullValueString(prop: string){
 		return prop + ' not available for Event ' + this.getData().entities.event.name;
 	}
 
@@ -525,7 +538,7 @@ export default class Event extends EventEmitter implements Event.Event{
 		this.emit('ready');
 	}
 
-	emitEventError(err){
+	emitEventError(err: Error){
 		this.emit('error', err);
 	}
 }

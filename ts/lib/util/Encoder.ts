@@ -3,9 +3,9 @@
 const LEGAL_ENCODINGS = ['json', 'utf8', 'base64'];
 const DEFAULT_ENCODING = 'json';
 
-class Encoder{
+export default class Encoder{
 
-	static determineEncoding(encoding: string) : string {
+	static determineEncoding(encoding: string | undefined) : string {
 		return encoding != undefined && LEGAL_ENCODINGS.includes(encoding) ? encoding : DEFAULT_ENCODING;
 	}
 
@@ -19,5 +19,3 @@ class Encoder{
 		return decoded;
 	}
 }
-
-exports = Encoder;

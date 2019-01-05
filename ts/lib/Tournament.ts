@@ -14,6 +14,7 @@ import Phase from './Phase'
 import PhaseGroup from './PhaseGroup'
 import Player from './Player'
 import GGSet from './GGSet'
+import Encoder from './util/Encoder'
 
 const TOURNAMENT_URL = 'https://api.smash.gg/tournament/%s?%s';
 const LEGAL_ENCODINGS = ['json', 'utf8', 'base64'];
@@ -84,29 +85,24 @@ import TournamentExpands = Tournament.Expands;
 import TournamentData = Tournament.Data;
 
 function parseOptions(options: Options) : Options {
-	let isCached: boolean = options.isCached != undefined ? options.isCached === true : true;
-	let concurrency: number = options.concurrency || DEFAULT_CONCURRENCY;
-	let rawEncoding: string = options.rawEncoding || DEFAULT_ENCODING
+
 	return {
-		isCached: isCached,
-		concurrency: concurrency,
-		rawEncoding: rawEncoding
+		isCached: options.isCached != undefined ? options.isCached === true : true,
+		concurrency: options.concurrency || DEFAULT_CONCURRENCY,
+		rawEncoding: Encoder.determineEncoding(options.rawEncoding)
 	}
 }
 
 function parseTournamentOptions(options: TournamentOptions) : TournamentOptions {
-	let isCached: boolean = options.isCached != undefined ? options.isCached === true : true;
-	let rawEncoding: string = options.rawEncoding || DEFAULT_ENCODING;
-	let expands = {
-		event: (options.expands != undefined && options.expands.event == false) ? false : true,
-		phase: (options.expands != undefined  && options.expands.phase == false) ? false : true,
-		groups: (options.expands != undefined && options.expands.groups == false) ? false : true,
-		stations: (options.expands != undefined && options.expands.stations == false) ? false : true
-	};
 	return {
-		expands: expands,
-		isCached: isCached,
-		rawEncoding: rawEncoding
+		expands: {
+			event: (options.expands != undefined && options.expands.event == false) ? false : true,
+			phase: (options.expands != undefined  && options.expands.phase == false) ? false : true,
+			groups: (options.expands != undefined && options.expands.groups == false) ? false : true,
+			stations: (options.expands != undefined && options.expands.stations == false) ? false : true
+		},
+		isCached: options.isCached != undefined ? options.isCached === true : true,
+		rawEncoding: Encoder.determineEncoding(options.rawEncoding)
 	}
 }
 

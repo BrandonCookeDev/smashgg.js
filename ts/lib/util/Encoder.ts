@@ -20,4 +20,4 @@ class Encoder{
 	}
 }
 
-module.exports = Encoder;
+exports = Encoder;

@@ -2,18 +2,18 @@ import _ from 'lodash'
 import moment from 'moment-timezone'
 
 import * as log from 'winston'
-import * as pmap from 'p-map'
-import * as request from 'request-promise'
+import pmap from 'p-map'
+import request from 'request-promise'
 
 import { format } from 'util'
 import { EventEmitter } from 'events'
 
-import * as Cache from './util/Cache'
-import * as Event from './Event'
-import * as Phase from './Phase'
-import * as PhaseGroup from './PhaseGroup'
-import * as Player from './Player'
-import * as Set from './Set'
+import Cache from './util/Cache'
+import Event from './Event'
+import Phase from './Phase'
+import PhaseGroup from './PhaseGroup'
+import Player from './Player'
+import GGSet from './GGSet'
 
 const TOURNAMENT_URL = 'https://api.smash.gg/tournament/%s?%s';
 const LEGAL_ENCODINGS = ['json', 'utf8', 'base64'];
@@ -21,7 +21,7 @@ const DEFAULT_ENCODING = 'json';
 const DEFAULT_CONCURRENCY = 4;
 
 declare namespace Tournament{
-	interface TournamentOptions{
+	interface TOptions{
 		expands?: TournamentExpands, 
 		isCached?: boolean, 
 		rawEncoding?: string
@@ -33,14 +33,19 @@ declare namespace Tournament{
 		concurrency?: number    
 	}
 
-	interface TournamentExpands{
+	interface Expands{
 		event: boolean,
 		phase: boolean,
 		groups: boolean,
 		stations: boolean
 	}
 
-	interface TournamentData{
+	interface Data{		
+		[x: string]: any 
+	}
+
+	/*
+	interface Data{
 		entities: {
 			tournament: {
 				id: string,
@@ -60,47 +65,61 @@ declare namespace Tournament{
 			}]
 		}
 	}
+	*/
 
+	interface Tournament{
 
-	function parseOptions(options: Options) : Options {
-		let isCached: boolean = options.isCached != undefined ? options.isCached === true : true;
-		let concurrency: number = options.concurrency || DEFAULT_CONCURRENCY;
-		let rawEncoding: string = options.rawEncoding || DEFAULT_ENCODING
-		return {
-			isCached: isCached,
-			concurrency: concurrency,
-			rawEncoding: rawEncoding
-		}
-	}
-
-	function parseTournamentOptions(options: TournamentOptions) : TournamentOptions {
-		let isCached: boolean = options.isCached != undefined ? options.isCached === true : true;
-		let rawEncoding: string = options.rawEncoding || DEFAULT_ENCODING;
-		let expands = {
-			event: (options.expands != undefined && options.expands.event == false) ? false : true,
-			phase: (options.expands != undefined  && options.expands.phase == false) ? false : true,
-			groups: (options.expands != undefined && options.expands.groups == false) ? false : true,
-			stations: (options.expands != undefined && options.expands.stations == false) ? false : true
-		};
-		return {
-			expands: expands,
-			isCached: isCached,
-			rawEncoding: rawEncoding
-		}
 	}
 }
 
-class Tournament extends EventEmitter{
+import Options = Tournament.Options;
+import TournamentOptions = Tournament.TOptions;
+import TournamentExpands = Tournament.Expands;
+import TournamentData = Tournament.Data;
+
+function parseOptions(options: Options) : Options {
+	let isCached: boolean = options.isCached != undefined ? options.isCached === true : true;
+	let concurrency: number = options.concurrency || DEFAULT_CONCURRENCY;
+	let rawEncoding: string = options.rawEncoding || DEFAULT_ENCODING
+	return {
+		isCached: isCached,
+		concurrency: concurrency,
+		rawEncoding: rawEncoding
+	}
+}
+
+function parseTournamentOptions(options: TournamentOptions) : TournamentOptions {
+	let isCached: boolean = options.isCached != undefined ? options.isCached === true : true;
+	let rawEncoding: string = options.rawEncoding || DEFAULT_ENCODING;
+	let expands = {
+		event: (options.expands != undefined && options.expands.event == false) ? false : true,
+		phase: (options.expands != undefined  && options.expands.phase == false) ? false : true,
+		groups: (options.expands != undefined && options.expands.groups == false) ? false : true,
+		stations: (options.expands != undefined && options.expands.stations == false) ? false : true
+	};
+	return {
+		expands: expands,
+		isCached: isCached,
+		rawEncoding: rawEncoding
+	}
+}
+
+export default class Tournament extends EventEmitter implements Tournament.Tournament{
 
 	url: string = ''
     data: object | string = {}
 	name: string | number
-    expands: object = {}
+    expands: TournamentExpands = {
+		event: true,
+		groups: true,
+		phase: true,
+		stations: true
+	}
     expandsString: string = ''
     isCached: boolean = true
 	rawEncoding: string = DEFAULT_ENCODING
 	
-	sets: Array<Set> = []
+	sets: Array<GGSet> = []
 	events: Array<Event> = []
 	phases: Array<Phase> = []
 	players: Array<Player> = []
@@ -148,7 +167,8 @@ class Tournament extends EventEmitter{
 		this.load()
 			.then(function(){
                 let cacheKey = format('tournament::%s::%s', ThisTournament.name, ThisTournament.expandsString);
-				Cache.getInstance().set(cacheKey, ThisTournament);
+				Cache.set(cacheKey, ThisTournament);
+				
 			})
 			.then(function() {
 				ThisTournament.emitTournamentReady();
@@ -172,7 +192,7 @@ class Tournament extends EventEmitter{
 	}
 
 	// Convenience methods
-	static getTournament(tournamentName, options={}) : Promise<Tournament> {
+	static getTournament(tournamentName: string, options: TournamentOptions={}) : Promise<Tournament> {
         return new Promise(function(resolve, reject){
             try{
                 let T: Tournament = new Tournament(tournamentName, options);
@@ -199,7 +219,7 @@ class Tournament extends EventEmitter{
 	 * @param {*} expands 
 	 * @param {*} isCached 
 	 */
-	static getTournamentById(tournamentId: number, options={}) : Promise<Tournament>{
+	static getTournamentById(tournamentId: number, options: TournamentOptions={}) : Promise<Tournament>{
 		return new Promise(function(resolve, reject){
             try{
                 return Tournament.getTournamentById(tournamentId, options)
@@ -220,12 +240,12 @@ class Tournament extends EventEmitter{
 				return this.data = JSON.parse(await request(this.url));
 
 			let cacheKey: string = format('tournament::%s::%s::%s::data', this.name, this.rawEncoding, this.expandsString);
-			let cached: object = await Cache.getInstance().get(cacheKey);
+			let cached: object = await Cache.get(cacheKey);
 
 			if(!cached){
 				let response: string = await request(this.url);
 				let encoded: object | string = this.loadData(JSON.parse(response));
-				await Cache.getInstance().set(cacheKey, encoded);
+				await Cache.set(cacheKey, encoded);
 				return encoded;
 			}
 			else {
@@ -255,15 +275,15 @@ class Tournament extends EventEmitter{
 			log.info('Gettings players for ' + this.name);
 			let cacheKey: string = format('tournament::%s::players', this.name);
 			if(options.isCached){
-				let cached = await Cache.getInstance().get(cacheKey);
+				let cached: Array<Player> = await Cache.get(cacheKey) as Array<Player>;
 				if(cached){
 					this.players = cached;
 					return cached;
 				}
 			}
 			
-			let groups = this.getData().entities.groups;
-			let fn = async (group) : Promise<Array<Player>> => {
+			let groups: [{id: number, [x: string]: any}] = this.getData().entities.groups;
+			let fn = async (group: {id: number, [x: string]: any}) : Promise<Array<Player>> => {
 				let PG: PhaseGroup = await PhaseGroup.getPhaseGroup(group.id);
 				return await PG.getPlayers();
 			};
@@ -272,7 +292,7 @@ class Tournament extends EventEmitter{
 			allPlayers = _.flatten(allPlayers);
 			allPlayers = _.uniqBy(allPlayers, 'id');
 			this.players = allPlayers;
-			await Cache.getInstance().set(cacheKey, this.players);
+			await Cache.set(cacheKey, this.players);
 			return allPlayers;
 
 		}catch(err){
@@ -281,7 +301,7 @@ class Tournament extends EventEmitter{
 		}
 	}
 
-	async getAllSets(options: Options={}) : Promise<Array<Set>> {
+	async getAllSets(options: Options={}) : Promise<Array<GGSet>> {
 		log.debug('Tournament.getAllSets called');
 
 		// parse options
@@ -291,25 +311,25 @@ class Tournament extends EventEmitter{
 			log.info('Gettings sets for ' + this.getName());
 			let cacheKey: string = format('tournament::%s::sets', this.name);
 			if(options.isCached){
-				let cached = await Cache.getInstance().get(cacheKey);
+				let cached: Array<GGSet> = await Cache.get(cacheKey) as Array<GGSet>;
 				if(cached){
-					this.players = cached;
+					this.sets = cached;
 					return cached;
 				}
 			}
 
-			let groups = this.getData().entities.groups;
-			let fn = async (group) : Promise<Array<Set>> => {
+			let groups: [{id: number, [x: string]: any}] = this.getData().entities.groups;
+			let fn = async (group: {id: number, [x: string]: any}) : Promise<Array<GGSet>> => {
 				let PG: PhaseGroup = await PhaseGroup.getPhaseGroup(group.id);
 				return await PG.getSets();
 			};
-			let allSets : Array<Set> = await pmap(groups, fn, {concurrency: options.concurrency});
+			let allSets: Array<GGSet> = await pmap(groups, fn, {concurrency: options.concurrency});
 
 			allSets = _.flatten(allSets);
 			allSets = _.uniqBy(allSets, 'id');
 
 			this.sets = allSets;
-			await Cache.getInstance().set(cacheKey, this.sets);
+			await Cache.set(cacheKey, this.sets);
 			return allSets;
 
 
@@ -329,22 +349,22 @@ class Tournament extends EventEmitter{
 			log.info('Getting Events for ' + this.getName());
 			let cacheKey = format('tournament::%s::events', this.name);
 			if(options.isCached){
-				let cached = await Cache.getInstance().get(cacheKey);
+				let cached: Array<Event> = await Cache.get(cacheKey) as Array<Event>;
 				if(cached){
-					this.players = cached;
+					this.events = cached;
 					return cached;
 				}
 			}
 
-			let events = this.getData().entities.event;
-			let fn = async (event) : Promise<Array<Event>> => {
+			let events: [{id: number, [x: string]: any}] = this.getData().entities.event;
+			let fn = async (event: {id: number, [x: string]: any}) : Promise<Array<Event>> => {
 				let eventId = event.id;
 				return await Event.getEventById(eventId);
 			};
 			let allEvents: Array<Event> = await pmap(events, fn, {concurrency: options.concurrency});
 
 			this.events = allEvents;
-			await Cache.getInstance().set(cacheKey, this.events);
+			await Cache.set(cacheKey, this.events);
 			return allEvents;
 
 		} catch(err) {
@@ -353,17 +373,17 @@ class Tournament extends EventEmitter{
 		}
 	}
 
-	async getIncompleteSets(options: Options={}) : Promise<Array<Set>> {
+	async getIncompleteSets(options: Options={}) : Promise<Array<GGSet>> {
 		log.debug('Tournament.getIncompleteSets called');
 		try{
 			//parse options
 			options = parseOptions(options);
 
 			let events : Array<Event> = await this.getAllEvents(options);
-			let fn = async (event) : Promise<Array<Set>> => {
+			let fn = async (event: Event) : Promise<Array<GGSet>> => {
 				return await event.getIncompleteSets(options);
 			};
-			let sets : Array<Set> = await pmap(events, fn, {concurrency: options.concurrency});
+			let sets : Array<GGSet> = await pmap(events, fn, {concurrency: options.concurrency});
 			sets = _.flatten(sets);
 			return sets;
 		} catch(e){
@@ -372,17 +392,17 @@ class Tournament extends EventEmitter{
 		}
 	}
 
-	async getCompleteSets(options: Options={}) : Promise<Array<Set>> {
+	async getCompleteSets(options: Options={}) : Promise<Array<GGSet>> {
 		log.debug('Tournament.getIncompleteSets called');
 		try{
 			//parse options
 			options = parseOptions(options)
 
 			let events: Array<Event> = await this.getAllEvents(options);
-			let fn = async (event) : Promise<Array<Set>> => {
+			let fn = async (event: Event) : Promise<Array<GGSet>> => {
 				return await event.getCompleteSets(options);
 			};
-			let sets: Array<Set> = await pmap(events, fn, {concurrency: options.concurrency});
+			let sets: Array<GGSet> = await pmap(events, fn, {concurrency: options.concurrency});
 			sets = _.flatten(sets);
 			return sets;
 		} catch(e){
@@ -391,7 +411,7 @@ class Tournament extends EventEmitter{
 		}
 	}
 
-	async getSetsXMinutesBack(minutesBack: number, options: Options={}) : Promise<Array<Set>> {
+	async getSetsXMinutesBack(minutesBack: number, options: Options={}) : Promise<Array<GGSet>> {
 		log.verbose('Tournament.getSetsXMinutesBack called');
 		try{
 			// parse options
@@ -399,10 +419,10 @@ class Tournament extends EventEmitter{
 			options.isCached = false;
 
 			let events: Array<Event> = await this.getAllEvents(options);
-			let fn = async (event) : Promise<Array<Set>> => {
+			let fn = async (event: Event) : Promise<Array<GGSet>> => {
 				return await event.getSetsXMinutesBack(minutesBack, options);
 			};
-			let sets: Array<Set> = await pmap(events, fn, {concurrency: options.concurrency});
+			let sets: Array<GGSet> = await pmap(events, fn, {concurrency: options.concurrency});
 			sets = _.flatten(sets);
 			return sets;
 		} catch(e){
@@ -441,7 +461,7 @@ class Tournament extends EventEmitter{
 		return this.getFromDataEntities('timezone');
 	}
 
-	getStartTime() : Date{
+	getStartTime() : Date | null{
 		let startAt = this.getFromDataEntities('startAt');
 		let tz = this.getFromDataEntities('timezone');
 
@@ -455,7 +475,7 @@ class Tournament extends EventEmitter{
 		}
 	}
 
-	getStartTimeString() : string{
+	getStartTimeString() : string | null{
 		let startAt = this.getFromDataEntities('startAt');
 		let tz = this.getFromDataEntities('timezone');
 
@@ -470,7 +490,7 @@ class Tournament extends EventEmitter{
 		}
 	}
 
-	getEndTime() : Date{
+	getEndTime() : Date | null {
 		let endAt = this.getFromDataEntities('endAt');
 		let tz = this.getFromDataEntities('timezone');
 
@@ -484,7 +504,7 @@ class Tournament extends EventEmitter{
 		}
 	}
 
-	getEndTimeString() : string{
+	getEndTimeString() : string | null{
 		let endAt = this.getFromDataEntities('endAt');
 		let tz = this.getFromDataEntities('timezone');
 
@@ -499,7 +519,7 @@ class Tournament extends EventEmitter{
 		}
 	}
 
-	getWhenRegistrationCloses() : Date{
+	getWhenRegistrationCloses() : Date | null{
 		let closesAt = this.getFromDataEntities('eventRegistrationClosesAt');
 		let tz = this.getFromDataEntities('timezone');
 
@@ -514,7 +534,7 @@ class Tournament extends EventEmitter{
 		}
 	}
 
-	getWhenRegistrationClosesString() : string{
+	getWhenRegistrationClosesString() : string | null{
 		let closesAt: number = this.getFromDataEntities('eventRegistrationClosesAt');
 		let tz: string = this.getFromDataEntities('timezone');
 
@@ -563,7 +583,7 @@ class Tournament extends EventEmitter{
 	}
 
 	/** NULL VALUES **/
-	nullValueString(prop){
+	nullValueString(prop: string){
 		return prop + ' not available for tournament ' + this.getData().entities.tournament.name;
 	}
 
@@ -572,7 +592,7 @@ class Tournament extends EventEmitter{
 		this.emit('ready');
 	}
 
-	emitTournamentError(err){
+	emitTournamentError(err: Error){
 		this.emit('error', err);
 	}
 }

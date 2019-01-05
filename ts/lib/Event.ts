@@ -10,6 +10,7 @@ import { format } from 'util'
 import * as Cache from './util/Cache'
 import * as Phase from './Phase'
 import * as PhaseGroup from './PhaseGroup'
+import * as Set from './GGSet';
 
 const EVENT_URL = 'https://api.smash.gg/event/%s?%s';
 const EVENT_SLUG_URL = 'https://api.smash.gg/%s/event/%s?%s';
@@ -19,7 +20,7 @@ const LEGAL_ENCODINGS = ['json', 'utf8', 'base64'];
 const DEFAULT_ENCODING = 'json';
 const DEFAULT_CONCURRENCY = 4;
 
-class Event extends EventEmitter{
+export default class Event extends EventEmitter{
 
 	constructor(eventId, tournamentId=undefined, options = {}){
 		super();
@@ -359,7 +360,7 @@ class Event extends EventEmitter{
 		}
 	}
 
-	async getSetsXMinutesBack(minutesBack, options={}){
+	async getSetsXMinutesBack(minutesBack: number, options={}) : Promise<Array<Set>> {
 		log.verbose('Event.getSetsXMinutesBack called');
 		try{
 			// parse options
@@ -496,4 +497,3 @@ Event.prototype.toString = function(){
 		'\nStart Time: ' + this.getStartTime();
 };
 
-module.exports = Event;

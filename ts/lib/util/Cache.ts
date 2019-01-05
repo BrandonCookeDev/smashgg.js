@@ -1,36 +1,37 @@
 'use strict';
-import Promise from 'bluebird'
 
 import * as log from 'winston'
 import NodeCache from 'node-cache'
+import { reject } from 'bluebird';
 
-class Cache{
+export default class Cache{
 
-    static cache : NodeCache;
+    static instance : NodeCache;
 
-	static getInstance() : Cache{
-		if(!Cache.cache) {
-			Cache.cache = new NodeCache({
+	static getInstance() : NodeCache{
+		if(!Cache.instance) {
+			Cache.instance = new NodeCache({
 				stdTTL: 600,
 				checkperiod: 60
 			});
 		}
-		return Cache;
+		return Cache.instance;
 	}
 
 	static get(key: string) : Promise<object>{
 		return new Promise(function(resolve){
 			log.debug('Fetching (%s) from cache', key);
-			Cache.cache.get(key, function(err, value){
-				return resolve(value);
+			Cache.getInstance().get(key, function(err, value){
+				if(err) return reject(err);
+				else return resolve(value);
 			});
 		});
 	}
 
-	static set(key: string, val: object) : Promise<boolean> {
+	static set(key: string, val: object | string) : Promise<boolean> {
 		return new Promise(function(resolve, reject){
 			log.debug('Setting (%s) to value [%s]', key, val);
-			Cache.cache.set(key, val, function(err, success){
+			Cache.getInstance().set(key, val, function(err, success){
 				if(success) return resolve(success);
 				else return reject(new Error('Error setting cache value'));
 			});
@@ -40,7 +41,7 @@ class Cache{
 	static keys() : Promise<Array<string>> {
 		return new Promise(function(resolve, reject){
 			log.debug('returning keys');
-			Cache.cache.keys(function(err,keys){
+			Cache.getInstance().keys(function(err,keys){
 				if(err) {
 					log.error('Console.keys: ' + err);
 					return reject(err);
@@ -52,8 +53,6 @@ class Cache{
 
 	static flush() : void{
 		log.debug('flushing cache');
-		Cache.cache.flushAll();
+		Cache.getInstance().flushAll();
 	}
 }
-
-exports = Cache;

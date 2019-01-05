@@ -44,6 +44,11 @@ declare namespace Tournament{
 		[x: string]: any 
 	}
 
+	interface Entity{
+		id: number,
+		[x: string]: any
+	}
+
 	/*
 	interface Data{
 		entities: {
@@ -72,6 +77,7 @@ declare namespace Tournament{
 	}
 }
 
+import Entity = Tournament.Entity;
 import Options = Tournament.Options;
 import TournamentOptions = Tournament.TOptions;
 import TournamentExpands = Tournament.Expands;
@@ -127,15 +133,15 @@ export default class Tournament extends EventEmitter implements Tournament.Tourn
 
 
 	constructor(
-        tournamentId: string | number, 
+        tournamentId: string, 
         options: TournamentOptions = {}
     ){
 		super();
 
 		if(!tournamentId)
 			throw new Error('Tournament Name cannot be null');
-		else if(tournamentId instanceof Number)
-			throw new Error('Due to Smashgg limitations, currently Tournaments may only be retrieved by tournament name (slug)');
+		//else if(tournamentId instanceof Number)
+		//	throw new Error('Due to Smashgg limitations, currently Tournaments may only be retrieved by tournament name (slug)');
 
 		// parse options
 		let isCached = options.isCached != undefined ? options.isCached === true : true;
@@ -143,20 +149,20 @@ export default class Tournament extends EventEmitter implements Tournament.Tourn
 
 		// set properties
 		this.data = {};
-		this.name = tournamentId instanceof String ? tournamentId : +tournamentId;
+		this.name = tournamentId; // instanceof String ? tournamentId : +tournamentId;
 		this.isCached = isCached;
 		this.rawEncoding = LEGAL_ENCODINGS.includes(rawEncoding) ? rawEncoding : DEFAULT_ENCODING;
 
 		// create expands 
 		this.expandsString = '';
 		this.expands = {
-			event: (options.expands && options.expands.event == false) ? false : true,
-			phase: (options.expands && options.expands.phase == false) ? false : true,
-			groups: (options.expands && options.expands.groups == false) ? false : true,
-			stations: (options.expands && options.expands.stations == false) ? false : true
+			event: (options.expands != undefined && options.expands.event == false) ? false : true,
+			phase: (options.expands != undefined && options.expands.phase == false) ? false : true,
+			groups: (options.expands != undefined && options.expands.groups == false) ? false : true,
+			stations: (options.expands != undefined && options.expands.stations == false) ? false : true
 		};
 		for(let property in this.expands){
-			if(this.expands[property])
+			if(this.expands.hasOwnProperty(property))
 				this.expandsString += format('expand[]=%s&', property);
 		}
 
@@ -282,8 +288,8 @@ export default class Tournament extends EventEmitter implements Tournament.Tourn
 				}
 			}
 			
-			let groups: [{id: number, [x: string]: any}] = this.getData().entities.groups;
-			let fn = async (group: {id: number, [x: string]: any}) : Promise<Array<Player>> => {
+			let groups: Array<Entity> = this.getData().entities.groups;
+			let fn = async (group: Entity) : Promise<Array<Player>> => {
 				let PG: PhaseGroup = await PhaseGroup.getPhaseGroup(group.id);
 				return await PG.getPlayers();
 			};
@@ -318,8 +324,8 @@ export default class Tournament extends EventEmitter implements Tournament.Tourn
 				}
 			}
 
-			let groups: [{id: number, [x: string]: any}] = this.getData().entities.groups;
-			let fn = async (group: {id: number, [x: string]: any}) : Promise<Array<GGSet>> => {
+			let groups: Array<Entity> = this.getData().entities.groups;
+			let fn = async (group: Entity) : Promise<Array<GGSet>> => {
 				let PG: PhaseGroup = await PhaseGroup.getPhaseGroup(group.id);
 				return await PG.getSets();
 			};

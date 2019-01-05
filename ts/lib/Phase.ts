@@ -7,6 +7,7 @@ import {format} from 'util'
 import request from 'request-promise'
 import { EventEmitter } from 'events'
 
+import Common from './util/Common'
 import Cache from './util/Cache'
 import PhaseGroup from './PhaseGroup'
 
@@ -16,12 +17,39 @@ const DEFAULT_ENCODING = 'json';
 const DEFAULT_CONCURRENCY = 4;
 
 declare namespace Phase{
-	
+	interface Options{
+		isCached?: boolean,
+		expands?: Expands,
+		rawEncoding?: string
+	}
+
+	interface Expands{
+		groups: boolean
+	}
+
+	interface Data{
+		[x: string]: any
+	}
+
+	interface Entity{
+		id: number,
+		[x: string]: any
+	}
+
+	interface Phase{
+
+	}
 }
 
-export default class Phase extends EventEmitter{
+import CommonOptions = Common.Options
+import parseOptions = Common.parseOptions
+import PhaseOptions = Phase.Options
+import Entity = Phase.Entity
+import Data = Phase.Data
 
-	constructor(id: number, options?: ={}){
+export default class Phase extends EventEmitter implements Phase.Phase{
+
+	constructor(id: number, options: PhaseOptions = {}){
 		super();
 
 		if(!id)

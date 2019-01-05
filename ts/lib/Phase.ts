@@ -1,24 +1,27 @@
 'use strict';
 
-let _ = require('lodash');
-let log = require('winston');
-let when = require('when');
-let pmap = require('p-map');
-let format = require('util').format;
-let request  = require('request-promise');
-let Cache = require('./util/Cache').getInstance();
-let EventEmitter = require('events');
+import _ from 'lodash'
+import log from 'winston'
+import pmap from 'p-map'
+import {format} from 'util'
+import request from 'request-promise'
+import { EventEmitter } from 'events'
 
-let PhaseGroup = require('./PhaseGroup');
+import Cache from './util/Cache'
+import PhaseGroup from './PhaseGroup'
 
 const PHASE_URL = 'https://api.smash.gg/phase/%s?%s';
 const LEGAL_ENCODINGS = ['json', 'utf8', 'base64'];
 const DEFAULT_ENCODING = 'json';
 const DEFAULT_CONCURRENCY = 4;
 
+declare namespace Phase{
+	
+}
+
 export default class Phase extends EventEmitter{
 
-	constructor(id, options={}){
+	constructor(id: number, options?: ={}){
 		super();
 
 		if(!id)

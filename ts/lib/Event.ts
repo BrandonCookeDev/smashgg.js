@@ -24,9 +24,9 @@ const LEGAL_ENCODINGS = ['json', 'utf8', 'base64']
 const DEFAULT_ENCODING = 'json'
 const DEFAULT_CONCURRENCY = 4
 
-import { ICommon } from './models/ICommon'
-import { ITournament } from './models/ITournament'
-import { IEvent } from './models/IEvent'
+import { ICommon } from './interfaces/ICommon'
+import { ITournament } from './interfaces/ITournament'
+import { IEvent } from './interfaces/IEvent'
 
 import Data = IEvent.Data
 import EventExpands = IEvent.Expands
@@ -37,35 +37,13 @@ import Entity = ICommon.Entity
 import Options = ICommon.Options
 import parseOptions = Common.parseOptions
 
-function parseTournamentOptions(options: TournamentOptions) : TournamentOptions {
-	return {
-		expands: {
-			event: (options.expands != undefined  && options.expands.event == false) ? false : true,
-			phase: (options.expands != undefined  && options.expands.phase == false) ? false : true,
-			groups: (options.expands != undefined && options.expands.groups == false) ? false : true,
-			stations: (options.expands != undefined && options.expands.stations == false) ? false : true
-		},
-		isCached: options.isCached != undefined ? options.isCached === true : true,
-		rawEncoding: Encoder.determineEncoding(options.rawEncoding)
-	}
-}
 
-function parseEventOptions(options: EventOptions) : EventOptions {
-	return{
-		expands: {
-			phase: (options.expands != undefined  && options.expands.phase == false) ? false : true,
-			groups: (options.expands != undefined && options.expands.groups == false) ? false : true
-		},
-		isCached: options.isCached != undefined ? options.isCached === true : true,
-		rawEncoding: Encoder.determineEncoding(options.rawEncoding)
-	}
-}
 
 export default class Event extends EventEmitter implements IEvent.Event{
 
 	id: number = 0
 	url: string = ''
-	data: Data | string = {
+	data: IEvent.Data | string = {
 		entities:{
 			event:{
 				id: 0
@@ -107,58 +85,7 @@ export default class Event extends EventEmitter implements IEvent.Event{
 				this.expandsString += format('expand[]=%s&', property);
 		}
 
-		this.loadEventData().then();
-	}
-
-	async getTournamentData(tournamentId: string, options: TournamentOptions = {}): Promise<Entity>{
-		try{
-			options = parseTournamentOptions(options);
-			
-			let cacheKey: string = format(EVENT_TOURNAMENT_CACHE_KEY, tournamentId, options.rawEncoding);
-			if(options.isCached){
-				let cached: Entity = await Cache.get(cacheKey) as Entity;
-				return cached;
-			}
-
-			Fetcher.getTournamentData(tournamentId, options)
-			await Cache.set(cacheKey, data);
-			return data;
-		} catch(err){
-			console.error('Error creating Tournament. For more info, implement Event.on(\'error\')');
-			log.error('Event error: %s', err.message);
-			this.emitEventError(err);
-			throw err;
-		}
-	}
-
-	async loadEventData(): Promise<string | object>{
-		try{
-			if(typeof this.eventId === 'string' && this.tournamentId){
-				let T: Entity = await this.getTournamentData(this.tournamentId);
-
-				this.tournamentSlug = T.tournament.slug;
-				this.url = format(EVENT_SLUG_URL, this.tournamentSlug, this.eventId, this.expandsString);
-				await this.load();
-			
-				let cacheKey = format(EVENT_TOURNAMENT_CACHE_KEY, this.tournamentId, this.eventId, this.expandsString);
-				Cache.set(cacheKey, this);
-				this.emitEventReady();
-			}
-			else{
-				this.url = format(EVENT_URL, this.eventId, this.expandsString);
-				await this.load();
-				let cacheKey = format(EVENT_ID_CACHE_KEY, this.eventId, this.expandsString);
-				Cache.set(cacheKey, this);
-				let tournamentData = await Fetcher.getTournamentData(parseTournamentOptions());
-				this.emitEventReady();
-			}
-			return this.data;
-		} catch(err){
-			console.error('Error creating Tournament. For more info, implement Event.on(\'error\')');
-			log.error('Event error: %s', err.message);
-			this.emitEventError(err);
-			throw err;
-		}
+		this.load(options);
 	}
 
 	loadData(data: Data): Data | string {
@@ -210,7 +137,7 @@ export default class Event extends EventEmitter implements IEvent.Event{
 	}
 
 	// Methods
-	async load() : Promise<Data | string>  {
+	async load(options: EventOptions, tournamentOptions: TournamentOptions) : Promise<Data | string>  {
 		log.debug('Event.load called');
 		log.verbose('Creating Event from url: %s', this.url);
 		try{
@@ -226,6 +153,17 @@ export default class Event extends EventEmitter implements IEvent.Event{
 			let cached = await Cache.get(cacheKey);
 
 			if(!cached){
+				if(typeof this.eventId == 'number'){
+					let eventData: IEvent.Data = await Fetcher.getEventDataById(this.eventId as number, options);
+					let tournamentId: string = IEvent.getTournamentSlug(eventData.entities.slug);
+					let tournamentData: ITournament.Data = Fetcher.getTournamentData(tournamentId, ITournament.getDefaultOptions());
+					let data: Data = {
+						tournament: tournamentData,
+						event: eventData
+					}
+				}
+
+
 				let response = await request(this.url);
 				let encoded = this.loadData(JSON.parse(response));
 				await Cache.set(cacheKey, encoded);

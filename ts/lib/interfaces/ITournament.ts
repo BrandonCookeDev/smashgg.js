@@ -104,6 +104,19 @@ export namespace ITournament{
 		[x: string]: any
 	}
 
+	export function getDefaultOptions(): Options{
+		return {
+			expands:{
+				event: true,
+				phase: true,
+				groups: true,
+				stations: true
+			},
+			isCached: true,
+			rawEncoding: 'JSON'
+		}
+	}
+
 	export function parseOptions(options: Options){
 		return {
 			expands: {

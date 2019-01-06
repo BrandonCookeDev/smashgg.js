@@ -4,8 +4,8 @@ import { format } from 'util'
 import * as Common from './Common'
 
 
-import { ITournament } from '../models/ITournament'
-import { IEvent } from '../models/IEvent'
+import { ITournament } from '../interfaces/ITournament'
+import { IEvent } from '../interfaces/IEvent'
 
 import createExpandsString = Common.createExpandsString
 import TournamentOptions = ITournament.Options
@@ -61,4 +61,12 @@ export async function getEventDataById(eventId: number, options: EventOptions): 
         log.error('Event error: %s', err.message);
         throw err;
     }
+}
+
+export async function getPhase(phaseId: number, options: PhaseOptions): Promise<PhaseData> {
+
+}
+
+export async function getPhaseGroup(phaseGroupId: number, options: PhaseGroupOptions): Promise<PhaseGroupData> {
+    
 }

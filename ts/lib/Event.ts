@@ -13,6 +13,7 @@ import PhaseGroup from './PhaseGroup'
 import GGSet from './GGSet'
 import Player from './Player'
 import Encoder from './util/Encoder'
+import Fetcher from './util/EntityFetcher'
 
 const EVENT_URL = 'https://api.smash.gg/event/%s?%s'
 const EVENT_SLUG_URL = 'https://api.smash.gg/%s/event/%s?%s'
@@ -131,7 +132,7 @@ export default class Event extends EventEmitter implements IEvent.Event{
 		}
 	}
 
-	async getEventData(): Promise<string | object>{
+	async loadEventData(): Promise<string | object>{
 		try{
 			if(typeof this.eventId === 'string' && this.tournamentId){
 				let T: Entity = await this.getTournamentData(this.tournamentId);
@@ -149,7 +150,7 @@ export default class Event extends EventEmitter implements IEvent.Event{
 				await this.load();
 				let cacheKey = format(EVENT_ID_CACHE_KEY, this.eventId, this.expandsString);
 				Cache.set(cacheKey, this);
-				let tournamentData = await this.loadTournamentData();
+				let tournamentData = await Fetcher.getTournamentData(parseTournamentOptions());
 				this.emitEventReady();
 			}
 			return this.data;

@@ -21,7 +21,7 @@ export namespace IEvent{
 
 		getTournamentData(tournamentId: string, options: TournamentOptions): Promise<Entity>
 		
-		getEventData(): Promise<string | object>
+		loadEventData(): Promise<string | object>
 		
 		loadData(data: object): object | string 
 	
@@ -78,8 +78,8 @@ export namespace IEvent{
 	export interface Options{
 		isCached?: boolean,
 		rawEncoding?: string,
-		expands?: Expands
-	}	
+		expands: Expands
+	}
 
 	export interface Expands{
 		phase: boolean,

@@ -1,6 +1,6 @@
 import { format } from 'util'
 import Encoder from './Encoder'
-import { ICommon } from '../models/ICommon';
+import { ICommon } from '../interfaces/ICommon';
 
 const DEFAULT_CONCURRENCY = 4;
 

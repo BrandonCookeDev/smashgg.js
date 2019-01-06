@@ -3,6 +3,7 @@ import { ITournament } from './ITournament'
 import Encoder from '../util/Encoder'
 
 import Entity = ICommon.Entity
+import TournamentData = ITournament.Data
 import TournamentOptions = ITournament.Options
 
 export namespace IEvent{
@@ -19,10 +20,6 @@ export namespace IEvent{
 		rawEncoding: string 
 		phases: Array<Phase> 
 		groups: Array<PhaseGroup> 
-
-		getTournamentData(tournamentId: string, options: TournamentOptions): Promise<Entity>
-		
-		loadEventData(): Promise<string | object>
 		
 		loadData(data: object): object | string 
 	
@@ -88,10 +85,34 @@ export namespace IEvent{
 	}
 
 	export interface Data{
+		tournament: TournamentData,
+		event: EventData
+	}
+
+	export interface EventData{
 		entities: {
-			event: Entity,
-			groups?: [Entity],
-			phase?: [Entity]
+				slug: string,
+				tournamentId: number,
+				event: Entity,
+				groups?: [Entity],
+				phase?: [Entity],
+				[x: string]: any
+			},
+		}
+	}
+
+	export function getTournamentSlug(slug: string) : {
+		return slug.substring(slug.indexOf('/') + 1, slug.indexOf('/', slug.indexOf('/') + 1));
+	}
+
+	export function getDefaultOptions(): Options{
+		return {
+			expands:{
+				phase: true,
+				groups: true
+			},
+			isCached: true,
+			rawEncoding: 'JSON'
 		}
 	}
 

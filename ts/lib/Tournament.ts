@@ -17,8 +17,8 @@ import Player from './Player'
 import GGSet from './GGSet'
 import Encoder from './util/Encoder'
 
-import { ICommon } from './models/ICommon'
-import { ITournament } from './models/ITournament'
+import { ICommon } from './interfaces/ICommon'
+import { ITournament } from './interfaces/ITournament'
 
 
 const TOURNAMENT_URL = 'https://api.smash.gg/tournament/%s?%s';

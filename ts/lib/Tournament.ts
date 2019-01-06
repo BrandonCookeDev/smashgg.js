@@ -17,59 +17,20 @@ import Player from './Player'
 import GGSet from './GGSet'
 import Encoder from './util/Encoder'
 
+import { ICommon } from './models/ICommon'
+import { ITournament } from './models/ITournament'
+
+
 const TOURNAMENT_URL = 'https://api.smash.gg/tournament/%s?%s';
 const LEGAL_ENCODINGS = ['json', 'utf8', 'base64'];
 const DEFAULT_ENCODING = 'json';
 const DEFAULT_CONCURRENCY = 4;
 
-declare namespace Tournament{
-	interface Options{
-		expands?: Expands, 
-		isCached?: boolean, 
-		rawEncoding?: string
-	}
-
-	interface Expands{
-		event: boolean,
-		phase: boolean,
-		groups: boolean,
-		stations: boolean
-	}
-
-	/*
-	interface Data{
-		entities: {
-			tournament: {
-				id: string,
-				[x: string]: any 
-			}
-			event?: [{
-				id: string
-				[x: string]: any 
-			}],
-			phases?: [{
-				id: string
-				[x: string]: any 
-			}],
-			groups?: [{
-				id: string
-				[x: string]: any 
-			}]
-		}
-	}
-	*/
-
-	interface Tournament{
-
-	}
-	
-}
-
-import Data = Common.Data;
-import Entity = Common.Entity;
-import Options = Common.Options;
-import TournamentOptions = Tournament.Options;
-import TournamentExpands = Tournament.Expands;
+import Entity = ICommon.Entity;
+import Options = ICommon.Options;
+import Data = ITournament.Data
+import TournamentOptions = ITournament.Options;
+import TournamentExpands = ITournament.Expands;
 import parseOptions = Common.parseOptions;
 
 function parseTournamentOptions(options: TournamentOptions) : TournamentOptions {
@@ -85,10 +46,10 @@ function parseTournamentOptions(options: TournamentOptions) : TournamentOptions 
 	}
 }
 
-export default class Tournament extends EventEmitter implements Tournament.Tournament{
+export default class Tournament extends EventEmitter implements ITournament.Tournament{
 
 	url: string = ''
-    data: object | string = {}
+    data: Data | string
 	name: string | number
     expands: TournamentExpands = {
 		event: true,
@@ -123,7 +84,11 @@ export default class Tournament extends EventEmitter implements Tournament.Tourn
 		let rawEncoding = options.rawEncoding || DEFAULT_ENCODING;
 
 		// set properties
-		this.data = {};
+		this.data = {
+			tournament:{
+				id: 0
+			}
+		}
 		this.name = tournamentId; // instanceof String ? tournamentId : +tournamentId;
 		this.isCached = isCached;
 		this.rawEncoding = LEGAL_ENCODINGS.includes(rawEncoding) ? rawEncoding : DEFAULT_ENCODING;
@@ -161,14 +126,14 @@ export default class Tournament extends EventEmitter implements Tournament.Tourn
 			});
 	}
 
-	loadData(data: object) : object | string{
-		let encoded: object | string = this.rawEncoding == 'json' ? data : new Buffer(JSON.stringify(data)).toString(this.rawEncoding);
+	loadData(data: object) : Data | string{
+		let encoded: Data | string = this.rawEncoding == 'json' ? data as Data : new Buffer(JSON.stringify(data)).toString(this.rawEncoding);
 		this.data = encoded;
 		return encoded;
 	}
 
-	getData() : TournamentData {
-		let decoded: TournamentData = this.rawEncoding == 'json' ? this.data : JSON.parse(new Buffer(this.data.toString(), this.rawEncoding).toString('utf8'));
+	getData() : Data {
+		let decoded: Data = this.rawEncoding == 'json' ? this.data as Data : JSON.parse(new Buffer(this.data.toString(), this.rawEncoding).toString('utf8')) as Data;
 		return decoded;
 	}
 
@@ -213,7 +178,7 @@ export default class Tournament extends EventEmitter implements Tournament.Tourn
         })
 	}
 
-	async load() : Promise<object | string> {
+	async load() : Promise<Data | string> {
 		log.debug('Tournament.load called');
 		log.verbose('Creating Tournament from url: %s', this.url);
 		try{
@@ -221,11 +186,11 @@ export default class Tournament extends EventEmitter implements Tournament.Tourn
 				return this.data = JSON.parse(await request(this.url));
 
 			let cacheKey: string = format('tournament::%s::%s::%s::data', this.name, this.rawEncoding, this.expandsString);
-			let cached: object = await Cache.get(cacheKey);
+			let cached: Data | string = await Cache.get(cacheKey) as Data | string;
 
 			if(!cached){
 				let response: string = await request(this.url);
-				let encoded: object | string = this.loadData(JSON.parse(response));
+				let encoded: Data | string = this.loadData(JSON.parse(response));
 				await Cache.set(cacheKey, encoded);
 				return encoded;
 			}
@@ -564,7 +529,7 @@ export default class Tournament extends EventEmitter implements Tournament.Tourn
 	}
 
 	/** NULL VALUES **/
-	nullValueString(prop: string){
+	nullValueString(prop: string) : string{
 		return prop + ' not available for tournament ' + this.getData().entities.tournament.name;
 	}
 

@@ -14,58 +14,27 @@ import GGSet from './GGSet'
 import Player from './Player'
 import Encoder from './util/Encoder'
 
-const EVENT_URL = 'https://api.smash.gg/event/%s?%s';
-const EVENT_SLUG_URL = 'https://api.smash.gg/%s/event/%s?%s';
-const TOURNAMENT_URL = 'https://api.smash.gg/tournament/%s';
-const EVENT_TOURNAMENT_CACHE_KEY = 'event::%s::%s';
-const EVENT_ID_CACHE_KEY = 'event::%s::%s';
-const LEGAL_ENCODINGS = ['json', 'utf8', 'base64'];
-const DEFAULT_ENCODING = 'json';
-const DEFAULT_CONCURRENCY = 4;
+const EVENT_URL = 'https://api.smash.gg/event/%s?%s'
+const EVENT_SLUG_URL = 'https://api.smash.gg/%s/event/%s?%s'
+const TOURNAMENT_URL = 'https://api.smash.gg/tournament/%s'
+const EVENT_TOURNAMENT_CACHE_KEY = 'event::%s::%s'
+const EVENT_ID_CACHE_KEY = 'event::%s::%s'
+const LEGAL_ENCODINGS = ['json', 'utf8', 'base64']
+const DEFAULT_ENCODING = 'json'
+const DEFAULT_CONCURRENCY = 4
 
-declare namespace Event{
+import { ICommon } from './models/ICommon'
+import { ITournament } from './models/ITournament'
+import { IEvent } from './models/IEvent'
 
-	interface Options{
-		isCached?: boolean,
-		rawEncoding?: string,
-		expands?: Expands
-	}	
-
-	interface Expands{
-		phase: boolean,
-		groups: boolean 
-	}
-
-	interface Tournament{
-		tournamentId: string,
-		options?: TOptions
-	}
-
-	interface TOptions{
-		isCached?: boolean,
-		rawEncoding?: string,
-		expands?: TExpands
-	}
-
-	interface TExpands{
-		event: boolean,
-		phase: boolean,
-		groups: boolean,
-		stations: boolean
-	}
-
-	interface Event{
-
-	}
-}
-
-import Data = Common.Data;
-import Entity = Common.Entity;
-import Options = Common.Options;
-import EventExpands = Event.Expands;
-import EventOptions = Event.Options;
-import TournamentOptions = Event.TOptions
-import TournamentExpands = Event.TExpands;
+import Data = IEvent.Data
+import EventExpands = IEvent.Expands
+import EventOptions = IEvent.Options
+import TournamentOptions = ITournament.Options
+import TournamentExpands = ITournament.Expands
+import Entity = ICommon.Entity
+import Options = ICommon.Options
+import parseOptions = Common.parseOptions
 
 function parseTournamentOptions(options: TournamentOptions) : TournamentOptions {
 	return {
@@ -91,11 +60,17 @@ function parseEventOptions(options: EventOptions) : EventOptions {
 	}
 }
 
-export default class Event extends EventEmitter implements Event.Event{
+export default class Event extends EventEmitter implements IEvent.Event{
 
 	id: number = 0
 	url: string = ''
-	data: object | string = {}
+	data: Data | string = {
+		entities:{
+			event:{
+				id: 0
+			}
+		}
+	}
 	eventId: string | number
 	expands: EventExpands = {
 		phase: true,
@@ -116,7 +91,6 @@ export default class Event extends EventEmitter implements Event.Event{
 			throw new Error('Event Constructor: Event Name/ID cannot be null for Event');
 
 		// set properties
-		this.data = {};// if it's NaN, we have an event Name not ID number
 		this.tournamentId = tournamentId;
 		this.isCached = options.isCached != undefined ? options.isCached === true : true;;
 		this.eventId = typeof(eventId) === 'string' ? eventId : +eventId; 
@@ -135,7 +109,7 @@ export default class Event extends EventEmitter implements Event.Event{
 		this.loadEventData().then();
 	}
 
-	async loadTournamentData(tournamentId: string, options: TournamentOptions = {}): Promise<Entity>{
+	async getTournamentData(tournamentId: string, options: TournamentOptions = {}): Promise<Entity>{
 		try{
 			options = parseTournamentOptions(options);
 			
@@ -157,10 +131,10 @@ export default class Event extends EventEmitter implements Event.Event{
 		}
 	}
 
-	async loadEventData(): Promise<string | object>{
+	async getEventData(): Promise<string | object>{
 		try{
 			if(typeof this.eventId === 'string' && this.tournamentId){
-				let T: Entity = await this.loadTournamentData(this.tournamentId);
+				let T: Entity = await this.getTournamentData(this.tournamentId);
 
 				this.tournamentSlug = T.tournament.slug;
 				this.url = format(EVENT_SLUG_URL, this.tournamentSlug, this.eventId, this.expandsString);
@@ -187,19 +161,19 @@ export default class Event extends EventEmitter implements Event.Event{
 		}
 	}
 
-	loadData(data: object): object | string {
-		let encoded : object | string = this.rawEncoding == 'json' ? data : new Buffer(JSON.stringify(data)).toString(this.rawEncoding);
+	loadData(data: Data): Data | string {
+		let encoded : Data | string = this.rawEncoding == 'json' ? data as Data : new Buffer(JSON.stringify(data)).toString(this.rawEncoding);
 		this.data = encoded;
 		return encoded;
 	}
 
 	getData() : Data {
-		let decoded : object= this.rawEncoding == 'json' ? this.data : JSON.parse(new Buffer(this.data.toString(), this.rawEncoding).toString('utf8'));
+		let decoded : Data = this.rawEncoding == 'json' ? this.data as Data : JSON.parse(new Buffer(this.data.toString(), this.rawEncoding).toString('utf8')) as Data;
 		return decoded;
 	}
 
 	// Convenience methods	
-	static getEvent(eventName: string, tournamentName: string, options: EventOptions={}){
+	static getEvent(eventName: string, tournamentName: string, options: EventOptions={}) : Promise<Event> {
 		return new Promise(function(resolve, reject){
 			try{
 				let E = new Event(eventName, tournamentName, options);
@@ -236,7 +210,7 @@ export default class Event extends EventEmitter implements Event.Event{
 	}
 
 	// Methods
-	async load(){
+	async load() : Promise<Data | string>  {
 		log.debug('Event.load called');
 		log.verbose('Creating Event from url: %s', this.url);
 		try{
@@ -279,7 +253,7 @@ export default class Event extends EventEmitter implements Event.Event{
 	async getEventPhases(options: Options={}) : Promise<Array<Phase>>{
 		log.debug('Event.getEventPhases called');
 
-		options = parseOptions();
+		options = parseOptions(options);
 
 		try{
 			log.info('Getting Phases for Event ' + this.tournamentId);
@@ -289,7 +263,7 @@ export default class Event extends EventEmitter implements Event.Event{
 				if(cached) return cached;
 			}
 
-			let phases: Array<Entity> = this.getData().entities.phase;
+			let phases: Array<Entity> = this.getData().entities.phase as Array<Entity>;
 			let fn = async (phase: Entity) => {
 				return await Phase.getPhase(phase.id);
 			};
@@ -319,7 +293,7 @@ export default class Event extends EventEmitter implements Event.Event{
 				if(cached) return cached;
 			}
 
-			let groups: Array<Entity> = this.getData().entities.groups;
+			let groups: Array<Entity> = this.getData().entities.groups as Array<Entity>;
 			let fn = async (group: Entity) => {
 				return await PhaseGroup.getPhaseGroup(group.id);
 			};
@@ -448,7 +422,7 @@ export default class Event extends EventEmitter implements Event.Event{
 	}
 
 	/** SIMPLE GETTERS **/
-	getFromDataEntities(prop: string){
+	getFromDataEntities(prop: string) : any{
 		let data = this.getData();
 		if(data && data.entities && data.entities.event) {
 			if (!data.entities.event[prop])
@@ -461,29 +435,29 @@ export default class Event extends EventEmitter implements Event.Event{
 		}
 	}
 
-	getId(){ 
+	getId() : number{ 
 		return this.getFromDataEntities('id');
 	}
 
-	getName(){
+	getName() : string{
 		return this.getFromDataEntities('name');
 	}
 
-	getTournamentId(){
+	getTournamentId() : number{
 		return this.getFromDataEntities('tournamentId');
 	}
 
-	getSlug(){
+	getSlug() : string{
 		return this.getFromDataEntities('slug');
 	}
 
-	getTournamentSlug(){
+	getTournamentSlug() : string{
 		let slug = this.getSlug();
 		let tournamentSlug = slug.substring(slug.indexOf('/') + 1, slug.indexOf('/', slug.indexOf('/') + 1));
 		return tournamentSlug;
 	}
 
-	getStartTime(){
+	getStartTime() : Date | null {
 		let startAt = this.getFromDataEntities('startAt');
 		let tz = this.Tournament.getTimezone();
 
@@ -497,7 +471,7 @@ export default class Event extends EventEmitter implements Event.Event{
 		}
 	}
 
-	getStartTimeString(){
+	getStartTimeString() : string | null {
 		let startAt = this.getFromDataEntities('startAt');
 		let tz = this.Tournament.getTimezone();
 
@@ -512,7 +486,7 @@ export default class Event extends EventEmitter implements Event.Event{
 		}
 	}
 
-	getEndTime(){
+	getEndTime() : Date | null {
 		let endAt = this.getFromDataEntities('endAt');
 		let tz = this.Tournament.getTimezone();
 
@@ -526,7 +500,7 @@ export default class Event extends EventEmitter implements Event.Event{
 		}
 	}
 
-	getEndTimeString(){
+	getEndTimeString() : string | null {
 		let endAt = this.getFromDataEntities('endAt');
 		let tz = this.Tournament.getTimezone();
 
@@ -542,16 +516,16 @@ export default class Event extends EventEmitter implements Event.Event{
 	}
 
 	/** NULL VALUES **/
-	nullValueString(prop: string){
+	nullValueString(prop: string) : string{
 		return prop + ' not available for Event ' + this.getData().entities.event.name;
 	}
 
 	/** EVENTS **/
-	emitEventReady(){
+	emitEventReady() : void{
 		this.emit('ready');
 	}
 
-	emitEventError(err: Error){
+	emitEventError(err: Error) : void{
 		this.emit('error', err);
 	}
 }

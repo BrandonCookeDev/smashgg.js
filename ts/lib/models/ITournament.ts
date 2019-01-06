@@ -1,4 +1,5 @@
 import { ICommon } from './ICommon'
+import Encoder from '../util/Encoder'
 import Entity = ICommon.Entity;
 
 export namespace ITournament{
@@ -101,5 +102,18 @@ export namespace ITournament{
 			[x: string]: any
 		},
 		[x: string]: any
+	}
+
+	export function parseOptions(options: Options){
+		return {
+			expands: {
+				event: (options.expands != undefined && options.expands.event == false) ? false : true,
+				phase: (options.expands != undefined  && options.expands.phase == false) ? false : true,
+				groups: (options.expands != undefined && options.expands.groups == false) ? false : true,
+				stations: (options.expands != undefined && options.expands.stations == false) ? false : true
+			},
+			isCached: options.isCached != undefined ? options.isCached === true : true,
+			rawEncoding: Encoder.determineEncoding(options.rawEncoding)
+		}
 	}
 }

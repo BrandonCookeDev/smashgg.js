@@ -1,22 +1,10 @@
 import { format } from 'util'
 import Encoder from './Encoder'
+import { ICommon } from '../models/ICommon';
 
 const DEFAULT_CONCURRENCY = 4;
 
-export interface Options{
-	isCached?: boolean, 
-	rawEncoding?: string,
-	concurrency?: number    
-}
-
-export interface Entity{
-	id: number,
-	[x: string]: any
-}
-
-export interface Data{
-	[x: string]: any
-}
+import Options = ICommon.Options
 
 export function parseOptions(options: Options) : Options {
 	return {

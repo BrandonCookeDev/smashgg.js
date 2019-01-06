@@ -18,7 +18,7 @@ export default class Cache{
 		return Cache.instance;
 	}
 
-	static get(key: string) : Promise<object>{
+	static get(key: string) : Promise<any>{
 		return new Promise(function(resolve){
 			log.debug('Fetching (%s) from cache', key);
 			Cache.getInstance().get(key, function(err, value){
@@ -28,7 +28,7 @@ export default class Cache{
 		});
 	}
 
-	static set(key: string, val: object | string) : Promise<boolean> {
+	static set(key: string, val: any) : Promise<boolean> {
 		return new Promise(function(resolve, reject){
 			log.debug('Setting (%s) to value [%s]', key, val);
 			Cache.getInstance().set(key, val, function(err, success){

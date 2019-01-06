@@ -13,7 +13,7 @@ import PhaseGroup from './PhaseGroup'
 import GGSet from './GGSet'
 import Player from './Player'
 import Encoder from './util/Encoder'
-import Fetcher from './util/EntityFetcher'
+import * as Fetcher from './util/EntityFetcher'
 
 const EVENT_URL = 'https://api.smash.gg/event/%s?%s'
 const EVENT_SLUG_URL = 'https://api.smash.gg/%s/event/%s?%s'
@@ -120,8 +120,7 @@ export default class Event extends EventEmitter implements IEvent.Event{
 				return cached;
 			}
 
-			let url: string = format(TOURNAMENT_URL, tournamentId);
-			let data: Entity = JSON.parse(await request(url));
+			Fetcher.getTournamentData(tournamentId, options)
 			await Cache.set(cacheKey, data);
 			return data;
 		} catch(err){

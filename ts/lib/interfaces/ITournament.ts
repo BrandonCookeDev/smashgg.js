@@ -104,6 +104,14 @@ export namespace ITournament{
 		[x: string]: any
 	}
 
+	export function getDefaultData(): Data{
+		return {
+			tournament:{ 
+				id: 0
+			}
+		}
+	}
+
 	export function getDefaultOptions(): Options{
 		return {
 			expands:{

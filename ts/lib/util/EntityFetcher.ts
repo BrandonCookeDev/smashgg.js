@@ -10,9 +10,10 @@ import { IEvent } from '../interfaces/IEvent'
 import createExpandsString = Common.createExpandsString
 import TournamentOptions = ITournament.Options
 import TournamentData = ITournament.Data;
-import parseTournamentOptions = ITournament.parseOptions;
 import EventOptions = IEvent.Options
-import EventData = IEvent.Data
+import EventData = IEvent.EventData
+
+import parseTournamentOptions = ITournament.parseOptions;
 import parseEventOptions = IEvent.parseOptions;
 
 const TOURNAMENT_URL = 'https://api.smash.gg/tournament/%s?%s';

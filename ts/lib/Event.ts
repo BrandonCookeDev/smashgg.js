@@ -29,8 +29,10 @@ import { ITournament } from './interfaces/ITournament'
 import { IEvent } from './interfaces/IEvent'
 
 import Data = IEvent.Data
+import EventData = IEvent.EventData
 import EventExpands = IEvent.Expands
 import EventOptions = IEvent.Options
+import TournamentData = ITournament.Data
 import TournamentOptions = ITournament.Options
 import TournamentExpands = ITournament.Expands
 import Entity = ICommon.Entity
@@ -43,13 +45,7 @@ export default class Event extends EventEmitter implements IEvent.Event{
 
 	id: number = 0
 	url: string = ''
-	data: IEvent.Data | string = {
-		entities:{
-			event:{
-				id: 0
-			}
-		}
-	}
+	data: Data | string = IEvent.getDefaultData()
 	eventId: string | number
 	expands: EventExpands = {
 		phase: true,
@@ -85,7 +81,7 @@ export default class Event extends EventEmitter implements IEvent.Event{
 				this.expandsString += format('expand[]=%s&', property);
 		}
 
-		this.load(options);
+		this.load(options, ITournament.getDefaultOptions());
 	}
 
 	loadData(data: Data): Data | string {
@@ -153,19 +149,32 @@ export default class Event extends EventEmitter implements IEvent.Event{
 			let cached = await Cache.get(cacheKey);
 
 			if(!cached){
+
+				let data: Data
+				let encoded: Data | string
+				let eventData: EventData
+				let tournamentData: TournamentData
+
 				if(typeof this.eventId == 'number'){
-					let eventData: IEvent.Data = await Fetcher.getEventDataById(this.eventId as number, options);
+					eventData = await Fetcher.getEventDataById(this.eventId as number, options);
 					let tournamentId: string = IEvent.getTournamentSlug(eventData.entities.slug);
-					let tournamentData: ITournament.Data = Fetcher.getTournamentData(tournamentId, ITournament.getDefaultOptions());
-					let data: Data = {
+					tournamentData = await Fetcher.getTournamentData(tournamentId, ITournament.getDefaultOptions());
+				}
+				else if(typeof this.eventId == 'string' && this.tournamentId){
+					eventData = await Fetcher.getEventData(this.eventId as string, options);
+					tournamentData = await Fetcher.getTournamentData(this.tournamentId, tournamentOptions);
+					data = {
 						tournament: tournamentData,
 						event: eventData
 					}
 				}
+				else throw new Error('Bad event or tournament id types in Event');
 
-
-				let response = await request(this.url);
-				let encoded = this.loadData(JSON.parse(response));
+				data = {
+					tournament: tournamentData,
+					event: eventData
+				}
+				encoded = this.loadData(data);
 				await Cache.set(cacheKey, encoded);
 				return encoded;
 			}
@@ -201,7 +210,7 @@ export default class Event extends EventEmitter implements IEvent.Event{
 				if(cached) return cached;
 			}
 
-			let phases: Array<Entity> = this.getData().entities.phase as Array<Entity>;
+			let phases: Array<Entity> = this.getData().event.entities.phase as Array<Entity>;
 			let fn = async (phase: Entity) => {
 				return await Phase.getPhase(phase.id);
 			};
@@ -231,7 +240,7 @@ export default class Event extends EventEmitter implements IEvent.Event{
 				if(cached) return cached;
 			}
 
-			let groups: Array<Entity> = this.getData().entities.groups as Array<Entity>;
+			let groups: Array<Entity> = this.getData().event.entities.groups as Array<Entity>;
 			let fn = async (group: Entity) => {
 				return await PhaseGroup.getPhaseGroup(group.id);
 			};
@@ -360,12 +369,25 @@ export default class Event extends EventEmitter implements IEvent.Event{
 	}
 
 	/** SIMPLE GETTERS **/
-	getFromDataEntities(prop: string) : any{
+	getFromEventEntities(prop: string) : any{
 		let data = this.getData();
-		if(data && data.entities && data.entities.event) {
-			if (!data.entities.event[prop])
+		if(data && data.event.entities && data.event.entities.event) {
+			if (!data.event.entities.event[prop])
 				log.error(this.nullValueString(prop));
-			return data.entities.event[prop];
+			return data.event.entities.event[prop];
+		}
+		else{
+			log.error('No data to get Tournament property Id');
+			return null;
+		}
+	}
+
+	getFromTournamentEntities(prop: string) : any{
+		let data = this.getData();
+		if(data && data.tournament.entities && data.tournament.entities.event) {
+			if (!data.tournament.entities.event[prop])
+				log.error(this.nullValueString(prop));
+			return data.tournament.entities.event[prop];
 		}
 		else{
 			log.error('No data to get Tournament property Id');
@@ -374,19 +396,19 @@ export default class Event extends EventEmitter implements IEvent.Event{
 	}
 
 	getId() : number{ 
-		return this.getFromDataEntities('id');
+		return this.getFromEventEntities('id');
 	}
 
 	getName() : string{
-		return this.getFromDataEntities('name');
+		return this.getFromEventEntities('name');
 	}
 
 	getTournamentId() : number{
-		return this.getFromDataEntities('tournamentId');
+		return this.getFromEventEntities('tournamentId');
 	}
 
 	getSlug() : string{
-		return this.getFromDataEntities('slug');
+		return this.getFromEventEntities('slug');
 	}
 
 	getTournamentSlug() : string{
@@ -395,9 +417,13 @@ export default class Event extends EventEmitter implements IEvent.Event{
 		return tournamentSlug;
 	}
 
+	getTimezone() : string{
+		return this.getFromTournamentEntities('timezone');
+	}
+
 	getStartTime() : Date | null {
-		let startAt = this.getFromDataEntities('startAt');
-		let tz = this.Tournament.getTimezone();
+		let startAt = this.getFromEventEntities('startAt');
+		let tz = this.getTimezone();
 
 		if(startAt && tz){
 			let time = moment.unix(startAt).tz(tz);
@@ -410,8 +436,8 @@ export default class Event extends EventEmitter implements IEvent.Event{
 	}
 
 	getStartTimeString() : string | null {
-		let startAt = this.getFromDataEntities('startAt');
-		let tz = this.Tournament.getTimezone();
+		let startAt = this.getFromEventEntities('startAt');
+		let tz = this.getTimezone();
 
 		if(startAt && tz){
 			let time = moment.unix(startAt).tz(tz).format('MM-DD-YYYY HH:mm:ss');
@@ -425,8 +451,8 @@ export default class Event extends EventEmitter implements IEvent.Event{
 	}
 
 	getEndTime() : Date | null {
-		let endAt = this.getFromDataEntities('endAt');
-		let tz = this.Tournament.getTimezone();
+		let endAt = this.getFromEventEntities('endAt');
+		let tz = this.getTimezone();
 
 		if(endAt && tz) {
 			let time = moment.unix(endAt).tz(tz);
@@ -439,8 +465,8 @@ export default class Event extends EventEmitter implements IEvent.Event{
 	}
 
 	getEndTimeString() : string | null {
-		let endAt = this.getFromDataEntities('endAt');
-		let tz = this.Tournament.getTimezone();
+		let endAt = this.getFromEventEntities('endAt');
+		let tz = this.getTimezone();
 
 		if(endAt && tz) {
 			let time = moment.unix(endAt).tz(tz).format('MM-DD-YYYY HH:mm:ss');
@@ -455,7 +481,7 @@ export default class Event extends EventEmitter implements IEvent.Event{
 
 	/** NULL VALUES **/
 	nullValueString(prop: string) : string{
-		return prop + ' not available for Event ' + this.getData().entities.event.name;
+		return prop + ' not available for Event ' + this.getData().event.entities.event.name;
 	}
 
 	/** EVENTS **/

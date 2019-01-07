@@ -29,7 +29,7 @@ export namespace IEvent{
 	
 		getEventById(id: number, options: Options) : Promise<Event>
 			
-		load() : Promise<Data | string>
+		load(options: Options, tournamentOptions: TournamentOptions) : Promise<Data | string>
 				
 		getEventPhases(options: Options) : Promise<Array<Phase>>
 	
@@ -45,7 +45,9 @@ export namespace IEvent{
 			
 		getSetsXMinutesBack(minutesBack: number, options: Options) : Promise<Array<GGSet>> 
 			
-		getFromDataEntities(prop: string) : any
+		getFromEventEntities(prop: string) : any
+
+		getFromTournamentEntities(prop: string) : any
 
 		getId() : number
 			
@@ -91,21 +93,40 @@ export namespace IEvent{
 
 	export interface EventData{
 		entities: {
-				slug: string,
-				tournamentId: number,
-				event: Entity,
-				groups?: [Entity],
-				phase?: [Entity],
-				[x: string]: any
-			},
+			slug: string,
+			tournamentId: number,
+			event: Entity,
+			groups?: [Entity],
+			phase?: [Entity],
+			[x: string]: any
 		}
 	}
 
-	export function getTournamentSlug(slug: string) : {
+	export function getDefaultData(): Data{
+		return {
+			tournament: ITournament.getDefaultData(),
+			event: getDefaultEventData()
+		}
+	}
+
+	export function getDefaultEventData(): EventData{
+		return {
+			entities: {
+				slug: '',
+				tournamentId: 0,
+				event: {
+					id: 0
+				}
+			}
+		}
+	}
+
+	export function getTournamentSlug(slug: string) : string{
 		return slug.substring(slug.indexOf('/') + 1, slug.indexOf('/', slug.indexOf('/') + 1));
 	}
 
-	export function getDefaultOptions(): Options{
+
+	export function getDefaultOptions(): Options {
 		return {
 			expands:{
 				phase: true,
@@ -116,7 +137,7 @@ export namespace IEvent{
 		}
 	}
 
-	export function parseOptions(options: Options){
+	export function parseOptions(options: Options) : Options {
 		return{
 			expands: {
 				phase: (options.expands != undefined  && options.expands.phase == false) ? false : true,

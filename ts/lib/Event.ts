@@ -66,6 +66,7 @@ export default class Event extends EventEmitter implements IEvent.Event{
 			throw new Error('Event Constructor: Event Name/ID cannot be null for Event');
 
 		// set properties
+		options = IEvent.parseOptions(options);
 		this.tournamentId = tournamentId;
 		this.isCached = options.isCached != undefined ? options.isCached === true : true;;
 		this.eventId = typeof(eventId) === 'string' ? eventId : +eventId; 

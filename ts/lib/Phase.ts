@@ -16,38 +16,26 @@ const LEGAL_ENCODINGS = ['json', 'utf8', 'base64'];
 const DEFAULT_ENCODING = 'json';
 const DEFAULT_CONCURRENCY = 4;
 
-declare namespace Phase{
-	interface Options{
-		isCached?: boolean,
-		expands?: Expands,
-		rawEncoding?: string
-	}
+import { ICommon } from './interfaces/ICommon'
+import { IPhase } from './interfaces/IPhase'
 
-	interface Expands{
-		groups: boolean
-	}
+import Data = IPhase.Data
+import Entity = IPhase.Entity
+import Options = ICommon.Options
+import PhaseOptions = IPhase.Options
+import CommonOptions = ICommon.Options
+import parseOptions = ICommon.parseOptions
+import parsePhaseOptions = IPhase.parseOptions
 
-	interface Data{
-		[x: string]: any
-	}
+export default class Phase extends EventEmitter implements IPhase.Phase{
 
-	interface Entity{
-		id: number,
-		[x: string]: any
-	}
-
-	interface Phase{
-
-	}
-}
-
-import CommonOptions = Common.Options
-import parseOptions = Common.parseOptions
-import PhaseOptions = Phase.Options
-import Entity = Phase.Entity
-import Data = Phase.Data
-
-export default class Phase extends EventEmitter implements Phase.Phase{
+	id: number = 0
+	url: string = ''
+	data: Data | string = IPhase.getDefaultData()
+	isCached: boolean = true
+	rawEncoding: string = DEFAULT_ENCODING
+	expandsString: string = ''
+	expands: IPhase.Expands = IPhase.getDefaultExpands()
 
 	constructor(id: number, options: PhaseOptions = {}){
 		super();
@@ -56,23 +44,17 @@ export default class Phase extends EventEmitter implements Phase.Phase{
 			throw new Error('ID cannot be null for Phase Group');
 
 		// parse options
-		let expands = options.expands;
-		let isCached = options.isCached != undefined ? options.isCached === true : true;
-		let rawEncoding = options.rawEncoding || DEFAULT_ENCODING;
-
-		// set properties
-		this.data = {};
-		this.id = id;
-		this.isCached = isCached;
-		this.rawEncoding = LEGAL_ENCODINGS.includes(rawEncoding) ? rawEncoding : DEFAULT_ENCODING;
+		options = IPhase.parseOptions(options);
+		this.isCached = options.isCached == true;
+		this.rawEncoding = LEGAL_ENCODINGS.includes(options.rawEncoding as string) ? options.rawEncoding as string : DEFAULT_ENCODING;
 
 		// CREATE THE EXPANDS STRING
 		this.expandsString = '';
-		this.expands = {
-			groups: (expands && expands.groups == false) ? false : true
-		};
+		if(options.expands){
+			this.expands = Object.assign(this.expands, options.expands);
+		}
 		for(let property in this.expands){
-			if(this.expands[property])
+			if(this.expands.hasOwnProperty(property))
 				this.expandsString += format('expand[]=%s&', property);
 		}
 
@@ -94,37 +76,37 @@ export default class Phase extends EventEmitter implements Phase.Phase{
 			});
 	}
 
-	loadData(data){
-		let encoded = this.rawEncoding == 'json' ? data : new Buffer(JSON.stringify(data)).toString(this.rawEncoding);
+	loadData(data: Data) : Data | string{
+		let encoded: Data | string = this.rawEncoding == 'json' ? data : new Buffer(JSON.stringify(data)).toString(this.rawEncoding);
 		this.data = encoded;
 		return encoded;
 	}
 
-	getData(){
-		let decoded = this.rawEncoding == 'json' ? this.data : JSON.parse(new Buffer(this.data, this.rawEncoding).toString('utf8'));
+	getData() : Data{
+		let decoded = this.rawEncoding == 'json' ? this.data as Data : JSON.parse(new Buffer(this.data.toString(), this.rawEncoding).toString('utf8'));
 		return decoded;
 	}
 
 	// Convenience Methods
-	static getPhase(id, options={}){
-		let deferred = when.defer();
-		try{
-			let P = new Phase(id, options);
-			P.on('ready', function(){
-				deferred.resolve(P);
-			});
-			P.on('error', function(e){
+	static getPhase(id: number, options: PhaseOptions={}) : Promise<Phase> {
+		return new Promise(function(resolve, reject){ 
+			try{
+				let P = new Phase(id, options);
+				P.on('ready', function(){
+					resolve(P);
+				});
+				P.on('error', function(e){
+					log.error('getPhase error: %s', e);
+					reject(e);
+				});
+			} catch(e){
 				log.error('getPhase error: %s', e);
-				deferred.reject(e);
-			});
-		} catch(e){
-			log.error('getPhase error: %s', e);
-			deferred.reject(e);
-		}
-		return deferred.promise;
+				reject(e);
+			}
+		})
 	}
 
-	async load(){
+	async load(): Promise<Data | string> {
 		log.debug('Phase.load called');
 		log.verbose('Creating Phase from url: %s', this.url);
 		try{
@@ -157,31 +139,27 @@ export default class Phase extends EventEmitter implements Phase.Phase{
 	}
 
 	/** PROMISES **/
-	async getPhaseGroups(options={}){
+	async getPhaseGroups(options: Options={}) : Promise<Array<PhaseGroup>>{
 		log.debug('Phase.getGroups called');
 
 		// parse options
-		let fromCacheTF = options.isCached != undefined ? options.isCached === true : true;
-		let concurrency = options.concurrency || DEFAULT_CONCURRENCY;
-
+		options = ICommon.parseOptions(options);
+		
 		try {
 			let cacheKey = format('phase::%s::groups', this.id);
-			if (fromCacheTF) {
+			if (options.isCached) {
 				let cached = await Cache.get(cacheKey);
-				if (cached) {
-					this.groups = cached;
-					return cached;
-				}
+				if (cached) return cached;
+				
 			}
 
-			let groups = this.getData().entities.groups;
-			let fn = async (group) => {
+			let groups: Array<Entity> = this.getData().entities.groups;
+			let fn = async (group: Entity) : Promise<Array<PhaseGroup>> => {
 				return await PhaseGroup.getPhaseGroup(group.id);
 			};
-			let allPhaseGroups = await pmap(groups, fn, {concurrency: concurrency});
+			let allPhaseGroups: Array<PhaseGroup> = await pmap(groups, fn, {concurrency: options.concurrency});
 
 			allPhaseGroups = _.uniqBy(allPhaseGroups, 'id');
-			this.groups = allPhaseGroups;
 			Cache.set(cacheKey, allPhaseGroups);
 			return allPhaseGroups;
 		}
@@ -191,28 +169,27 @@ export default class Phase extends EventEmitter implements Phase.Phase{
 		}
 	}
 
-	async getSets(options={}){
+	async getSets(options: Options={}) : Promise<Array<GGSet>>{
 		log.debug('Phase.getSets called');
 
 		try{
 			// parse options
-			let fromCacheTF = options.isCached != undefined ? options.isCached === true : true;
-			let concurrency = options.concurrency || DEFAULT_CONCURRENCY;
+			options = ICommon.parseOptions(options)
 
 			let cacheKey = format('phase::%s::sets', this.id);
-			if(fromCacheTF){
+			if(options.isCached){
 				let cached = await Cache.get(cacheKey);
 				if(cached) return cached;
 			}
 
-			let phaseGroups = await this.getPhaseGroups(options);
-			let fn = async (group) => {
+			let phaseGroups: Array<PhaseGroup> = await this.getPhaseGroups(options);
+			let fn = async (group: PhaseGroup) : Promise<Array<GGSet>> => {
 				return await group.getSets();
 			};
-			let sets = await pmap(phaseGroups, fn, {concurrency: concurrency});
+			let sets: Array<GGSet> = await pmap(phaseGroups, fn, {concurrency: options.concurrency});
 
 			sets = _.flatten(sets);
-			if(fromCacheTF) await Cache.set(cacheKey, sets);
+			if(options.isCached) await Cache.set(cacheKey, sets);
 			return sets;
 
 		} catch(e){
@@ -221,29 +198,28 @@ export default class Phase extends EventEmitter implements Phase.Phase{
 		}
 	}
 
-	async getPlayers(options={}){
+	async getPlayers(options: Options={}) : Promise<Array<Player>>{
 		log.debug('Phase.getPlayers called');
 
 		try{
 			// parse options
-			let fromCacheTF = options.isCached != undefined ? options.isCached === true : true;
-			let concurrency = options.concurrency || DEFAULT_CONCURRENCY;
+			options = ICommon.parseOptions(options)
 
 			let cacheKey = format('phase::%s::players', this.id);
-			if(fromCacheTF){
+			if(options.isCached){
 				let cached = await Cache.get(cacheKey);
 				if(cached) return cached;
 			}
 
-			let phaseGroups = await this.getPhaseGroups(options);
-			let fn = async (group) => {
+			let phaseGroups: Array<PhaseGroup> = await this.getPhaseGroups(options);
+			let fn = async (group: PhaseGroup) : Promise<Array<Player>> => {
 				return await group.getPlayers();
 			};
-			let players = await pmap(phaseGroups, fn, {concurrency: concurrency});
+			let players: Array<Player> = await pmap(phaseGroups, fn, {concurrency: options.concurrency});
 
 			players = _.flatten(players);
 			players = _.uniqBy(players, 'id');
-			if(fromCacheTF) await Cache.set(cacheKey, players);
+			if(options.isCached) await Cache.set(cacheKey, players);
 			return players;
 		} catch(e){
 			log.error('Phase.getPlayers error: %s', e);
@@ -251,18 +227,17 @@ export default class Phase extends EventEmitter implements Phase.Phase{
 		}
 	}
 
-	async getIncompleteSets(options={}){
+	async getIncompleteSets(options: Options={}) : Promise<Array<GGSet>>{
 		log.debug('Phase.getIncompleteSets called');
 		try{
 			//parse options
-			//let isCached = options.isCached != undefined ? options.isCached == true : true;
-			let concurrency = options.concurrency || DEFAULT_CONCURRENCY;
+			options = ICommon.parseOptions(options);
 
-			let groups = await this.getPhaseGroups(options);
-			let fn = async (group) => {
+			let groups: Array<PhaseGroup> = await this.getPhaseGroups(options);
+			let fn = async (group : PhaseGroup) : Promise<Array<GGSet>> => {
 				return await group.getIncompleteSets(options);
 			};
-			let sets = await pmap(groups, fn, {concurrency: concurrency});
+			let sets: Array<GGSet> = await pmap(groups, fn, {concurrency: options.concurrency});
 			sets = _.flatten(sets);
 			return sets;
 		} catch(e){
@@ -271,18 +246,17 @@ export default class Phase extends EventEmitter implements Phase.Phase{
 		}
 	}
 
-	async getCompleteSets(options={}){
+	async getCompleteSets(options: Options={}) : Promise<Array<GGSet>>{
 		log.debug('Phase.getIncompleteSets called');
 		try{
 			//parse options
-			//let isCached = options.isCached != undefined ? options.isCached == true : true;
-			let concurrency = options.concurrency || DEFAULT_CONCURRENCY;
+			options = ICommon.parseOptions(options)
 
-			let groups = await this.getPhaseGroups(options);
-			let fn = async (group) => {
+			let groups: Array<PhaseGroup> = await this.getPhaseGroups(options);
+			let fn = async (group: PhaseGroup) : Promise<Array<GGSet>> => {
 				return await group.getCompleteSets(options);
 			};
-			let sets = await pmap(groups, fn, {concurrency: concurrency});
+			let sets: Array<GGSet> = await pmap(groups, fn, {concurrency: options.concurrency});
 			sets = _.flatten(sets);
 			return sets;
 		} catch(e){
@@ -291,18 +265,18 @@ export default class Phase extends EventEmitter implements Phase.Phase{
 		}
 	}
 
-	async getSetsXMinutesBack(minutesBack, options={}){
+	async getSetsXMinutesBack(minutesBack: number, options: Options={}) : Promise<Array<GGSet>>{
 		log.verbose('Phase.getSetsXMinutesBack called');
 		try{
 			// parse options
-			let concurrency = options.concurrency || DEFAULT_CONCURRENCY;
+			options = ICommon.parseOptions(options)
 			options.isCached = false;
 
-			let groups = await this.getPhaseGroups(options);
-			let fn = async (group) => {
+			let groups: Array<PhaseGroup> = await this.getPhaseGroups(options);
+			let fn = async (group: PhaseGroup) : Promise<Array<GGSet>> => {
 				return await group.getSetsXMinutesBack(minutesBack, options);
 			};
-			let sets = await pmap(groups, fn, {concurrency: concurrency});
+			let sets: Array<GGSet> = await pmap(groups, fn, {concurrency: options.concurrency});
 			sets = _.flatten(sets);
 			return sets;
 		} catch(e){
@@ -312,7 +286,7 @@ export default class Phase extends EventEmitter implements Phase.Phase{
 	}
 
 	/** SIMPLE GETTERS **/
-	getFromDataEntities(prop){
+	getFromDataEntities(prop: string) : any{
 		let data = this.getData();
 		if(data && data.entities && data.entities.phase) {
 			if (!data.entities.phase[prop])
@@ -325,25 +299,25 @@ export default class Phase extends EventEmitter implements Phase.Phase{
 		}
 	}
 
-	getName(){
+	getName() : string{
 		return this.getFromDataEntities('name');
 	}
 
-	getEventId(){
+	getEventId() : string{
 		return this.getFromDataEntities('eventId');
 	}
 
 	/** NULL VALUES **/
-	nullValueString(prop){
+	nullValueString(prop: string){
 		return prop + ' not available for Phase ' + this.getData().entities.phase.name;
 	}
 
 	/** EVENTS **/
-	emitPhaseReady(){
+	emitPhaseReady() : void{
 		this.emit('ready');
 	}
 
-	emitPhaseError(err){
+	emitPhaseError(err: Error) : void{
 		this.emit('error', err);
 	}
 }

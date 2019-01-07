@@ -1,4 +1,6 @@
 
+import Encoder from '../util/Encoder'
+
 export namespace ICommon{
 	export interface Options{
 		isCached?: boolean, 
@@ -13,5 +15,13 @@ export namespace ICommon{
 	
 	export interface Data{
 		[x: string]: any
+	}
+
+	export function parseOptions(options: Options) : Options{
+		return {
+			isCached: options.isCached != undefined ? options.isCached === true : true,
+			concurrency: options.concurrency || 4,
+			rawEncoding: Encoder.determineEncoding(options.rawEncoding)
+		}
 	}
 }

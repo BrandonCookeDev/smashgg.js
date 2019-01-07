@@ -1,4 +1,8 @@
-import { parseOptions } from "../util/Common";
+import Encoder from '../util/Encoder'
+
+import { IPhaseGroup } from './IPhaseGroup'
+
+import PhaseGroup = IPhaseGroup.PhaseGroup
 
 export namespace IPhase{
 	export interface Phase{
@@ -75,13 +79,23 @@ export namespace IPhase{
 		}
 	}
 
-	export function parseOptions(options: Options) : Options{
+	export function getDefaultOptions(options: Options) : Options{
 		return {
 			expands: {
-				groups: (options.expands != undefined && options.expands.groups == false) ? false : true
+				groups: true
 			},
 			isCached: true,
 			rawEncoding: 'JSON'
+		}
+	}
+
+	export function parseOptions(options: Options) : Options{
+		return{
+			expands: {
+				groups: (options.expands != undefined && options.expands.groups == false) ? false : true
+			},
+			isCached: options.isCached != undefined ? options.isCached === true : true,
+			rawEncoding: Encoder.determineEncoding(options.rawEncoding)
 		}
 	}
 }

@@ -1,25 +1,55 @@
 'use strict';
 
-let _ = require('lodash');
-let log = require('winston');
-let when = require('when');
-let pmap = require('p-map');
-let {format} = require('util');
-let moment = require('moment');
-let request  = require('request-promise');
-let Cache = require('./util/Cache').getInstance();
-let EventEmitter = require('events');
-
 let Set = require('./Set');
 let Player = require('./Player');
 
+import _ from 'lodash'
+import log from 'winston'
+import pmap from 'p-map'
+import { format } from 'util'
+import moment from 'moment'
+import request from 'request-promise'
+import { EventEmitter } from 'events'
+
+import Cache from './util/Cache'
+
+/* Interfaces */
+import { ICommon } from './interfaces/ICommon'
+import { IPhaseGroup } from './interfaces/IPhaseGroup'
+import { IPlayer } from './interfaces/IPlayer'
+import { IGGSet } from './interfaces/IGGSet'
+
+/* Types */
+import Player = IPlayer.Player
+import GGSet = IGGSet.GGSet
+
+/* Convenience */
+import Data = IPhaseGroup.Data
+import Entity = ICommon.Entity
+import Options = ICommon.Options
+import Expands = IPhaseGroup.Expands
+import PhaseOptions = IPhaseGroup.Options
+import parseOptions = ICommon.parseOptions
+
+/* Constants */
 const PHASE_GROUP_URL = 'https://api.smash.gg/phase_group/%s?%s';
 const LEGAL_ENCODINGS = ['json', 'utf8', 'base64'];
 const DEFAULT_ENCODING = 'json';
 
-export default class PhaseGroup extends EventEmitter{
+export default class PhaseGroup extends EventEmitter implements IPhaseGroup.PhaseGroup{
 
-	constructor(id, options={}){
+	id: number = 0
+	url: string = ''
+	data: Data | string = IPhaseGroup.getDefaultData()
+	isCached: boolean = true
+	rawEncoding: string = 'JSON'
+	expandsString: string = ''
+	expands: Expands = IPhaseGroup.getDefaultExpands()
+	players: Array<Player> = []
+	sets: Array<GGSet> = []
+
+
+	constructor(id: number, options: PhaseOptions={}){
 		super();
 
 		if(!id)
@@ -31,7 +61,6 @@ export default class PhaseGroup extends EventEmitter{
 		let rawEncoding = options.rawEncoding || DEFAULT_ENCODING;
 
 		// set properties
-		this.data = {};
 		this.id = id;
 		this.isCached = isCached;
 		this.rawEncoding = LEGAL_ENCODINGS.includes(rawEncoding) ? rawEncoding : DEFAULT_ENCODING;
@@ -45,7 +74,7 @@ export default class PhaseGroup extends EventEmitter{
 			seeds: (expands && expands.seeds == false) ? false : true
 		};
 		for(let property in this.expands){
-			if(this.expands[property])
+			if(this.expands.hasOwnProperty(property))
 				this.expandsString += format('expand[]=%s&', property);
 		}
 
@@ -66,38 +95,38 @@ export default class PhaseGroup extends EventEmitter{
 			});
 	}
 
-	loadData(data){
+	loadData(data: Data) : Data | string{
 		let encoded = this.rawEncoding == 'json' ? data : new Buffer(JSON.stringify(data)).toString(this.rawEncoding);
 		this.data = encoded;
 		return encoded;
 	}
 
-	getData(){
-		let decoded = this.rawEncoding == 'json' ? this.data : JSON.parse(new Buffer(this.data, this.rawEncoding).toString('utf8'));
+	getData() : Data{
+		let decoded = this.rawEncoding == 'json' ? this.data : JSON.parse(new Buffer(this.data.toString(), this.rawEncoding).toString('utf8'));
 		return decoded;
 	}
 
 	// Convenience Methods
-	static getPhaseGroup(id, options={}){
-		let deferred = when.defer();
-		try{
-			let PG = new PhaseGroup(id, options);
-			PG.on('ready', function(){
-				deferred.resolve(PG);
-			});
-			PG.on('error', function(e){
+	static getPhaseGroup(id: number, options: Options={}) : Promise<PhaseGroup>{
+		return new Promise(function(resolve, reject){
+			try{
+				let PG = new PhaseGroup(id, options);
+				PG.on('ready', function(){
+					resolve(PG);
+				});
+				PG.on('error', function(e){
+					log.error('getPhaseGroup error: %s',e);
+					reject(e);
+				});
+			} catch(e){
 				log.error('getPhaseGroup error: %s',e);
-				deferred.reject(e);
-			});
-		} catch(e){
-			log.error('getPhaseGroup error: %s',e);
-			deferred.reject(e);
-		}
-		return deferred.promise;
+				reject(e);
+			}
+		});
 	}
 
 	// Methods
-	async load(){
+	async load() : Promise<Data | string>{
 		log.debug('PhaseGroup.load called');
 		log.verbose('Creating Phase Group from url: %s', this.url);
 		try{
@@ -130,46 +159,50 @@ export default class PhaseGroup extends EventEmitter{
 	}
 
 	/** PROMISES **/
-	async getPlayers(options={}){
+	async getPlayers(options: Options={}) : Promise<Array<Player>>{
 		log.debug('PhaseGroup.getPlayers called');
 		try {
-			// parse options
-			let fromCacheTF = options.isCached != undefined ? options.isCached === true : true;
+			if(this.getData().entities.entrants){
+				
+				// parse options
+				options = parseOptions(options)
 
-			let cacheKey = format('phasegroup::%s::players', this.id);
-			if (fromCacheTF) {
-				let cached = await Cache.get(cacheKey);
-				if (cached) {
-					this.players = cached;
-					return cached;
+				let cacheKey = format('phasegroup::%s::players', this.id);
+				if (options.isCached) {
+					let cached = await Cache.get(cacheKey);
+					if (cached) {
+						this.players = cached
+						return cached;
+					}
 				}
+
+				let entrants: Array<IPlayer.Entity> = this.getEntrants();
+				let players: Array<Player> = entrants.map(entrant => {
+					return Player.resolve(entrant);
+				});
+
+				this.players = players;
+				await Cache.set(cacheKey, this.players);
+				return this.players;
 			}
-
-			let players = this.getData().entities.entrants.map(entrant => {
-				return Player.resolve(entrant);
-			});
-
-			this.players = players;
-			await Cache.set(cacheKey, this.players);
-			return this.players;
+			else throw new Error('Must have \'entrants\' expands set to true');
 		}catch(err){
 			log.error('PhaseGroup.getPlayers: ' + err);
 			throw err;
 		}
 	}
 	
-	async getSets(options={}){
+	async getSets(options: Options={}) : Promise<Array<GGSet>>{
 		// parse options
-		let fromCacheTF = options.isCached != undefined ? options.isCached === true : true;
-		let concurrency = options.concurrency || 4;
+		options = parseOptions(options)
 
 		try {
 			if (!this.players)
-				await this.getPlayers(fromCacheTF);
+				await this.getPlayers(options);
 
 			// Caching logic
 			let cacheKey = format('phasegroup::%s::sets', this.id);
-			if (fromCacheTF) {
+			if (options.isCached) {
 				let cached = await Cache.get(cacheKey);
 				if (cached) {
 					this.sets = cached;
@@ -178,36 +211,8 @@ export default class PhaseGroup extends EventEmitter{
 			}
 
 			// Fetching logic
-			let sets;
-			let resolveSet = async function(set){
-				try{
-					if (!set.entrant1Id || !set.entrant2Id)
-						return; // HANDLES BYES
-
-					let Player1 = await this.findPlayerByParticipantId(set.entrant1Id);
-					let Player2 = await this.findPlayerByParticipantId(set.entrant2Id);
-
-					if (!Player1 || !Player2)
-						return; // HANDLES Error of some sort
-
-					let isComplete = false;
-					if(set.winnerId && set.loserId)
-						isComplete = true;
-
-					let S;
-					if(isComplete)
-						S = new Set(set.id, set.eventId, set.fullRoundText, Player1, Player2, isComplete, set.entrant1Score, set.entrant2Score, set.winnerId, set.loserId);
-					else
-						S = new Set(set.id, set.eventId, set.fullRoundText, Player1, Player2, isComplete);
-					
-					S.loadData(set);
-					return S;
-				} catch(e){
-					console.error(e.message);
-					throw e;
-				}
-			}.bind(this);
-			sets = await pmap(this.getData().entities.sets, resolveSet, {concurrency: concurrency});
+			let sets: Array<GGSet>;
+			sets = await pmap(this.getData().entities.sets as Array<IGGSet.Entity>, this.resolveSet, {concurrency: options.concurrency});
 			sets = sets.filter(set => { return set != undefined; });
 			this.sets = sets;
 
@@ -219,12 +224,12 @@ export default class PhaseGroup extends EventEmitter{
 		}
 	}
 
-	async getCompleteSets(options={}){
+	async getCompleteSets(options: Options={}) : Promise<Array<GGSet>>{
 		log.verbose('PhaseGroup getCompleteSets called');
 
 		try{
 			//parse options
-			//let isCached = options.isCached != undefined ? options.isCached == true : true;
+			options = parseOptions(options)
 
 			let sets = await this.getSets(options);
 			let completeSets = sets.filter(set => { return set.isComplete == true; });
@@ -235,12 +240,12 @@ export default class PhaseGroup extends EventEmitter{
 		}
 	}
 
-	async getIncompleteSets(options={}){
+	async getIncompleteSets(options: Options={}) : Promise<Array<GGSet>>{
 		log.verbose('PhaseGroup getIncompleteSets called');
 
 		try{
 			//parse options
-			//let isCached = options.isCached != undefined ? options.isCached == true : true;
+			options = parseOptions(options)
 
 			let sets = await this.getSets(options);
 			let completeSets = sets.filter(set => { return set.isComplete == false; });
@@ -252,13 +257,13 @@ export default class PhaseGroup extends EventEmitter{
 	}
 
 	// TODO needs coverage
-	async getSetsXMinutesBack(minutes, options={}){
+	async getSetsXMinutesBack(minutes: number, options: Options={}) : Promise<Array<GGSet>>{
 		log.verbose('PhaseGroup getSetsXMinutesBack called');
 
 		try{
-			// parse options
-			let isCached = options.isCached != undefined ? options.isCached == true : false;
-			options.isCached = isCached;
+			// parse options			
+			options = parseOptions(options)
+			options.isCached = false
 
 			let now = moment();
 			let sets = await this.getSets(options);
@@ -279,8 +284,37 @@ export default class PhaseGroup extends EventEmitter{
 		}
 	}
 
+	async resolveSet(set: IGGSet.Entity) : Promise<GGSet | undefined>{
+		try{
+			if (!set.entrant1Id || !set.entrant2Id)
+				return; // HANDLES BYES
+
+			let Player1 = await this.findPlayerByParticipantId(set.entrant1Id);
+			let Player2 = await this.findPlayerByParticipantId(set.entrant2Id);
+
+			if (!Player1 || !Player2)
+				return; // HANDLES Error of some sort
+
+			let isComplete = false;
+			if(set.winnerId && set.loserId)
+				isComplete = true;
+
+			let S;
+			if(isComplete)
+				S = new Set(set.id, set.eventId, set.fullRoundText, Player1, Player2, isComplete, set.entrant1Score, set.entrant2Score, set.winnerId, set.loserId);
+			else
+				S = new Set(set.id, set.eventId, set.fullRoundText, Player1, Player2, isComplete);
+			
+			S.loadData(set);
+			return S;
+		} catch(e){
+			console.error(e.message);
+			throw e;
+		}
+	}
+
 	/** SIMPLE GETTERS **/
-	getFromDataEntities(prop){
+	getFromDataEntities(prop: string) : any{
 		let data = this.getData();
 		if(data && data.entities && data.entities.groups) {
 			if (!data.entities.groups[prop])
@@ -293,26 +327,32 @@ export default class PhaseGroup extends EventEmitter{
 		}
 	}
 
-	getPhaseId(){
+	getPhaseId() : number{
 		return this.getFromDataEntities('phaseId');
 	}
 
+	getEntrants() : Array<IPlayer.Entity> | [] {
+		if(this.getData().entities.entrants)
+			return this.getData().entities.entrants as Array<IPlayer.Entity>;
+		else return []
+	}
+
 	/** NULL VALUES **/
-	nullValueString(prop){
+	nullValueString(prop: string) : string{
 		return prop + ' not available for PhaseGroup ' + this.id;
 	}
 
 	/** EVENTS **/
-	emitPhaseGroupReady(){
+	emitPhaseGroupReady() : void{
 		this.emit('ready');
 	}
 
-	emitPhaseGroupError(err){
+	emitPhaseGroupError(err: Error) : void{
 		this.emit('error', err);
 	}
 
 	/** OTHER **/
-	async findPlayerByParticipantId(id){
+	async findPlayerByParticipantId(id: number) : Player{
 		if(!this.players)
 			await this.getPlayers();
 		let player = _.find(this.players, {participantId: id});

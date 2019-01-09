@@ -1,16 +1,37 @@
 'use strict';
 
-let log = require('winston');
-let EventEmitter = require('events');
-let {format} = require('util');
-let request = require('request-promise');
-let Cache = require('./util/Cache');
+import log from 'winston'
+import {EventEmitter} from 'events'
+import {format} from 'util'
+import request from 'request-promise'
+import Cache from './util/Cache'
+
+import { ICommon } from './interfaces/ICommon'
+import { IPlayer } from './interfaces/IPlayer'
+
+import Data = IPlayer.Data
+import Options = ICommon.Options
+import PlayerEntity = IPlayer.Entity
+import parseOptions = ICommon.parseOptions
+
 
 const API_URL = 'https://api.smash.gg/player/%s';
 
 export default class Player extends EventEmitter{
 
-	constructor(id, tag, name, country, state, sponsor, participantId, data){
+	public id: number = 0
+	public tag: string = ''
+	public name?: string = ''
+	public country?: string = ''
+	public state?: string = ''
+	public sponsor?: string = ''
+	public participantId?: number = 0
+	public data?: Data
+
+
+	constructor(id: number, tag: string, name?: string, country?: string, 
+				state?: string, sponsor?: string, participantId?: number, 
+				data?: Data){
 		super();
 
 		if(!id)
@@ -23,22 +44,21 @@ export default class Player extends EventEmitter{
 		this.state = state;
 		this.sponsor = sponsor;
 		this.participantId = participantId;
-
 		this.data = data;
 	}
 
-	loadData(data){
+	loadData(data: Data){
 		this.data = data;
 	}
 
-	static async getPlayer(id, options={}){
+	static async getPlayer(id: number, options: Options={}) : Promise<Player>{
 		log.verbose('Player getPlayer called');
 		try{
 			// parse options
-			let isCached = options.isCached != undefined ? options.isCached == true : true;
+			options = parseOptions(options)
 
 			let cacheKey = format('player::%s', id);
-			if(isCached){
+			if(options.isCached){
 				let cached = await Cache.get(cacheKey);
 				if(cached) return cached;
 			}
@@ -62,7 +82,7 @@ export default class Player extends EventEmitter{
 		}
 	}
 
-	static resolveEntities(player){
+	static resolveEntities(player: PlayerEntity){
 		let data = player.entities.player;
 
 		let P = new Player(

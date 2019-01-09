@@ -5,6 +5,10 @@ export namespace IPlayer{
 
 	}
 
+	export interface Data{
+		entities:[Entity]
+	}
+
 	export interface Entity{
 		id: number,
 		gamerTag: string,
@@ -14,5 +18,11 @@ export namespace IPlayer{
 		prefix: string
 	}
 
+	export interface Options{
+		isCached?: boolean,
+		rawEncoding?: string
+	}
+
+	
 
 }

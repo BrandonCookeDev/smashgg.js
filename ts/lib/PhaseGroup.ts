@@ -268,7 +268,7 @@ export default class PhaseGroup extends EventEmitter implements IPhaseGroup.Phas
 			let now = moment();
 			let sets: Array<TGGSet> = await this.getSets(options);
 			let filtered: Array<TGGSet> = sets.filter(set => {
-				let then = moment(set.getCompletedAt());
+				let then = moment(set.getCompletedAt() as Date);
 				let diff = moment.duration(now.diff(then));
 
 				let diffMinutes = diff.minutes();

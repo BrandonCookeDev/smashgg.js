@@ -1,19 +1,42 @@
-'use strict';
+import log from 'winston'
+import request from 'request-promise'
+import { format } from 'util'
+import Cache from './util/Cache'
+import Encoder from './util/Encoder'
 
-let log = require('winston');
-let request = require('request-promise');
-let {format} = require('util');
+/* Interfaces */
+import { ICommon } from './interfaces/ICommon'
+import { IVideoGame } from './interfaces/IVideoGame'
 
-let Cache = require('./util/Cache');
+/* Types */
+import TVideoGame = IVideoGame.VideoGame
+
+/* Convenience */
+import Data = IVideoGame.Data
+import Entity = IVideoGame.Entity
+import Options = ICommon.Options
+import parseOptions = ICommon.parseOptions
 
 const API_URL = 'https://api.smash.gg/public/videogames';
 //const LEGAL_ENCODINGS = ['json', 'utf8', 'base64'];
 //const DEFAULT_ENCODING = 'json';
 
-export default class VideoGame{
+export default class VideoGame implements IVideoGame.VideoGame{
 
-	constructor(id, name, abbrev, displayName, minPerEntry, 
-		maxPerEntry, approved, slug, isCardGame){
+	id: number = 0
+	data: Entity | string = ''
+	name: string
+	abbrev: string
+	displayName: string
+	minPerEntry: number
+	maxPerEntry: number
+	approved: boolean
+	slug: string 
+	isCardGame: boolean
+	rawEncoding: string = 'json'
+
+	constructor(id: number, name: string, abbrev: string, displayName: string, minPerEntry: number, 
+		maxPerEntry: number, approved: boolean, slug: string, isCardGame: boolean){
 		
 		this.id = id;
 		this.name = name;
@@ -26,67 +49,66 @@ export default class VideoGame{
 		this.isCardGame = isCardGame;
 	}
 
-	encode(data, encoding){
+	encode(data: Entity, encoding: string) : Entity | string{
 		let encoded = encoding == 'json' ? data : new Buffer(JSON.stringify(data)).toString(encoding);
 		this.data = encoded;
 		return encoded;
 	}
 
-	decode(data, encoding){
-		let decoded = this.rawEncoding == 'json' ? data : JSON.parse(new Buffer(data, encoding).toString('utf8'));
+	decode(data: Entity, encoding: string) : Entity{
+		let decoded = this.rawEncoding == 'json' ? data : JSON.parse(new Buffer(data.toString(), encoding).toString('utf8'));
 		return decoded;
 	}
 
-	getId(){
+	getId() : number | undefined{
 		return this.id;
 	}
 
-	getName(){
+	getName() : string | undefined{
 		return this.name;
 	}
 
-	getAbbreviation(){
+	getAbbreviation() : string | undefined{
 		return this.abbrev;
 	}
 
-	getDisplayName(){
+	getDisplayName() : string | undefined{
 		return this.displayName;
 	}
 
-	getMinPerEntry(){
+	getMinPerEntry() : number | undefined{
 		return this.minPerEntry;
 	}
 
-	getMaxPerEntry(){
+	getMaxPerEntry() : number | undefined{
 		return this.maxPerEntry;
 	}
 
-	getApproved(){
+	getApproved() : boolean | undefined{
 		return this.approved;
 	}
 
-	getSlug(){
+	getSlug() : string | undefined{
 		return this.slug;
 	}
 
-	getIsCardGame(){
+	getIsCardGame() : boolean | undefined{
 		return this.isCardGame;
 	}
 
-	static async getAll(options={}){
+	static async getAll(options: Options={}) : Promise<Array<TVideoGame>>{
 		log.debug('VideoGames getAll called');
 		try{
 			// parse options
-			let isCached = options.isCached || true;
-			//let rawEncoding = LEGAL_ENCODINGS.includes(options.rawEncoding) ? options.rawEncoding : DEFAULT_ENCODING;
+			options = parseOptions(options);
 
 			let cacheKey = 'videoGames::all';
-			if(isCached){
-				let cached = await Cache.getInstance().get(cacheKey);
+			if(options.isCached){
+				let cached: TVideoGame[] = await Cache.getInstance().get(cacheKey) as TVideoGame[];
 				if(cached) return cached;
 			}
 			
-			let data = JSON.parse(await request(API_URL));
+			let data: Data = JSON.parse(await request(API_URL));
 			let videoGames = data.entities.videogame.map(videoGame => {
 				return new VideoGame(
 					videoGame.id,
@@ -101,7 +123,7 @@ export default class VideoGame{
 				);
 			});
 
-			if(isCached) await Cache.getInstance().set(cacheKey, videoGames);
+			if(options.isCached) await Cache.getInstance().set(cacheKey, videoGames);
 			return videoGames;
 		} catch(e){
 			log.error('VideoGames getAll error: %s', e);
@@ -109,15 +131,15 @@ export default class VideoGame{
 		}
 	}
 
-	static async getById(id, options={}){
+	static async getById(id: number, options: Options={}) : Promise<TVideoGame> {
 		log.debug('VideoGame getById called [%s]', id);
 		try{
 			// parse options
-			let isCached = options.isCached;
+			options = parseOptions(options);
 
 			let cacheKey = format('VideoGame::id::%s', id);
-			if(isCached){
-				let cached = await Cache.getInstance().get(cacheKey);
+			if(options.isCached){
+				let cached = await Cache.getInstance().get(cacheKey) as TVideoGame;
 				if(cached) return cached;
 			}
 
@@ -126,7 +148,7 @@ export default class VideoGame{
 			if(videoGames.length <= 0) throw new Error('No video game with id ' + id);
 			let videoGame = videoGames[0];
 
-			if(isCached) Cache.getInstance().set(cacheKey, videoGame);
+			if(options.isCached) Cache.getInstance().set(cacheKey, videoGame);
 			return videoGame;
 		} catch(e){
 			log.error('VideoGame getById error: %s', e);
@@ -134,7 +156,7 @@ export default class VideoGame{
 		}
 	}
 
-	static async getByName(name, options={}){
+	static async getByName(name: string, options: Options={}) : Promise<TVideoGame> {
 		log.debug('VideoGame getByName called [%s]', name);
 		try{
 			// parse options
@@ -142,7 +164,7 @@ export default class VideoGame{
 
 			let cacheKey = format('VideoGame::name::%s', name);
 			if(isCached){
-				let cached = await Cache.getInstance().get(cacheKey);
+				let cached = await Cache.getInstance().get(cacheKey) as TVideoGame;
 				if(cached) return cached;
 			}
 

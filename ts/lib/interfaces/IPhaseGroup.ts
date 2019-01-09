@@ -1,11 +1,14 @@
 import Encoder from '../util/Encoder'
 
+/* Interfaces */
 import { ICommon } from './ICommon'
 import { IPlayer } from './IPlayer'
 import { IGGSet } from './IGGSet'
 
-import Player = IPlayer.Player
-import GGSet = IGGSet.GGSet
+/* Types */
+import TPlayer = IPlayer.Player
+import TGGSet = IGGSet.GGSet
+
 import PlayerEntity = IPlayer.Entity
 import SetEntity = IGGSet.Entity
 
@@ -18,8 +21,25 @@ export namespace IPhaseGroup{
 		rawEncoding: string,
 		expandsString: string,
 		expands: Expands
-		players: Array<Player>
-		sets: Array<GGSet>
+		players: Array<TPlayer>
+		sets: Array<TGGSet>
+
+		loadData(data: Data) : Data | string
+		getData() : Data
+		load() : Promise<Data | string>
+		getPlayers(options: Options) : Promise<Array<TPlayer>>
+		getSets(options: Options) : Promise<Array<TGGSet>>
+		getCompleteSets(options: Options) : Promise<Array<TGGSet>>
+		getIncompleteSets(options: Options) : Promise<Array<TGGSet>>
+		getSetsXMinutesBack(minutes: number, options: Options) : Promise<Array<TGGSet>>
+		resolveSet(set: IGGSet.Entity) : Promise<TGGSet | undefined>
+		getFromDataEntities(prop: string) : any
+		getPhaseId() : number
+		getEntrants() : Array<IPlayer.Entity> | [] 
+		nullValueString(prop: string) : string
+		emitPhaseGroupReady() : void
+		emitPhaseGroupError(err: Error) : void
+		findPlayerByParticipantId(id: number) : TPlayer
 	}
 
 	export interface Options{

@@ -1,6 +1,6 @@
-import * as winston from 'winston'
+import winston from 'winston'
 
-var logger: winston.Logger = new (winston.Logger)({
+let logger = new (winston.Logger)({
     transports: [
       new (winston.transports.Console)(),
     ]

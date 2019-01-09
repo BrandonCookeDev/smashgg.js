@@ -18,7 +18,7 @@ export namespace IPhase{
 		
 		getData() : Data
 		
-		getPhase(id: number, options: Options) : Promise<Phase> 
+		//getPhase(id: number, options: Options) : Promise<Phase> 
 		
 		load(): Promise<Data | string> 
 		

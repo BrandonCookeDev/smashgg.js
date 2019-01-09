@@ -1,6 +1,3 @@
-'use strict';
-
-
 import _ from 'lodash'
 import log from 'winston'
 import {format} from 'util'
@@ -9,18 +6,21 @@ import {EventEmitter} from 'events'
 import request from 'request-promise'
 import Cache from './util/Cache'
 
+/* Classes */
 import PhaseGroup from './PhaseGroup'
 
+/* Interfaces */
 import { ICommon } from './interfaces/ICommon'
 import { IGGSet } from './interfaces/IGGSet'
 import { IPlayer } from './interfaces/IPlayer'
 import { IPhaseGroup } from './interfaces/IPhaseGroup'
 
-import Options = ICommon.Options
-import Player = IPlayer.Player
-import PlayerEntity = IPlayer.Entity
+/* Types */
+import TPlayer = IPlayer.Player
+import TPhaseGroup = IPhaseGroup.PhaseGroup
+
 import Entity = IGGSet.Entity
-import PhaseGroupT = IPhaseGroup.PhaseGroup
+import Options = ICommon.Options
 import parseOptions = ICommon.parseOptions
 
 const API_URL = 'https://api.smash.gg/set/%s';
@@ -30,8 +30,8 @@ export default class GGSet extends EventEmitter implements IGGSet.GGSet{
 	id: number
 	eventId: number
 	round: string
-	player1?: Player
-	player2?: Player
+	player1?: TPlayer
+	player2?: TPlayer
 	isComplete: boolean
 	score1?: number
 	score2?: number
@@ -40,7 +40,7 @@ export default class GGSet extends EventEmitter implements IGGSet.GGSet{
 	data?: Entity
 
 	constructor(id: number, eventId: number, round: string, 
-			player1: Player, player2: Player, isComplete: boolean=false, 
+			player1: TPlayer, player2: TPlayer, isComplete: boolean=false, 
 			score1: number=0, score2: number=0, winnerId: number=0, 
 			loserId: number=0, data: Entity){
 		super();
@@ -119,8 +119,8 @@ export default class GGSet extends EventEmitter implements IGGSet.GGSet{
 			if (!set.entrant1Id || !set.entrant2Id)
 				isBye = true; // HANDLES BYES
 
-			let Player1 = _.find(groupParticipants, {'participantId': set.entrant1Id}) as Player;
-			let Player2 = _.find(groupParticipants, {'participantId': set.entrant2Id}) as Player;
+			let Player1 = _.find(groupParticipants, {'participantId': set.entrant1Id}) as TPlayer;
+			let Player2 = _.find(groupParticipants, {'participantId': set.entrant2Id}) as TPlayer;
 
 			if (!Player1 || !Player2)
 				throw new Error('Unknown error occured in Player.resolve'); // HANDLES Error of some sort
@@ -150,13 +150,13 @@ export default class GGSet extends EventEmitter implements IGGSet.GGSet{
 		return this.round;
 	}
 
-	getPlayer1() : Player | null {
+	getPlayer1() : TPlayer | null {
 		if(this.player1)
 			return this.player1;
 		else return null
 	}
 
-	getPlayer2() : Player | null {
+	getPlayer2() : TPlayer | null {
 		if(this.player2)
 			return this.player2;
 		else return null
@@ -191,13 +191,13 @@ export default class GGSet extends EventEmitter implements IGGSet.GGSet{
 		else return null
 	}
 
-	getWinner() : Player | undefined {
+	getWinner() : TPlayer | undefined {
 		if(this.winnerId && this.loserId && this.player1 && this.player2)
 			return this.player1.id == this.winnerId ? this.player1 : this.player2;
 		else throw new Error('Set must be complete to get the Winning Player');
 	}
 
-	getLoser() : Player | undefined {
+	getLoser() : TPlayer | undefined {
 		if(this.winnerId && this.loserId && this.player1 && this.player2)
 			return this.player1.id == this.loserId ? this.player1 : this.player2;
 		else throw new Error('Set must be complete to get the Losing Player');

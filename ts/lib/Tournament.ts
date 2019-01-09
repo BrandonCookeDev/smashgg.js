@@ -17,9 +17,19 @@ import Player from './Player'
 import GGSet from './GGSet'
 import Encoder from './util/Encoder'
 
+/* Interfaces */
 import { ICommon } from './interfaces/ICommon'
 import { ITournament } from './interfaces/ITournament'
+import { IEvent } from './interfaces/IEvent'
+import { IPhase } from './interfaces/IPhase'
+import { IPhaseGroup } from './interfaces/IPhaseGroup'
 
+/* Types */
+import TEvent = IEvent.Event
+import TPhase = IPhase.Phase
+import TPhaseGroup = IPhaseGroup.PhaseGroup
+import TPlayer = IPlayer.Player
+import TGGSet = IGGSet.GGSet
 
 const TOURNAMENT_URL = 'https://api.smash.gg/tournament/%s?%s';
 const LEGAL_ENCODINGS = ['json', 'utf8', 'base64'];
@@ -32,6 +42,8 @@ import Data = ITournament.Data
 import TournamentOptions = ITournament.Options;
 import TournamentExpands = ITournament.Expands;
 import parseOptions = Common.parseOptions;
+import { IPlayer } from './interfaces/IPlayer';
+import { IGGSet } from './interfaces/IGGSet';
 
 function parseTournamentOptions(options: TournamentOptions) : TournamentOptions {
 	return {
@@ -61,11 +73,11 @@ export default class Tournament extends EventEmitter implements ITournament.Tour
     isCached: boolean = true
 	rawEncoding: string = DEFAULT_ENCODING
 	
-	sets: Array<GGSet> = []
-	events: Array<Event> = []
-	phases: Array<Phase> = []
-	players: Array<Player> = []
-	phaseGroups: Array<PhaseGroup> = []
+	sets: Array<TGGSet> = []
+	events: Array<TEvent> = []
+	phases: Array<TPhase> = []
+	players: Array<TPlayer> = []
+	phaseGroups: Array<TPhaseGroup> = []
 
 
 	constructor(
@@ -211,7 +223,7 @@ export default class Tournament extends EventEmitter implements ITournament.Tour
 	}
 
 	/** PROMISES **/
-	async getAllPlayers(options: Options={}) : Promise<Array<Player>> {
+	async getAllPlayers(options: Options={}) : Promise<Array<TPlayer>> {
 		log.debug('Tournament.getAllPlayers called');
 
 		// parse options
@@ -221,7 +233,7 @@ export default class Tournament extends EventEmitter implements ITournament.Tour
 			log.info('Gettings players for ' + this.name);
 			let cacheKey: string = format('tournament::%s::players', this.name);
 			if(options.isCached){
-				let cached: Array<Player> = await Cache.get(cacheKey) as Array<Player>;
+				let cached: Array<TPlayer> = await Cache.get(cacheKey) as Array<TPlayer>;
 				if(cached){
 					this.players = cached;
 					return cached;
@@ -229,11 +241,11 @@ export default class Tournament extends EventEmitter implements ITournament.Tour
 			}
 			
 			let groups: Array<Entity> = this.getData().entities.groups;
-			let fn = async (group: Entity) : Promise<Array<Player>> => {
+			let fn = async (group: Entity) : Promise<Array<TPlayer>> => {
 				let PG: PhaseGroup = await PhaseGroup.getPhaseGroup(group.id);
 				return await PG.getPlayers();
 			};
-			let allPlayers: Array<Player> = await pmap(groups, fn, {concurrency: options.concurrency});
+			let allPlayers: Array<TPlayer> = await pmap(groups, fn, {concurrency: options.concurrency});
 
 			allPlayers = _.flatten(allPlayers);
 			allPlayers = _.uniqBy(allPlayers, 'id');
@@ -247,7 +259,7 @@ export default class Tournament extends EventEmitter implements ITournament.Tour
 		}
 	}
 
-	async getAllSets(options: Options={}) : Promise<Array<GGSet>> {
+	async getAllSets(options: Options={}) : Promise<Array<TGGSet>> {
 		log.debug('Tournament.getAllSets called');
 
 		// parse options
@@ -257,7 +269,7 @@ export default class Tournament extends EventEmitter implements ITournament.Tour
 			log.info('Gettings sets for ' + this.getName());
 			let cacheKey: string = format('tournament::%s::sets', this.name);
 			if(options.isCached){
-				let cached: Array<GGSet> = await Cache.get(cacheKey) as Array<GGSet>;
+				let cached: Array<TGGSet> = await Cache.get(cacheKey) as Array<TGGSet>;
 				if(cached){
 					this.sets = cached;
 					return cached;
@@ -265,11 +277,11 @@ export default class Tournament extends EventEmitter implements ITournament.Tour
 			}
 
 			let groups: Array<Entity> = this.getData().entities.groups;
-			let fn = async (group: Entity) : Promise<Array<GGSet>> => {
+			let fn = async (group: Entity) : Promise<Array<TGGSet>> => {
 				let PG: PhaseGroup = await PhaseGroup.getPhaseGroup(group.id);
 				return await PG.getSets();
 			};
-			let allSets: Array<GGSet> = await pmap(groups, fn, {concurrency: options.concurrency});
+			let allSets: Array<TGGSet> = await pmap(groups, fn, {concurrency: options.concurrency});
 
 			allSets = _.flatten(allSets);
 			allSets = _.uniqBy(allSets, 'id');
@@ -285,7 +297,7 @@ export default class Tournament extends EventEmitter implements ITournament.Tour
 		}
 	}
 
-	async getAllEvents(options: Options={}) : Promise<Array<Event>> {
+	async getAllEvents(options: Options={}) : Promise<Array<TEvent>> {
 		log.debug('Tournament.getAllEvents called');
 
 		// parse options
@@ -295,7 +307,7 @@ export default class Tournament extends EventEmitter implements ITournament.Tour
 			log.info('Getting Events for ' + this.getName());
 			let cacheKey = format('tournament::%s::events', this.name);
 			if(options.isCached){
-				let cached: Array<Event> = await Cache.get(cacheKey) as Array<Event>;
+				let cached: Array<TEvent> = await Cache.get(cacheKey) as Array<TEvent>;
 				if(cached){
 					this.events = cached;
 					return cached;
@@ -303,11 +315,11 @@ export default class Tournament extends EventEmitter implements ITournament.Tour
 			}
 
 			let events: [{id: number, [x: string]: any}] = this.getData().entities.event;
-			let fn = async (event: {id: number, [x: string]: any}) : Promise<Array<Event>> => {
+			let fn = async (event: {id: number, [x: string]: any}) : Promise<Array<TEvent>> => {
 				let eventId = event.id;
 				return await Event.getEventById(eventId);
 			};
-			let allEvents: Array<Event> = await pmap(events, fn, {concurrency: options.concurrency});
+			let allEvents: Array<TEvent> = await pmap(events, fn, {concurrency: options.concurrency});
 
 			this.events = allEvents;
 			await Cache.set(cacheKey, this.events);
@@ -319,17 +331,17 @@ export default class Tournament extends EventEmitter implements ITournament.Tour
 		}
 	}
 
-	async getIncompleteSets(options: Options={}) : Promise<Array<GGSet>> {
+	async getIncompleteSets(options: Options={}) : Promise<Array<TGGSet>> {
 		log.debug('Tournament.getIncompleteSets called');
 		try{
 			//parse options
 			options = parseOptions(options);
 
-			let events : Array<Event> = await this.getAllEvents(options);
-			let fn = async (event: Event) : Promise<Array<GGSet>> => {
+			let events : Array<TEvent> = await this.getAllEvents(options);
+			let fn = async (event: Event) : Promise<Array<TGGSet>> => {
 				return await event.getIncompleteSets(options);
 			};
-			let sets : Array<GGSet> = await pmap(events, fn, {concurrency: options.concurrency});
+			let sets : Array<TGGSet> = await pmap(events, fn, {concurrency: options.concurrency});
 			sets = _.flatten(sets);
 			return sets;
 		} catch(e){
@@ -338,17 +350,17 @@ export default class Tournament extends EventEmitter implements ITournament.Tour
 		}
 	}
 
-	async getCompleteSets(options: Options={}) : Promise<Array<GGSet>> {
+	async getCompleteSets(options: Options={}) : Promise<Array<TGGSet>> {
 		log.debug('Tournament.getIncompleteSets called');
 		try{
 			//parse options
 			options = parseOptions(options)
 
-			let events: Array<Event> = await this.getAllEvents(options);
-			let fn = async (event: Event) : Promise<Array<GGSet>> => {
+			let events: Array<TEvent> = await this.getAllEvents(options);
+			let fn = async (event: Event) : Promise<Array<TGGSet>> => {
 				return await event.getCompleteSets(options);
 			};
-			let sets: Array<GGSet> = await pmap(events, fn, {concurrency: options.concurrency});
+			let sets: Array<TGGSet> = await pmap(events, fn, {concurrency: options.concurrency});
 			sets = _.flatten(sets);
 			return sets;
 		} catch(e){
@@ -357,18 +369,18 @@ export default class Tournament extends EventEmitter implements ITournament.Tour
 		}
 	}
 
-	async getSetsXMinutesBack(minutesBack: number, options: Options={}) : Promise<Array<GGSet>> {
+	async getSetsXMinutesBack(minutesBack: number, options: Options={}) : Promise<Array<TGGSet>> {
 		log.verbose('Tournament.getSetsXMinutesBack called');
 		try{
 			// parse options
 			options = parseOptions(options);
 			options.isCached = false;
 
-			let events: Array<Event> = await this.getAllEvents(options);
-			let fn = async (event: Event) : Promise<Array<GGSet>> => {
+			let events: Array<TEvent> = await this.getAllEvents(options);
+			let fn = async (event: Event) : Promise<Array<TGGSet>> => {
 				return await event.getSetsXMinutesBack(minutesBack, options);
 			};
-			let sets: Array<GGSet> = await pmap(events, fn, {concurrency: options.concurrency});
+			let sets: Array<TGGSet> = await pmap(events, fn, {concurrency: options.concurrency});
 			sets = _.flatten(sets);
 			return sets;
 		} catch(e){

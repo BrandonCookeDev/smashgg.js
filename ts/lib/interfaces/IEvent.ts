@@ -1,6 +1,16 @@
 import { ICommon } from './ICommon'
 import { ITournament } from './ITournament'
+import { IPhase } from './IPhase'
+import { IPhaseGroup } from './IPhaseGroup'
+import { IPlayer } from './IPlayer'
+import { IGGSet } from './IGGSet'
 import Encoder from '../util/Encoder'
+
+/* Types */
+import TPhase = IPhase.Phase
+import TPhaseGroup = IPhaseGroup.PhaseGroup
+import TPlayer = IPlayer.Player
+import TGGSet = IGGSet.GGSet
 
 import Entity = ICommon.Entity
 import TournamentData = ITournament.Data
@@ -18,32 +28,32 @@ export namespace IEvent{
 		tournamentSlug: string 
 		isCached: boolean 
 		rawEncoding: string 
-		phases: Array<Phase> 
-		groups: Array<PhaseGroup> 
+		phases: Array<TPhase> 
+		groups: Array<TPhaseGroup> 
 		
 		loadData(data: object): object | string 
 	
 		getData() : Data
 				
-		getEvent(eventName: string, tournamentName: string, options: Options) : Promise<Event>
+		//getEvent(eventName: string, tournamentName: string, options: Options) : Promise<Event>
 	
-		getEventById(id: number, options: Options) : Promise<Event>
+		//getEventById(id: number, options: Options) : Promise<Event>
 			
 		load(options: Options, tournamentOptions: TournamentOptions) : Promise<Data | string>
 				
-		getEventPhases(options: Options) : Promise<Array<Phase>>
+		getEventPhases(options: Options) : Promise<Array<TPhase>>
 	
-		getEventPhaseGroups(options: Options) : Promise<Array<PhaseGroup>>
+		getEventPhaseGroups(options: Options) : Promise<Array<TPhaseGroup>>
 			
-		getSets(options: Options) : Promise<Array<GGSet>>
+		getSets(options: Options) : Promise<Array<TGGSet>>
 			
-		getPlayers(options: Options) : Promise<Array<Player>>
+		getPlayers(options: Options) : Promise<Array<TPlayer>>
 				
-		getIncompleteSets(options: Options) : Promise<Array<GGSet>>
+		getIncompleteSets(options: Options) : Promise<Array<TGGSet>>
 	
-		getCompleteSets(options: Options) : Promise<Array<GGSet>>
+		getCompleteSets(options: Options) : Promise<Array<TGGSet>>
 			
-		getSetsXMinutesBack(minutesBack: number, options: Options) : Promise<Array<GGSet>> 
+		getSetsXMinutesBack(minutesBack: number, options: Options) : Promise<Array<TGGSet>> 
 			
 		getFromEventEntities(prop: string) : any
 

@@ -16,8 +16,17 @@ const LEGAL_ENCODINGS = ['json', 'utf8', 'base64'];
 const DEFAULT_ENCODING = 'json';
 const DEFAULT_CONCURRENCY = 4;
 
+/* Interfaces */
 import { ICommon } from './interfaces/ICommon'
 import { IPhase } from './interfaces/IPhase'
+import { IPlayer } from './interfaces/IPlayer'
+import { IGGSet } from './interfaces/IGGSet'
+import { IPhaseGroup } from './interfaces/IPhaseGroup'
+
+/* Types */
+import TPlayer = IPlayer.Player
+import TGGSet = IGGSet.GGSet
+import TPhaseGroup = IPhaseGroup.PhaseGroup
 
 import Data = IPhase.Data
 import Entity = IPhase.Entity
@@ -139,7 +148,7 @@ export default class Phase extends EventEmitter implements IPhase.Phase{
 	}
 
 	/** PROMISES **/
-	async getPhaseGroups(options: Options={}) : Promise<Array<PhaseGroup>>{
+	async getPhaseGroups(options: Options={}) : Promise<Array<TPhaseGroup>>{
 		log.debug('Phase.getGroups called');
 
 		// parse options
@@ -154,10 +163,10 @@ export default class Phase extends EventEmitter implements IPhase.Phase{
 			}
 
 			let groups: Array<Entity> = this.getData().entities.groups;
-			let fn = async (group: Entity) : Promise<Array<PhaseGroup>> => {
+			let fn = async (group: Entity) : Promise<Array<TPhaseGroup>> => {
 				return await PhaseGroup.getPhaseGroup(group.id);
 			};
-			let allPhaseGroups: Array<PhaseGroup> = await pmap(groups, fn, {concurrency: options.concurrency});
+			let allPhaseGroups: Array<TPhaseGroup> = await pmap(groups, fn, {concurrency: options.concurrency});
 
 			allPhaseGroups = _.uniqBy(allPhaseGroups, 'id');
 			Cache.set(cacheKey, allPhaseGroups);
@@ -169,7 +178,7 @@ export default class Phase extends EventEmitter implements IPhase.Phase{
 		}
 	}
 
-	async getSets(options: Options={}) : Promise<Array<GGSet>>{
+	async getSets(options: Options={}) : Promise<Array<TGGSet>>{
 		log.debug('Phase.getSets called');
 
 		try{
@@ -183,10 +192,10 @@ export default class Phase extends EventEmitter implements IPhase.Phase{
 			}
 
 			let phaseGroups: Array<PhaseGroup> = await this.getPhaseGroups(options);
-			let fn = async (group: PhaseGroup) : Promise<Array<GGSet>> => {
+			let fn = async (group: PhaseGroup) : Promise<Array<TGGSet>> => {
 				return await group.getSets();
 			};
-			let sets: Array<GGSet> = await pmap(phaseGroups, fn, {concurrency: options.concurrency});
+			let sets: Array<TGGSet> = await pmap(phaseGroups, fn, {concurrency: options.concurrency});
 
 			sets = _.flatten(sets);
 			if(options.isCached) await Cache.set(cacheKey, sets);
@@ -198,7 +207,7 @@ export default class Phase extends EventEmitter implements IPhase.Phase{
 		}
 	}
 
-	async getPlayers(options: Options={}) : Promise<Array<Player>>{
+	async getPlayers(options: Options={}) : Promise<Array<TPlayer>>{
 		log.debug('Phase.getPlayers called');
 
 		try{
@@ -212,10 +221,10 @@ export default class Phase extends EventEmitter implements IPhase.Phase{
 			}
 
 			let phaseGroups: Array<PhaseGroup> = await this.getPhaseGroups(options);
-			let fn = async (group: PhaseGroup) : Promise<Array<Player>> => {
+			let fn = async (group: PhaseGroup) : Promise<Array<TPlayer>> => {
 				return await group.getPlayers();
 			};
-			let players: Array<Player> = await pmap(phaseGroups, fn, {concurrency: options.concurrency});
+			let players: Array<TPlayer> = await pmap(phaseGroups, fn, {concurrency: options.concurrency});
 
 			players = _.flatten(players);
 			players = _.uniqBy(players, 'id');
@@ -227,17 +236,17 @@ export default class Phase extends EventEmitter implements IPhase.Phase{
 		}
 	}
 
-	async getIncompleteSets(options: Options={}) : Promise<Array<GGSet>>{
+	async getIncompleteSets(options: Options={}) : Promise<Array<TGGSet>>{
 		log.debug('Phase.getIncompleteSets called');
 		try{
 			//parse options
 			options = ICommon.parseOptions(options);
 
 			let groups: Array<PhaseGroup> = await this.getPhaseGroups(options);
-			let fn = async (group : PhaseGroup) : Promise<Array<GGSet>> => {
+			let fn = async (group : PhaseGroup) : Promise<Array<TGGSet>> => {
 				return await group.getIncompleteSets(options);
 			};
-			let sets: Array<GGSet> = await pmap(groups, fn, {concurrency: options.concurrency});
+			let sets: Array<TGGSet> = await pmap(groups, fn, {concurrency: options.concurrency});
 			sets = _.flatten(sets);
 			return sets;
 		} catch(e){
@@ -246,17 +255,17 @@ export default class Phase extends EventEmitter implements IPhase.Phase{
 		}
 	}
 
-	async getCompleteSets(options: Options={}) : Promise<Array<GGSet>>{
+	async getCompleteSets(options: Options={}) : Promise<Array<TGGSet>>{
 		log.debug('Phase.getIncompleteSets called');
 		try{
 			//parse options
 			options = ICommon.parseOptions(options)
 
 			let groups: Array<PhaseGroup> = await this.getPhaseGroups(options);
-			let fn = async (group: PhaseGroup) : Promise<Array<GGSet>> => {
+			let fn = async (group: PhaseGroup) : Promise<Array<TGGSet>> => {
 				return await group.getCompleteSets(options);
 			};
-			let sets: Array<GGSet> = await pmap(groups, fn, {concurrency: options.concurrency});
+			let sets: Array<TGGSet> = await pmap(groups, fn, {concurrency: options.concurrency});
 			sets = _.flatten(sets);
 			return sets;
 		} catch(e){
@@ -265,7 +274,7 @@ export default class Phase extends EventEmitter implements IPhase.Phase{
 		}
 	}
 
-	async getSetsXMinutesBack(minutesBack: number, options: Options={}) : Promise<Array<GGSet>>{
+	async getSetsXMinutesBack(minutesBack: number, options: Options={}) : Promise<Array<TGGSet>>{
 		log.verbose('Phase.getSetsXMinutesBack called');
 		try{
 			// parse options
@@ -273,10 +282,10 @@ export default class Phase extends EventEmitter implements IPhase.Phase{
 			options.isCached = false;
 
 			let groups: Array<PhaseGroup> = await this.getPhaseGroups(options);
-			let fn = async (group: PhaseGroup) : Promise<Array<GGSet>> => {
+			let fn = async (group: PhaseGroup) : Promise<Array<TGGSet>> => {
 				return await group.getSetsXMinutesBack(minutesBack, options);
 			};
-			let sets: Array<GGSet> = await pmap(groups, fn, {concurrency: options.concurrency});
+			let sets: Array<TGGSet> = await pmap(groups, fn, {concurrency: options.concurrency});
 			sets = _.flatten(sets);
 			return sets;
 		} catch(e){

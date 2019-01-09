@@ -3,15 +3,27 @@ import request from 'request-promise';
 import { format } from 'util'
 import * as Common from './Common'
 
-
+/* Interfaces */
 import { ITournament } from '../interfaces/ITournament'
 import { IEvent } from '../interfaces/IEvent'
+import { IPhase } from '../interfaces/IPhase'
+import { IPhaseGroup } from '../interfaces/IPhaseGroup'
+
+/* Types */
+import TTournament = ITournament.Tournament
+import TEvent = IEvent.Event
+import TPhase = IPhase.Phase
+import TPhaseGroup = IPhaseGroup.PhaseGroup
 
 import createExpandsString = Common.createExpandsString
 import TournamentOptions = ITournament.Options
 import TournamentData = ITournament.Data;
 import EventOptions = IEvent.Options
 import EventData = IEvent.EventData
+import PhaseOptions = IPhase.Options
+import PhaseData = IPhase.Data
+import PhaseGroupOptions = IPhaseGroup.Options
+import PhaseGroupData = IPhaseGroup.Data
 
 import parseTournamentOptions = ITournament.parseOptions;
 import parseEventOptions = IEvent.parseOptions;

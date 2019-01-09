@@ -1,5 +1,3 @@
-'use strict';
-
 import log from 'winston'
 import {EventEmitter} from 'events'
 import {format} from 'util'
@@ -9,7 +7,6 @@ import Cache from './util/Cache'
 import { ICommon } from './interfaces/ICommon'
 import { IPlayer } from './interfaces/IPlayer'
 
-import Data = IPlayer.Data
 import Options = ICommon.Options
 import PlayerEntity = IPlayer.Entity
 import parseOptions = ICommon.parseOptions
@@ -26,12 +23,12 @@ export default class Player extends EventEmitter{
 	public state?: string = ''
 	public sponsor?: string = ''
 	public participantId?: number = 0
-	public data?: Data
+	public data?: PlayerEntity
 
 
 	constructor(id: number, tag: string, name?: string, country?: string, 
 				state?: string, sponsor?: string, participantId?: number, 
-				data?: Data){
+				data?: PlayerEntity){
 		super();
 
 		if(!id)
@@ -47,7 +44,7 @@ export default class Player extends EventEmitter{
 		this.data = data;
 	}
 
-	loadData(data: Data){
+	loadData(data: PlayerEntity) : void{
 		this.data = data;
 	}
 
@@ -82,7 +79,7 @@ export default class Player extends EventEmitter{
 		}
 	}
 
-	static resolveEntities(player: PlayerEntity){
+	static resolveEntities(player: PlayerEntity) : Player{
 		let data = player.entities.player;
 
 		let P = new Player(
@@ -97,67 +94,67 @@ export default class Player extends EventEmitter{
 		return P;
 	}
 
-	static resolve(data){
+	static resolve(data: PlayerEntity) : Player{
 		let playerId = 0;
 
 		//for(let id in data.mutations.participants)
 		//	participantId = id;
 
 		for(let id in data.mutations.players)
-			playerId = id;
+			playerId = +id;
 
 		let playerDetails = data.mutations.players[playerId];
 
 		let P = new Player(
-			parseInt(playerId),
+			playerId,
 			playerDetails.gamerTag,
 			playerDetails.name,
 			playerDetails.country,
 			playerDetails.state,
 			playerDetails.prefix,
-			parseInt(data.id)
+			data.id
 		);
 		P.loadData(data);
 		return P;
 	}
 
 	/** SIMPLE GETTERS **/
-	getId(){
+	getId() : number{
 		return this.id;
 	}
 
-	getTag(){
+	getTag(): string {
 		return this.tag;
 	}
 
-	getName(){
+	getName(): string | undefined{
 		return this.name;
 	}
 
-	getCountry(){
+	getCountry(): string | undefined{
 		return this.country;
 	}
 
-	getState(){
+	getState(): string | undefined{
 		return this.state;
 	}
 
-	getSponsor(){
+	getSponsor(): string | undefined{
 		return this.sponsor;
 	}
 
-	getParticipantId(){
+	getParticipantId() : number | undefined{
 		return this.participantId;
 	}
 
-	getFinalPlacement(){
+	getFinalPlacement() : number | undefined {
 		if(this.data)
 			return this.data.finalPlacement || this.nullValueString('Final Placement');
 		else throw new Error('No data to get Player property Final Placement');
 	}
 
 	/** NULL VALUES **/
-	nullValueString(prop){
+	nullValueString(prop: string) : string{
 		return prop + ' not available for Player ' + this.id;
 	}
 }
@@ -166,7 +163,7 @@ Player.prototype.toString = function(){
 	return 'Player:' +
 		'\nName: ' + this.name + 
 		'\nTag: ' + this.tag + 
-		'\nSponsor: ' + this.prefix + 
+		'\nSponsor: ' + this.sponsor + 
 		'\nCountry: ' + this.country + 
 		'\nState: ' + this.state; 
 };

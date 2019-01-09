@@ -5,6 +5,10 @@ export namespace IGGSet{
 
 	}
 
+	export interface Data{
+		entities: [Entity]
+	}
+
 	export interface Entity{
 		id: number,
 		eventId: number,
@@ -14,6 +18,9 @@ export namespace IGGSet{
 		entrant1Id?: number,
 		entrant2Id?: number,
 		winnerId?: number,
-		loserId?: number
+		loserId?: number,
+		startedAt?: number,
+		completedAt?: number,
+		[x: string]: any
 	}
 }

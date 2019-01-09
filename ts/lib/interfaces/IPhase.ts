@@ -1,6 +1,14 @@
 import Encoder from '../util/Encoder'
 
+/* Interfaces */
 import { IPhaseGroup } from './IPhaseGroup'
+import { IPlayer } from './IPlayer'
+import { IGGSet } from './IGGSet'
+
+/* Types */
+import TPhaseGroup = IPhaseGroup.PhaseGroup
+import TPlayer = IPlayer.Player
+import TGGSet = IGGSet.GGSet
 
 import PhaseGroup = IPhaseGroup.PhaseGroup
 
@@ -24,15 +32,15 @@ export namespace IPhase{
 		
 		getPhaseGroups(options: Options) : Promise<Array<PhaseGroup>>
 		
-		getSets(options: Options) : Promise<Array<GGSet>>
+		getSets(options: Options) : Promise<Array<TGGSet>>
 		
-		getPlayers(options: Options) : Promise<Array<Player>>
+		getPlayers(options: Options) : Promise<Array<TPlayer>>
 		
-		getIncompleteSets(options: Options) : Promise<Array<GGSet>>
+		getIncompleteSets(options: Options) : Promise<Array<TGGSet>>
 		
-		getCompleteSets(options: Options) : Promise<Array<GGSet>>
+		getCompleteSets(options: Options) : Promise<Array<TGGSet>>
 		
-		getSetsXMinutesBack(minutesBack: number, options: Options) : Promise<Array<GGSet>>
+		getSetsXMinutesBack(minutesBack: number, options: Options) : Promise<Array<TGGSet>>
 		
 		getFromDataEntities(prop: string) : any
 		

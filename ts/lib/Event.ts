@@ -126,7 +126,7 @@ export default class Event extends EventEmitter implements IEvent.Event{
 		});
 	}
 
-	static getEventById(id: number, options: EventOptions={}){
+	static getEventById(id: number, options: EventOptions={}) : Promise<Event>{
 		return new Promise(function(resolve, reject){
 			try{
 				let E = new Event(id, undefined, options);
@@ -282,13 +282,13 @@ export default class Event extends EventEmitter implements IEvent.Event{
 
 			let phases: Array<TPhase> = await this.getEventPhases(options);
 			let fn = async (phase: TPhase) : Promise<Array<TGGSet>> => {
-				return await phase.getSets();
+				return await phase.getSets(options);
 			};
-			let sets = await pmap(phases, fn, {concurrency: options.concurrency});
+			let sets: TGGSet[][] = await pmap(phases, fn, {concurrency: options.concurrency});
 
-			sets = _.flatten(sets);
-			if(options.isCached) await Cache.set(cacheKey, sets);
-			return sets;
+			let flattened: Array<TGGSet> = _.flatten(sets);
+			if(options.isCached) await Cache.set(cacheKey, flattened);
+			return flattened;
 		} catch(e){
 			log.error('Event.getSets error: %s', e);
 			throw e;
@@ -308,15 +308,15 @@ export default class Event extends EventEmitter implements IEvent.Event{
 			}
 
 			let phases: Array<TPhase> = await this.getEventPhases(options);
-			let fn = async (phase: Phase) => {
-				return await phase.getPlayers();
+			let fn = async (phase: TPhase) => {
+				return await phase.getPlayers(options);
 			};
-			let players: Array<TPlayer> = await pmap(phases, fn, {concurrency: options.concurrency});
+			let players: TPlayer[][] = await pmap(phases, fn, {concurrency: options.concurrency});
 
-			players = _.flatten(players);
-			players = _.uniqBy(players, 'id');
-			if(options.isCached) await Cache.set(cacheKey, players);
-			return players;
+			let flattened: Array<TPlayer> = _.flatten(players);
+			flattened = _.uniqBy(flattened, 'id');
+			if(options.isCached) await Cache.set(cacheKey, flattened);
+			return flattened;
 		} catch(e){
 			log.error('Event.getSets error: %s', e);
 			throw e;
@@ -330,12 +330,12 @@ export default class Event extends EventEmitter implements IEvent.Event{
 			options = parseOptions(options)
 
 			let phases: Array<TPhase> = await this.getEventPhases(options);
-			let fn = async (phase: Phase) => {
+			let fn = async (phase: TPhase) => {
 				return await phase.getIncompleteSets(options);
 			};
-			let sets: Array<TGGSet> = await pmap(phases, fn, {concurrency: options.concurrency});
-			sets = _.flatten(sets);
-			return sets;
+			let sets: TGGSet[][] = await pmap(phases, fn, {concurrency: options.concurrency});
+			let flattened: Array<TGGSet> = _.flatten(sets);
+			return flattened;
 		} catch(e){
 			log.error('Event.getIncompleteSets error: %s', e);
 			throw e;
@@ -349,12 +349,12 @@ export default class Event extends EventEmitter implements IEvent.Event{
 			options = parseOptions(options);
 
 			let phases: Array<TPhase> = await this.getEventPhases(options);
-			let fn = async (phase: Phase) => {
+			let fn = async (phase: TPhase) => {
 				return await phase.getCompleteSets(options);
 			};
-			let sets: Array<TGGSet> = await pmap(phases, fn, {concurrency: options.concurrency});
-			sets = _.flatten(sets);
-			return sets;
+			let sets: TGGSet[][] = await pmap(phases, fn, {concurrency: options.concurrency});
+			let flattened: Array<TGGSet> = _.flatten(sets);
+			return flattened;
 		} catch(e){
 			log.error('Event.getIncompleteSets error: %s', e);
 			throw e;
@@ -368,12 +368,12 @@ export default class Event extends EventEmitter implements IEvent.Event{
 			options=parseOptions(options);
 
 			let groups: Array<TPhase> = await this.getEventPhases(options);
-			let fn = async (group: Phase) => {
+			let fn = async (group: TPhase) => {
 				return await group.getSetsXMinutesBack(minutesBack, options);
 			};
-			let sets: Array<TGGSet> = await pmap(groups, fn, {concurrency: options.concurrency});
-			sets = _.flatten(sets);
-			return sets;
+			let sets: TGGSet[][] = await pmap(groups, fn, {concurrency: options.concurrency});
+			let flattened: Array<TGGSet> = _.flatten(sets);
+			return flattened;
 		} catch(e){
 			log.error('Event.getSetsXMinutesBack error: %s', e);
 			throw e;

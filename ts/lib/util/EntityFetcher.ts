@@ -25,8 +25,10 @@ import PhaseData = IPhase.Data
 import PhaseGroupOptions = IPhaseGroup.Options
 import PhaseGroupData = IPhaseGroup.Data
 
-import parseTournamentOptions = ITournament.parseOptions;
-import parseEventOptions = IEvent.parseOptions;
+import parseTournamentOptions = ITournament.parseOptions
+import parseEventOptions = IEvent.parseOptions
+import parsePhaseOptions = IPhase.parseOptions
+import parsePhaseGroupOptions = IPhaseGroup.parseOptions
 
 const TOURNAMENT_URL = 'https://api.smash.gg/tournament/%s?%s';
 const EVENT_URL = 'https://api.smash.gg/event/%s?%s';
@@ -77,9 +79,29 @@ export async function getEventDataById(eventId: number, options: EventOptions): 
 }
 
 export async function getPhase(phaseId: number, options: PhaseOptions): Promise<PhaseData> {
-
+    try{
+        options = parsePhaseOptions(options);
+        let expands: string = createExpandsString(options.expands)
+        let url: string = format(PHASE_URL, phaseId, expands);
+        let data: PhaseData = JSON.parse(await request(url));
+        return data;
+    } catch(err){
+        console.error('Error creating Tournament. For more info, implement Event.on(\'error\')');
+        log.error('Event error: %s', err.message);
+        throw err;
+    }
 }
 
 export async function getPhaseGroup(phaseGroupId: number, options: PhaseGroupOptions): Promise<PhaseGroupData> {
-    
+    try{
+        options = parsePhaseGroupOptions(options);
+        let expands: string = createExpandsString(options.expands)
+        let url: string = format(PHASE_URL, phaseGroupId, expands);
+        let data: PhaseGroupData = JSON.parse(await request(url));
+        return data;
+    } catch(err){
+        console.error('Error creating Tournament. For more info, implement Event.on(\'error\')');
+        log.error('Event error: %s', err.message);
+        throw err;
+    }
 }

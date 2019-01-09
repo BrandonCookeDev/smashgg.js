@@ -1,6 +1,16 @@
-import { ICommon } from './ICommon'
 import Encoder from '../util/Encoder'
 import Entity = ICommon.Entity;
+
+/* Interfaces */
+import { ICommon } from './ICommon'
+import { IEvent } from './IEvent'
+import { IPlayer } from './IPlayer'
+import { IGGSet } from './IGGSet'
+
+/* Types */
+import TEvent = IEvent.Event
+import TPlayer = IPlayer.Player
+import TGGSet = IGGSet.GGSet
 
 export namespace ITournament{
 	export interface Tournament{
@@ -17,23 +27,23 @@ export namespace ITournament{
 
 		getData() : Data
 
-		getTournament(tournamentId: string, options: Options) : Tournament
+		//getTournament(tournamentId: string, options: Options) : Tournament
 
-		getTournamentById(tournamentId: number, options: Options) : Tournament
+		//getTournamentById(tournamentId: number, options: Options) : Tournament
 
 		load() : Promise<Data | string> 
 
-		getAllPlayers(options: Options) : Promise<Array<Player>> 
+		getAllPlayers(options: Options) : Promise<Array<TPlayer>> 
 
-		getAllSets(options: Options) : Promise<Array<GGSet>>
+		getAllSets(options: Options) : Promise<Array<TGGSet>>
 
-		getAllEvents(options: Options) : Promise<Array<Event>>
+		getAllEvents(options: Options) : Promise<Array<TEvent>>
 
-		getIncompleteSets(options: Options) : Promise<Array<GGSet>>
+		getIncompleteSets(options: Options) : Promise<Array<TGGSet>>
 	
-		getCompleteSets(options: Options) : Promise<Array<GGSet>>
+		getCompleteSets(options: Options) : Promise<Array<TGGSet>>
 
-		getSetsXMinutesBack(minutesBack: number, options: Options) : Promise<Array<GGSet>>
+		getSetsXMinutesBack(minutesBack: number, options: Options) : Promise<Array<TGGSet>>
 
 		getFromDataEntities(prop: string) : any
 

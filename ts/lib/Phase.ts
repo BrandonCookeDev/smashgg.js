@@ -163,10 +163,10 @@ export default class Phase extends EventEmitter implements IPhase.Phase{
 			}
 
 			let groups: Array<Entity> = this.getData().entities.groups;
-			let fn = async (group: Entity) : Promise<Array<TPhaseGroup>> => {
+			let fn = async (group: Entity) : Promise<TPhaseGroup> => {
 				return await PhaseGroup.getPhaseGroup(group.id);
 			};
-			let allPhaseGroups: Array<TPhaseGroup> = await pmap(groups, fn, {concurrency: options.concurrency});
+			let allPhaseGroups: TPhaseGroup[] = await pmap(groups, fn, {concurrency: options.concurrency});
 
 			allPhaseGroups = _.uniqBy(allPhaseGroups, 'id');
 			Cache.set(cacheKey, allPhaseGroups);
@@ -191,15 +191,15 @@ export default class Phase extends EventEmitter implements IPhase.Phase{
 				if(cached) return cached;
 			}
 
-			let phaseGroups: Array<PhaseGroup> = await this.getPhaseGroups(options);
-			let fn = async (group: PhaseGroup) : Promise<Array<TGGSet>> => {
-				return await group.getSets();
+			let phaseGroups: Array<TPhaseGroup> = await this.getPhaseGroups(options);
+			let fn = async (group: TPhaseGroup) : Promise<Array<TGGSet>> => {
+				return await group.getSets(options);
 			};
-			let sets: Array<TGGSet> = await pmap(phaseGroups, fn, {concurrency: options.concurrency});
+			let sets: TGGSet[][] = await pmap(phaseGroups, fn, {concurrency: options.concurrency});
 
-			sets = _.flatten(sets);
-			if(options.isCached) await Cache.set(cacheKey, sets);
-			return sets;
+			let flattened: TGGSet[] = _.flatten(sets);
+			if(options.isCached) await Cache.set(cacheKey, flattened);
+			return flattened;
 
 		} catch(e){
 			log.error('Phase.getSets error: %s', e);
@@ -220,16 +220,16 @@ export default class Phase extends EventEmitter implements IPhase.Phase{
 				if(cached) return cached;
 			}
 
-			let phaseGroups: Array<PhaseGroup> = await this.getPhaseGroups(options);
-			let fn = async (group: PhaseGroup) : Promise<Array<TPlayer>> => {
-				return await group.getPlayers();
+			let phaseGroups: Array<TPhaseGroup> = await this.getPhaseGroups(options);
+			let fn = async (group: TPhaseGroup) : Promise<Array<TPlayer>> => {
+				return await group.getPlayers(options);
 			};
-			let players: Array<TPlayer> = await pmap(phaseGroups, fn, {concurrency: options.concurrency});
+			let players: TPlayer[][] = await pmap(phaseGroups, fn, {concurrency: options.concurrency});
 
-			players = _.flatten(players);
-			players = _.uniqBy(players, 'id');
-			if(options.isCached) await Cache.set(cacheKey, players);
-			return players;
+			let flattened: TPlayer[] = _.flatten(players);
+			flattened = _.uniqBy(flattened, 'id');
+			if(options.isCached) await Cache.set(cacheKey, flattened);
+			return flattened;
 		} catch(e){
 			log.error('Phase.getPlayers error: %s', e);
 			throw e;
@@ -242,13 +242,13 @@ export default class Phase extends EventEmitter implements IPhase.Phase{
 			//parse options
 			options = ICommon.parseOptions(options);
 
-			let groups: Array<PhaseGroup> = await this.getPhaseGroups(options);
-			let fn = async (group : PhaseGroup) : Promise<Array<TGGSet>> => {
+			let groups: Array<TPhaseGroup> = await this.getPhaseGroups(options);
+			let fn = async (group : TPhaseGroup) : Promise<Array<TGGSet>> => {
 				return await group.getIncompleteSets(options);
 			};
-			let sets: Array<TGGSet> = await pmap(groups, fn, {concurrency: options.concurrency});
-			sets = _.flatten(sets);
-			return sets;
+			let sets: TGGSet[][] = await pmap(groups, fn, {concurrency: options.concurrency});
+			let flattened: TGGSet[] = _.flatten(sets);
+			return flattened;
 		} catch(e){
 			log.error('Phase.getIncompleteSets error: %s', e);
 			throw e;
@@ -261,13 +261,13 @@ export default class Phase extends EventEmitter implements IPhase.Phase{
 			//parse options
 			options = ICommon.parseOptions(options)
 
-			let groups: Array<PhaseGroup> = await this.getPhaseGroups(options);
-			let fn = async (group: PhaseGroup) : Promise<Array<TGGSet>> => {
+			let groups: Array<TPhaseGroup> = await this.getPhaseGroups(options);
+			let fn = async (group: TPhaseGroup) : Promise<Array<TGGSet>> => {
 				return await group.getCompleteSets(options);
 			};
-			let sets: Array<TGGSet> = await pmap(groups, fn, {concurrency: options.concurrency});
-			sets = _.flatten(sets);
-			return sets;
+			let sets: TGGSet[][] = await pmap(groups, fn, {concurrency: options.concurrency});
+			let flattened: TGGSet[] = _.flatten(sets);
+			return flattened;
 		} catch(e){
 			log.error('Phase.getIncompleteSets error: %s', e);
 			throw e;
@@ -281,13 +281,13 @@ export default class Phase extends EventEmitter implements IPhase.Phase{
 			options = ICommon.parseOptions(options)
 			options.isCached = false;
 
-			let groups: Array<PhaseGroup> = await this.getPhaseGroups(options);
-			let fn = async (group: PhaseGroup) : Promise<Array<TGGSet>> => {
+			let groups: Array<TPhaseGroup> = await this.getPhaseGroups(options);
+			let fn = async (group: TPhaseGroup) : Promise<Array<TGGSet>> => {
 				return await group.getSetsXMinutesBack(minutesBack, options);
 			};
-			let sets: Array<TGGSet> = await pmap(groups, fn, {concurrency: options.concurrency});
-			sets = _.flatten(sets);
-			return sets;
+			let sets: TGGSet[][] = await pmap(groups, fn, {concurrency: options.concurrency});
+			let flattened: TGGSet[] = _.flatten(sets);
+			return flattened;
 		} catch(e){
 			log.error('Phase.getSetsXMinutesBack error: %s', e);
 			throw e;

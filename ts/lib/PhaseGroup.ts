@@ -231,8 +231,8 @@ export default class PhaseGroup extends EventEmitter implements IPhaseGroup.Phas
 			//parse options
 			options = parseOptions(options)
 
-			let sets = await this.getSets(options);
-			let completeSets = sets.filter(set => { return set.isComplete == true; });
+			let sets: Array<GGSet> = await this.getSets(options);
+			let completeSets: Array<GGSet> = sets.filter(set => { return set.isComplete == true; });
 			return completeSets;			
 		} catch(e){
 			log.error('PhaseGroup getCompleteSets error: %s', e);
@@ -247,8 +247,8 @@ export default class PhaseGroup extends EventEmitter implements IPhaseGroup.Phas
 			//parse options
 			options = parseOptions(options)
 
-			let sets = await this.getSets(options);
-			let completeSets = sets.filter(set => { return set.isComplete == false; });
+			let sets: Array<GGSet> = await this.getSets(options);
+			let completeSets: Array<GGSet> = sets.filter(set => { return set.isComplete == false; });
 			return completeSets;			
 		} catch(e){
 			log.error('PhaseGroup getIncompleteSets error: %s', e);
@@ -266,8 +266,8 @@ export default class PhaseGroup extends EventEmitter implements IPhaseGroup.Phas
 			options.isCached = false
 
 			let now = moment();
-			let sets = await this.getSets(options);
-			let filtered = sets.filter(set => {
+			let sets: Array<GGSet> = await this.getSets(options);
+			let filtered: Array<GGSet> = sets.filter(set => {
 				let then = moment(set.getCompletedAt());
 				let diff = moment.duration(now.diff(then));
 

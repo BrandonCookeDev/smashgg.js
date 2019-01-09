@@ -1,19 +1,48 @@
 'use strict';
 
-let _ = require('lodash');
-let log = require('winston');
-let {format} = require('util');
-let moment = require('moment');
-let EventEmitter = require('events');
-let request = require('request-promise');
-let Cache = require('./util/Cache');
 
-let Player = require('./Player');
-let API_URL = 'https://api.smash.gg/set/%s';
+import _ from 'lodash'
+import log from 'winston'
+import {format} from 'util'
+import moment from 'moment-timezone'
+import {EventEmitter} from 'events'
+import request from 'request-promise'
+import Cache from './util/Cache'
 
-export default class Set extends EventEmitter{
+import PhaseGroup from './PhaseGroup'
 
-	constructor(id, eventId, round, player1, player2, isComplete=false, score1=0, score2=0, winnerId, loserId, data){
+import { ICommon } from './interfaces/ICommon'
+import { IGGSet } from './interfaces/IGGSet'
+import { IPlayer } from './interfaces/IPlayer'
+import { IPhaseGroup } from './interfaces/IPhaseGroup'
+
+import Options = ICommon.Options
+import Player = IPlayer.Player
+import PlayerEntity = IPlayer.Entity
+import Entity = IGGSet.Entity
+import PhaseGroupT = IPhaseGroup.PhaseGroup
+import parseOptions = ICommon.parseOptions
+
+const API_URL = 'https://api.smash.gg/set/%s';
+
+export default class GGSet extends EventEmitter implements IGGSet.GGSet{
+
+	id: number
+	eventId: number
+	round: string
+	player1?: Player
+	player2?: Player
+	isComplete: boolean
+	score1?: number
+	score2?: number
+	winnerId?: number
+	loserId?: number
+	data?: Entity
+
+	constructor(id: number, eventId: number, round: string, 
+			player1: Player, player2: Player, isComplete: boolean=false, 
+			score1: number=0, score2: number=0, winnerId: number=0, 
+			loserId: number=0, data: Entity){
 		super();
 
 		if(!id)
@@ -22,10 +51,11 @@ export default class Set extends EventEmitter{
 			throw new Error('Event Id for Set cannot be null');
 		if(!round)
 			throw new Error('Round for Set cannot be null');
-		if(!player1 && !(player1 instanceof Player))
-			throw new Error('Winner Player for Set cannot be null, and must be an instance of Player');
-		if(!player2 && !(player2 instanceof Player))
-			throw new Error('Loser Player for Set cannot be null, and must be an instance of Player');
+
+		//if(!player1 && !(player1 instanceof Player))
+		//	throw new Error('Winner Player for Set cannot be null, and must be an instance of Player');
+		//if(!player2 && !(player2 instanceof Player))
+		//	throw new Error('Loser Player for Set cannot be null, and must be an instance of Player');
 
 		this.id = id;
 		this.eventId = eventId;
@@ -41,18 +71,18 @@ export default class Set extends EventEmitter{
 		this.data = data;
 	}
 
-	loadData(data){
+	loadData(data: Entity) : void{
 		this.data = data;
 	}
 
-	static async getSet(id, options={}){
+	static async getSet(id: number, options: Options={}) : Promise<GGSet> {
 		log.verbose('Set getSet called');
 		try{
 			// parse options
-			let isCached = options.isCached != undefined ? isCached == true : true;
+			options = parseOptions(options);
 
-			let cacheKey = format('set::%s', id);
-			if(isCached){
+			let cacheKey: string = format('set::%s', id);
+			if(options.isCached){
 				let cached = await Cache.get(cacheKey);
 				if(cached) return cached;
 			}
@@ -65,8 +95,8 @@ export default class Set extends EventEmitter{
 				method: 'GET'
 			};
 
-			let resp = JSON.parse(await request(req));
-			let set = Set.resolve(resp);
+			let resp: Entity = JSON.parse(await request(req));
+			let set: GGSet = await GGSet.resolve(resp);
 
 			await Cache.set(cacheKey, set);
 			return set;
@@ -78,32 +108,34 @@ export default class Set extends EventEmitter{
 	}
 
 	
-	static async resolve(data){
+	static async resolve(data: Entity) : Promise<GGSet> {
 		log.verbose('Set resolve called');
 		try{
-			let PhaseGroup = require('./PhaseGroup');
+			let isBye = false
 			let set = data.entities.sets;
 			let group = await PhaseGroup.getPhaseGroup(set.phaseGroupId);
 			let groupParticipants = await group.getPlayers();
 
 			if (!set.entrant1Id || !set.entrant2Id)
-				return null; // HANDLES BYES
+				isBye = true; // HANDLES BYES
 
-			let Player1 = _.find(groupParticipants, {'participantId': set.entrant1Id});
-			let Player2 = _.find(groupParticipants, {'participantId': set.entrant2Id});
+			let Player1 = _.find(groupParticipants, {'participantId': set.entrant1Id}) as Player;
+			let Player2 = _.find(groupParticipants, {'participantId': set.entrant2Id}) as Player;
 
 			if (!Player1 || !Player2)
-				return null; // HANDLES Error of some sort
+				throw new Error('Unknown error occured in Player.resolve'); // HANDLES Error of some sort
 
 			let isComplete = false;
 			if(set.winnerId && set.loserId)
 				isComplete = true;
 
 			let S;
-			if(isComplete)
-				S = new Set(set.id, set.eventId, set.fullRoundText, Player1, Player2, isComplete, set.entrant1Score, set.entrant2Score, set.winnerId, set.loserId);
+			if(isBye)
+				S = new GGSet(set.id, set.eventId, 'BYE', Player1, Player2, isComplete, undefined, undefined, undefined, undefined, data)
+			else if(isComplete)
+				S = new GGSet(set.id, set.eventId, set.fullRoundText, Player1, Player2, isComplete, set.entrant1Score, set.entrant2Score, set.winnerId, set.loserId, data);
 			else
-				S = new Set(set.id, set.eventId, set.fullRoundText, Player1, Player2, isComplete);
+				S = new GGSet(set.id, set.eventId, set.fullRoundText, Player1, Player2, isComplete, undefined, undefined, undefined, undefined, data);
 			
 			S.loadData(set);
 			return S;
@@ -118,42 +150,55 @@ export default class Set extends EventEmitter{
 		return this.round;
 	}
 
-	getPlayer1(){
-		return this.player1;
+	getPlayer1() : Player | null {
+		if(this.player1)
+			return this.player1;
+		else return null
 	}
 
-	getPlayer2(){
-		return this.player2;
+	getPlayer2() : Player | null {
+		if(this.player2)
+			return this.player2;
+		else return null
 	}
 	
-	getWinnerId(){
-		return this.winnerId;
+	getWinnerId() : number | null{
+		if(this.winnerId)
+			return this.winnerId;
+		else return null
 	}
 
-	getLoserId(){
-		return this.loserId;
+	getLoserId() : number | null{
+		if(this.loserId)
+			return this.loserId;
+		else return null
+		
 	}
 
 	getIsComplete(){
 		return this.isComplete;
 	}
 
-	getPlayer1Score(){
-		return this.score1;
+	getPlayer1Score() : number | null{
+		if(this.score1)
+			return this.score1;
+		else return null
 	}
 
-	getPlayer2Score(){
-		return this.score2;
+	getPlayer2Score() : number | null{
+		if(this.score2)
+			return this.score2;
+		else return null
 	}
 
-	getWinner(){
-		if(this.winnerId)
+	getWinner() : Player | undefined {
+		if(this.winnerId && this.loserId && this.player1 && this.player2)
 			return this.player1.id == this.winnerId ? this.player1 : this.player2;
 		else throw new Error('Set must be complete to get the Winning Player');
 	}
 
-	getLoser(){
-		if(this.loserId)
+	getLoser() : Player | undefined {
+		if(this.winnerId && this.loserId && this.player1 && this.player2)
 			return this.player1.id == this.loserId ? this.player1 : this.player2;
 		else throw new Error('Set must be complete to get the Losing Player');
 	}
@@ -164,78 +209,84 @@ export default class Set extends EventEmitter{
 		else throw new Error('No data to get Set property Games');
 	}
 
-	getBestOfCount(){
+	getBestOfCount() : number | string {
 		if(this.data)
 			return this.data.bestOf || this.nullValueString('Best-Of Count');
 		else throw new Error('No data to get Set property Best-Of Count');
 	}
 
-	getWinnerScore(){
+	getWinnerScore() : number | string {
 		if(this.data && this.isComplete)
 			return this.data.entrant1Score > this.data.entrant2Score ? this.data.entrant1Score : this.data.entrant2Score;
 		else throw new Error('No data to get Set property Winner Score');
 	}
 
-	getLoserScore(){
+	getLoserScore() : number | string {
 		if(this.data && this.isComplete)
 			return this.data.entrant1Score < this.data.entrant2Score ? this.data.entrant1Score : this.data.entrant2Score;
 		else throw new Error('No data to get Set property Loser Score');
 	}
 
-	getBracketId(){
+	getBracketId() : number | string {
 		if(this.data)
 			return this.data.bracketId || this.nullValueString('Bracket ID');
 		else throw new Error('No data to get Set property Bracket ID');
 	}
 
-	getMidsizeRoundText(){
+	getMidsizeRoundText() : string{
 		if(this.data)
 			return this.data.midRoundText || this.nullValueString('Midsize Round Text');
 		else throw new Error('No data to get Set property Midsize Round Text');
 	}
 
-	getPhaseGroupId(){
+	getPhaseGroupId() : number | string {
 		if(this.data)
 			return this.data.phaseGroupId || this.nullValueString('Phase Group Id');
 		else throw new Error('No data to get Set property Phase Group Id');
 	}
 
-	getWinnersTournamentPlacement(){
-		if(this.isComplete)
-			return this.getWinner().getFinalPlacement() || this.nullValueString('Winner Tournament Placement');
+	getWinnersTournamentPlacement() : number | string{
+		let winner = this.getWinner()
+		if(winner && this.isComplete)
+			return winner.getFinalPlacement() || this.nullValueString('Winner Tournament Placement');
 		else throw new Error('Set must be complete to get Winner\'s tournament placement');
 	}
 
-	getLosersTournamentPlacement(){
-		if(this.isComplete)
-			return this.getLoser().getFinalPlacement() || this.nullValueString('Loser Tournament Placement');
+	getLosersTournamentPlacement() : number | string{
+		let loser = this.getLoser()
+		if(loser && this.isComplete)
+			return loser.getFinalPlacement() || this.nullValueString('Loser Tournament Placement');
 		else throw new Error('Set must be complete to get Loser\'s tournament placement');
 	}
 
 	// Todo needs coverage
-	getStartedAt(){
-		return moment.unix(this.data.startedAt).toDate();
+	getStartedAt() : Date | null {
+		if(this.data && this.data.startedAt)	
+			return moment.unix(this.data.startedAt).toDate();
+		else return null
 	}
 
 	// Todo needs coverage
-	getCompletedAt(){
-		return moment.unix(this.data.completedAt).toDate();
+	getCompletedAt() : Date | null {
+		if(this.data && this.data.completedAt)
+			return moment.unix(this.data.completedAt).toDate();
+		else return null
 	}
 
 	/** NULL VALUES **/
-	nullValueString(prop){
+	nullValueString(prop: string) : string{
 		return prop + ' not available for Set ' + this.id;
 	}
 
 }
 
-Set.prototype.toString = function(){
+GGSet.prototype.toString = function(){
 	return 'Set: ' + 
 		'\nID: ' + this.id + 
 		'\nEvent ID: ' + this.eventId + 
 		'\nRound: ' + this.round + 
-		'\nPlayer1: ' + this.Player1 + 
-		'\nPlayer2: ' + this.Player2 + 
+		'\nPlayer1: ' + this.player1 + 
+		'\nPlayer2: ' + this.player2 + 
 		'\nIs Complete: ' + this.isComplete + 
 		'\nPlayer1 Score: ' + this.score1 + 
 		'\nPlayer2 Score: ' + this.score2 + 
@@ -243,4 +294,4 @@ Set.prototype.toString = function(){
 		'\nLoser ID: ' + this.loserId;
 };
 
-module.exports = Set;
+module.exports = GGSet;

@@ -4,14 +4,14 @@
 let _ = require('lodash');
 let Promise = require('bluebird');
 
-let Tournament  = require('../lib/Tournament');
-let Event	   = require('../lib/Event');
-let Phase	   = require('../lib/Phase');
-let PhaseGroup  = require('../lib/PhaseGroup');
-let Set		 = require('../lib/Set');
-let Player	  = require('../lib/Player');
+let Tournament  = require('../src/js/Tournament');
+let Event	   = require('../src/js/Event');
+let Phase	   = require('../src/js/Phase');
+let PhaseGroup  = require('../src/js/PhaseGroup');
+let Set		 = require('../src/js/Set');
+let Player	  = require('../src/js/Player');
 
-let Cache = require('../lib/util/Cache').getInstance();
+let Cache = require('../src/js/util/Cache').getInstance();
 
 let chai = require('chai');
 let cap = require('chai-as-promised');

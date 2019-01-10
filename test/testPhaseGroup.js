@@ -4,9 +4,9 @@
 Promise = require('bluebird');
 let _ = require('lodash');
 
-let Set = require('../lib/Set');
-let PhaseGroup = require('../lib/PhaseGroup');
-let Cache = require('../lib/util/Cache').getInstance();
+let Set = require('../src/js/Set');
+let PhaseGroup = require('../src/js/PhaseGroup');
+let Cache = require('../src/js/util/Cache').getInstance();
 
 let sinon = require('sinon');
 let chai = require('chai');

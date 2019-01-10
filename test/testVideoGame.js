@@ -4,8 +4,8 @@
 let chai = require('chai');
 let expect = chai.expect;
 
-let VideoGame = require('../lib/VideoGame');
-let Cache = require('../lib/util/Cache');
+let VideoGame = require('../src/js/VideoGame');
+let Cache = require('../src/js/util/Cache');
 
 let expected = {
 	Melee: {

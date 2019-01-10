@@ -3,12 +3,12 @@
 
 let _ = require('lodash');
 
-let Event = require('../lib/Event');
-let Phase = require('../lib/Phase');
-let PhaseGroup = require('../lib/PhaseGroup');
-let Cache = require('../lib/util/Cache').getInstance();
-let Set = require('../lib/Set');
-let Player = require('../lib/Player');
+let Event = require('../src/js/Event');
+let Phase = require('../src/js/Phase');
+let PhaseGroup = require('../src/js/PhaseGroup');
+let Cache = require('../src/js/util/Cache').getInstance();
+let Set = require('../src/js/Set');
+let Player = require('../src/js/Player');
 
 let moment = require('moment');
 let sinon = require('sinon');

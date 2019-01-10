@@ -3,8 +3,8 @@
 
 let _ = require('lodash');
 
-let Player = require('../lib/Player');
-let Cache = require('../lib/util/Cache').getInstance();
+let Player = require('../src/js/Player');
+let Cache = require('../src/js/util/Cache').getInstance();
 
 let chai = require('chai');
 let cap = require('chai-as-promised');

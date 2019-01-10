@@ -204,12 +204,14 @@ export default class PhaseGroup extends EventEmitter implements IPhaseGroup.Phas
 			}
 
 			// Fetching logic
-			let sets: Array<GGSet>;
-			let entities: Array<Entity> = this.getData().entities.sets as Array<Entity>;
-			sets = await pmap(entities, GGSet.resolve, {concurrency: options.concurrency}) as Array<GGSet>;
-			sets = sets.filter(set => { return set != undefined; });
-			this.sets = sets;
-
+			if(this.getData().entities.sets){
+				let sets: Array<GGSet>;
+				let entities: Array<IGGSet.Entity> = this.getData().entities.sets as Array<IGGSet.Entity>;
+				sets = await pmap(entities, GGSet.resolve, {concurrency: options.concurrency}) as Array<GGSet>;
+				sets = sets.filter(set => { return set != undefined; });
+				this.sets = sets;
+			}
+			
 			await Cache.set(cacheKey, this.sets);
 			return this.sets;
 		} catch(err){

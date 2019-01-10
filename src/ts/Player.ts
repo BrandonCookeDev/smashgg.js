@@ -181,7 +181,7 @@ export namespace IPlayer{
 		state?: string
 		sponsor?: string
 		participantId?: number
-		data?: Data
+		data?: Entity
 
 		loadData(data: Entity) : void
 		//getPlayer(id: number, options: Options) : Promise<Player>

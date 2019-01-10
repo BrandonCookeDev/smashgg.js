@@ -4,10 +4,10 @@ import { format } from 'util'
 import * as Common from './Common'
 
 /* Interfaces */
-import { ITournament } from '../interfaces/ITournament'
-import { IEvent } from '../interfaces/IEvent'
-import { IPhase } from '../interfaces/IPhase'
-import { IPhaseGroup } from '../interfaces/IPhaseGroup'
+import { ITournament } from '../Tournament'
+import { IEvent } from '../Event'
+import { IPhase } from '../Phase'
+import { IPhaseGroup } from '../PhaseGroup'
 
 /* Types */
 import TTournament = ITournament.Tournament

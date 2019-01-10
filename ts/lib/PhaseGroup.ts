@@ -1,8 +1,3 @@
-'use strict';
-
-let Set = require('./Set');
-let TPlayer = require('./Player');
-
 import _ from 'lodash'
 import log from 'winston'
 import pmap from 'p-map'
@@ -12,22 +7,20 @@ import request from 'request-promise'
 import { EventEmitter } from 'events'
 
 import Cache from './util/Cache'
+import Player from './Player'
+import GGSet from './GGSet'
+import Encoder from './util/Encoder'
 
-/* Interfaces */
-import { ICommon } from './interfaces/ICommon'
-import { IPhaseGroup } from './interfaces/IPhaseGroup'
-import { IPlayer } from './interfaces/IPlayer'
-import { IGGSet } from './interfaces/IGGSet'
-
-/* Types */
-import TPlayer = IPlayer.Player
-import TGGSet = IGGSet.GGSet
+import { ICommon } from './util/Common'
+import { IPlayer } from './Player'
+import { IGGSet } from './GGSet'
 
 /* Convenience */
 import Data = IPhaseGroup.Data
 import Entity = ICommon.Entity
 import Options = ICommon.Options
 import Expands = IPhaseGroup.Expands
+import PlayerEntity = IPlayer.Entity
 import PhaseGroupOptions = IPhaseGroup.Options
 import parseOptions = ICommon.parseOptions
 
@@ -45,8 +38,8 @@ export default class PhaseGroup extends EventEmitter implements IPhaseGroup.Phas
 	rawEncoding: string = 'JSON'
 	expandsString: string = ''
 	expands: Expands = IPhaseGroup.getDefaultExpands()
-	players: Array<TPlayer> = []
-	sets: Array<TGGSet> = []
+	players: Array<Player> = []
+	sets: Array<GGSet> = []
 
 
 	constructor(id: number, options: PhaseGroupOptions={}){
@@ -159,7 +152,7 @@ export default class PhaseGroup extends EventEmitter implements IPhaseGroup.Phas
 	}
 
 	/** PROMISES **/
-	async getPlayers(options: Options={}) : Promise<Array<TPlayer>>{
+	async getPlayers(options: Options={}) : Promise<Array<Player>>{
 		log.debug('PhaseGroup.getPlayers called');
 		try {
 			if(this.getData().entities.entrants){
@@ -177,8 +170,8 @@ export default class PhaseGroup extends EventEmitter implements IPhaseGroup.Phas
 				}
 
 				let entrants: Array<IPlayer.Entity> = this.getEntrants();
-				let players: Array<TPlayer> = entrants.map(entrant => {
-					return TPlayer.resolve(entrant);
+				let players: Array<Player> = entrants.map(entrant => {
+					return Player.resolve(entrant);
 				});
 
 				this.players = players;
@@ -192,7 +185,7 @@ export default class PhaseGroup extends EventEmitter implements IPhaseGroup.Phas
 		}
 	}
 	
-	async getSets(options: Options={}) : Promise<Array<TGGSet>>{
+	async getSets(options: Options={}) : Promise<Array<GGSet>>{
 		// parse options
 		options = parseOptions(options)
 
@@ -211,8 +204,9 @@ export default class PhaseGroup extends EventEmitter implements IPhaseGroup.Phas
 			}
 
 			// Fetching logic
-			let sets: Array<TGGSet>;
-			sets = await pmap(this.getData().entities.sets as Array<IGGSet.Entity>, this.resolveSet, {concurrency: options.concurrency}) as Array<TGGSet>;
+			let sets: Array<GGSet>;
+			let entities: Array<Entity> = this.getData().entities.sets as Array<Entity>;
+			sets = await pmap(entities, GGSet.resolve, {concurrency: options.concurrency}) as Array<GGSet>;
 			sets = sets.filter(set => { return set != undefined; });
 			this.sets = sets;
 
@@ -224,15 +218,15 @@ export default class PhaseGroup extends EventEmitter implements IPhaseGroup.Phas
 		}
 	}
 
-	async getCompleteSets(options: Options={}) : Promise<Array<TGGSet>>{
+	async getCompleteSets(options: Options={}) : Promise<Array<GGSet>>{
 		log.verbose('PhaseGroup getCompleteSets called');
 
 		try{
 			//parse options
 			options = parseOptions(options)
 
-			let sets: Array<TGGSet> = await this.getSets(options);
-			let completeSets: Array<TGGSet> = sets.filter(set => { return set.isComplete == true; });
+			let sets: Array<GGSet> = await this.getSets(options);
+			let completeSets: Array<GGSet> = sets.filter(set => { return set.isComplete == true; });
 			return completeSets;			
 		} catch(e){
 			log.error('PhaseGroup getCompleteSets error: %s', e);
@@ -240,15 +234,15 @@ export default class PhaseGroup extends EventEmitter implements IPhaseGroup.Phas
 		}
 	}
 
-	async getIncompleteSets(options: Options={}) : Promise<Array<TGGSet>>{
+	async getIncompleteSets(options: Options={}) : Promise<Array<GGSet>>{
 		log.verbose('PhaseGroup getIncompleteSets called');
 
 		try{
 			//parse options
 			options = parseOptions(options)
 
-			let sets: Array<TGGSet> = await this.getSets(options);
-			let completeSets: Array<TGGSet> = sets.filter(set => { return set.isComplete == false; });
+			let sets: Array<GGSet> = await this.getSets(options);
+			let completeSets: Array<GGSet> = sets.filter(set => { return set.isComplete == false; });
 			return completeSets;			
 		} catch(e){
 			log.error('PhaseGroup getIncompleteSets error: %s', e);
@@ -257,7 +251,7 @@ export default class PhaseGroup extends EventEmitter implements IPhaseGroup.Phas
 	}
 
 	// TODO needs coverage
-	async getSetsXMinutesBack(minutes: number, options: Options={}) : Promise<Array<TGGSet>>{
+	async getSetsXMinutesBack(minutes: number, options: Options={}) : Promise<Array<GGSet>>{
 		log.verbose('PhaseGroup getSetsXMinutesBack called');
 
 		try{
@@ -266,8 +260,8 @@ export default class PhaseGroup extends EventEmitter implements IPhaseGroup.Phas
 			options.isCached = false
 
 			let now = moment();
-			let sets: Array<TGGSet> = await this.getSets(options);
-			let filtered: Array<TGGSet> = sets.filter(set => {
+			let sets: Array<GGSet> = await this.getSets(options);
+			let filtered: Array<GGSet> = sets.filter(set => {
 				let then = moment(set.getCompletedAt() as Date);
 				let diff = moment.duration(now.diff(then));
 
@@ -284,7 +278,7 @@ export default class PhaseGroup extends EventEmitter implements IPhaseGroup.Phas
 		}
 	}
 
-	async resolveSet(set: IGGSet.Entity) : Promise<TGGSet | undefined>{
+	async resolveSet(set: IGGSet.Entity) : Promise<GGSet | undefined>{
 		try{
 			if (!set.entrant1Id || !set.entrant2Id)
 				return; // HANDLES BYES
@@ -301,9 +295,9 @@ export default class PhaseGroup extends EventEmitter implements IPhaseGroup.Phas
 
 			let S;
 			if(isComplete)
-				S = new Set(set.id, set.eventId, set.fullRoundText, Player1, Player2, isComplete, set.entrant1Score, set.entrant2Score, set.winnerId, set.loserId);
+				S = new GGSet(set.id, set.eventId, set.fullRoundText, Player1, Player2, isComplete, set.entrant1Score, set.entrant2Score, set.winnerId, set.loserId, set);
 			else
-				S = new Set(set.id, set.eventId, set.fullRoundText, Player1, Player2, isComplete);
+				S = new GGSet(set.id, set.eventId, set.fullRoundText, Player1, Player2, isComplete, undefined, undefined, undefined, undefined, set);
 			
 			S.loadData(set);
 			return S;
@@ -352,10 +346,10 @@ export default class PhaseGroup extends EventEmitter implements IPhaseGroup.Phas
 	}
 
 	/** OTHER **/
-	async findPlayerByParticipantId(id: number) : TPlayer{
+	async findPlayerByParticipantId(id: number) : Promise<Player | undefined>{
 		if(!this.players)
 			await this.getPlayers();
-		let player = _.find(this.players, {participantId: id});
+		let player: Player | undefined = _.find(this.players, {participantId: id});
 		return player;
 	}
 
@@ -369,5 +363,99 @@ PhaseGroup.prototype.toString = function(){
 		'\nIsCached: ' + this.isCached;
 };
 
-module.exports = PhaseGroup;
+export namespace IPhaseGroup{
 
+	export interface PhaseGroup{
+		id: number
+		url: string
+		data: Data | string,
+		rawEncoding: string,
+		expandsString: string,
+		expands: Expands
+		players: Array<Player>
+		sets: Array<GGSet>
+
+		loadData(data: Data) : Data | string
+		getData() : Data
+		load() : Promise<Data | string>
+		getPlayers(options: Options) : Promise<Array<Player>>
+		getSets(options: Options) : Promise<Array<GGSet>>
+		getCompleteSets(options: Options) : Promise<Array<GGSet>>
+		getIncompleteSets(options: Options) : Promise<Array<GGSet>>
+		getSetsXMinutesBack(minutes: number, options: Options) : Promise<Array<GGSet>>
+		resolveSet(set: IGGSet.Entity) : Promise<GGSet | undefined>
+		getFromDataEntities(prop: string) : any
+		getPhaseId() : number
+		getEntrants() : Array<IPlayer.Entity> | [] 
+		nullValueString(prop: string) : string
+		emitPhaseGroupReady() : void
+		emitPhaseGroupError(err: Error) : void
+		findPlayerByParticipantId(id: number) : Promise<Player | undefined>
+	}
+
+	export interface Options{
+		isCached?: boolean,
+		rawEncoding?: string,
+		expands?: Expands
+	}
+
+	export interface Expands{
+		sets: boolean,
+		entrants: boolean,
+		standings: boolean,
+		seeds: boolean
+	}
+
+	export interface Data{
+		entities: {
+			id: number,
+			sets?: [IGGSet.Entity],
+			entrants?: [PlayerEntity],
+			standings?: [{
+				[x: string]: any
+			}],
+			seeds?: [{
+				[x: string]: any
+			}],
+			[x: string]: any
+		}
+	}
+
+	export function parseOptions(options: Options) : Options{
+		return{
+			expands: {
+				sets: (options.expands != undefined  && options.expands.sets == false) ? false : true,
+				entrants: (options.expands != undefined  && options.expands.entrants == false) ? false : true,
+				standings: (options.expands != undefined  && options.expands.standings == false) ? false : true,
+				seeds: (options.expands != undefined  && options.expands.seeds == false) ? false : true
+			},
+			isCached: options.isCached != undefined ? options.isCached === true : true,
+			rawEncoding: Encoder.determineEncoding(options.rawEncoding)
+		}
+	}
+
+	export function getDefaultOptions(options: Options) : Options{
+		return {
+			isCached: true,
+			rawEncoding: 'JSON',
+			expands: getDefaultExpands()
+		}
+	}
+
+	export function getDefaultData(): Data{
+		return {
+			entities:{
+				id: 0
+			}
+		}
+	}
+
+	export function getDefaultExpands() : Expands{
+		return {
+			sets: true,
+			entrants: true,
+			standings: true,
+			seeds: true
+		}
+	}
+}

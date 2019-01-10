@@ -4,9 +4,11 @@ import {format} from 'util'
 import request from 'request-promise'
 import Cache from './util/Cache'
 
-import { ICommon } from './interfaces/ICommon'
-import { IPlayer } from './interfaces/IPlayer'
+import { ICommon } from './util/Common'
 
+import TPlayer = IPlayer.Player
+
+import Data = IPlayer.Data
 import Options = ICommon.Options
 import PlayerEntity = IPlayer.Entity
 import parseOptions = ICommon.parseOptions
@@ -14,7 +16,7 @@ import parseOptions = ICommon.parseOptions
 
 const API_URL = 'https://api.smash.gg/player/%s';
 
-export default class Player extends EventEmitter{
+export default class Player extends EventEmitter implements IPlayer.Player{
 
 	public id: number = 0
 	public tag: string = ''
@@ -79,11 +81,11 @@ export default class Player extends EventEmitter{
 		}
 	}
 
-	static resolveEntities(player: PlayerEntity) : Player{
-		let data = player.entities.player;
+	static resolveEntities(player: Data) : Player{
+		let data: PlayerEntity = player.entities.player;
 
-		let P = new Player(
-			parseInt(data.id),
+		let P: Player = new Player(
+			+data.id,
 			data.gamerTag,
 			data.name,
 			data.country,
@@ -167,3 +169,54 @@ Player.prototype.toString = function(){
 		'\nCountry: ' + this.country + 
 		'\nState: ' + this.state; 
 };
+
+
+export namespace IPlayer{
+
+	export interface Player{
+		id: number
+		tag: string
+		name?: string
+		country?: string
+		state?: string
+		sponsor?: string
+		participantId?: number
+		data?: Data
+
+		loadData(data: Entity) : void
+		//getPlayer(id: number, options: Options) : Promise<Player>
+		//resolveEntities(player: Entity) : Player
+		//resolve(data: Entity) : Player
+		getId() : number
+		getTag(): string 
+		getName(): string | undefined
+		getCountry(): string | undefined
+		getState(): string | undefined
+		getSponsor(): string | undefined
+		getParticipantId() : number | undefined
+		getFinalPlacement() : number | undefined
+		nullValueString(prop: string) : string
+	}
+
+	export interface Data{
+		id: number,
+		entities: Entity,
+		mutations: any,
+		[x: string]: any
+	}
+
+	export interface Entity{
+		id: number,
+		gamerTag: string,
+		name: string,
+		country: string,
+		state: string,
+		prefix: string,
+		[x: string]: any
+	}
+
+	export interface Options{
+		isCached?: boolean,
+		rawEncoding?: string
+	}
+}

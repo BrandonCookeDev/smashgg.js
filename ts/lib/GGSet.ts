@@ -6,18 +6,10 @@ import {EventEmitter} from 'events'
 import request from 'request-promise'
 import Cache from './util/Cache'
 
-/* Classes */
+import { ICommon } from './util/Common'
+
+import Player from './Player'
 import PhaseGroup from './PhaseGroup'
-
-/* Interfaces */
-import { ICommon } from './interfaces/ICommon'
-import { IGGSet } from './interfaces/IGGSet'
-import { IPlayer } from './interfaces/IPlayer'
-import { IPhaseGroup } from './interfaces/IPhaseGroup'
-
-/* Types */
-import TPlayer = IPlayer.Player
-import TPhaseGroup = IPhaseGroup.PhaseGroup
 
 import Entity = IGGSet.Entity
 import Options = ICommon.Options
@@ -30,8 +22,8 @@ export default class GGSet extends EventEmitter implements IGGSet.GGSet{
 	id: number
 	eventId: number
 	round: string
-	player1?: TPlayer
-	player2?: TPlayer
+	player1?: Player
+	player2?: Player
 	isComplete: boolean
 	score1?: number
 	score2?: number
@@ -40,7 +32,7 @@ export default class GGSet extends EventEmitter implements IGGSet.GGSet{
 	data?: Entity
 
 	constructor(id: number, eventId: number, round: string, 
-			player1: TPlayer, player2: TPlayer, isComplete: boolean=false, 
+			player1: Player, player2: Player, isComplete: boolean=false, 
 			score1: number=0, score2: number=0, winnerId: number=0, 
 			loserId: number=0, data: Entity){
 		super();
@@ -119,8 +111,8 @@ export default class GGSet extends EventEmitter implements IGGSet.GGSet{
 			if (!set.entrant1Id || !set.entrant2Id)
 				isBye = true; // HANDLES BYES
 
-			let Player1 = _.find(groupParticipants, {'participantId': set.entrant1Id}) as TPlayer;
-			let Player2 = _.find(groupParticipants, {'participantId': set.entrant2Id}) as TPlayer;
+			let Player1 = _.find(groupParticipants, {'participantId': set.entrant1Id}) as Player;
+			let Player2 = _.find(groupParticipants, {'participantId': set.entrant2Id}) as Player;
 
 			if (!Player1 || !Player2)
 				throw new Error('Unknown error occured in Player.resolve'); // HANDLES Error of some sort
@@ -150,13 +142,13 @@ export default class GGSet extends EventEmitter implements IGGSet.GGSet{
 		return this.round;
 	}
 
-	getPlayer1() : TPlayer | null {
+	getPlayer1() : Player | null {
 		if(this.player1)
 			return this.player1;
 		else return null
 	}
 
-	getPlayer2() : TPlayer | null {
+	getPlayer2() : Player | null {
 		if(this.player2)
 			return this.player2;
 		else return null
@@ -175,7 +167,7 @@ export default class GGSet extends EventEmitter implements IGGSet.GGSet{
 		
 	}
 
-	getIsComplete(){
+	getIsComplete() : boolean | null{
 		return this.isComplete;
 	}
 
@@ -191,13 +183,13 @@ export default class GGSet extends EventEmitter implements IGGSet.GGSet{
 		else return null
 	}
 
-	getWinner() : TPlayer | undefined {
+	getWinner() : Player | undefined {
 		if(this.winnerId && this.loserId && this.player1 && this.player2)
 			return this.player1.id == this.winnerId ? this.player1 : this.player2;
 		else throw new Error('Set must be complete to get the Winning Player');
 	}
 
-	getLoser() : TPlayer | undefined {
+	getLoser() : Player | undefined {
 		if(this.winnerId && this.loserId && this.player1 && this.player2)
 			return this.player1.id == this.loserId ? this.player1 : this.player2;
 		else throw new Error('Set must be complete to get the Losing Player');
@@ -294,4 +286,64 @@ GGSet.prototype.toString = function(){
 		'\nLoser ID: ' + this.loserId;
 };
 
-module.exports = GGSet;
+export namespace IGGSet{
+
+	export interface GGSet{
+		id: number
+		eventId: number
+		round: string
+		player1?: Player
+		player2?: Player
+		isComplete: boolean
+		score1?: number
+		score2?: number
+		winnerId?: number
+		loserId?: number
+		data?: Entity
+
+		//getSet(id: number, options: ICommon.Options) : Promise<GGSet>
+		//resolve(data: Entity) : Promise<GGSet>
+		
+		getRound() : string
+		getPlayer1() : Player | null
+		getPlayer2() : Player | null
+		getWinnerId() : number | null
+		getLoserId() : number | null
+		getIsComplete() : boolean | null
+		getPlayer1Score() : number | null
+		getPlayer2Score() : number | null
+		getWinner() : Player | undefined
+		getLoser() : Player | undefined
+		getGames() : number | string
+		getBestOfCount() : number | string
+		getWinnerScore() : number | string
+		getLoserScore() : number | string
+		getBracketId() : number | string 
+		getMidsizeRoundText() : string
+		getPhaseGroupId() : number | string
+		getWinnersTournamentPlacement() : number | string
+		getLosersTournamentPlacement() : number | string
+		getStartedAt() : Date | null 
+		getCompletedAt() : Date | null 
+		nullValueString(prop: string) : string
+	}
+
+	export interface Data{
+		entities: [Entity]
+	}
+
+	export interface Entity{
+		id: number,
+		eventId: number,
+		fullRoundText: string,
+		entrant1Score: number,
+		entrant2Score: number,
+		entrant1Id?: number,
+		entrant2Id?: number,
+		winnerId?: number,
+		loserId?: number,
+		startedAt?: number,
+		completedAt?: number,
+		[x: string]: any
+	}
+}

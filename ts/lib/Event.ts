@@ -24,20 +24,8 @@ const LEGAL_ENCODINGS = ['json', 'utf8', 'base64']
 const DEFAULT_ENCODING = 'json'
 const DEFAULT_CONCURRENCY = 4
 
-/* Interfaces */
-import { ICommon } from './interfaces/ICommon'
-import { ITournament } from './interfaces/ITournament'
-import { IEvent } from './interfaces/IEvent'
-import { IPhase } from './interfaces/IPhase'
-import { IPhaseGroup } from './interfaces/IPhaseGroup'
-import { IPlayer } from './interfaces/IPlayer'
-import { IGGSet } from './interfaces/IGGSet'
-
-/* Interfaces */
-import TPhase = IPhase.Phase
-import TPhaseGroup = IPhaseGroup.PhaseGroup
-import TPlayer = IPlayer.Player
-import TGGSet = IGGSet.GGSet
+import { ICommon } from './util/Common'
+import { ITournament } from './Tournament'
 
 import Data = IEvent.Data
 import EventData = IEvent.EventData
@@ -67,8 +55,8 @@ export default class Event extends EventEmitter implements IEvent.Event{
 	tournamentSlug: string = ''
 	isCached: boolean = true
 	rawEncoding: string = DEFAULT_ENCODING
-	phases: Array<TPhase> = [];
-	groups: Array<TPhaseGroup> = [];
+	phases: Array<Phase> = [];
+	groups: Array<PhaseGroup> = [];
 
 	constructor(eventId: string | number, tournamentId?: string, options: EventOptions={}){
 		super();
@@ -209,7 +197,7 @@ export default class Event extends EventEmitter implements IEvent.Event{
 	}
 
 	/** BULK PULL PROMISES **/
-	async getEventPhases(options: Options={}) : Promise<Array<TPhase>>{
+	async getEventPhases(options: Options={}) : Promise<Array<Phase>>{
 		log.debug('Event.getEventPhases called');
 
 		options = parseOptions(options);
@@ -218,7 +206,7 @@ export default class Event extends EventEmitter implements IEvent.Event{
 			log.info('Getting Phases for Event ' + this.tournamentId);
 			let cacheKey = format('event::%s::%s::phases', this.tournamentId, this.eventId);
 			if(options.isCached){
-				let cached: Array<TPhase> = await Cache.get(cacheKey) as Array<TPhase>;
+				let cached: Array<Phase> = await Cache.get(cacheKey) as Array<Phase>;
 				if(cached) return cached;
 			}
 
@@ -238,7 +226,7 @@ export default class Event extends EventEmitter implements IEvent.Event{
 		}
 	}
 
-	async getEventPhaseGroups(options: Options={}) : Promise<Array<TPhaseGroup>>{
+	async getEventPhaseGroups(options: Options={}) : Promise<Array<PhaseGroup>>{
 		log.debug('Event.getEventPhaseGroups called');
 
 		// parse options
@@ -248,7 +236,7 @@ export default class Event extends EventEmitter implements IEvent.Event{
 			log.info('Getting Phase Groups for Event ' + this.tournamentId);
 			let cacheKey = format('event::%s::%s::groups', this.tournamentId, this.eventId);
 			if(options.isCached){
-				let cached: Array<TPhaseGroup> = await Cache.get(cacheKey) as Array<TPhaseGroup>;
+				let cached: Array<PhaseGroup> = await Cache.get(cacheKey) as Array<PhaseGroup>;
 				if(cached) return cached;
 			}
 
@@ -256,7 +244,7 @@ export default class Event extends EventEmitter implements IEvent.Event{
 			let fn = async (group: Entity) => {
 				return await PhaseGroup.getPhaseGroup(group.id);
 			};
-			let allGroups: Array<TPhaseGroup> = await pmap(groups, fn, {concurrency: options.concurrency});
+			let allGroups: Array<PhaseGroup> = await pmap(groups, fn, {concurrency: options.concurrency});
 
 			allGroups = _.uniqBy(allGroups, 'id');
 			await Cache.set(cacheKey, allGroups);
@@ -268,7 +256,7 @@ export default class Event extends EventEmitter implements IEvent.Event{
 		}
 	}
 
-	async getSets(options: Options={}) : Promise<Array<TGGSet>>{
+	async getSets(options: Options={}) : Promise<Array<GGSet>>{
 		log.debug('Event.getSets called');
 		try{
 			// parse options
@@ -276,17 +264,17 @@ export default class Event extends EventEmitter implements IEvent.Event{
 
 			let cacheKey = format('event::%s::%s::sets', this.tournamentId, this.eventId);
 			if(options.isCached){
-				let cached: Array<TGGSet> = await Cache.get(cacheKey) as Array<TGGSet>;
+				let cached: Array<GGSet> = await Cache.get(cacheKey) as Array<GGSet>;
 				if(cached) return cached;
 			}
 
-			let phases: Array<TPhase> = await this.getEventPhases(options);
-			let fn = async (phase: TPhase) : Promise<Array<TGGSet>> => {
+			let phases: Array<Phase> = await this.getEventPhases(options);
+			let fn = async (phase: Phase) : Promise<Array<GGSet>> => {
 				return await phase.getSets(options);
 			};
-			let sets: TGGSet[][] = await pmap(phases, fn, {concurrency: options.concurrency});
+			let sets: GGSet[][] = await pmap(phases, fn, {concurrency: options.concurrency});
 
-			let flattened: Array<TGGSet> = _.flatten(sets);
+			let flattened: Array<GGSet> = _.flatten(sets);
 			if(options.isCached) await Cache.set(cacheKey, flattened);
 			return flattened;
 		} catch(e){
@@ -295,7 +283,7 @@ export default class Event extends EventEmitter implements IEvent.Event{
 		}
 	}
 
-	async getPlayers(options: Options={}) : Promise<Array<TPlayer>>{
+	async getPlayers(options: Options={}) : Promise<Array<Player>>{
 		log.debug('Event.getSets called');
 		try{
 			// parse options
@@ -303,17 +291,17 @@ export default class Event extends EventEmitter implements IEvent.Event{
 
 			let cacheKey = format('event::%s::%s::players', this.tournamentId, this.eventId);
 			if(options.isCached){
-				let cached: Array<TPlayer> = await Cache.get(cacheKey) as Array<TPlayer>;
+				let cached: Array<Player> = await Cache.get(cacheKey) as Array<Player>;
 				if(cached) return cached;
 			}
 
-			let phases: Array<TPhase> = await this.getEventPhases(options);
-			let fn = async (phase: TPhase) => {
+			let phases: Array<Phase> = await this.getEventPhases(options);
+			let fn = async (phase: Phase) => {
 				return await phase.getPlayers(options);
 			};
-			let players: TPlayer[][] = await pmap(phases, fn, {concurrency: options.concurrency});
+			let players: Player[][] = await pmap(phases, fn, {concurrency: options.concurrency});
 
-			let flattened: Array<TPlayer> = _.flatten(players);
+			let flattened: Array<Player> = _.flatten(players);
 			flattened = _.uniqBy(flattened, 'id');
 			if(options.isCached) await Cache.set(cacheKey, flattened);
 			return flattened;
@@ -323,18 +311,18 @@ export default class Event extends EventEmitter implements IEvent.Event{
 		}
 	}
 
-	async getIncompleteSets(options: Options={}) : Promise<Array<TGGSet>>{
+	async getIncompleteSets(options: Options={}) : Promise<Array<GGSet>>{
 		log.debug('Event.getIncompleteSets called');
 		try{
 			//parse options
 			options = parseOptions(options)
 
-			let phases: Array<TPhase> = await this.getEventPhases(options);
-			let fn = async (phase: TPhase) => {
+			let phases: Array<Phase> = await this.getEventPhases(options);
+			let fn = async (phase: Phase) => {
 				return await phase.getIncompleteSets(options);
 			};
-			let sets: TGGSet[][] = await pmap(phases, fn, {concurrency: options.concurrency});
-			let flattened: Array<TGGSet> = _.flatten(sets);
+			let sets: GGSet[][] = await pmap(phases, fn, {concurrency: options.concurrency});
+			let flattened: Array<GGSet> = _.flatten(sets);
 			return flattened;
 		} catch(e){
 			log.error('Event.getIncompleteSets error: %s', e);
@@ -342,18 +330,18 @@ export default class Event extends EventEmitter implements IEvent.Event{
 		}
 	}
 
-	async getCompleteSets(options: Options={}) : Promise<Array<TGGSet>>{
+	async getCompleteSets(options: Options={}) : Promise<Array<GGSet>>{
 		log.debug('Event.getIncompleteSets called');
 		try{
 			//parse options
 			options = parseOptions(options);
 
-			let phases: Array<TPhase> = await this.getEventPhases(options);
-			let fn = async (phase: TPhase) => {
+			let phases: Array<Phase> = await this.getEventPhases(options);
+			let fn = async (phase: Phase) => {
 				return await phase.getCompleteSets(options);
 			};
-			let sets: TGGSet[][] = await pmap(phases, fn, {concurrency: options.concurrency});
-			let flattened: Array<TGGSet> = _.flatten(sets);
+			let sets: GGSet[][] = await pmap(phases, fn, {concurrency: options.concurrency});
+			let flattened: Array<GGSet> = _.flatten(sets);
 			return flattened;
 		} catch(e){
 			log.error('Event.getIncompleteSets error: %s', e);
@@ -361,18 +349,18 @@ export default class Event extends EventEmitter implements IEvent.Event{
 		}
 	}
 
-	async getSetsXMinutesBack(minutesBack: number, options: Options={}) : Promise<Array<TGGSet>> {
+	async getSetsXMinutesBack(minutesBack: number, options: Options={}) : Promise<Array<GGSet>> {
 		log.verbose('Event.getSetsXMinutesBack called');
 		try{
 			// parse options
 			options=parseOptions(options);
 
-			let groups: Array<TPhase> = await this.getEventPhases(options);
-			let fn = async (group: TPhase) => {
+			let groups: Array<Phase> = await this.getEventPhases(options);
+			let fn = async (group: Phase) => {
 				return await group.getSetsXMinutesBack(minutesBack, options);
 			};
-			let sets: TGGSet[][] = await pmap(groups, fn, {concurrency: options.concurrency});
-			let flattened: Array<TGGSet> = _.flatten(sets);
+			let sets: GGSet[][] = await pmap(groups, fn, {concurrency: options.concurrency});
+			let flattened: Array<GGSet> = _.flatten(sets);
 			return flattened;
 		} catch(e){
 			log.error('Event.getSetsXMinutesBack error: %s', e);
@@ -514,3 +502,145 @@ Event.prototype.toString = function(){
 		'\nStart Time: ' + this.getStartTime();
 };
 
+export namespace IEvent{
+	export interface Event{
+		id: number 
+		url: string 
+		data: Data | string
+		eventId: string | number
+		expands: Expands 
+		expandsString: string 
+		tournamentId: string | undefined
+		tournamentSlug: string 
+		isCached: boolean 
+		rawEncoding: string 
+		phases: Array<Phase> 
+		groups: Array<PhaseGroup> 
+		
+		loadData(data: object): object | string 
+	
+		getData() : Data
+				
+		//getEvent(eventName: string, tournamentName: string, options: Options) : Promise<Event>
+	
+		//getEventById(id: number, options: Options) : Promise<Event>
+			
+		load(options: Options, tournamentOptions: TournamentOptions) : Promise<Data | string>
+				
+		getEventPhases(options: Options) : Promise<Array<Phase>>
+	
+		getEventPhaseGroups(options: Options) : Promise<Array<PhaseGroup>>
+			
+		getSets(options: Options) : Promise<Array<GGSet>>
+			
+		getPlayers(options: Options) : Promise<Array<Player>>
+				
+		getIncompleteSets(options: Options) : Promise<Array<GGSet>>
+	
+		getCompleteSets(options: Options) : Promise<Array<GGSet>>
+			
+		getSetsXMinutesBack(minutesBack: number, options: Options) : Promise<Array<GGSet>> 
+			
+		getFromEventEntities(prop: string) : any
+
+		getFromTournamentEntities(prop: string) : any
+
+		getId() : number
+			
+		getName() : string
+			
+		getTournamentId() : number
+			
+		getSlug() : string
+			
+		getTournamentSlug() : string
+			
+		getStartTime() : Date | null
+			
+		getStartTimeString() : string | null
+			
+		getEndTime() : Date | null
+			
+		getEndTimeString() : string | null
+			
+		nullValueString(prop: string) : string
+	
+		emitEventReady() : void
+			
+		emitEventError(err: Error) : void
+		
+	}
+
+	export interface Options{
+		isCached?: boolean,
+		rawEncoding?: string,
+		expands?: Expands
+	}
+
+	export interface Expands{
+		phase: boolean,
+		groups: boolean 
+	}
+
+	export interface Data{
+		tournament: TournamentData,
+		event: EventData
+	}
+
+	export interface EventData{
+		entities: {
+			slug: string,
+			tournamentId: number,
+			event: Entity,
+			groups?: [Entity],
+			phase?: [Entity],
+			[x: string]: any
+		}
+	}
+
+	export function getDefaultData(): Data{
+		return {
+			tournament: ITournament.getDefaultData(),
+			event: getDefaultEventData()
+		}
+	}
+
+	export function getDefaultEventData(): EventData{
+		return {
+			entities: {
+				slug: '',
+				tournamentId: 0,
+				event: {
+					id: 0
+				}
+			}
+		}
+	}
+
+	export function getTournamentSlug(slug: string) : string{
+		return slug.substring(slug.indexOf('/') + 1, slug.indexOf('/', slug.indexOf('/') + 1));
+	}
+
+
+	export function getDefaultOptions(): Options {
+		return {
+			expands:{
+				phase: true,
+				groups: true
+			},
+			isCached: true,
+			rawEncoding: 'JSON'
+		}
+	}
+
+	export function parseOptions(options: Options) : Options {
+		return{
+			expands: {
+				phase: (options.expands != undefined  && options.expands.phase == false) ? false : true,
+				groups: (options.expands != undefined && options.expands.groups == false) ? false : true
+			},
+			isCached: options.isCached != undefined ? options.isCached === true : true,
+			rawEncoding: Encoder.determineEncoding(options.rawEncoding)
+		}
+	}
+}

@@ -58,6 +58,43 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var ITournament;
+(function (ITournament) {
+    function getDefaultData() {
+        return {
+            tournament: {
+                id: 0
+            }
+        };
+    }
+    ITournament.getDefaultData = getDefaultData;
+    function getDefaultOptions() {
+        return {
+            expands: {
+                event: true,
+                phase: true,
+                groups: true,
+                stations: true
+            },
+            isCached: true,
+            rawEncoding: 'JSON'
+        };
+    }
+    ITournament.getDefaultOptions = getDefaultOptions;
+    function parseOptions(options) {
+        return {
+            expands: {
+                event: (options.expands != undefined && options.expands.event == false) ? false : true,
+                phase: (options.expands != undefined && options.expands.phase == false) ? false : true,
+                groups: (options.expands != undefined && options.expands.groups == false) ? false : true,
+                stations: (options.expands != undefined && options.expands.stations == false) ? false : true
+            },
+            isCached: options.isCached != undefined ? options.isCached === true : true,
+            rawEncoding: Encoder_1.default.determineEncoding(options.rawEncoding)
+        };
+    }
+    ITournament.parseOptions = parseOptions;
+})(ITournament = exports.ITournament || (exports.ITournament = {}));
 var lodash_1 = __importDefault(require("lodash"));
 var moment_timezone_1 = __importDefault(require("moment-timezone"));
 var log = __importStar(require("winston"));
@@ -67,8 +104,7 @@ var util_1 = require("util");
 var events_1 = require("events");
 var Common = __importStar(require("./util/Common"));
 var Cache_1 = __importDefault(require("./util/Cache"));
-var Event_1 = __importDefault(require("./Event"));
-var PhaseGroup_1 = __importDefault(require("./PhaseGroup"));
+var internal_1 = require("./internal");
 var Encoder_1 = __importDefault(require("./util/Encoder"));
 var TOURNAMENT_URL = 'https://api.smash.gg/tournament/%s?%s';
 var LEGAL_ENCODINGS = ['json', 'utf8', 'base64'];
@@ -284,7 +320,7 @@ var Tournament = /** @class */ (function (_super) {
                             var PG;
                             return __generator(this, function (_a) {
                                 switch (_a.label) {
-                                    case 0: return [4 /*yield*/, PhaseGroup_1.default.getPhaseGroup(group.id)];
+                                    case 0: return [4 /*yield*/, internal_1.PhaseGroup.getPhaseGroup(group.id)];
                                     case 1:
                                         PG = _a.sent();
                                         return [4 /*yield*/, PG.getPlayers()];
@@ -342,7 +378,7 @@ var Tournament = /** @class */ (function (_super) {
                             var PG;
                             return __generator(this, function (_a) {
                                 switch (_a.label) {
-                                    case 0: return [4 /*yield*/, PhaseGroup_1.default.getPhaseGroup(group.id)];
+                                    case 0: return [4 /*yield*/, internal_1.PhaseGroup.getPhaseGroup(group.id)];
                                     case 1:
                                         PG = _a.sent();
                                         return [4 /*yield*/, PG.getSets()];
@@ -402,7 +438,7 @@ var Tournament = /** @class */ (function (_super) {
                                 switch (_a.label) {
                                     case 0:
                                         eventId = event.id;
-                                        return [4 /*yield*/, Event_1.default.getEventById(eventId)];
+                                        return [4 /*yield*/, internal_1.Event.getEventById(eventId)];
                                     case 1: return [2 /*return*/, _a.sent()];
                                 }
                             });
@@ -679,7 +715,7 @@ var Tournament = /** @class */ (function (_super) {
     };
     return Tournament;
 }(events_1.EventEmitter));
-exports.default = Tournament;
+exports.Tournament = Tournament;
 Tournament.prototype.toString = function () {
     return 'Tournament: ' +
         '\nName: ' + this.getName() +
@@ -688,40 +724,3 @@ Tournament.prototype.toString = function () {
         '\nState: ' + this.getState() +
         '\nCity: ' + this.getCity();
 };
-var ITournament;
-(function (ITournament) {
-    function getDefaultData() {
-        return {
-            tournament: {
-                id: 0
-            }
-        };
-    }
-    ITournament.getDefaultData = getDefaultData;
-    function getDefaultOptions() {
-        return {
-            expands: {
-                event: true,
-                phase: true,
-                groups: true,
-                stations: true
-            },
-            isCached: true,
-            rawEncoding: 'JSON'
-        };
-    }
-    ITournament.getDefaultOptions = getDefaultOptions;
-    function parseOptions(options) {
-        return {
-            expands: {
-                event: (options.expands != undefined && options.expands.event == false) ? false : true,
-                phase: (options.expands != undefined && options.expands.phase == false) ? false : true,
-                groups: (options.expands != undefined && options.expands.groups == false) ? false : true,
-                stations: (options.expands != undefined && options.expands.stations == false) ? false : true
-            },
-            isCached: options.isCached != undefined ? options.isCached === true : true,
-            rawEncoding: Encoder_1.default.determineEncoding(options.rawEncoding)
-        };
-    }
-    ITournament.parseOptions = parseOptions;
-})(ITournament = exports.ITournament || (exports.ITournament = {}));

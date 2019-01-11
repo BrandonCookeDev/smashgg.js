@@ -4,10 +4,10 @@ import { format } from 'util'
 import * as Common from './Common'
 
 /* Interfaces */
-import { ITournament } from '../Tournament'
-import { IEvent } from '../Event'
-import { IPhase } from '../Phase'
-import { IPhaseGroup } from '../PhaseGroup'
+import { ITournament } from '../internal'
+import { IEvent } from '../internal'
+import { IPhase } from '../internal'
+import { IPhaseGroup } from '../internal'
 
 import createExpandsString = Common.createExpandsString
 import TournamentOptions = ITournament.Options

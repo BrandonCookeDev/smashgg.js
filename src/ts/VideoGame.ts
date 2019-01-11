@@ -19,7 +19,7 @@ const API_URL = 'https://api.smash.gg/public/videogames';
 //const LEGAL_ENCODINGS = ['json', 'utf8', 'base64'];
 //const DEFAULT_ENCODING = 'json';
 
-export default class VideoGame implements IVideoGame.VideoGame{
+export class VideoGame implements IVideoGame.VideoGame{
 
 	id: number = 0
 	data: Entity | string = ''

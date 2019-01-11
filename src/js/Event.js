@@ -58,6 +58,54 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var IEvent;
+(function (IEvent) {
+    function getDefaultData() {
+        return {
+            tournament: internal_1.ITournament.getDefaultData(),
+            event: getDefaultEventData()
+        };
+    }
+    IEvent.getDefaultData = getDefaultData;
+    function getDefaultEventData() {
+        return {
+            entities: {
+                slug: '',
+                tournamentId: 0,
+                event: {
+                    id: 0
+                }
+            }
+        };
+    }
+    IEvent.getDefaultEventData = getDefaultEventData;
+    function getTournamentSlug(slug) {
+        return slug.substring(slug.indexOf('/') + 1, slug.indexOf('/', slug.indexOf('/') + 1));
+    }
+    IEvent.getTournamentSlug = getTournamentSlug;
+    function getDefaultOptions() {
+        return {
+            expands: {
+                phase: true,
+                groups: true
+            },
+            isCached: true,
+            rawEncoding: 'JSON'
+        };
+    }
+    IEvent.getDefaultOptions = getDefaultOptions;
+    function parseOptions(options) {
+        return {
+            expands: {
+                phase: (options.expands != undefined && options.expands.phase == false) ? false : true,
+                groups: (options.expands != undefined && options.expands.groups == false) ? false : true
+            },
+            isCached: options.isCached != undefined ? options.isCached === true : true,
+            rawEncoding: Encoder_1.default.determineEncoding(options.rawEncoding)
+        };
+    }
+    IEvent.parseOptions = parseOptions;
+})(IEvent = exports.IEvent || (exports.IEvent = {}));
 var lodash_1 = __importDefault(require("lodash"));
 var moment_1 = __importDefault(require("moment"));
 var winston_1 = __importDefault(require("winston"));
@@ -66,11 +114,10 @@ var request_promise_1 = __importDefault(require("request-promise"));
 var events_1 = require("events");
 var util_1 = require("util");
 var Common = __importStar(require("./util/Common"));
+var internal_1 = require("./internal");
+var internal_2 = require("./internal");
 var Cache_1 = __importDefault(require("./util/Cache"));
-var Phase_1 = __importDefault(require("./Phase"));
-var PhaseGroup_1 = __importDefault(require("./PhaseGroup"));
 var Encoder_1 = __importDefault(require("./util/Encoder"));
-var Fetcher = __importStar(require("./util/EntityFetcher"));
 var EVENT_URL = 'https://api.smash.gg/event/%s?%s';
 var EVENT_SLUG_URL = 'https://api.smash.gg/%s/event/%s?%s';
 var TOURNAMENT_URL = 'https://api.smash.gg/tournament/%s';
@@ -79,7 +126,6 @@ var EVENT_ID_CACHE_KEY = 'event::%s::%s';
 var LEGAL_ENCODINGS = ['json', 'utf8', 'base64'];
 var DEFAULT_ENCODING = 'json';
 var DEFAULT_CONCURRENCY = 4;
-var Tournament_1 = require("./Tournament");
 var parseOptions = Common.parseOptions;
 var Event = /** @class */ (function (_super) {
     __extends(Event, _super);
@@ -117,7 +163,7 @@ var Event = /** @class */ (function (_super) {
             if (_this.expands.hasOwnProperty(property))
                 _this.expandsString += util_1.format('expand[]=%s&', property);
         }
-        _this.load(options, Tournament_1.ITournament.getDefaultOptions());
+        _this.load(options, internal_1.ITournament.getDefaultOptions());
         return _this;
     }
     Event.prototype.loadData = function (data) {
@@ -199,20 +245,20 @@ var Event = /** @class */ (function (_super) {
                         eventData = void 0;
                         tournamentData = void 0;
                         if (!(typeof this.eventId == 'number')) return [3 /*break*/, 7];
-                        return [4 /*yield*/, Fetcher.getEventDataById(this.eventId, options)];
+                        return [4 /*yield*/, internal_2.getEventDataById(this.eventId, options)];
                     case 5:
                         eventData = _a.sent();
                         tournamentId = IEvent.getTournamentSlug(eventData.entities.slug);
-                        return [4 /*yield*/, Fetcher.getTournamentData(tournamentId, Tournament_1.ITournament.getDefaultOptions())];
+                        return [4 /*yield*/, internal_2.getTournamentData(tournamentId, internal_1.ITournament.getDefaultOptions())];
                     case 6:
                         tournamentData = _a.sent();
                         return [3 /*break*/, 11];
                     case 7:
                         if (!(typeof this.eventId == 'string' && this.tournamentId)) return [3 /*break*/, 10];
-                        return [4 /*yield*/, Fetcher.getEventData(this.eventId, options)];
+                        return [4 /*yield*/, internal_2.getEventData(this.eventId, options)];
                     case 8:
                         eventData = _a.sent();
-                        return [4 /*yield*/, Fetcher.getTournamentData(this.tournamentId, tournamentOptions)];
+                        return [4 /*yield*/, internal_2.getTournamentData(this.tournamentId, tournamentOptions)];
                     case 9:
                         tournamentData = _a.sent();
                         data = {
@@ -278,7 +324,7 @@ var Event = /** @class */ (function (_super) {
                         fn = function (phase) { return __awaiter(_this, void 0, void 0, function () {
                             return __generator(this, function (_a) {
                                 switch (_a.label) {
-                                    case 0: return [4 /*yield*/, Phase_1.default.getPhase(phase.id)];
+                                    case 0: return [4 /*yield*/, internal_1.Phase.getPhase(phase.id)];
                                     case 1: return [2 /*return*/, _a.sent()];
                                 }
                             });
@@ -329,7 +375,7 @@ var Event = /** @class */ (function (_super) {
                         fn = function (group) { return __awaiter(_this, void 0, void 0, function () {
                             return __generator(this, function (_a) {
                                 switch (_a.label) {
-                                    case 0: return [4 /*yield*/, PhaseGroup_1.default.getPhaseGroup(group.id)];
+                                    case 0: return [4 /*yield*/, internal_1.PhaseGroup.getPhaseGroup(group.id)];
                                     case 1: return [2 /*return*/, _a.sent()];
                                 }
                             });
@@ -681,7 +727,7 @@ var Event = /** @class */ (function (_super) {
     };
     return Event;
 }(events_1.EventEmitter));
-exports.default = Event;
+exports.Event = Event;
 Event.prototype.toString = function () {
     return 'Event: ' +
         '\nID: ' + this.getId() +
@@ -689,51 +735,3 @@ Event.prototype.toString = function () {
         '\nTournament: ' + this.getTournamentId() +
         '\nStart Time: ' + this.getStartTime();
 };
-var IEvent;
-(function (IEvent) {
-    function getDefaultData() {
-        return {
-            tournament: Tournament_1.ITournament.getDefaultData(),
-            event: getDefaultEventData()
-        };
-    }
-    IEvent.getDefaultData = getDefaultData;
-    function getDefaultEventData() {
-        return {
-            entities: {
-                slug: '',
-                tournamentId: 0,
-                event: {
-                    id: 0
-                }
-            }
-        };
-    }
-    IEvent.getDefaultEventData = getDefaultEventData;
-    function getTournamentSlug(slug) {
-        return slug.substring(slug.indexOf('/') + 1, slug.indexOf('/', slug.indexOf('/') + 1));
-    }
-    IEvent.getTournamentSlug = getTournamentSlug;
-    function getDefaultOptions() {
-        return {
-            expands: {
-                phase: true,
-                groups: true
-            },
-            isCached: true,
-            rawEncoding: 'JSON'
-        };
-    }
-    IEvent.getDefaultOptions = getDefaultOptions;
-    function parseOptions(options) {
-        return {
-            expands: {
-                phase: (options.expands != undefined && options.expands.phase == false) ? false : true,
-                groups: (options.expands != undefined && options.expands.groups == false) ? false : true
-            },
-            isCached: options.isCached != undefined ? options.isCached === true : true,
-            rawEncoding: Encoder_1.default.determineEncoding(options.rawEncoding)
-        };
-    }
-    IEvent.parseOptions = parseOptions;
-})(IEvent = exports.IEvent || (exports.IEvent = {}));

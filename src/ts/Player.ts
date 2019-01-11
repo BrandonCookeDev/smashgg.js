@@ -16,7 +16,7 @@ import parseOptions = ICommon.parseOptions
 
 const API_URL = 'https://api.smash.gg/player/%s';
 
-export default class Player extends EventEmitter implements IPlayer.Player{
+export class Player extends EventEmitter implements IPlayer.Player{
 
 	public id: number = 0
 	public tag: string = ''

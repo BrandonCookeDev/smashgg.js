@@ -59,7 +59,7 @@ var events_1 = require("events");
 var request_promise_1 = __importDefault(require("request-promise"));
 var Cache_1 = __importDefault(require("./util/Cache"));
 var Common_1 = require("./util/Common");
-var PhaseGroup_1 = __importDefault(require("./PhaseGroup"));
+var internal_1 = require("./internal");
 var parseOptions = Common_1.ICommon.parseOptions;
 var API_URL = 'https://api.smash.gg/set/%s';
 var GGSet = /** @class */ (function (_super) {
@@ -158,7 +158,7 @@ var GGSet = /** @class */ (function (_super) {
                         _a.trys.push([1, 4, , 5]);
                         isBye = false;
                         set = data.entities.sets;
-                        return [4 /*yield*/, PhaseGroup_1.default.getPhaseGroup(set.phaseGroupId)];
+                        return [4 /*yield*/, internal_1.PhaseGroup.getPhaseGroup(set.phaseGroupId)];
                     case 2:
                         group = _a.sent();
                         return [4 /*yield*/, group.getPlayers()];
@@ -321,7 +321,7 @@ var GGSet = /** @class */ (function (_super) {
     };
     return GGSet;
 }(events_1.EventEmitter));
-exports.default = GGSet;
+exports.GGSet = GGSet;
 GGSet.prototype.toString = function () {
     return 'Set: ' +
         '\nID: ' + this.id +

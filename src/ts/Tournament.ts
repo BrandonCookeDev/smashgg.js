@@ -10,9 +10,8 @@ import { EventEmitter } from 'events'
 
 import * as Common from './util/Common'
 import Cache from './util/Cache'
-import Event from './Event'
-import Phase from './Phase'
-import PhaseGroup from './PhaseGroup'
+import  { Event, Phase, PhaseGroup } from './internal'
+
 import Player from './Player'
 import GGSet from './GGSet'
 import Encoder from './util/Encoder'
@@ -24,12 +23,12 @@ const DEFAULT_CONCURRENCY = 4;
 
 import { ICommon } from './util/Common'
 
-import Entity = ICommon.Entity;
-import Options = ICommon.Options;
+import Entity = ICommon.Entity
+import Options = ICommon.Options
 import Data = ITournament.Data
-import TournamentOptions = ITournament.Options;
-import TournamentExpands = ITournament.Expands;
-import parseOptions = Common.parseOptions;
+import TournamentOptions = ITournament.Options
+import TournamentExpands = ITournament.Expands
+import parseOptions = Common.parseOptions
 
 function parseTournamentOptions(options: TournamentOptions) : TournamentOptions {
 	return {
@@ -552,7 +551,6 @@ Tournament.prototype.toString = function(){
 
 export namespace ITournament{
 	export interface Tournament{
-
 		url: string
 		data: Data | string
 		name: string | number

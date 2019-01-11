@@ -57,8 +57,8 @@ var p_map_1 = __importDefault(require("p-map"));
 var util_1 = require("util");
 var request_promise_1 = __importDefault(require("request-promise"));
 var events_1 = require("events");
+var internal_1 = require("./internal");
 var Cache_1 = __importDefault(require("./util/Cache"));
-var PhaseGroup_1 = __importDefault(require("./PhaseGroup"));
 var Encoder_1 = __importDefault(require("./util/Encoder"));
 var PHASE_URL = 'https://api.smash.gg/phase/%s?%s';
 var LEGAL_ENCODINGS = ['json', 'utf8', 'base64'];
@@ -211,7 +211,7 @@ var Phase = /** @class */ (function (_super) {
                         fn = function (group) { return __awaiter(_this, void 0, void 0, function () {
                             return __generator(this, function (_a) {
                                 switch (_a.label) {
-                                    case 0: return [4 /*yield*/, PhaseGroup_1.default.getPhaseGroup(group.id)];
+                                    case 0: return [4 /*yield*/, internal_1.PhaseGroup.getPhaseGroup(group.id)];
                                     case 1: return [2 /*return*/, _a.sent()];
                                 }
                             });
@@ -486,7 +486,7 @@ var Phase = /** @class */ (function (_super) {
     };
     return Phase;
 }(events_1.EventEmitter));
-exports.default = Phase;
+exports.Phase = Phase;
 Phase.prototype.toString = function () {
     return 'Phase: ' +
         '\nID: ' + this.id +

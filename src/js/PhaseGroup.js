@@ -59,8 +59,7 @@ var moment_1 = __importDefault(require("moment"));
 var request_promise_1 = __importDefault(require("request-promise"));
 var events_1 = require("events");
 var Cache_1 = __importDefault(require("./util/Cache"));
-var Player_1 = __importDefault(require("./Player"));
-var GGSet_1 = __importDefault(require("./GGSet"));
+var internal_1 = require("./internal");
 var Encoder_1 = __importDefault(require("./util/Encoder"));
 var Common_1 = require("./util/Common");
 var parseOptions = Common_1.ICommon.parseOptions;
@@ -224,7 +223,7 @@ var PhaseGroup = /** @class */ (function (_super) {
                     case 3:
                         entrants = this.getEntrants();
                         players = entrants.map(function (entrant) {
-                            return Player_1.default.resolve(entrant);
+                            return internal_1.Player.resolve(entrant);
                         });
                         this.players = players;
                         return [4 /*yield*/, Cache_1.default.set(cacheKey, this.players)];
@@ -274,7 +273,7 @@ var PhaseGroup = /** @class */ (function (_super) {
                         if (!this.getData().entities.sets) return [3 /*break*/, 7];
                         sets = void 0;
                         entities = this.getData().entities.sets;
-                        return [4 /*yield*/, p_map_1.default(entities, GGSet_1.default.resolve, { concurrency: options.concurrency })];
+                        return [4 /*yield*/, p_map_1.default(entities, internal_1.GGSet.resolve, { concurrency: options.concurrency })];
                     case 6:
                         sets = (_a.sent());
                         sets = sets.filter(function (set) { return set != undefined; });
@@ -407,9 +406,9 @@ var PhaseGroup = /** @class */ (function (_super) {
                             isComplete = true;
                         S = void 0;
                         if (isComplete)
-                            S = new GGSet_1.default(set.id, set.eventId, set.fullRoundText, Player1, Player2, isComplete, set.entrant1Score, set.entrant2Score, set.winnerId, set.loserId, set);
+                            S = new internal_1.GGSet(set.id, set.eventId, set.fullRoundText, Player1, Player2, isComplete, set.entrant1Score, set.entrant2Score, set.winnerId, set.loserId, set);
                         else
-                            S = new GGSet_1.default(set.id, set.eventId, set.fullRoundText, Player1, Player2, isComplete, undefined, undefined, undefined, undefined, set);
+                            S = new internal_1.GGSet(set.id, set.eventId, set.fullRoundText, Player1, Player2, isComplete, undefined, undefined, undefined, undefined, set);
                         S.loadData(set);
                         return [2 /*return*/, S];
                     case 3:
@@ -475,7 +474,7 @@ var PhaseGroup = /** @class */ (function (_super) {
     };
     return PhaseGroup;
 }(events_1.EventEmitter));
-exports.default = PhaseGroup;
+exports.PhaseGroup = PhaseGroup;
 PhaseGroup.prototype.toString = function () {
     return 'Phase Group:' +
         '\nID: ' + this.id +

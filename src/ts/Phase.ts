@@ -8,11 +8,9 @@ import request from 'request-promise'
 import { EventEmitter } from 'events'
 
 import * as Common from './util/Common'
+import {PhaseGroup, GGSet, Player} from './internal'
 import Cache from './util/Cache'
-import PhaseGroup from './PhaseGroup'
-import Player from './Player'
 import Encoder from './util/Encoder'
-import GGSet from './GGSet'
 
 const PHASE_URL = 'https://api.smash.gg/phase/%s?%s';
 const LEGAL_ENCODINGS = ['json', 'utf8', 'base64'];
@@ -29,7 +27,7 @@ import CommonOptions = ICommon.Options
 import parseOptions = ICommon.parseOptions
 import parsePhaseOptions = IPhase.parseOptions
 
-export default class Phase extends EventEmitter implements IPhase.Phase{
+export class Phase extends EventEmitter implements IPhase.Phase{
 
 	id: number = 0
 	url: string = ''

@@ -8,9 +8,9 @@ let moment = require('moment');
 
 let Tournament = require('../src/js/Tournament');
 let Player = require('../src/js/Player');
-let Set = require('../src/js/Set');
+let Set = require('../src/js/GGSet');
 let Event = require('../src/js/Event');
-let Cache = require('../src/js/util/Cache').getInstance();
+let Cache = require('../src/js/util/Cache');
 
 let sinon = require('sinon');
 let chai = require('chai');

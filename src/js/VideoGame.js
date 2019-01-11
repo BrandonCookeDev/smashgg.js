@@ -228,4 +228,4 @@ var VideoGame = /** @class */ (function () {
     };
     return VideoGame;
 }());
-exports.default = VideoGame;
+exports.VideoGame = VideoGame;

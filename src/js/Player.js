@@ -183,7 +183,7 @@ var Player = /** @class */ (function (_super) {
     };
     return Player;
 }(events_1.EventEmitter));
-exports.default = Player;
+exports.Player = Player;
 Player.prototype.toString = function () {
     return 'Player:' +
         '\nName: ' + this.name +

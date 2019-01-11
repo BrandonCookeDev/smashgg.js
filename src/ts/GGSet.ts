@@ -7,9 +7,7 @@ import request from 'request-promise'
 import Cache from './util/Cache'
 
 import { ICommon } from './util/Common'
-
-import Player from './Player'
-import PhaseGroup from './PhaseGroup'
+import {PhaseGroup, Player} from './internal' 
 
 import Entity = IGGSet.Entity
 import Options = ICommon.Options
@@ -17,7 +15,7 @@ import parseOptions = ICommon.parseOptions
 
 const API_URL = 'https://api.smash.gg/set/%s';
 
-export default class GGSet extends EventEmitter implements IGGSet.GGSet{
+export class GGSet extends EventEmitter implements IGGSet.GGSet{
 
 	id: number
 	eventId: number

@@ -1,3 +1,147 @@
+
+export namespace IEvent{
+	export interface Event{
+		id: number 
+		url: string 
+		data: Data | string
+		eventId: string | number
+		expands: Expands 
+		expandsString: string 
+		tournamentId: string | undefined
+		tournamentSlug: string 
+		isCached: boolean 
+		rawEncoding: string 
+		phases: Array<Phase> 
+		groups: Array<PhaseGroup> 
+		
+		loadData(data: object): object | string 
+	
+		getData() : Data
+				
+		//getEvent(eventName: string, tournamentName: string, options: Options) : Promise<Event>
+	
+		//getEventById(id: number, options: Options) : Promise<Event>
+			
+		load(options: Options, tournamentOptions: TournamentOptions) : Promise<Data | string>
+				
+		getEventPhases(options: Options) : Promise<Array<Phase>>
+	
+		getEventPhaseGroups(options: Options) : Promise<Array<PhaseGroup>>
+			
+		getSets(options: Options) : Promise<Array<GGSet>>
+			
+		getPlayers(options: Options) : Promise<Array<Player>>
+				
+		getIncompleteSets(options: Options) : Promise<Array<GGSet>>
+	
+		getCompleteSets(options: Options) : Promise<Array<GGSet>>
+			
+		getSetsXMinutesBack(minutesBack: number, options: Options) : Promise<Array<GGSet>> 
+			
+		getFromEventEntities(prop: string) : any
+
+		getFromTournamentEntities(prop: string) : any
+
+		getId() : number
+			
+		getName() : string
+			
+		getTournamentId() : number
+			
+		getSlug() : string
+			
+		getTournamentSlug() : string
+			
+		getStartTime() : Date | null
+			
+		getStartTimeString() : string | null
+			
+		getEndTime() : Date | null
+			
+		getEndTimeString() : string | null
+			
+		nullValueString(prop: string) : string
+	
+		emitEventReady() : void
+			
+		emitEventError(err: Error) : void
+		
+	}
+
+	export interface Options{
+		isCached?: boolean,
+		rawEncoding?: string,
+		expands?: Expands
+	}
+
+	export interface Expands{
+		phase: boolean,
+		groups: boolean 
+	}
+
+	export interface Data{
+		tournament: TournamentData,
+		event: EventData
+	}
+
+	export interface EventData{
+		entities: {
+			slug: string,
+			tournamentId: number,
+			event: Entity,
+			groups?: [Entity],
+			phase?: [Entity],
+			[x: string]: any
+		}
+	}
+
+	export function getDefaultData(): Data{
+		return {
+			tournament: ITournament.getDefaultData(),
+			event: getDefaultEventData()
+		}
+	}
+
+	export function getDefaultEventData(): EventData{
+		return {
+			entities: {
+				slug: '',
+				tournamentId: 0,
+				event: {
+					id: 0
+				}
+			}
+		}
+	}
+
+	export function getTournamentSlug(slug: string) : string{
+		return slug.substring(slug.indexOf('/') + 1, slug.indexOf('/', slug.indexOf('/') + 1));
+	}
+
+
+	export function getDefaultOptions(): Options {
+		return {
+			expands:{
+				phase: true,
+				groups: true
+			},
+			isCached: true,
+			rawEncoding: 'JSON'
+		}
+	}
+
+	export function parseOptions(options: Options) : Options {
+		return{
+			expands: {
+				phase: (options.expands != undefined  && options.expands.phase == false) ? false : true,
+				groups: (options.expands != undefined && options.expands.groups == false) ? false : true
+			},
+			isCached: options.isCached != undefined ? options.isCached === true : true,
+			rawEncoding: Encoder.determineEncoding(options.rawEncoding)
+		}
+	}
+}
+
 import _ from 'lodash'
 import moment from 'moment'
 import log from 'winston'
@@ -7,13 +151,10 @@ import { EventEmitter } from 'events'
 import { format } from 'util'
 
 import * as Common from './util/Common'
+import { ITournament, Phase, PhaseGroup, Player, GGSet } from './internal'
+import { getTournamentData, getEventDataById, getEventData } from './internal'
 import Cache from './util/Cache'
-import Phase from './Phase'
-import PhaseGroup from './PhaseGroup'
-import GGSet from './GGSet'
-import Player from './Player'
 import Encoder from './util/Encoder'
-import * as Fetcher from './util/EntityFetcher'
 
 const EVENT_URL = 'https://api.smash.gg/event/%s?%s'
 const EVENT_SLUG_URL = 'https://api.smash.gg/%s/event/%s?%s'
@@ -25,7 +166,6 @@ const DEFAULT_ENCODING = 'json'
 const DEFAULT_CONCURRENCY = 4
 
 import { ICommon } from './util/Common'
-import { ITournament } from './Tournament'
 
 import Data = IEvent.Data
 import EventData = IEvent.EventData
@@ -40,7 +180,7 @@ import parseOptions = Common.parseOptions
 
 
 
-export default class Event extends EventEmitter implements IEvent.Event{
+export class Event extends EventEmitter implements IEvent.Event{
 
 	id: number = 0
 	url: string = ''
@@ -156,13 +296,13 @@ export default class Event extends EventEmitter implements IEvent.Event{
 				let tournamentData: TournamentData
 
 				if(typeof this.eventId == 'number'){
-					eventData = await Fetcher.getEventDataById(this.eventId as number, options);
+					eventData = await getEventDataById(this.eventId as number, options);
 					let tournamentId: string = IEvent.getTournamentSlug(eventData.entities.slug);
-					tournamentData = await Fetcher.getTournamentData(tournamentId, ITournament.getDefaultOptions());
+					tournamentData = await getTournamentData(tournamentId, ITournament.getDefaultOptions());
 				}
 				else if(typeof this.eventId == 'string' && this.tournamentId){
-					eventData = await Fetcher.getEventData(this.eventId as string, options);
-					tournamentData = await Fetcher.getTournamentData(this.tournamentId, tournamentOptions);
+					eventData = await getEventData(this.eventId as string, options);
+					tournamentData = await getTournamentData(this.tournamentId, tournamentOptions);
 					data = {
 						tournament: tournamentData,
 						event: eventData
@@ -501,146 +641,3 @@ Event.prototype.toString = function(){
 		'\nTournament: ' + this.getTournamentId() +
 		'\nStart Time: ' + this.getStartTime();
 };
-
-export namespace IEvent{
-	export interface Event{
-		id: number 
-		url: string 
-		data: Data | string
-		eventId: string | number
-		expands: Expands 
-		expandsString: string 
-		tournamentId: string | undefined
-		tournamentSlug: string 
-		isCached: boolean 
-		rawEncoding: string 
-		phases: Array<Phase> 
-		groups: Array<PhaseGroup> 
-		
-		loadData(data: object): object | string 
-	
-		getData() : Data
-				
-		//getEvent(eventName: string, tournamentName: string, options: Options) : Promise<Event>
-	
-		//getEventById(id: number, options: Options) : Promise<Event>
-			
-		load(options: Options, tournamentOptions: TournamentOptions) : Promise<Data | string>
-				
-		getEventPhases(options: Options) : Promise<Array<Phase>>
-	
-		getEventPhaseGroups(options: Options) : Promise<Array<PhaseGroup>>
-			
-		getSets(options: Options) : Promise<Array<GGSet>>
-			
-		getPlayers(options: Options) : Promise<Array<Player>>
-				
-		getIncompleteSets(options: Options) : Promise<Array<GGSet>>
-	
-		getCompleteSets(options: Options) : Promise<Array<GGSet>>
-			
-		getSetsXMinutesBack(minutesBack: number, options: Options) : Promise<Array<GGSet>> 
-			
-		getFromEventEntities(prop: string) : any
-
-		getFromTournamentEntities(prop: string) : any
-
-		getId() : number
-			
-		getName() : string
-			
-		getTournamentId() : number
-			
-		getSlug() : string
-			
-		getTournamentSlug() : string
-			
-		getStartTime() : Date | null
-			
-		getStartTimeString() : string | null
-			
-		getEndTime() : Date | null
-			
-		getEndTimeString() : string | null
-			
-		nullValueString(prop: string) : string
-	
-		emitEventReady() : void
-			
-		emitEventError(err: Error) : void
-		
-	}
-
-	export interface Options{
-		isCached?: boolean,
-		rawEncoding?: string,
-		expands?: Expands
-	}
-
-	export interface Expands{
-		phase: boolean,
-		groups: boolean 
-	}
-
-	export interface Data{
-		tournament: TournamentData,
-		event: EventData
-	}
-
-	export interface EventData{
-		entities: {
-			slug: string,
-			tournamentId: number,
-			event: Entity,
-			groups?: [Entity],
-			phase?: [Entity],
-			[x: string]: any
-		}
-	}
-
-	export function getDefaultData(): Data{
-		return {
-			tournament: ITournament.getDefaultData(),
-			event: getDefaultEventData()
-		}
-	}
-
-	export function getDefaultEventData(): EventData{
-		return {
-			entities: {
-				slug: '',
-				tournamentId: 0,
-				event: {
-					id: 0
-				}
-			}
-		}
-	}
-
-	export function getTournamentSlug(slug: string) : string{
-		return slug.substring(slug.indexOf('/') + 1, slug.indexOf('/', slug.indexOf('/') + 1));
-	}
-
-
-	export function getDefaultOptions(): Options {
-		return {
-			expands:{
-				phase: true,
-				groups: true
-			},
-			isCached: true,
-			rawEncoding: 'JSON'
-		}
-	}
-
-	export function parseOptions(options: Options) : Options {
-		return{
-			expands: {
-				phase: (options.expands != undefined  && options.expands.phase == false) ? false : true,
-				groups: (options.expands != undefined && options.expands.groups == false) ? false : true
-			},
-			isCached: options.isCached != undefined ? options.isCached === true : true,
-			rawEncoding: Encoder.determineEncoding(options.rawEncoding)
-		}
-	}
-}

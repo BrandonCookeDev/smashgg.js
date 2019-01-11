@@ -1,9 +1,11 @@
 import winston from 'winston'
 
-let logger = new (winston.Logger)({
-    transports: [
-      new (winston.transports.Console)(),
-    ]
-});
+const logger = winston.createLogger({
+  level: 'info',
+  format: winston.format.json(),
+  transports:[
+    new winston.transports.Console()
+  ]
+})
 
 exports = logger;

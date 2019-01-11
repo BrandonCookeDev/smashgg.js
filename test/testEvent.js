@@ -1,5 +1,6 @@
 /* eslint-disable */
 'use strict';
+require('../src/js/util/ErrorHandler')
 
 Promise = require('bluebird');
 

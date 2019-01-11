@@ -9,12 +9,6 @@ import { IEvent } from '../Event'
 import { IPhase } from '../Phase'
 import { IPhaseGroup } from '../PhaseGroup'
 
-/* Types */
-import TTournament = ITournament.Tournament
-import TEvent = IEvent.Event
-import TPhase = IPhase.Phase
-import TPhaseGroup = IPhaseGroup.PhaseGroup
-
 import createExpandsString = Common.createExpandsString
 import TournamentOptions = ITournament.Options
 import TournamentData = ITournament.Data;

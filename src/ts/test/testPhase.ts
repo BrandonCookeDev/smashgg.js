@@ -120,10 +120,10 @@ describe('Smash GG Phase', function(){
 		expect(sets2.length).to.be.equal(1292);
 
 		sets1.forEach(set => {
-			expect(set).to.be.instanceof(Set);
+			expect(set).to.be.instanceof(GGSet);
 		})
 		sets2.forEach(set => {
-			expect(set).to.be.instanceof(Set);
+			expect(set).to.be.instanceof(GGSet);
 		})
 
 		return true;
@@ -159,7 +159,7 @@ describe('Smash GG Phase', function(){
 		let sets = await phase1.getSetsXMinutesBack(minutesBack);
 		expect(sets.length).to.be.equal(5);
 		sets.forEach(set=> {
-			expect(set).to.be.instanceof(Set);
+			expect(set).to.be.instanceof(GGSet);
 
 			let now = moment();
 			let then = moment(set.getCompletedAt() as Date);

@@ -81,7 +81,7 @@ describe('Smash GG Phase Group', function(){
 
 		expect(sets.length).to.be.equal(4);
 		sets.forEach(set => {
-			expect(set).to.be.instanceof(Set);
+			expect(set).to.be.instanceof(GGSet);
 		})
 
 		clock.restore();

@@ -244,7 +244,8 @@ var PhaseGroup = /** @class */ (function (_super) {
     PhaseGroup.prototype.getSets = function (options) {
         if (options === void 0) { options = {}; }
         return __awaiter(this, void 0, void 0, function () {
-            var cacheKey, cached, sets, entities, err_2;
+            var cacheKey, cached, sets, entities, fn, filtered, err_2;
+            var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -273,11 +274,14 @@ var PhaseGroup = /** @class */ (function (_super) {
                         if (!this.getData().entities.sets) return [3 /*break*/, 7];
                         sets = void 0;
                         entities = this.getData().entities.sets;
-                        return [4 /*yield*/, p_map_1.default(entities, internal_1.GGSet.resolve, { concurrency: options.concurrency })];
+                        fn = function (entity) { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
+                            return [2 /*return*/, internal_1.GGSet.resolve(entity, true)];
+                        }); }); };
+                        return [4 /*yield*/, p_map_1.default(entities, fn, { concurrency: options.concurrency })];
                     case 6:
-                        sets = (_a.sent());
-                        sets = sets.filter(function (set) { return set != undefined; });
-                        this.sets = sets;
+                        sets = _a.sent();
+                        filtered = sets.filter(function (set) { return set != null; });
+                        this.sets = filtered;
                         _a.label = 7;
                     case 7: return [4 /*yield*/, Cache_1.default.set(cacheKey, this.sets)];
                     case 8:

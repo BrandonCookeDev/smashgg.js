@@ -65,7 +65,7 @@ export class GGSet extends EventEmitter implements IGGSet.GGSet{
 		this.data = data;
 	}
 
-	static async getSet(id: number, options: Options={}) : Promise<GGSet> {
+	static async getSet(id: number, options: Options={}) : Promise<GGSet | null> {
 		log.verbose('Set getSet called');
 		try{
 			// parse options
@@ -86,7 +86,7 @@ export class GGSet extends EventEmitter implements IGGSet.GGSet{
 			};
 
 			let resp: Entity = JSON.parse(await request(req));
-			let set: GGSet = await GGSet.resolve(resp);
+			let set: GGSet | null = await GGSet.resolve(resp, false);
 
 			await Cache.set(cacheKey, set);
 			return set;
@@ -97,12 +97,21 @@ export class GGSet extends EventEmitter implements IGGSet.GGSet{
 		}
 	}
 
+	static async resolveArray(data: Array<Entity>, filterByes: boolean=true): Promise<Array<GGSet | null>> {
+		log.verbose('Set resolveArray called')
+		try{
+			return await Promise.all(data.map(async (entity) => await GGSet.resolve(entity, filterByes)))
+		} catch(e){
+			log.error('Set resolveArray error: %s', e);
+			throw e;
+		}
+	}
 	
-	static async resolve(data: Entity) : Promise<GGSet> {
+	static async resolve(data: Entity, filterByes: boolean=true) : Promise<GGSet | null> {
 		log.verbose('Set resolve called');
 		try{
 			let isBye = false
-			let set = data.entities.sets;
+			let set = data;
 			let group = await PhaseGroup.getPhaseGroup(set.phaseGroupId);
 			let groupParticipants = await group.getPlayers();
 
@@ -112,15 +121,20 @@ export class GGSet extends EventEmitter implements IGGSet.GGSet{
 			let Player1 = _.find(groupParticipants, {'participantId': set.entrant1Id}) as Player;
 			let Player2 = _.find(groupParticipants, {'participantId': set.entrant2Id}) as Player;
 
+			/*
 			if (!Player1 || !Player2)
 				throw new Error('Unknown error occured in Player.resolve'); // HANDLES Error of some sort
+			*/
 
 			let isComplete = false;
 			if(set.winnerId && set.loserId)
 				isComplete = true;
 
 			let S;
-			if(isBye)
+
+			if(isBye && filterByes) 
+				return null
+			else if(isBye && !filterByes)
 				S = new GGSet(set.id, set.eventId, 'BYE', Player1, Player2, isComplete, undefined, undefined, undefined, undefined, data)
 			else if(isComplete)
 				S = new GGSet(set.id, set.eventId, set.fullRoundText, Player1, Player2, isComplete, set.entrant1Score, set.entrant2Score, set.winnerId, set.loserId, data);
@@ -135,7 +149,51 @@ export class GGSet extends EventEmitter implements IGGSet.GGSet{
 		}
 	}
 	
+	static filterForCompleteSets(sets: Array<GGSet>) : Array<GGSet>{
+		log.verbose('GGSet.filterForCompleteSets called');
 
+		try{
+			return sets.filter(set => set.isComplete);
+		} catch(e){
+			log.error('GGSet.filterForCompleteSets error: %s', e);
+			throw e;
+		}
+	}
+
+	static filterForIncompleteSets(sets: Array<GGSet>) : Array<GGSet>{
+		log.verbose('GGSet.filterForCompleteSets called');
+
+		try{
+			return sets.filter(set => !set.isComplete);
+		} catch(e){
+			log.error('GGSet.filterForCompleteSets error: %s', e);
+			throw e;
+		}
+	}
+
+	static filterForXMinutesBack(sets: Array<GGSet>, minutesBack: number) : Array<GGSet>{
+		log.verbose('GGSet.filterForCompleteSets called');
+
+		try{
+			let now = moment();
+			let filtered: Array<GGSet> = sets.filter(set => {
+				let then = moment(set.getCompletedAt() as Date);
+				let diff = moment.duration(now.diff(then));
+
+				let diffMinutes = diff.minutes();
+				if(diff.hours() > 0 || diff.days() > 0 || diff.months() > 0 || diff.years() > 0) 
+					return false;
+				else 
+					return diffMinutes <= minutesBack && diffMinutes >= 0 && set.getIsComplete();
+			});
+			return filtered;
+		} catch(e){
+			log.error('GGSet.filterForCompleteSets error: %s', e);
+			throw e;
+		}
+	}
+
+	/** Instance Based **/
 	getRound(){
 		return this.round;
 	}

@@ -64,8 +64,8 @@ describe('Smash GG Set', function(){
 		let set1 = await GGSet.getSet(15896650);
 		let set2 = await GGSet.getSet(15896651);
 
-		expect(set1).to.be.instanceof(Set);
-		expect(set2).to.be.instanceof(Set);
+		expect(set1).to.be.instanceof(GGSet);
+		expect(set2).to.be.instanceof(GGSet);
 
 		return true;
 	})

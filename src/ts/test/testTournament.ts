@@ -306,7 +306,7 @@ describe('Smash GG Tournament', function(){
 	});
 
 	it('should get all players from a tournament', async function(){
-		this.timeout(10000);
+		this.timeout(20000);
 
 		let players = await tournament1.getAllPlayers({concurrency: concurrency});
 		expect(players.length).to.be.equal(157);
@@ -324,7 +324,7 @@ describe('Smash GG Tournament', function(){
 	});
 
 	it('should get all sets from a tournament', async function(){
-		this.timeout(10000);
+		this.timeout(20000);
 
 		let sets = await tournament1.getAllSets({concurrency: concurrency});
 		expect(sets.length).to.be.equal(552);
@@ -335,14 +335,14 @@ describe('Smash GG Tournament', function(){
 		expect(hasDuplicates(sets)).to.be.false;
 
 		sets.forEach(set => {
-			expect(set).to.be.an.instanceof(Set);
+			expect(set).to.be.an.instanceof(GGSet);
 		});
 
 		return true;
 	});
 
 	it('should get all events from a tournament', async function(){
-		this.timeout(10000);
+		this.timeout(20000);
 
 		let events = await tournament1.getAllEvents({concurrency: concurrency});
 		expect(events.length).to.be.equal(2);
@@ -360,7 +360,7 @@ describe('Smash GG Tournament', function(){
 	})
 
 	it('should resolve the correct amount of incomplete sets', async function(){
-		this.timeout(10000);
+		this.timeout(20000);
 
 		let t = await Tournament.getTournament('21xx-cameron-s-birthday-bash-1');
 		let sets = await t.getIncompleteSets();
@@ -369,7 +369,7 @@ describe('Smash GG Tournament', function(){
 	})
 
 	it('should resolve the correct amount of complete sets', async function(){
-		this.timeout(10000);
+		this.timeout(20000);
 
 		let t = await Tournament.getTournament('21xx-cameron-s-birthday-bash-1');
 		let sets = await t.getCompleteSets();
@@ -378,7 +378,7 @@ describe('Smash GG Tournament', function(){
 	})
 
 	it('should resolve the correct number of sets x minutes ago', async function(){
-		this.timeout(10000);
+		this.timeout(20000);
 
 		let minutesBack = 15;
 		let t = await Tournament.getTournament('21xx-cameron-s-birthday-bash-1');
@@ -387,7 +387,7 @@ describe('Smash GG Tournament', function(){
 		let sets = await t.getSetsXMinutesBack(minutesBack);
 		expect(sets.length).to.be.equal(1);
 		sets.forEach(set => {
-			expect(set).to.be.instanceof(Set);
+			expect(set).to.be.instanceof(GGSet);
 			
 			let now = moment();
 			let then = moment(set.getCompletedAt() as Date);

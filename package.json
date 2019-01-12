@@ -15,6 +15,7 @@
     "url": "https://github.com/BrandonCookeDev/smashgg.js"
   },
   "scripts": {
+    "pretest": "tsc",
     "test": "./node_modules/.bin/mocha ./src/js/test",
     "testTournament": "./node_modules/.bin/mocha ./src/js/test/testTournament",
     "testEvent": "./node_modules/.bin/mocha ./src/js/test/testEvent",

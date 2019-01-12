@@ -303,7 +303,7 @@ export class Phase extends EventEmitter implements IPhase.Phase{
 		return this.getFromDataEntities('name');
 	}
 
-	getEventId() : string{
+	getEventId() : number{
 		return this.getFromDataEntities('eventId');
 	}
 
@@ -363,7 +363,7 @@ export namespace IPhase{
 		
 		getName() : string
 		
-		getEventId() : string
+		getEventId() : number
 		
 		nullValueString(prop: string) : string
 		

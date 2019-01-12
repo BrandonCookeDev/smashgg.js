@@ -1,37 +1,27 @@
 /* eslint-disable */
-'use strict';
-require('../src/js/util/ErrorHandler')
+import '../lib/util/ErrorHandler'
 
-Promise = require('bluebird');
-let _ = require('lodash');
+import _ from 'lodash'
+import sinon from 'sinon'
+import chai from 'chai'
+import cap from 'chai-as-promised'
+chai.use(cap)
+const {expect} = chai
 
-let Set = require('../src/js/Set');
-let PhaseGroup = require('../src/js/PhaseGroup');
-let Cache = require('../src/js/util/Cache').getInstance();
+import {GGSet, PhaseGroup, IPhaseGroup} from '../lib/internal'
+import Cache from '../lib/util/Cache'
 
-let sinon = require('sinon');
-let chai = require('chai');
-let cap = require('chai-as-promised');
-chai.use(cap);
-
-let expect = chai.expect;
-let assert = chai.assert;
-
-let phaseGroup1 = {};
-let phaseGroup2 = {};
-let phaseGroup3 = {};
-let phaseGroup4 = {};
+let phaseGroup1: PhaseGroup;
+let phaseGroup2: PhaseGroup;
+let phaseGroup3: PhaseGroup;
+let phaseGroup4: PhaseGroup;
 
 const ID1 = 0;
 const ID2 = 44445;
 const ID3 = 301994;
 
-let expected = _.extend(
 
-);
-
-
-function loadPhaseGroup(id, options){
+function loadPhaseGroup(id: number, options: IPhaseGroup.Options) : Promise<PhaseGroup>{
 	return new Promise(function(resolve, reject){
 		let PG = new PhaseGroup(id, options);
 		PG.on('ready', function(){

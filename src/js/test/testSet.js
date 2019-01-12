@@ -79,8 +79,8 @@ describe('Smash GG Set', function () {
                         return [4 /*yield*/, internal_1.GGSet.getSet(15896651)];
                     case 2:
                         set2 = _a.sent();
-                        expect(set1).to.be.instanceof(Set);
-                        expect(set2).to.be.instanceof(Set);
+                        expect(set1).to.be.instanceof(internal_1.GGSet);
+                        expect(set2).to.be.instanceof(internal_1.GGSet);
                         return [2 /*return*/, true];
                 }
             });

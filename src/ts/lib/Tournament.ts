@@ -466,13 +466,9 @@ export class Tournament extends EventEmitter implements ITournament.Tournament{
 			//parse options
 			options = parseOptions(options);
 
-			let events : Array<Event> = await this.getAllEvents(options);
-			let fn = async (event: Event) : Promise<Array<GGSet>> => {
-				return await event.getIncompleteSets(options);
-			};
-			let sets : GGSet[][] = await pmap(events, fn, {concurrency: options.concurrency});
-			let flattened = _.flatten(sets);
-			return flattened;
+			let sets = await this.getAllSets(options);
+			let complete = GGSet.filterForIncompleteSets(sets);
+			return complete;
 		} catch(e){
 			log.error('Tournament.getIncompleteSets error: %s', e);
 			throw e;
@@ -485,13 +481,9 @@ export class Tournament extends EventEmitter implements ITournament.Tournament{
 			//parse options
 			options = parseOptions(options)
 
-			let events: Array<Event> = await this.getAllEvents(options);
-			let fn = async (event: Event) : Promise<Array<GGSet>> => {
-				return await event.getCompleteSets(options);
-			};
-			let sets: GGSet[][] = await pmap(events, fn, {concurrency: options.concurrency});
-			let flattened = _.flatten(sets);
-			return flattened;
+			let sets = await this.getAllSets(options)
+			let incomplete = GGSet.filterForCompleteSets(sets)
+			return incomplete;
 		} catch(e){
 			log.error('Tournament.getIncompleteSets error: %s', e);
 			throw e;
@@ -501,17 +493,9 @@ export class Tournament extends EventEmitter implements ITournament.Tournament{
 	async getSetsXMinutesBack(minutesBack: number, options: Options={}) : Promise<Array<GGSet>> {
 		log.verbose('Tournament.getSetsXMinutesBack called');
 		try{
-			// parse options
-			options = parseOptions(options);
-			options.isCached = false;
-
-			let events: Array<Event> = await this.getAllEvents(options);
-			let fn = async (event: Event) : Promise<Array<GGSet>> => {
-				return await event.getSetsXMinutesBack(minutesBack, options);
-			};
-			let sets: GGSet[][] = await pmap(events, fn, {concurrency: options.concurrency});
-			let flattened: GGSet[] = _.flatten(sets);
-			return flattened;
+			let sets = await this.getAllSets()
+			let filtered = GGSet.filterForXMinutesBack(sets, minutesBack)			
+			return filtered;
 		} catch(e){
 			log.error('Tournament.getSetsXMinutesBack error: %s', e);
 			throw e;

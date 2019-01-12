@@ -298,7 +298,7 @@ describe('Smash GG Tournament', function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        this.timeout(10000);
+                        this.timeout(20000);
                         return [4 /*yield*/, tournament1.getAllPlayers({ concurrency: concurrency })];
                     case 1:
                         players = _a.sent();
@@ -321,7 +321,7 @@ describe('Smash GG Tournament', function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        this.timeout(10000);
+                        this.timeout(20000);
                         return [4 /*yield*/, tournament1.getAllSets({ concurrency: concurrency })];
                     case 1:
                         sets = _a.sent();
@@ -331,7 +331,7 @@ describe('Smash GG Tournament', function () {
                         };
                         expect(hasDuplicates(sets)).to.be.false;
                         sets.forEach(function (set) {
-                            expect(set).to.be.an.instanceof(Set);
+                            expect(set).to.be.an.instanceof(internal_1.GGSet);
                         });
                         return [2 /*return*/, true];
                 }
@@ -344,7 +344,7 @@ describe('Smash GG Tournament', function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        this.timeout(10000);
+                        this.timeout(20000);
                         return [4 /*yield*/, tournament1.getAllEvents({ concurrency: concurrency })];
                     case 1:
                         events = _a.sent();
@@ -367,7 +367,7 @@ describe('Smash GG Tournament', function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        this.timeout(10000);
+                        this.timeout(20000);
                         return [4 /*yield*/, internal_1.Tournament.getTournament('21xx-cameron-s-birthday-bash-1')];
                     case 1:
                         t = _a.sent();
@@ -386,7 +386,7 @@ describe('Smash GG Tournament', function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        this.timeout(10000);
+                        this.timeout(20000);
                         return [4 /*yield*/, internal_1.Tournament.getTournament('21xx-cameron-s-birthday-bash-1')];
                     case 1:
                         t = _a.sent();
@@ -405,7 +405,7 @@ describe('Smash GG Tournament', function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        this.timeout(10000);
+                        this.timeout(20000);
                         minutesBack = 15;
                         return [4 /*yield*/, internal_1.Tournament.getTournament('21xx-cameron-s-birthday-bash-1')];
                     case 1:
@@ -417,7 +417,7 @@ describe('Smash GG Tournament', function () {
                         sets = _a.sent();
                         expect(sets.length).to.be.equal(1);
                         sets.forEach(function (set) {
-                            expect(set).to.be.instanceof(Set);
+                            expect(set).to.be.instanceof(internal_1.GGSet);
                             var now = moment_1.default();
                             var then = moment_1.default(set.getCompletedAt());
                             var diff = moment_1.default.duration(now.diff(then)).minutes();

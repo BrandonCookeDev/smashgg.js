@@ -472,38 +472,26 @@ var Tournament = /** @class */ (function (_super) {
     Tournament.prototype.getIncompleteSets = function (options) {
         if (options === void 0) { options = {}; }
         return __awaiter(this, void 0, void 0, function () {
-            var events, fn, sets, flattened, e_2;
-            var _this = this;
+            var sets, complete, e_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         log.debug('Tournament.getIncompleteSets called');
                         _a.label = 1;
                     case 1:
-                        _a.trys.push([1, 4, , 5]);
+                        _a.trys.push([1, 3, , 4]);
                         //parse options
                         options = parseOptions(options);
-                        return [4 /*yield*/, this.getAllEvents(options)];
+                        return [4 /*yield*/, this.getAllSets(options)];
                     case 2:
-                        events = _a.sent();
-                        fn = function (event) { return __awaiter(_this, void 0, void 0, function () {
-                            return __generator(this, function (_a) {
-                                switch (_a.label) {
-                                    case 0: return [4 /*yield*/, event.getIncompleteSets(options)];
-                                    case 1: return [2 /*return*/, _a.sent()];
-                                }
-                            });
-                        }); };
-                        return [4 /*yield*/, p_map_1.default(events, fn, { concurrency: options.concurrency })];
-                    case 3:
                         sets = _a.sent();
-                        flattened = lodash_1.default.flatten(sets);
-                        return [2 /*return*/, flattened];
-                    case 4:
+                        complete = internal_1.GGSet.filterForIncompleteSets(sets);
+                        return [2 /*return*/, complete];
+                    case 3:
                         e_2 = _a.sent();
                         log.error('Tournament.getIncompleteSets error: %s', e_2);
                         throw e_2;
-                    case 5: return [2 /*return*/];
+                    case 4: return [2 /*return*/];
                 }
             });
         });
@@ -511,38 +499,26 @@ var Tournament = /** @class */ (function (_super) {
     Tournament.prototype.getCompleteSets = function (options) {
         if (options === void 0) { options = {}; }
         return __awaiter(this, void 0, void 0, function () {
-            var events, fn, sets, flattened, e_3;
-            var _this = this;
+            var sets, incomplete, e_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         log.debug('Tournament.getIncompleteSets called');
                         _a.label = 1;
                     case 1:
-                        _a.trys.push([1, 4, , 5]);
+                        _a.trys.push([1, 3, , 4]);
                         //parse options
                         options = parseOptions(options);
-                        return [4 /*yield*/, this.getAllEvents(options)];
+                        return [4 /*yield*/, this.getAllSets(options)];
                     case 2:
-                        events = _a.sent();
-                        fn = function (event) { return __awaiter(_this, void 0, void 0, function () {
-                            return __generator(this, function (_a) {
-                                switch (_a.label) {
-                                    case 0: return [4 /*yield*/, event.getCompleteSets(options)];
-                                    case 1: return [2 /*return*/, _a.sent()];
-                                }
-                            });
-                        }); };
-                        return [4 /*yield*/, p_map_1.default(events, fn, { concurrency: options.concurrency })];
-                    case 3:
                         sets = _a.sent();
-                        flattened = lodash_1.default.flatten(sets);
-                        return [2 /*return*/, flattened];
-                    case 4:
+                        incomplete = internal_1.GGSet.filterForCompleteSets(sets);
+                        return [2 /*return*/, incomplete];
+                    case 3:
                         e_3 = _a.sent();
                         log.error('Tournament.getIncompleteSets error: %s', e_3);
                         throw e_3;
-                    case 5: return [2 /*return*/];
+                    case 4: return [2 /*return*/];
                 }
             });
         });
@@ -550,39 +526,24 @@ var Tournament = /** @class */ (function (_super) {
     Tournament.prototype.getSetsXMinutesBack = function (minutesBack, options) {
         if (options === void 0) { options = {}; }
         return __awaiter(this, void 0, void 0, function () {
-            var events, fn, sets, flattened, e_4;
-            var _this = this;
+            var sets, filtered, e_4;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         log.verbose('Tournament.getSetsXMinutesBack called');
                         _a.label = 1;
                     case 1:
-                        _a.trys.push([1, 4, , 5]);
-                        // parse options
-                        options = parseOptions(options);
-                        options.isCached = false;
-                        return [4 /*yield*/, this.getAllEvents(options)];
+                        _a.trys.push([1, 3, , 4]);
+                        return [4 /*yield*/, this.getAllSets()];
                     case 2:
-                        events = _a.sent();
-                        fn = function (event) { return __awaiter(_this, void 0, void 0, function () {
-                            return __generator(this, function (_a) {
-                                switch (_a.label) {
-                                    case 0: return [4 /*yield*/, event.getSetsXMinutesBack(minutesBack, options)];
-                                    case 1: return [2 /*return*/, _a.sent()];
-                                }
-                            });
-                        }); };
-                        return [4 /*yield*/, p_map_1.default(events, fn, { concurrency: options.concurrency })];
-                    case 3:
                         sets = _a.sent();
-                        flattened = lodash_1.default.flatten(sets);
-                        return [2 /*return*/, flattened];
-                    case 4:
+                        filtered = internal_1.GGSet.filterForXMinutesBack(sets, minutesBack);
+                        return [2 /*return*/, filtered];
+                    case 3:
                         e_4 = _a.sent();
                         log.error('Tournament.getSetsXMinutesBack error: %s', e_4);
                         throw e_4;
-                    case 5: return [2 /*return*/];
+                    case 4: return [2 /*return*/];
                 }
             });
         });

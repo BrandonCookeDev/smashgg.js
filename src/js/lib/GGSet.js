@@ -130,7 +130,7 @@ var GGSet = /** @class */ (function (_super) {
                         return [4 /*yield*/, request_promise_1.default(req)];
                     case 4:
                         resp = _b.apply(_a, [_c.sent()]);
-                        return [4 /*yield*/, GGSet.resolve(resp)];
+                        return [4 /*yield*/, GGSet.resolve(resp, false)];
                     case 5:
                         set = _c.sent();
                         return [4 /*yield*/, Cache_1.default.set(cacheKey, set)];
@@ -146,9 +146,38 @@ var GGSet = /** @class */ (function (_super) {
             });
         });
     };
-    GGSet.resolve = function (data) {
+    GGSet.resolveArray = function (data, filterByes) {
+        if (filterByes === void 0) { filterByes = true; }
         return __awaiter(this, void 0, void 0, function () {
-            var isBye, set, group, groupParticipants, Player1, Player2, isComplete, S, e_2;
+            var e_2;
+            var _this = this;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        winston_1.default.verbose('Set resolveArray called');
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 3, , 4]);
+                        return [4 /*yield*/, Promise.all(data.map(function (entity) { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
+                                switch (_a.label) {
+                                    case 0: return [4 /*yield*/, GGSet.resolve(entity, filterByes)];
+                                    case 1: return [2 /*return*/, _a.sent()];
+                                }
+                            }); }); }))];
+                    case 2: return [2 /*return*/, _a.sent()];
+                    case 3:
+                        e_2 = _a.sent();
+                        winston_1.default.error('Set resolveArray error: %s', e_2);
+                        throw e_2;
+                    case 4: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    GGSet.resolve = function (data, filterByes) {
+        if (filterByes === void 0) { filterByes = true; }
+        return __awaiter(this, void 0, void 0, function () {
+            var isBye, set, group, groupParticipants, Player1, Player2, isComplete, S, e_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -157,7 +186,7 @@ var GGSet = /** @class */ (function (_super) {
                     case 1:
                         _a.trys.push([1, 4, , 5]);
                         isBye = false;
-                        set = data.entities.sets;
+                        set = data;
                         return [4 /*yield*/, internal_1.PhaseGroup.getPhaseGroup(set.phaseGroupId)];
                     case 2:
                         group = _a.sent();
@@ -168,13 +197,13 @@ var GGSet = /** @class */ (function (_super) {
                             isBye = true; // HANDLES BYES
                         Player1 = lodash_1.default.find(groupParticipants, { 'participantId': set.entrant1Id });
                         Player2 = lodash_1.default.find(groupParticipants, { 'participantId': set.entrant2Id });
-                        if (!Player1 || !Player2)
-                            throw new Error('Unknown error occured in Player.resolve'); // HANDLES Error of some sort
                         isComplete = false;
                         if (set.winnerId && set.loserId)
                             isComplete = true;
                         S = void 0;
-                        if (isBye)
+                        if (isBye && filterByes)
+                            return [2 /*return*/, null];
+                        else if (isBye && !filterByes)
                             S = new GGSet(set.id, set.eventId, 'BYE', Player1, Player2, isComplete, undefined, undefined, undefined, undefined, data);
                         else if (isComplete)
                             S = new GGSet(set.id, set.eventId, set.fullRoundText, Player1, Player2, isComplete, set.entrant1Score, set.entrant2Score, set.winnerId, set.loserId, data);
@@ -183,14 +212,55 @@ var GGSet = /** @class */ (function (_super) {
                         S.loadData(set);
                         return [2 /*return*/, S];
                     case 4:
-                        e_2 = _a.sent();
-                        winston_1.default.error('Set resolve error: %s', e_2);
-                        throw e_2;
+                        e_3 = _a.sent();
+                        winston_1.default.error('Set resolve error: %s', e_3);
+                        throw e_3;
                     case 5: return [2 /*return*/];
                 }
             });
         });
     };
+    GGSet.filterForCompleteSets = function (sets) {
+        winston_1.default.verbose('GGSet.filterForCompleteSets called');
+        try {
+            return sets.filter(function (set) { return set.isComplete; });
+        }
+        catch (e) {
+            winston_1.default.error('GGSet.filterForCompleteSets error: %s', e);
+            throw e;
+        }
+    };
+    GGSet.filterForIncompleteSets = function (sets) {
+        winston_1.default.verbose('GGSet.filterForCompleteSets called');
+        try {
+            return sets.filter(function (set) { return !set.isComplete; });
+        }
+        catch (e) {
+            winston_1.default.error('GGSet.filterForCompleteSets error: %s', e);
+            throw e;
+        }
+    };
+    GGSet.filterForXMinutesBack = function (sets, minutesBack) {
+        winston_1.default.verbose('GGSet.filterForCompleteSets called');
+        try {
+            var now_1 = moment_timezone_1.default();
+            var filtered = sets.filter(function (set) {
+                var then = moment_timezone_1.default(set.getCompletedAt());
+                var diff = moment_timezone_1.default.duration(now_1.diff(then));
+                var diffMinutes = diff.minutes();
+                if (diff.hours() > 0 || diff.days() > 0 || diff.months() > 0 || diff.years() > 0)
+                    return false;
+                else
+                    return diffMinutes <= minutesBack && diffMinutes >= 0 && set.getIsComplete();
+            });
+            return filtered;
+        }
+        catch (e) {
+            winston_1.default.error('GGSet.filterForCompleteSets error: %s', e);
+            throw e;
+        }
+    };
+    /** Instance Based **/
     GGSet.prototype.getRound = function () {
         return this.round;
     };

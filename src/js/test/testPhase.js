@@ -180,10 +180,10 @@ describe('Smash GG Phase', function () {
                         expect(sets1.length).to.be.equal(248);
                         expect(sets2.length).to.be.equal(1292);
                         sets1.forEach(function (set) {
-                            expect(set).to.be.instanceof(Set);
+                            expect(set).to.be.instanceof(internal_1.GGSet);
                         });
                         sets2.forEach(function (set) {
-                            expect(set).to.be.instanceof(Set);
+                            expect(set).to.be.instanceof(internal_1.GGSet);
                         });
                         return [2 /*return*/, true];
                 }
@@ -234,7 +234,7 @@ describe('Smash GG Phase', function () {
                         sets = _a.sent();
                         expect(sets.length).to.be.equal(5);
                         sets.forEach(function (set) {
-                            expect(set).to.be.instanceof(Set);
+                            expect(set).to.be.instanceof(internal_1.GGSet);
                             var now = moment_1.default();
                             var then = moment_1.default(set.getCompletedAt());
                             var diff = moment_1.default.duration(now.diff(then)).minutes();

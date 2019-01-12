@@ -68,6 +68,15 @@ var ITournament;
         };
     }
     ITournament.getDefaultData = getDefaultData;
+    function getDefaultExpands() {
+        return {
+            event: true,
+            phase: true,
+            groups: true,
+            stations: true
+        };
+    }
+    ITournament.getDefaultExpands = getDefaultExpands;
     function getDefaultOptions() {
         return {
             expands: {

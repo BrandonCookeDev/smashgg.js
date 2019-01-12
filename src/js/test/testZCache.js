@@ -1,5 +1,4 @@
-/* eslint-disable */
-'use strict';
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -35,22 +34,23 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-require('../src/js/util/ErrorHandler');
-var _ = require('lodash');
-var Promise = require('bluebird');
-var Tournament = require('../src/js/Tournament');
-var Event = require('../src/js/Event');
-var Phase = require('../src/js/Phase');
-var PhaseGroup = require('../src/js/PhaseGroup');
-var Set = require('../src/js/Set');
-var Player = require('../src/js/Player');
-var Cache = require('../src/js/util/Cache').getInstance();
-var chai = require('chai');
-var cap = require('chai-as-promised');
-chai.use(cap);
-var expect = chai.expect;
-var assert = chai.assert;
-var testData = _.extend(require('./data/testSets'), require('./data/testPlayers'));
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+/* eslint-disable */
+require("../lib/util/ErrorHandler");
+var lodash_1 = __importDefault(require("lodash"));
+var chai_1 = __importDefault(require("chai"));
+var chai_as_promised_1 = __importDefault(require("chai-as-promised"));
+chai_1.default.use(chai_as_promised_1.default);
+var expect = chai_1.default.expect;
+var internal_1 = require("../lib/internal");
+var internal_2 = require("../lib/internal");
+var Cache_1 = __importDefault(require("../lib/util/Cache"));
+var testSets_1 = __importDefault(require("./data/testSets"));
+var testPlayers_1 = __importDefault(require("./data/testPlayers"));
+var testData = lodash_1.default.extend(testSets_1.default, testPlayers_1.default);
 var TOURNAMENT_NAME1 = 'function1';
 var TOURNAMENT_NAME2 = 'ceo2016';
 var EVENT_NAME1 = 'melee-singles';
@@ -60,15 +60,15 @@ var GROUPID1 = 44445;
 var GROUPID2 = 301994;
 describe('Test Caching', function () {
     before(function (done) {
-        Cache.flush();
+        Cache_1.default.flush();
         done();
     });
     beforeEach(function (done) {
-        Cache.flush();
+        Cache_1.default.flush();
         done();
     });
     after(function (done) {
-        Cache.flush();
+        Cache_1.default.flush();
         done();
     });
     it('should correctly cache tournaments', function () {
@@ -84,7 +84,7 @@ describe('Test Caching', function () {
                         return [4 /*yield*/, loadTournament(TOURNAMENT_NAME2)];
                     case 2:
                         t2 = _a.sent();
-                        return [4 /*yield*/, Cache.keys()];
+                        return [4 /*yield*/, Cache_1.default.keys()];
                     case 3:
                         keys = _a.sent();
                         expect(keys.length).to.be.equal(4);
@@ -96,14 +96,14 @@ describe('Test Caching', function () {
                         expect(keys).to.include(key2);
                         expect(keys).to.include(key1data);
                         expect(keys).to.include(key2data);
-                        return [4 /*yield*/, Cache.get(key1)];
+                        return [4 /*yield*/, Cache_1.default.get(key1)];
                     case 4:
                         t1Cached = _a.sent();
-                        return [4 /*yield*/, Cache.get(key2)];
+                        return [4 /*yield*/, Cache_1.default.get(key2)];
                     case 5:
                         t2Cached = _a.sent();
-                        expect(t1Cached).to.be.instanceof(Tournament);
-                        expect(t2Cached).to.be.instanceof(Tournament);
+                        expect(t1Cached).to.be.instanceof(internal_1.Tournament);
+                        expect(t2Cached).to.be.instanceof(internal_1.Tournament);
                         return [2 /*return*/, true];
                 }
             });
@@ -122,16 +122,16 @@ describe('Test Caching', function () {
                         return [4 /*yield*/, t1.getAllPlayers()];
                     case 2:
                         t1Players = _a.sent();
-                        return [4 /*yield*/, Cache.keys()];
+                        return [4 /*yield*/, Cache_1.default.keys()];
                     case 3:
                         keys = _a.sent();
                         key1 = 'tournament::function1::players';
                         expect(keys).to.include(key1);
-                        return [4 /*yield*/, Cache.get(key1)];
+                        return [4 /*yield*/, Cache_1.default.get(key1)];
                     case 4:
                         t1PlayersCached = _a.sent();
                         t1PlayersCached.forEach(function (element) {
-                            expect(element).to.be.instanceof(Player);
+                            expect(element).to.be.instanceof(internal_1.Player);
                         });
                         /*
                         let t2 = await loadTournament(TOURNAMENT_NAME2);
@@ -161,16 +161,16 @@ describe('Test Caching', function () {
                         return [4 /*yield*/, t1.getAllSets()];
                     case 2:
                         t1Sets = _a.sent();
-                        return [4 /*yield*/, Cache.keys()];
+                        return [4 /*yield*/, Cache_1.default.keys()];
                     case 3:
                         keys = _a.sent();
                         key1 = 'tournament::function1::sets';
                         expect(keys).to.include(key1);
-                        return [4 /*yield*/, Cache.get(key1)];
+                        return [4 /*yield*/, Cache_1.default.get(key1)];
                     case 4:
                         t1SetsCached = _a.sent();
                         t1SetsCached.forEach(function (element) {
-                            expect(element).to.be.instanceof(Set);
+                            expect(element).to.be.instanceof(internal_1.GGSet);
                         });
                         //let t2 = await loadTournament(TOURNAMENT_NAME2);
                         //let t2Sets = await t2.getAllSets();
@@ -204,24 +204,24 @@ describe('Test Caching', function () {
                         return [4 /*yield*/, t2.getAllEvents()];
                     case 4:
                         t2Events = _a.sent();
-                        return [4 /*yield*/, Cache.keys()];
+                        return [4 /*yield*/, Cache_1.default.keys()];
                     case 5:
                         keys = _a.sent();
                         key1 = 'tournament::function1::events';
                         key2 = 'tournament::ceo2016::events';
                         expect(keys).to.include(key1);
                         expect(keys).to.include(key2);
-                        return [4 /*yield*/, Cache.get(key1)];
+                        return [4 /*yield*/, Cache_1.default.get(key1)];
                     case 6:
                         t1EventsCached = _a.sent();
-                        return [4 /*yield*/, Cache.get(key2)];
+                        return [4 /*yield*/, Cache_1.default.get(key2)];
                     case 7:
                         t2EventsCached = _a.sent();
                         t1EventsCached.forEach(function (element) {
-                            expect(element).to.be.instanceof(Event);
+                            expect(element).to.be.instanceof(internal_1.Event);
                         });
                         t2EventsCached.forEach(function (element) {
-                            expect(element).to.be.instanceof(Event);
+                            expect(element).to.be.instanceof(internal_1.Event);
                         });
                         return [2 /*return*/, true];
                 }
@@ -245,7 +245,7 @@ describe('Test Caching', function () {
                         key1data = 'event::function1::melee-singles::json::expand[]=phase&expand[]=groups&::data';
                         key2 = 'event::ceo2016::melee-singles::expand[]=phase&expand[]=groups&';
                         key2data = 'event::ceo2016::melee-singles::json::expand[]=phase&expand[]=groups&::data';
-                        return [4 /*yield*/, Cache.keys()];
+                        return [4 /*yield*/, Cache_1.default.keys()];
                     case 3:
                         keys = _a.sent();
                         expect(keys.length).to.be.equal(8, "Current cache keys: " + JSON.stringify(keys));
@@ -253,14 +253,14 @@ describe('Test Caching', function () {
                         expect(keys).to.include(key2);
                         expect(keys).to.include(key1data);
                         expect(keys).to.include(key2data);
-                        return [4 /*yield*/, Cache.get(key1)];
+                        return [4 /*yield*/, Cache_1.default.get(key1)];
                     case 4:
                         e1Cached = _a.sent();
-                        return [4 /*yield*/, Cache.get(key2)];
+                        return [4 /*yield*/, Cache_1.default.get(key2)];
                     case 5:
                         e2Cached = _a.sent();
-                        expect(e1Cached).to.be.instanceof(Event);
-                        expect(e2Cached).to.be.instanceof(Event);
+                        expect(e1Cached).to.be.instanceof(internal_1.Event);
+                        expect(e2Cached).to.be.instanceof(internal_1.Event);
                         return [2 /*return*/, true];
                 }
             });
@@ -287,22 +287,22 @@ describe('Test Caching', function () {
                         phases2 = _a.sent();
                         key1 = 'event::function1::melee-singles::phases';
                         key2 = 'event::ceo2016::melee-singles::phases';
-                        return [4 /*yield*/, Cache.keys()];
+                        return [4 /*yield*/, Cache_1.default.keys()];
                     case 5:
                         keys = _a.sent();
                         expect(keys).to.include(key1);
                         expect(keys).to.include(key2);
-                        return [4 /*yield*/, Cache.get(key1)];
+                        return [4 /*yield*/, Cache_1.default.get(key1)];
                     case 6:
                         e1PhasesCached = _a.sent();
-                        return [4 /*yield*/, Cache.get(key2)];
+                        return [4 /*yield*/, Cache_1.default.get(key2)];
                     case 7:
                         e2PhasesCached = _a.sent();
                         e1PhasesCached.forEach(function (element) {
-                            expect(element).to.be.instanceof(Phase);
+                            expect(element).to.be.instanceof(internal_1.Phase);
                         });
                         e2PhasesCached.forEach(function (element) {
-                            expect(element).to.be.instanceof(Phase);
+                            expect(element).to.be.instanceof(internal_1.Phase);
                         });
                         return [2 /*return*/, true];
                 }
@@ -330,22 +330,22 @@ describe('Test Caching', function () {
                         groups2 = _a.sent();
                         key1 = 'event::function1::melee-singles::groups';
                         key2 = 'event::ceo2016::melee-singles::groups';
-                        return [4 /*yield*/, Cache.keys()];
+                        return [4 /*yield*/, Cache_1.default.keys()];
                     case 5:
                         keys = _a.sent();
                         expect(keys).to.include(key1);
                         expect(keys).to.include(key2);
-                        return [4 /*yield*/, Cache.get(key1)];
+                        return [4 /*yield*/, Cache_1.default.get(key1)];
                     case 6:
                         e2GroupsCached = _a.sent();
-                        return [4 /*yield*/, Cache.get(key2)];
+                        return [4 /*yield*/, Cache_1.default.get(key2)];
                     case 7:
                         e1GroupsCached = _a.sent();
                         e1GroupsCached.forEach(function (element) {
-                            expect(element).to.be.instanceof(PhaseGroup);
+                            expect(element).to.be.instanceof(internal_1.PhaseGroup);
                         });
                         e2GroupsCached.forEach(function (element) {
-                            expect(element).to.be.instanceof(PhaseGroup);
+                            expect(element).to.be.instanceof(internal_1.PhaseGroup);
                         });
                         return [2 /*return*/, true];
                 }
@@ -369,7 +369,7 @@ describe('Test Caching', function () {
                         key2 = 'phase::' + PHASEID2 + '::expand[]=groups&';
                         key1data = 'phase::' + PHASEID1 + '::json::expand[]=groups&::data';
                         key2data = 'phase::' + PHASEID2 + '::json::expand[]=groups&::data';
-                        return [4 /*yield*/, Cache.keys()];
+                        return [4 /*yield*/, Cache_1.default.keys()];
                     case 3:
                         keys = _a.sent();
                         expect(keys.length).to.be.equal(4);
@@ -377,14 +377,14 @@ describe('Test Caching', function () {
                         expect(keys).to.include(key2);
                         expect(keys).to.include(key1data);
                         expect(keys).to.include(key2data);
-                        return [4 /*yield*/, Cache.get(key1)];
+                        return [4 /*yield*/, Cache_1.default.get(key1)];
                     case 4:
                         p1Cached = _a.sent();
-                        return [4 /*yield*/, Cache.get(key2)];
+                        return [4 /*yield*/, Cache_1.default.get(key2)];
                     case 5:
                         p2Cached = _a.sent();
-                        expect(p1Cached).to.be.instanceof(Phase);
-                        expect(p2Cached).to.be.instanceof(Phase);
+                        expect(p1Cached).to.be.instanceof(internal_1.Phase);
+                        expect(p2Cached).to.be.instanceof(internal_1.Phase);
                         return [2 /*return*/, true];
                 }
             });
@@ -411,22 +411,22 @@ describe('Test Caching', function () {
                         pg2 = _a.sent();
                         key1 = 'phase::' + PHASEID1 + '::groups';
                         key2 = 'phase::' + PHASEID2 + '::groups';
-                        return [4 /*yield*/, Cache.keys()];
+                        return [4 /*yield*/, Cache_1.default.keys()];
                     case 5:
                         keys = _a.sent();
                         expect(keys).to.include(key1);
                         expect(keys).to.include(key2);
-                        return [4 /*yield*/, Cache.get(key1)];
+                        return [4 /*yield*/, Cache_1.default.get(key1)];
                     case 6:
                         groups1Cached = _a.sent();
-                        return [4 /*yield*/, Cache.get(key2)];
+                        return [4 /*yield*/, Cache_1.default.get(key2)];
                     case 7:
                         groups2Cached = _a.sent();
                         groups1Cached.forEach(function (element) {
-                            expect(element).to.be.instanceof(PhaseGroup);
+                            expect(element).to.be.instanceof(internal_1.PhaseGroup);
                         });
                         groups2Cached.forEach(function (element) {
-                            expect(element).to.be.instanceof(PhaseGroup);
+                            expect(element).to.be.instanceof(internal_1.PhaseGroup);
                         });
                         return [2 /*return*/, true];
                 }
@@ -450,19 +450,19 @@ describe('Test Caching', function () {
                         key2 = 'phasegroup::' + GROUPID2 + '::expand[]=sets&expand[]=entrants&expand[]=standings&expand[]=seeds&';
                         key1data = 'phasegroup::' + GROUPID1 + '::json::expand[]=sets&expand[]=entrants&expand[]=standings&expand[]=seeds&::data';
                         key2data = 'phasegroup::' + GROUPID2 + '::json::expand[]=sets&expand[]=entrants&expand[]=standings&expand[]=seeds&::data';
-                        return [4 /*yield*/, Cache.keys()];
+                        return [4 /*yield*/, Cache_1.default.keys()];
                     case 3:
                         keys = _a.sent();
                         expect(keys).to.include(key1);
                         expect(keys).to.include(key2);
-                        return [4 /*yield*/, Cache.get(key1)];
+                        return [4 /*yield*/, Cache_1.default.get(key1)];
                     case 4:
                         pg1Cached = _a.sent();
-                        return [4 /*yield*/, Cache.get(key2)];
+                        return [4 /*yield*/, Cache_1.default.get(key2)];
                     case 5:
                         pg2Cached = _a.sent();
-                        expect(pg1Cached).to.be.instanceof(PhaseGroup);
-                        expect(pg1Cached).to.be.instanceof(PhaseGroup);
+                        expect(pg1Cached).to.be.instanceof(internal_1.PhaseGroup);
+                        expect(pg1Cached).to.be.instanceof(internal_1.PhaseGroup);
                         return [2 /*return*/, true];
                 }
             });
@@ -487,24 +487,24 @@ describe('Test Caching', function () {
                         return [4 /*yield*/, pg2.getPlayers()];
                     case 4:
                         pg2Players = _a.sent();
-                        return [4 /*yield*/, Cache.keys()];
+                        return [4 /*yield*/, Cache_1.default.keys()];
                     case 5:
                         keys = _a.sent();
                         key1 = 'phasegroup::' + GROUPID1 + '::players';
                         key2 = 'phasegroup::' + GROUPID2 + '::players';
                         expect(keys).to.include(key1);
                         expect(keys).to.include(key2);
-                        return [4 /*yield*/, Cache.get(key1)];
+                        return [4 /*yield*/, Cache_1.default.get(key1)];
                     case 6:
                         pg1PlayersCached = _a.sent();
-                        return [4 /*yield*/, Cache.get(key2)];
+                        return [4 /*yield*/, Cache_1.default.get(key2)];
                     case 7:
                         pg2PlayersCached = _a.sent();
                         pg1PlayersCached.forEach(function (element) {
-                            expect(element).to.be.instanceof(Player);
+                            expect(element).to.be.instanceof(internal_1.Player);
                         });
                         pg2PlayersCached.forEach(function (element) {
-                            expect(element).to.be.instanceof(Player);
+                            expect(element).to.be.instanceof(internal_1.Player);
                         });
                         return [2 /*return*/, true];
                 }
@@ -530,24 +530,24 @@ describe('Test Caching', function () {
                         return [4 /*yield*/, pg2.getSets()];
                     case 4:
                         pg2Players = _a.sent();
-                        return [4 /*yield*/, Cache.keys()];
+                        return [4 /*yield*/, Cache_1.default.keys()];
                     case 5:
                         keys = _a.sent();
                         key1 = 'phasegroup::' + GROUPID1 + '::sets';
                         key2 = 'phasegroup::' + GROUPID2 + '::sets';
                         expect(keys).to.include(key1);
                         expect(keys).to.include(key2);
-                        return [4 /*yield*/, Cache.get(key1)];
+                        return [4 /*yield*/, Cache_1.default.get(key1)];
                     case 6:
                         pg1SetsCached = _a.sent();
-                        return [4 /*yield*/, Cache.get(key2)];
+                        return [4 /*yield*/, Cache_1.default.get(key2)];
                     case 7:
                         pg2SetsCached = _a.sent();
                         pg1SetsCached.forEach(function (element) {
-                            expect(element).to.be.instanceof(Set);
+                            expect(element).to.be.instanceof(internal_1.GGSet);
                         });
                         pg2SetsCached.forEach(function (element) {
-                            expect(element).to.be.instanceof(Set);
+                            expect(element).to.be.instanceof(internal_1.GGSet);
                         });
                         return [2 /*return*/, true];
                 }
@@ -556,8 +556,14 @@ describe('Test Caching', function () {
     });
 });
 function loadTournament(name, expands, isCached) {
+    if (expands === void 0) { expands = internal_2.ITournament.getDefaultExpands(); }
+    if (isCached === void 0) { isCached = true; }
     return new Promise(function (resolve, reject) {
-        var t = new Tournament(name, expands, isCached);
+        var options = {
+            isCached: isCached,
+            expands: expands
+        };
+        var t = new internal_1.Tournament(name, options);
         t.on('ready', function () {
             return resolve(t);
         });
@@ -565,23 +571,35 @@ function loadTournament(name, expands, isCached) {
 }
 function loadEvent(eventName, tournamentName) {
     return new Promise(function (resolve, reject) {
-        var event = new Event(eventName, tournamentName);
+        var event = new internal_1.Event(eventName, tournamentName);
         event.on('ready', function () {
             resolve(event);
         });
     });
 }
 function loadPhase(id, expands, isCached) {
+    if (expands === void 0) { expands = internal_2.IPhase.getDefaultExpands(); }
+    if (isCached === void 0) { isCached = true; }
     return new Promise(function (resolve, reject) {
-        var P = new Phase(id, expands, isCached);
+        var options = {
+            isCached: isCached,
+            expands: expands
+        };
+        var P = new internal_1.Phase(id, options);
         P.on('ready', function () {
             resolve(P);
         });
     });
 }
 function loadPhaseGroup(id, expands, isCached) {
+    if (expands === void 0) { expands = internal_2.IPhaseGroup.getDefaultExpands(); }
+    if (isCached === void 0) { isCached = true; }
     return new Promise(function (resolve, reject) {
-        var PG = new PhaseGroup(id, expands, isCached);
+        var options = {
+            expands: expands,
+            isCached: isCached
+        };
+        var PG = new internal_1.PhaseGroup(id, options);
         PG.on('ready', function () {
             resolve(PG);
         });

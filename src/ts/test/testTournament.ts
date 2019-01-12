@@ -127,8 +127,8 @@ describe('Smash GG Tournament', function(){
 		let startTime1 = tournament1.getStartTime() as Date;
 		let startTime2 = tournament2.getStartTime() as Date;
 
-		let expected1 = moment('04-01-2017 11:00:00').toDate();
-		let expected2 = moment('06-24-2016 00:00:00').toDate();
+		let expected1 = moment('04-01-2017 11:00:00', 'MM-DD-YYYY hh:mm:ss').toDate();
+		let expected2 = moment('06-24-2016 00:00:00', 'MM-DD-YYYY hh:mm:ss').toDate();
 
 		expect(startTime1.getTime()).to.be.equal(expected1.getTime());
 		expect(startTime2.getTime()).to.be.equal(expected2.getTime());
@@ -161,8 +161,8 @@ describe('Smash GG Tournament', function(){
 		let endTime1 = tournament1.getEndTime() as Date;
 		let endTime2 = tournament2.getEndTime() as Date;
 
-		let expected1 = moment('04-01-2017 23:00:00').toDate();
-		let expected2 = moment('06-27-2016 00:00:00').toDate();
+		let expected1 = moment('04-01-2017 23:00:00', 'MM-DD-YYYY hh:mm:ss').toDate();
+		let expected2 = moment('06-27-2016 00:00:00', 'MM-DD-YYYY hh:mm:ss').toDate();
 
 		expect(endTime1.getTime()).to.be.equal(expected1.getTime());
 		expect(endTime2.getTime()).to.be.equal(expected2.getTime());
@@ -195,8 +195,8 @@ describe('Smash GG Tournament', function(){
 		let closesTime1 = tournament1.getWhenRegistrationCloses() as Date;
 		let closesTime2 = tournament2.getWhenRegistrationCloses() as Date;
 
-		let expected1 = moment('03-30-2017 02:00:00').toDate();
-		let expected2 = moment('06-13-2016 08:00:00').toDate();
+		let expected1 = moment('03-30-2017 02:00:00', 'MM-DD-YYYY hh:mm:ss').toDate();
+		let expected2 = moment('06-13-2016 08:00:00', 'MM-DD-YYYY hh:mm:ss').toDate();
 
 		expect(closesTime1.getTime()).to.be.equal(expected1.getTime());
 		expect(closesTime2.getTime()).to.be.equal(expected2.getTime());

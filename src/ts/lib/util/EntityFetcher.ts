@@ -26,6 +26,7 @@ import parsePhaseGroupOptions = IPhaseGroup.parseOptions
 
 const TOURNAMENT_URL = 'https://api.smash.gg/tournament/%s?%s';
 const EVENT_URL = 'https://api.smash.gg/event/%s?%s';
+const EVENT_TOURNAMENT_URL = 'https://api.smash.gg/tournament/%s/event/%s?%s'
 const PHASE_URL = 'https://api.smash.gg/phase/%s?%s';
 const PHASE_GROUP_URL = 'https://api.smash.gg/phase_group/%s?%s';
 
@@ -44,11 +45,11 @@ export async function getTournamentData(tournamentId: string, options: Tournamen
     }
 }
 
-export async function getEventData(eventId: string, options: EventOptions): Promise<EventData>{
+export async function getEventData(eventId: string, tournamentId: string, options: EventOptions): Promise<EventData>{
     try{
         options = parseEventOptions(options);
         let expands: string = createExpandsString(options.expands)
-        let url: string = format(EVENT_URL, eventId, expands);
+        let url: string = format(EVENT_TOURNAMENT_URL, tournamentId, eventId, expands);
         let data: EventData = JSON.parse(await request(url));
         return data;
     } catch(err){

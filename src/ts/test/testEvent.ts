@@ -18,11 +18,11 @@ let event2: Event;
 let event3: Event;
 let event4: Event;
 
-const TOURNAMENT_NAME1 = 'function1';
+const TOURNAMENT_NAME1 = 'function-1-recursion-regional';
 const EVENT_NAME1 = 'melee-singles';
 
-const TOURNAMENT_NAME2 = 'ceo2016';
-const TOURNAMENT_NAME3 = 'to12';
+const TOURNAMENT_NAME2 = 'ceo-2016';
+const TOURNAMENT_NAME3 = 'tipped-off-12-presented-by-the-lab-gaming-center';
 const BAD_TOURNAMENT_NAME = 'badnamedotexe';
 
 const EVENT_ID_1 = 14335;
@@ -36,6 +36,7 @@ function loadEvent(eventName: string, tournamentName: string, options: IEvent.Op
 		event.on('ready', function(){
 			resolve(event);
 		})
+		event.on('error', console.error)
 	})
 }
 

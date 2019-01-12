@@ -61,6 +61,7 @@ var parsePhaseOptions = internal_3.IPhase.parseOptions;
 var parsePhaseGroupOptions = internal_4.IPhaseGroup.parseOptions;
 var TOURNAMENT_URL = 'https://api.smash.gg/tournament/%s?%s';
 var EVENT_URL = 'https://api.smash.gg/event/%s?%s';
+var EVENT_TOURNAMENT_URL = 'https://api.smash.gg/tournament/%s/event/%s?%s';
 var PHASE_URL = 'https://api.smash.gg/phase/%s?%s';
 var PHASE_GROUP_URL = 'https://api.smash.gg/phase_group/%s?%s';
 function getTournamentData(tournamentId, options) {
@@ -89,7 +90,7 @@ function getTournamentData(tournamentId, options) {
     });
 }
 exports.getTournamentData = getTournamentData;
-function getEventData(eventId, options) {
+function getEventData(eventId, tournamentId, options) {
     return __awaiter(this, void 0, void 0, function () {
         var expands, url, data, _a, _b, err_2;
         return __generator(this, function (_c) {
@@ -98,7 +99,7 @@ function getEventData(eventId, options) {
                     _c.trys.push([0, 2, , 3]);
                     options = parseEventOptions(options);
                     expands = createExpandsString(options.expands);
-                    url = util_1.format(EVENT_URL, eventId, expands);
+                    url = util_1.format(EVENT_TOURNAMENT_URL, tournamentId, eventId, expands);
                     _b = (_a = JSON).parse;
                     return [4 /*yield*/, request_promise_1.default(url)];
                 case 1:

@@ -53,10 +53,10 @@ var event1;
 var event2;
 var event3;
 var event4;
-var TOURNAMENT_NAME1 = 'function1';
+var TOURNAMENT_NAME1 = 'function-1-recursion-regional';
 var EVENT_NAME1 = 'melee-singles';
-var TOURNAMENT_NAME2 = 'ceo2016';
-var TOURNAMENT_NAME3 = 'to12';
+var TOURNAMENT_NAME2 = 'ceo-2016';
+var TOURNAMENT_NAME3 = 'tipped-off-12-presented-by-the-lab-gaming-center';
 var BAD_TOURNAMENT_NAME = 'badnamedotexe';
 var EVENT_ID_1 = 14335;
 var concurrency = 2;
@@ -66,6 +66,7 @@ function loadEvent(eventName, tournamentName, options) {
         event.on('ready', function () {
             resolve(event);
         });
+        event.on('error', console.error);
     });
 }
 function loadEventViaId(id, options) {

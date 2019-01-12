@@ -163,7 +163,9 @@ var Event = /** @class */ (function (_super) {
             if (_this.expands.hasOwnProperty(property))
                 _this.expandsString += util_1.format('expand[]=%s&', property);
         }
-        _this.load(options, internal_1.ITournament.getDefaultOptions());
+        _this.load(options, internal_1.ITournament.getDefaultOptions())
+            .then(function () { return _this.emitEventReady(); })
+            .catch(function (e) { return _this.emitEventError(e); });
         return _this;
     }
     Event.prototype.loadData = function (data) {
@@ -217,7 +219,7 @@ var Event = /** @class */ (function (_super) {
     // Methods
     Event.prototype.load = function (options, tournamentOptions) {
         return __awaiter(this, void 0, void 0, function () {
-            var data, cacheKey, cached, data, encoded, eventData, tournamentData, tournamentId, e_1, s;
+            var data, cacheKey, cached, data, encoded, eventData, tournamentData, tournamentId, tournament, e_1, s;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -249,22 +251,19 @@ var Event = /** @class */ (function (_super) {
                     case 5:
                         eventData = _a.sent();
                         tournamentId = IEvent.getTournamentSlug(eventData.entities.event.slug);
-                        return [4 /*yield*/, internal_2.getTournamentData(tournamentId, internal_1.ITournament.getDefaultOptions())];
+                        return [4 /*yield*/, internal_1.Tournament.getTournament(tournamentId, internal_1.ITournament.getDefaultOptions())];
                     case 6:
-                        tournamentData = _a.sent();
+                        tournament = _a.sent();
+                        tournamentData = tournament.getData();
                         return [3 /*break*/, 11];
                     case 7:
                         if (!(typeof this.eventId == 'string' && this.tournamentId)) return [3 /*break*/, 10];
-                        return [4 /*yield*/, internal_2.getEventData(this.eventId, options)];
+                        return [4 /*yield*/, internal_2.getEventData(this.eventId, this.tournamentId, options)];
                     case 8:
                         eventData = _a.sent();
                         return [4 /*yield*/, internal_2.getTournamentData(this.tournamentId, tournamentOptions)];
                     case 9:
                         tournamentData = _a.sent();
-                        data = {
-                            tournament: tournamentData,
-                            event: eventData
-                        };
                         return [3 /*break*/, 11];
                     case 10: throw new Error('Bad event or tournament id types in Event');
                     case 11:
@@ -634,10 +633,10 @@ var Event = /** @class */ (function (_super) {
     };
     Event.prototype.getFromTournamentEntities = function (prop) {
         var data = this.getData();
-        if (data && data.tournament.entities && data.tournament.entities.event) {
-            if (!data.tournament.entities.event[prop])
+        if (data && data.tournament.entities && data.tournament.entities.tournament) {
+            if (!data.tournament.entities.tournament[prop])
                 winston_1.default.error(this.nullValueString(prop));
-            return data.tournament.entities.event[prop];
+            return data.tournament.entities.tournament[prop];
         }
         else {
             winston_1.default.error('No data to get Tournament property Id');

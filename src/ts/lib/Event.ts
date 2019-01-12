@@ -156,7 +156,7 @@ import { EventEmitter } from 'events'
 import { format } from 'util'
 
 import * as Common from './util/Common'
-import { ITournament, Phase, PhaseGroup, Player, GGSet } from './internal'
+import { Tournament, ITournament, Phase, PhaseGroup, Player, GGSet } from './internal'
 import { getTournamentData, getEventDataById, getEventData } from './internal'
 import Cache from './util/Cache'
 import Encoder from './util/Encoder'
@@ -226,7 +226,9 @@ export class Event extends EventEmitter implements IEvent.Event{
 				this.expandsString += format('expand[]=%s&', property);
 		}
 
-		this.load(options, ITournament.getDefaultOptions());
+		this.load(options, ITournament.getDefaultOptions())
+			.then(() => this.emitEventReady())
+			.catch(e => this.emitEventError(e))
 	}
 
 	loadData(data: Data): Data | string {
@@ -303,15 +305,12 @@ export class Event extends EventEmitter implements IEvent.Event{
 				if(typeof this.eventId == 'number'){
 					eventData = await getEventDataById(this.eventId as number, options);
 					let tournamentId: string = IEvent.getTournamentSlug(eventData.entities.event.slug);
-					tournamentData = await getTournamentData(tournamentId, ITournament.getDefaultOptions());
+					let tournament: Tournament = await Tournament.getTournament(tournamentId, ITournament.getDefaultOptions());
+					tournamentData = tournament.getData()
 				}
 				else if(typeof this.eventId == 'string' && this.tournamentId){
-					eventData = await getEventData(this.eventId as string, options);
+					eventData = await getEventData(this.eventId as string, this.tournamentId as string, options);
 					tournamentData = await getTournamentData(this.tournamentId, tournamentOptions);
-					data = {
-						tournament: tournamentData,
-						event: eventData
-					}
 				}
 				else throw new Error('Bad event or tournament id types in Event');
 
@@ -529,10 +528,10 @@ export class Event extends EventEmitter implements IEvent.Event{
 
 	getFromTournamentEntities(prop: string) : any{
 		let data = this.getData();
-		if(data && data.tournament.entities && data.tournament.entities.event) {
-			if (!data.tournament.entities.event[prop])
+		if(data && data.tournament.entities && data.tournament.entities.tournament) {
+			if (!data.tournament.entities.tournament[prop])
 				log.error(this.nullValueString(prop));
-			return data.tournament.entities.event[prop];
+			return data.tournament.entities.tournament[prop];
 		}
 		else{
 			log.error('No data to get Tournament property Id');

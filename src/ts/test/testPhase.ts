@@ -1,38 +1,31 @@
 /* eslint-disable */
-'use strict';
-require('../src/js/util/ErrorHandler')
+import '../lib/util/ErrorHandler'
 
-let _ = require('lodash');
+import _ from 'lodash'
+import moment from 'moment'
+import sinon from 'sinon'
+import chai from 'chai'
+import cap from 'chai-as-promised'
+chai.use(cap)
+const {expect} = chai
 
-let Event = require('../src/js/Event');
-let Phase = require('../src/js/Phase');
-let PhaseGroup = require('../src/js/PhaseGroup');
-let Cache = require('../src/js/util/Cache').getInstance();
-let Set = require('../src/js/Set');
-let Player = require('../src/js/Player');
+import {Event, Phase, PhaseGroup, IPhase, GGSet, Player} from '../lib/internal'
+import Cache from '../lib/util/Cache'
 
-let moment = require('moment');
-let sinon = require('sinon');
-let chai = require('chai');
-let cap = require('chai-as-promised');
-chai.use(cap);
+import expected from './data/testSets'
 
-let expect = chai.expect;
-let assert = chai.assert;
-
-let expected = _.extend(
-	require('./data/testSets')
-);
 
 let ID1 = 111483;
 let ID2 = 45262;
 let ID3 = 100046;
 
-let phase1, phase2, phase3;
+let phase1: Phase; 
+let phase2: Phase; 
+let phase3: Phase;
 let concurrency = 4;
 
 
-function loadPhase(id, options){
+function loadPhase(id: number, options: IPhase.Options) : Promise<Phase>{
 	return new Promise(function(resolve, reject){
 		let P = new Phase(id, options);
 		P.on('ready', function(){
@@ -53,7 +46,7 @@ describe('Smash GG Phase', function(){
 		this.timeout(10000);
 
 		phase1 = await loadPhase(ID1, {rawEncoding: 'utf8'});
-		phase2 = await loadPhase(ID2);
+		phase2 = await loadPhase(ID2, {});
 		phase3 = await loadPhase(ID3, {rawEncoding: 'base64'});
 		return true;
 	});
@@ -97,7 +90,7 @@ describe('Smash GG Phase', function(){
 		expect(phaseGroups2.length).to.be.equal(32);
 		expect(phaseGroups3.length).to.be.equal(16);
 
-		var hasDuplicates = function(a) {
+		var hasDuplicates = function(a: Array<PhaseGroup>) {
 			return _.uniq(a).length !== a.length;
 		};
 		expect(hasDuplicates(phaseGroups1)).to.be.false;
@@ -159,8 +152,8 @@ describe('Smash GG Phase', function(){
 		this.timeout(30000);
 
 		let minutesBack = 5;
-		let event = await Event.getEvent(phase1.getEventId());
-		let eventDate = moment(event.getStartTime()).add(30, 'minutes').toDate();
+		let event = await Event.getEventById(phase1.getEventId(), {});
+		let eventDate = moment(event.getStartTime() as Date).add(30, 'minutes').toDate();
 
 		let clock = sinon.useFakeTimers(eventDate);
 		let sets = await phase1.getSetsXMinutesBack(minutesBack);
@@ -169,7 +162,7 @@ describe('Smash GG Phase', function(){
 			expect(set).to.be.instanceof(Set);
 
 			let now = moment();
-			let then = moment(set.getCompletedAt());
+			let then = moment(set.getCompletedAt() as Date);
 			let diff = moment.duration(now.diff(then)).minutes();
 			expect(diff <= minutesBack && diff >= 0 && set.getIsComplete()).to.be.true;
 		})

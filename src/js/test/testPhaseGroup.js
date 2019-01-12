@@ -1,5 +1,4 @@
-/* eslint-disable */
-'use strict';
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -35,29 +34,29 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-require('../src/js/util/ErrorHandler');
-Promise = require('bluebird');
-var _ = require('lodash');
-var Set = require('../src/js/Set');
-var PhaseGroup = require('../src/js/PhaseGroup');
-var Cache = require('../src/js/util/Cache').getInstance();
-var sinon = require('sinon');
-var chai = require('chai');
-var cap = require('chai-as-promised');
-chai.use(cap);
-var expect = chai.expect;
-var assert = chai.assert;
-var phaseGroup1 = {};
-var phaseGroup2 = {};
-var phaseGroup3 = {};
-var phaseGroup4 = {};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+/* eslint-disable */
+require("../lib/util/ErrorHandler");
+var sinon_1 = __importDefault(require("sinon"));
+var chai_1 = __importDefault(require("chai"));
+var chai_as_promised_1 = __importDefault(require("chai-as-promised"));
+chai_1.default.use(chai_as_promised_1.default);
+var expect = chai_1.default.expect;
+var internal_1 = require("../lib/internal");
+var Cache_1 = __importDefault(require("../lib/util/Cache"));
+var phaseGroup1;
+var phaseGroup2;
+var phaseGroup3;
+var phaseGroup4;
 var ID1 = 0;
 var ID2 = 44445;
 var ID3 = 301994;
-var expected = _.extend();
 function loadPhaseGroup(id, options) {
     return new Promise(function (resolve, reject) {
-        var PG = new PhaseGroup(id, options);
+        var PG = new internal_1.PhaseGroup(id, options);
         PG.on('ready', function () {
             resolve(PG);
         });
@@ -65,11 +64,11 @@ function loadPhaseGroup(id, options) {
 }
 describe('Smash GG Phase Group', function () {
     beforeEach(function () {
-        Cache.flush();
+        Cache_1.default.flush();
     });
     it('should correctly load Phase Group data', function (done) {
         this.timeout(5000);
-        phaseGroup3 = new PhaseGroup(ID3, { rawEncoding: 'base64' });
+        phaseGroup3 = new internal_1.PhaseGroup(ID3, { rawEncoding: 'base64' });
         phaseGroup3.on('ready', done);
     });
     it('should implement the convenience methods correctly', function () {
@@ -79,7 +78,7 @@ describe('Smash GG Phase Group', function () {
                 switch (_a.label) {
                     case 0:
                         this.timeout(5000);
-                        return [4 /*yield*/, PhaseGroup.getPhaseGroup(ID3, { rawEncoding: 'base64' })];
+                        return [4 /*yield*/, internal_1.PhaseGroup.getPhaseGroup(ID3, { rawEncoding: 'base64' })];
                     case 1:
                         cPhaseGroup3 = _a.sent();
                         expect(cPhaseGroup3.data).to.deep.equal(phaseGroup3.data);
@@ -132,7 +131,7 @@ describe('Smash GG Phase Group', function () {
                 switch (_a.label) {
                     case 0:
                         this.timeout(5000);
-                        clock = sinon.useFakeTimers(new Date('Sat Nov 11 2017 11:50:47 GMT-0500 (EST)'));
+                        clock = sinon_1.default.useFakeTimers(new Date('Sat Nov 11 2017 11:50:47 GMT-0500 (EST)'));
                         return [4 /*yield*/, phaseGroup3.getSetsXMinutesBack(5)];
                     case 1:
                         sets = _a.sent();

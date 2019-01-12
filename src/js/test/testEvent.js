@@ -35,40 +35,34 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-require('../src/js/util/ErrorHandler');
-Promise = require('bluebird');
-var _ = require('lodash');
-var moment = require('moment');
-var Set = require('../src/js/Set');
-var Player = require('../src/js/Player');
-var Event = require('../src/js/Event');
-var Phase = require('../src/js/Phase');
-var PhaseGroup = require('../src/js/PhaseGroup');
-var Cache = require('../src/js/util/Cache').getInstance();
-var sinon = require('sinon');
-var chai = require('chai');
-var cap = require('chai-as-promised');
-chai.use(cap);
-var expect = chai.expect;
-var assert = chai.assert;
-var winston = require('winston');
-winston.remove(winston.transports.Console);
-winston.add(winston.transports.Console, require('./log-options.json'));
-var event1 = {};
-var event2 = {};
-var event3 = {};
-var event4 = {};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+require("../lib/util/ErrorHandler");
+var lodash_1 = __importDefault(require("lodash"));
+var moment_1 = __importDefault(require("moment"));
+var sinon_1 = __importDefault(require("sinon"));
+var chai_1 = __importDefault(require("chai"));
+var chai_as_promised_1 = __importDefault(require("chai-as-promised"));
+chai_1.default.use(chai_as_promised_1.default);
+var expect = chai_1.default.expect, assert = chai_1.default.assert;
+var internal_1 = require("../lib/internal");
+var Cache_1 = __importDefault(require("../lib/util/Cache"));
+var event1;
+var event2;
+var event3;
+var event4;
 var TOURNAMENT_NAME1 = 'function1';
 var EVENT_NAME1 = 'melee-singles';
 var TOURNAMENT_NAME2 = 'ceo2016';
 var TOURNAMENT_NAME3 = 'to12';
 var BAD_TOURNAMENT_NAME = 'badnamedotexe';
 var EVENT_ID_1 = 14335;
-var expected = _.extend();
 var concurrency = 2;
 function loadEvent(eventName, tournamentName, options) {
     return new Promise(function (resolve, reject) {
-        var event = new Event(eventName, tournamentName, options);
+        var event = new internal_1.Event(eventName, tournamentName, options);
         event.on('ready', function () {
             resolve(event);
         });
@@ -78,7 +72,7 @@ function loadEventViaId(id, options) {
     return new Promise(function (resolve, reject) {
         if (isNaN(id))
             return reject('ID must be an integer');
-        var event = new Event(id, null, options);
+        var event = new internal_1.Event(id, undefined, options);
         event.on('ready', function () {
             resolve(event);
         });
@@ -90,7 +84,7 @@ function loadEventViaId(id, options) {
 describe('Smash GG Event', function () {
     before(function () { return console.log('concurrency set to %s', concurrency); });
     beforeEach(function () {
-        Cache.flush();
+        Cache_1.default.flush();
     });
     it('should correctly load the data', function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -101,7 +95,7 @@ describe('Smash GG Event', function () {
                         return [4 /*yield*/, loadEvent(EVENT_NAME1, TOURNAMENT_NAME1, { rawEncoding: 'utf8' })];
                     case 1:
                         event1 = _a.sent();
-                        return [4 /*yield*/, loadEvent(EVENT_NAME1, TOURNAMENT_NAME2)];
+                        return [4 /*yield*/, loadEvent(EVENT_NAME1, TOURNAMENT_NAME2, {})];
                     case 2:
                         event2 = _a.sent();
                         return [4 /*yield*/, loadEventViaId(EVENT_ID_1, { rawEncoding: 'base64' })];
@@ -119,13 +113,13 @@ describe('Smash GG Event', function () {
                 switch (_a.label) {
                     case 0:
                         this.timeout(15000);
-                        return [4 /*yield*/, Event.getEvent(EVENT_NAME1, TOURNAMENT_NAME1, { rawEncoding: 'utf8' })];
+                        return [4 /*yield*/, internal_1.Event.getEvent(EVENT_NAME1, TOURNAMENT_NAME1, { rawEncoding: 'utf8' })];
                     case 1:
                         cEvent1 = _a.sent();
-                        return [4 /*yield*/, Event.getEvent(EVENT_NAME1, TOURNAMENT_NAME2)];
+                        return [4 /*yield*/, internal_1.Event.getEvent(EVENT_NAME1, TOURNAMENT_NAME2)];
                     case 2:
                         cEvent2 = _a.sent();
-                        return [4 /*yield*/, Event.getEventById(EVENT_ID_1, { rawEncoding: 'base64' })];
+                        return [4 /*yield*/, internal_1.Event.getEventById(EVENT_ID_1, { rawEncoding: 'base64' })];
                     case 3:
                         cEvent3 = _a.sent();
                         expect(cEvent1.data).to.deep.equal(event1.data);
@@ -150,7 +144,7 @@ describe('Smash GG Event', function () {
     });
     it('should correctly get the event start time', function (done) {
         var startTime1 = event1.getStartTime();
-        var expected = moment('04-01-2017 11:00:00').toDate();
+        var expected = moment_1.default('04-01-2017 11:00:00').toDate();
         expect(startTime1.getTime()).to.be.equal(expected.getTime());
         done();
     });
@@ -166,7 +160,7 @@ describe('Smash GG Event', function () {
     });
     it('should correctly get the event end time', function (done) {
         var endTime1 = event1.getEndTime();
-        var expected = moment('04-01-2017 12:00:00').toDate();
+        var expected = moment_1.default('04-01-2017 12:00:00').toDate();
         expect(endTime1.getTime()).to.be.equal(expected.getTime());
         done();
     });
@@ -204,15 +198,15 @@ describe('Smash GG Event', function () {
                         expect(phases1.length).to.be.equal(4);
                         expect(phases2.length).to.be.equal(2);
                         hasDuplicates = function (a) {
-                            return _.uniq(a).length !== a.length;
+                            return lodash_1.default.uniq(a).length !== a.length;
                         };
                         expect(hasDuplicates(phases1)).to.be.false;
                         expect(hasDuplicates(phases2)).to.be.false;
                         phases1.forEach(function (phase) {
-                            expect(phase).to.be.instanceof(Phase);
+                            expect(phase).to.be.instanceof(internal_1.Phase);
                         });
                         phases2.forEach(function (phase) {
-                            expect(phase).to.be.instanceof(Phase);
+                            expect(phase).to.be.instanceof(internal_1.Phase);
                         });
                         return [2 /*return*/, true];
                 }
@@ -235,15 +229,15 @@ describe('Smash GG Event', function () {
                         expect(groups1.length).to.be.equal(22);
                         expect(groups2.length).to.be.equal(33);
                         hasDuplicates = function (a) {
-                            return _.uniq(a).length !== a.length;
+                            return lodash_1.default.uniq(a).length !== a.length;
                         };
                         expect(hasDuplicates(groups1)).to.be.false;
                         expect(hasDuplicates(groups2)).to.be.false;
                         groups1.forEach(function (group) {
-                            expect(group).to.be.instanceof(PhaseGroup);
+                            expect(group).to.be.instanceof(internal_1.PhaseGroup);
                         });
                         groups2.forEach(function (group) {
-                            expect(group).to.be.instanceof(PhaseGroup);
+                            expect(group).to.be.instanceof(internal_1.PhaseGroup);
                         });
                         return [2 /*return*/, true];
                 }
@@ -292,10 +286,10 @@ describe('Smash GG Event', function () {
                         expect(players1.length).to.be.equal(156);
                         expect(players2.length).to.be.equal(678);
                         players1.forEach(function (set) {
-                            expect(set).to.be.instanceof(Player);
+                            expect(set).to.be.instanceof(internal_1.Player);
                         });
                         players2.forEach(function (set) {
-                            expect(set).to.be.instanceof(Player);
+                            expect(set).to.be.instanceof(internal_1.Player);
                         });
                         return [2 /*return*/, true];
                 }
@@ -312,19 +306,19 @@ describe('Smash GG Event', function () {
                         minutesBack = 15;
                         eventDate = new Date('Wed Dec 31 1969 19:00:00 GMT-0500 (EST)');
                         //moment(event1.getStartTime()).add(30, 'minutes').toDate();
-                        sinon.useFakeTimers(eventDate);
+                        sinon_1.default.useFakeTimers(eventDate);
                         return [4 /*yield*/, event1.getSetsXMinutesBack(minutesBack)];
                     case 1:
                         sets = _a.sent();
                         expect(sets.length).to.be.equal(3);
                         sets.forEach(function (set) {
                             expect(set).to.be.instanceof(Set);
-                            var now = moment();
-                            var then = moment(set.getCompletedAt());
-                            var diff = moment.duration(now.diff(then)).minutes();
+                            var now = moment_1.default();
+                            var then = moment_1.default(set.getCompletedAt());
+                            var diff = moment_1.default.duration(now.diff(then)).minutes();
                             expect(diff <= minutesBack && diff >= 0 && set.getIsComplete()).to.be.true;
                         });
-                        sinon.restore();
+                        sinon_1.default.restore();
                         return [2 /*return*/, true];
                 }
             });

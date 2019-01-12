@@ -1,30 +1,26 @@
 /* eslint-disable */
-'use strict';
-require('../src/js/util/ErrorHandler')
+import '../lib/util/ErrorHandler'
 
-let _ = require('lodash');
+import _ from 'lodash'
+import chai from 'chai'
+import cap from 'chai-as-promised'
+chai.use(cap)
+const {expect} = chai
 
-let Set = require('../src/js/Set');
-let Player = require('../src/js/Player');
-let Tournament = require('../src/js/Tournament');
-let Cache = require('../src/js/util/Cache').getInstance();
+import {GGSet, Player} from '../lib/internal'
+import Cache from '../lib/util/Cache'
 
-let chai = require('chai');
-let cap = require('chai-as-promised');
-chai.use(cap);
+import expected from './data/testSets'
 
-let expect = chai.expect;
-let assert = chai.assert;
+let pWinkledink: Player, 
+	pAmarula: Player,
+	pWizzrobe: Player, 
+	pBootyBlast: Player,
+	pVasculinity: Player;
 
-let expected = _.extend(
-	require('./data/testSets')
-);
-
-let pWinkledink, pAmarula,
-	pWizzrobe, pBootyBlast,
-	pVasculinity;
-
-let set1, set2, set3;
+let set1: GGSet, 
+	set2: GGSet, 
+	set3: GGSet;
 
 describe('Smash GG Set', function(){
 
@@ -55,9 +51,9 @@ describe('Smash GG Set', function(){
 			o3.LoserPlayer.country, o3.LoserPlayer.region, o3.LoserPlayer.sponsor,
 			o3.LoserPlayer.participantId, o3.LoserPlayer.data);
 
-		set1 = new Set(o1.id, o1.eventId, o1.round, pWinkledink, pAmarula, true, 3, 2, pWinkledink.id, pAmarula.id, o1.data);
-		set2 = new Set(o2.id, o2.eventId, o2.round, pWizzrobe, pWinkledink, true, 2, 1, pWizzrobe.id, pWinkledink.id, o2.data);
-		set3 = new Set(o3.id, o3.eventId, o3.round, pBootyBlast, pVasculinity, true, 3, 1, pBootyBlast.id, pVasculinity.id, o3.data);
+		set1 = new GGSet(o1.id, o1.eventId, o1.round, pWinkledink, pAmarula, true, 3, 2, pWinkledink.id, pAmarula.id, o1.data);
+		set2 = new GGSet(o2.id, o2.eventId, o2.round, pWizzrobe, pWinkledink, true, 2, 1, pWizzrobe.id, pWinkledink.id, o2.data);
+		set3 = new GGSet(o3.id, o3.eventId, o3.round, pBootyBlast, pVasculinity, true, 3, 1, pBootyBlast.id, pVasculinity.id, o3.data);
 
 		done();
 	});

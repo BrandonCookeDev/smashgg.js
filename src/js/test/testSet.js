@@ -1,5 +1,4 @@
-/* eslint-disable */
-'use strict';
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -35,35 +34,36 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-require('../src/js/util/ErrorHandler');
-var _ = require('lodash');
-var Set = require('../src/js/Set');
-var Player = require('../src/js/Player');
-var Tournament = require('../src/js/Tournament');
-var Cache = require('../src/js/util/Cache').getInstance();
-var chai = require('chai');
-var cap = require('chai-as-promised');
-chai.use(cap);
-var expect = chai.expect;
-var assert = chai.assert;
-var expected = _.extend(require('./data/testSets'));
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+/* eslint-disable */
+require("../lib/util/ErrorHandler");
+var chai_1 = __importDefault(require("chai"));
+var chai_as_promised_1 = __importDefault(require("chai-as-promised"));
+chai_1.default.use(chai_as_promised_1.default);
+var expect = chai_1.default.expect;
+var internal_1 = require("../lib/internal");
+var Cache_1 = __importDefault(require("../lib/util/Cache"));
+var testSets_1 = __importDefault(require("./data/testSets"));
 var pWinkledink, pAmarula, pWizzrobe, pBootyBlast, pVasculinity;
 var set1, set2, set3;
 describe('Smash GG Set', function () {
     before(function (done) {
-        Cache.flush();
-        var o1 = expected.sets[0];
-        pWinkledink = new Player(o1.WinnerPlayer.id, o1.WinnerPlayer.tag, o1.WinnerPlayer.slug, o1.WinnerPlayer.country, o1.WinnerPlayer.region, o1.WinnerPlayer.sponsor, o1.WinnerPlayer.participantId, o1.WinnerPlayer.data);
-        pAmarula = new Player(o1.LoserPlayer.id, o1.LoserPlayer.tag, o1.LoserPlayer.slug, o1.LoserPlayer.country, o1.LoserPlayer.region, o1.LoserPlayer.sponsor, o1.LoserPlayer.participantId, o1.LoserPlayer.data);
-        var o2 = expected.sets[1];
-        pWizzrobe = new Player(o2.WinnerPlayer.id, o2.WinnerPlayer.tag, o2.WinnerPlayer.slug, o2.WinnerPlayer.country, o2.WinnerPlayer.region, o2.WinnerPlayer.sponsor, o2.WinnerPlayer.participantId, o2.WinnerPlayer.data);
-        pWinkledink = new Player(o2.LoserPlayer.id, o2.LoserPlayer.tag, o2.LoserPlayer.slug, o2.LoserPlayer.country, o2.LoserPlayer.region, o2.LoserPlayer.sponsor, o2.LoserPlayer.participantId, o2.LoserPlayer.data);
-        var o3 = expected.sets[2];
-        pBootyBlast = new Player(o3.WinnerPlayer.id, o3.WinnerPlayer.tag, o3.WinnerPlayer.slug, o3.WinnerPlayer.country, o3.WinnerPlayer.region, o3.WinnerPlayer.sponsor, o3.WinnerPlayer.participantId, o3.WinnerPlayer.data);
-        pVasculinity = new Player(o3.LoserPlayer.id, o3.LoserPlayer.tag, o3.LoserPlayer.slug, o3.LoserPlayer.country, o3.LoserPlayer.region, o3.LoserPlayer.sponsor, o3.LoserPlayer.participantId, o3.LoserPlayer.data);
-        set1 = new Set(o1.id, o1.eventId, o1.round, pWinkledink, pAmarula, true, 3, 2, pWinkledink.id, pAmarula.id, o1.data);
-        set2 = new Set(o2.id, o2.eventId, o2.round, pWizzrobe, pWinkledink, true, 2, 1, pWizzrobe.id, pWinkledink.id, o2.data);
-        set3 = new Set(o3.id, o3.eventId, o3.round, pBootyBlast, pVasculinity, true, 3, 1, pBootyBlast.id, pVasculinity.id, o3.data);
+        Cache_1.default.flush();
+        var o1 = testSets_1.default.sets[0];
+        pWinkledink = new internal_1.Player(o1.WinnerPlayer.id, o1.WinnerPlayer.tag, o1.WinnerPlayer.slug, o1.WinnerPlayer.country, o1.WinnerPlayer.region, o1.WinnerPlayer.sponsor, o1.WinnerPlayer.participantId, o1.WinnerPlayer.data);
+        pAmarula = new internal_1.Player(o1.LoserPlayer.id, o1.LoserPlayer.tag, o1.LoserPlayer.slug, o1.LoserPlayer.country, o1.LoserPlayer.region, o1.LoserPlayer.sponsor, o1.LoserPlayer.participantId, o1.LoserPlayer.data);
+        var o2 = testSets_1.default.sets[1];
+        pWizzrobe = new internal_1.Player(o2.WinnerPlayer.id, o2.WinnerPlayer.tag, o2.WinnerPlayer.slug, o2.WinnerPlayer.country, o2.WinnerPlayer.region, o2.WinnerPlayer.sponsor, o2.WinnerPlayer.participantId, o2.WinnerPlayer.data);
+        pWinkledink = new internal_1.Player(o2.LoserPlayer.id, o2.LoserPlayer.tag, o2.LoserPlayer.slug, o2.LoserPlayer.country, o2.LoserPlayer.region, o2.LoserPlayer.sponsor, o2.LoserPlayer.participantId, o2.LoserPlayer.data);
+        var o3 = testSets_1.default.sets[2];
+        pBootyBlast = new internal_1.Player(o3.WinnerPlayer.id, o3.WinnerPlayer.tag, o3.WinnerPlayer.slug, o3.WinnerPlayer.country, o3.WinnerPlayer.region, o3.WinnerPlayer.sponsor, o3.WinnerPlayer.participantId, o3.WinnerPlayer.data);
+        pVasculinity = new internal_1.Player(o3.LoserPlayer.id, o3.LoserPlayer.tag, o3.LoserPlayer.slug, o3.LoserPlayer.country, o3.LoserPlayer.region, o3.LoserPlayer.sponsor, o3.LoserPlayer.participantId, o3.LoserPlayer.data);
+        set1 = new internal_1.GGSet(o1.id, o1.eventId, o1.round, pWinkledink, pAmarula, true, 3, 2, pWinkledink.id, pAmarula.id, o1.data);
+        set2 = new internal_1.GGSet(o2.id, o2.eventId, o2.round, pWizzrobe, pWinkledink, true, 2, 1, pWizzrobe.id, pWinkledink.id, o2.data);
+        set3 = new internal_1.GGSet(o3.id, o3.eventId, o3.round, pBootyBlast, pVasculinity, true, 3, 1, pBootyBlast.id, pVasculinity.id, o3.data);
         done();
     });
     it('should get a set by id', function () {

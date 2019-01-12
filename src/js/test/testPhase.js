@@ -1,5 +1,4 @@
-/* eslint-disable */
-'use strict';
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -35,30 +34,31 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-require('../src/js/util/ErrorHandler');
-var _ = require('lodash');
-var Event = require('../src/js/Event');
-var Phase = require('../src/js/Phase');
-var PhaseGroup = require('../src/js/PhaseGroup');
-var Cache = require('../src/js/util/Cache').getInstance();
-var Set = require('../src/js/Set');
-var Player = require('../src/js/Player');
-var moment = require('moment');
-var sinon = require('sinon');
-var chai = require('chai');
-var cap = require('chai-as-promised');
-chai.use(cap);
-var expect = chai.expect;
-var assert = chai.assert;
-var expected = _.extend(require('./data/testSets'));
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+/* eslint-disable */
+require("../lib/util/ErrorHandler");
+var lodash_1 = __importDefault(require("lodash"));
+var moment_1 = __importDefault(require("moment"));
+var sinon_1 = __importDefault(require("sinon"));
+var chai_1 = __importDefault(require("chai"));
+var chai_as_promised_1 = __importDefault(require("chai-as-promised"));
+chai_1.default.use(chai_as_promised_1.default);
+var expect = chai_1.default.expect;
+var internal_1 = require("../lib/internal");
+var Cache_1 = __importDefault(require("../lib/util/Cache"));
 var ID1 = 111483;
 var ID2 = 45262;
 var ID3 = 100046;
-var phase1, phase2, phase3;
+var phase1;
+var phase2;
+var phase3;
 var concurrency = 4;
 function loadPhase(id, options) {
     return new Promise(function (resolve, reject) {
-        var P = new Phase(id, options);
+        var P = new internal_1.Phase(id, options);
         P.on('ready', function () {
             resolve(P);
         });
@@ -67,7 +67,7 @@ function loadPhase(id, options) {
 describe('Smash GG Phase', function () {
     before(function () { return console.log('concurrency set to %s', concurrency); });
     beforeEach(function () {
-        Cache.flush();
+        Cache_1.default.flush();
     });
     it('should correctly load the Phase', function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -78,7 +78,7 @@ describe('Smash GG Phase', function () {
                         return [4 /*yield*/, loadPhase(ID1, { rawEncoding: 'utf8' })];
                     case 1:
                         phase1 = _a.sent();
-                        return [4 /*yield*/, loadPhase(ID2)];
+                        return [4 /*yield*/, loadPhase(ID2, {})];
                     case 2:
                         phase2 = _a.sent();
                         return [4 /*yield*/, loadPhase(ID3, { rawEncoding: 'base64' })];
@@ -96,13 +96,13 @@ describe('Smash GG Phase', function () {
                 switch (_a.label) {
                     case 0:
                         this.timeout(10000);
-                        return [4 /*yield*/, Phase.getPhase(ID1, { rawEncoding: 'utf8' })];
+                        return [4 /*yield*/, internal_1.Phase.getPhase(ID1, { rawEncoding: 'utf8' })];
                     case 1:
                         cPhase1 = _a.sent();
-                        return [4 /*yield*/, Phase.getPhase(ID2)];
+                        return [4 /*yield*/, internal_1.Phase.getPhase(ID2)];
                     case 2:
                         cPhase2 = _a.sent();
-                        return [4 /*yield*/, Phase.getPhase(ID3, { rawEncoding: 'base64' })];
+                        return [4 /*yield*/, internal_1.Phase.getPhase(ID3, { rawEncoding: 'base64' })];
                     case 3:
                         cPhase3 = _a.sent();
                         expect(cPhase1.data).to.deep.equal(phase1.data);
@@ -145,19 +145,19 @@ describe('Smash GG Phase', function () {
                         expect(phaseGroups2.length).to.be.equal(32);
                         expect(phaseGroups3.length).to.be.equal(16);
                         hasDuplicates = function (a) {
-                            return _.uniq(a).length !== a.length;
+                            return lodash_1.default.uniq(a).length !== a.length;
                         };
                         expect(hasDuplicates(phaseGroups1)).to.be.false;
                         expect(hasDuplicates(phaseGroups2)).to.be.false;
                         expect(hasDuplicates(phaseGroups3)).to.be.false;
                         phaseGroups1.forEach(function (set) {
-                            expect(set).to.be.an.instanceof(PhaseGroup);
+                            expect(set).to.be.an.instanceof(internal_1.PhaseGroup);
                         });
                         phaseGroups2.forEach(function (set) {
-                            expect(set).to.be.an.instanceof(PhaseGroup);
+                            expect(set).to.be.an.instanceof(internal_1.PhaseGroup);
                         });
                         phaseGroups3.forEach(function (set) {
-                            expect(set).to.be.an.instanceof(PhaseGroup);
+                            expect(set).to.be.an.instanceof(internal_1.PhaseGroup);
                         });
                         return [2 /*return*/, true];
                 }
@@ -206,10 +206,10 @@ describe('Smash GG Phase', function () {
                         expect(players1.length).to.be.equal(156);
                         expect(players2.length).to.be.equal(678);
                         players1.forEach(function (set) {
-                            expect(set).to.be.instanceof(Player);
+                            expect(set).to.be.instanceof(internal_1.Player);
                         });
                         players2.forEach(function (set) {
-                            expect(set).to.be.instanceof(Player);
+                            expect(set).to.be.instanceof(internal_1.Player);
                         });
                         return [2 /*return*/, true];
                 }
@@ -224,20 +224,20 @@ describe('Smash GG Phase', function () {
                     case 0:
                         this.timeout(30000);
                         minutesBack = 5;
-                        return [4 /*yield*/, Event.getEvent(phase1.getEventId())];
+                        return [4 /*yield*/, internal_1.Event.getEventById(phase1.getEventId(), {})];
                     case 1:
                         event = _a.sent();
-                        eventDate = moment(event.getStartTime()).add(30, 'minutes').toDate();
-                        clock = sinon.useFakeTimers(eventDate);
+                        eventDate = moment_1.default(event.getStartTime()).add(30, 'minutes').toDate();
+                        clock = sinon_1.default.useFakeTimers(eventDate);
                         return [4 /*yield*/, phase1.getSetsXMinutesBack(minutesBack)];
                     case 2:
                         sets = _a.sent();
                         expect(sets.length).to.be.equal(5);
                         sets.forEach(function (set) {
                             expect(set).to.be.instanceof(Set);
-                            var now = moment();
-                            var then = moment(set.getCompletedAt());
-                            var diff = moment.duration(now.diff(then)).minutes();
+                            var now = moment_1.default();
+                            var then = moment_1.default(set.getCompletedAt());
+                            var diff = moment_1.default.duration(now.diff(then)).minutes();
                             expect(diff <= minutesBack && diff >= 0 && set.getIsComplete()).to.be.true;
                         });
                         clock.restore();

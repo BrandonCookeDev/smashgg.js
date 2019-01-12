@@ -1,34 +1,29 @@
 /* eslint-disable */
-'use strict';
-require('../src/js/util/ErrorHandler')
+import '../lib/util/ErrorHandler'
 
-let _ = require('lodash');
+import _ from 'lodash'
+import chai from 'chai'
+import cap from 'chai-as-promised'
+chai.use(cap)
+const {expect} = chai
 
-let Player = require('../src/js/Player');
-let Cache = require('../src/js/util/Cache').getInstance();
+import {Player, IPlayer} from '../lib/internal'
+import Cache from '../lib/util/Cache'
 
-let chai = require('chai');
-let cap = require('chai-as-promised');
-chai.use(cap);
+import expected from './data/testPlayers'
 
-let expect = chai.expect;
-let assert = chai.assert;
-
-let expected = _.extend(
-	require('./data/testPlayers')
-);
-
-
-let p1, p2, p3;
+let p1: Player,
+ 	p2: Player,
+ 	p3: Player;
 
 describe('Smash GG Player', function(){
 
 	before(Cache.flush);
 
 	it('should correctly load a player from raw data', function(done){
-		p1 = Player.resolve(expected.players[0]);
-		p2 = Player.resolve(expected.players[1]);
-		p3 = Player.resolve(expected.players[2]);
+		p1 = Player.resolve(expected.players[0] as IPlayer.Entity);
+		p2 = Player.resolve(expected.players[1] as IPlayer.Entity);
+		p3 = Player.resolve(expected.players[2] as IPlayer.Entity);
 
 		expect(p1.id).to.be.equal(21568);
 		expect(p2.id).to.be.equal(244170);

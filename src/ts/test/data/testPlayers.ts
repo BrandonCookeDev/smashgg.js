@@ -8,29 +8,29 @@ export = {
 			"participantIds": [
 				802432
 			],
-			"participant1Id": null,
-			"participant2Id": null,
+			"participant1Id": undefined,
+			"participant2Id": undefined,
 			"name": "Gas$",
 			"finalPlacement": 49,
 			"defaultSkill": 5,
 			"skill": 7,
 			"skillOrder": 2,
 			"unverified": false,
-			"isPlaceholder": null,
+			"isPlaceholder": undefined,
 			"expand": [],
 			"playerIds": {
 				"802432": 21568
 			},
 			"initialSeedNum": 65,
 			"prefixes": {
-				"802432": null
+				"802432": undefined
 			},
 			"mutations": {
 				"participants": {
 					"802432": {
 						"id": 802432,
 						"gamerTag": "Gas$",
-						"prefix": null,
+						"prefix": undefined,
 						"playerId": 21568
 					}
 				},
@@ -42,7 +42,7 @@ export = {
 						"name": "Grayson Garrett",
 						"state": "GA",
 						"country": "United States",
-						"region": null,
+						"region": undefined,
 						"images": [],
 						"rankings": []
 					}
@@ -55,29 +55,29 @@ export = {
 			"participantIds": [
 				1122505
 			],
-			"participant1Id": null,
-			"participant2Id": null,
+			"participant1Id": undefined,
+			"participant2Id": undefined,
 			"name": "T",
 			"finalPlacement": 129,
 			"defaultSkill": 0,
-			"skill": null,
+			"skill": undefined,
 			"skillOrder": 19,
 			"unverified": false,
-			"isPlaceholder": null,
+			"isPlaceholder": undefined,
 			"expand": [],
 			"playerIds": {
 				"1122505": 244170
 			},
 			"initialSeedNum": 128,
 			"prefixes": {
-				"1122505": null
+				"1122505": undefined
 			},
 			"mutations": {
 				"participants": {
 					"1122505": {
 						"id": 1122505,
 						"gamerTag": "T",
-						"prefix": null,
+						"prefix": undefined,
 						"playerId": 244170
 					}
 				},
@@ -89,7 +89,7 @@ export = {
 						"name": "Trevor Greiff",
 						"state": "TN",
 						"country": "United States",
-						"region": null,
+						"region": undefined,
 						"images": [],
 						"rankings": []
 					}
@@ -102,15 +102,15 @@ export = {
 			"participantIds": [
 				1156768
 			],
-			"participant1Id": null,
-			"participant2Id": null,
+			"participant1Id": undefined,
+			"participant2Id": undefined,
 			"name": "Kiwiwizard",
 			"finalPlacement": 193,
 			"defaultSkill": 0,
-			"skill": null,
+			"skill": undefined,
 			"skillOrder": 36,
 			"unverified": false,
-			"isPlaceholder": null,
+			"isPlaceholder": undefined,
 			"expand": [],
 			"playerIds": {
 				"1156768": 36490
@@ -136,7 +136,7 @@ export = {
 						"name": "Davis Balser",
 						"state": "GA",
 						"country": "US",
-						"region": null,
+						"region": undefined,
 						"images": [],
 						"rankings": []
 					}

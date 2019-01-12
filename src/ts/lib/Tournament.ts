@@ -108,6 +108,15 @@ export namespace ITournament{
 		}
 	}
 
+	export function getDefaultExpands(): Expands{
+		return {
+			event: true,
+			phase: true,
+			groups: true,
+			stations: true
+		}
+	}
+
 	export function getDefaultOptions(): Options{
 		return {
 			expands:{

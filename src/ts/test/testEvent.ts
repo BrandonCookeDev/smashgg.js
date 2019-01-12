@@ -12,7 +12,6 @@ const {expect, assert} = chai
 
 import {Phase, PhaseGroup, GGSet, Player, Event, IEvent} from  '../lib/internal'
 import Cache from '../lib/util/Cache'
-import winston from '../lib/util/Logger'
 
 let event1: Event;
 let event2: Event;

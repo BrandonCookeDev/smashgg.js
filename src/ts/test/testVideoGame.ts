@@ -1,12 +1,11 @@
 /* eslint-disable */
-'use strict';
-require('../src/js/util/ErrorHandler')
+import '../lib/util/ErrorHandler'
 
-let chai = require('chai');
-let expect = chai.expect;
+import chai from 'chai'
+const {expect} = chai
 
-let VideoGame = require('../src/js/VideoGame');
-let Cache = require('../src/js/util/Cache');
+import {VideoGame} from '../lib/VideoGame'
+import Cache from '../lib/util/Cache'
 
 let expected = {
 	Melee: {
@@ -36,7 +35,7 @@ let expected = {
 describe('SmashGG VideoGame', function(){
 	
 	before(async function(){
-		Cache.getInstance().flush();
+		Cache.flush();
 	})
 
 	it('should get all video games from api', async function(){

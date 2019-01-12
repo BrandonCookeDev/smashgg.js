@@ -84,7 +84,7 @@ describe('Test Caching', function(){
 
 		expect(keys).to.include(key1);
 
-		let t1PlayersCached = await Cache.get(key1);
+		let t1PlayersCached = await Cache.get(key1) as Array<Player>;
 		t1PlayersCached.forEach(element => {
 			expect(element).to.be.instanceof(Player)
 		});
@@ -113,7 +113,7 @@ describe('Test Caching', function(){
 
 		let key1 = 'tournament::function1::sets';
 		expect(keys).to.include(key1);
-		let t1SetsCached = await Cache.get(key1);
+		let t1SetsCached = await Cache.get(key1) as Array<GGSet>;
 
 		t1SetsCached.forEach(element => {
 			expect(element).to.be.instanceof(GGSet)
@@ -151,8 +151,8 @@ describe('Test Caching', function(){
 		expect(keys).to.include(key1);
 		expect(keys).to.include(key2);
 
-		let t1EventsCached = await Cache.get(key1);
-		let t2EventsCached = await Cache.get(key2);
+		let t1EventsCached = await Cache.get(key1) as Array<Event>;
+		let t2EventsCached = await Cache.get(key2) as Array<Event>;
 
 		t1EventsCached.forEach(element => {
 			expect(element).to.be.instanceof(Event)
@@ -210,8 +210,8 @@ describe('Test Caching', function(){
 		expect(keys).to.include(key1);
 		expect(keys).to.include(key2);
 
-		let e1PhasesCached = await Cache.get(key1);
-		let e2PhasesCached = await Cache.get(key2);
+		let e1PhasesCached = await Cache.get(key1) as Array<Phase>;
+		let e2PhasesCached = await Cache.get(key2) as Array<Phase>;
 
 		e1PhasesCached.forEach(element => {
 			expect(element).to.be.instanceof(Phase);
@@ -241,8 +241,8 @@ describe('Test Caching', function(){
 		expect(keys).to.include(key1);
 		expect(keys).to.include(key2);
 
-		let e2GroupsCached = await Cache.get(key1);
-		let e1GroupsCached = await Cache.get(key2);
+		let e2GroupsCached = await Cache.get(key1) as Array<PhaseGroup>;
+		let e1GroupsCached = await Cache.get(key2) as Array<PhaseGroup>;
 
 		e1GroupsCached.forEach(element => {
 			expect(element).to.be.instanceof(PhaseGroup);
@@ -299,8 +299,8 @@ describe('Test Caching', function(){
 		expect(keys).to.include(key1);
 		expect(keys).to.include(key2);
 
-		let groups1Cached = await Cache.get(key1);
-		let groups2Cached = await Cache.get(key2);
+		let groups1Cached = await Cache.get(key1) as Array<PhaseGroup>;
+		let groups2Cached = await Cache.get(key2) as Array<PhaseGroup>;
 
 		groups1Cached.forEach(element => {
 			expect(element).to.be.instanceof(PhaseGroup);
@@ -355,8 +355,8 @@ describe('Test Caching', function(){
 		expect(keys).to.include(key1);
 		expect(keys).to.include(key2);
 
-		let pg1PlayersCached = await Cache.get(key1);
-		let pg2PlayersCached = await Cache.get(key2);
+		let pg1PlayersCached = await Cache.get(key1) as Array<Player>;
+		let pg2PlayersCached = await Cache.get(key2) as Array<Player>;
 
 		pg1PlayersCached.forEach(element => {
 			expect(element).to.be.instanceof(Player)
@@ -386,8 +386,8 @@ describe('Test Caching', function(){
 		expect(keys).to.include(key1);
 		expect(keys).to.include(key2);
 
-		let pg1SetsCached = await Cache.get(key1);
-		let pg2SetsCached = await Cache.get(key2);
+		let pg1SetsCached = await Cache.get(key1) as Array<GGSet>;
+		let pg2SetsCached = await Cache.get(key2) as Array<GGSet>;
 
 		pg1SetsCached.forEach(element => {
 			expect(element).to.be.instanceof(GGSet)
@@ -401,7 +401,7 @@ describe('Test Caching', function(){
 
 });
 
-function loadTournament(name: string, expands: ITournament.Expands, isCached: boolean) : Promise<Tournament>{
+function loadTournament(name: string, expands: ITournament.Expands=ITournament.getDefaultExpands(), isCached: boolean=true) : Promise<Tournament>{
 	return new Promise(function(resolve, reject){
 		let options: ITournament.Options = {
 			isCached: isCached,
@@ -421,7 +421,7 @@ function loadEvent(eventName: string, tournamentName: string) : Promise<Event>{
 		})
 	})
 }
-function loadPhase(id: number, expands: IPhase.Expands, isCached: boolean){
+function loadPhase(id: number, expands: IPhase.Expands=IPhase.getDefaultExpands(), isCached: boolean=true) : Promise<Phase>{
 	return new Promise(function(resolve, reject){
 		let options: IPhase.Options = {
 			isCached: isCached,
@@ -433,7 +433,7 @@ function loadPhase(id: number, expands: IPhase.Expands, isCached: boolean){
 		})
 	})
 }
-function loadPhaseGroup(id: number, expands: IPhaseGroup.Expands, isCached: boolean) : Promise<PhaseGroup>{
+function loadPhaseGroup(id: number, expands: IPhaseGroup.Expands=IPhaseGroup.getDefaultExpands(), isCached: boolean=true) : Promise<PhaseGroup>{
 	return new Promise(function(resolve, reject){
 		let options: IPhaseGroup.Options = {
 			expands: expands,

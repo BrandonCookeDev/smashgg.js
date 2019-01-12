@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-module.exports = {
+export = {
 	players: {
 		0: {
 			"id": 718505,

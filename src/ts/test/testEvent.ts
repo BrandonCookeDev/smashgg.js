@@ -1,35 +1,23 @@
 /* eslint-disable */
 'use strict';
-require('../src/js/util/ErrorHandler')
+import '../lib/util/ErrorHandler'
 
-Promise = require('bluebird');
+import _ from 'lodash'
+import moment from 'moment'
+import sinon from 'sinon'
+import chai from 'chai'
+import cap from 'chai-as-promised'
+chai.use(cap)
+const {expect, assert} = chai
 
-let _ = require('lodash');
-let moment = require('moment');
+import {Phase, PhaseGroup, GGSet, Player, Event, IEvent} from  '../lib/internal'
+import Cache from '../lib/util/Cache'
+import winston from '../lib/util/Logger'
 
-let Set = require('../src/js/Set');
-let Player = require('../src/js/Player');
-let Event = require('../src/js/Event');
-let Phase = require('../src/js/Phase');
-let PhaseGroup = require('../src/js/PhaseGroup');
-let Cache = require('../src/js/util/Cache').getInstance();
-
-let sinon = require('sinon');
-let chai = require('chai');
-let cap = require('chai-as-promised');
-chai.use(cap);
-
-let expect = chai.expect;
-let assert = chai.assert;
-
-let winston = require('winston');
-winston.remove(winston.transports.Console);
-winston.add(winston.transports.Console, require('./log-options.json'))
-
-let event1 = {};
-let event2 = {};
-let event3 = {};
-let event4 = {};
+let event1: Event;
+let event2: Event;
+let event3: Event;
+let event4: Event;
 
 const TOURNAMENT_NAME1 = 'function1';
 const EVENT_NAME1 = 'melee-singles';
@@ -40,13 +28,10 @@ const BAD_TOURNAMENT_NAME = 'badnamedotexe';
 
 const EVENT_ID_1 = 14335;
 
-let expected = _.extend(
-
-);
 
 let concurrency = 2;
 
-function loadEvent(eventName, tournamentName, options){
+function loadEvent(eventName: string, tournamentName: string, options: IEvent.Options) : Promise<Event> {
 	return new Promise(function(resolve, reject){
 		let event = new Event(eventName, tournamentName, options);
 		event.on('ready', function(){
@@ -55,11 +40,11 @@ function loadEvent(eventName, tournamentName, options){
 	})
 }
 
-function loadEventViaId(id, options){
+function loadEventViaId(id: number, options: IEvent.Options) : Promise<Event> {
 	return new Promise(function(resolve, reject){
 		if(isNaN(id))
 			return reject('ID must be an integer');
-		let event = new Event(id, null, options);
+		let event = new Event(id, undefined, options);
 		event.on('ready', function(){
 			resolve(event);
 		})
@@ -81,7 +66,7 @@ describe('Smash GG Event', function(){
 		this.timeout(30000);
 
 		event1 = await loadEvent(EVENT_NAME1, TOURNAMENT_NAME1, { rawEncoding: 'utf8'});
-		event2 = await loadEvent(EVENT_NAME1, TOURNAMENT_NAME2);
+		event2 = await loadEvent(EVENT_NAME1, TOURNAMENT_NAME2, {});
 		event3 = await loadEventViaId(EVENT_ID_1, {rawEncoding: 'base64'});
 
 		return true;
@@ -116,7 +101,7 @@ describe('Smash GG Event', function(){
 	});
 
 	it('should correctly get the event start time', function(done){
-		let startTime1 = event1.getStartTime();
+		let startTime1 = event1.getStartTime() as Date;
 		let expected = moment('04-01-2017 11:00:00').toDate();
 		expect(startTime1.getTime()).to.be.equal(expected.getTime());
 		done();
@@ -135,7 +120,7 @@ describe('Smash GG Event', function(){
 	});
 
 	it('should correctly get the event end time', function(done){
-		let endTime1 = event1.getEndTime();
+		let endTime1 = event1.getEndTime() as Date;
 		let expected = moment('04-01-2017 12:00:00').toDate();
 		expect(endTime1.getTime()).to.be.equal(expected.getTime());
 		done();
@@ -172,7 +157,7 @@ describe('Smash GG Event', function(){
 		expect(phases1.length).to.be.equal(4);
 		expect(phases2.length).to.be.equal(2);
 
-		var hasDuplicates = function(a) {
+		var hasDuplicates = function(a: Array<Phase>) {
 			return _.uniq(a).length !== a.length;
 		};
 		expect(hasDuplicates(phases1)).to.be.false;
@@ -198,7 +183,7 @@ describe('Smash GG Event', function(){
 		expect(groups1.length).to.be.equal(22);
 		expect(groups2.length).to.be.equal(33);
 
-		var hasDuplicates = function(a) {
+		var hasDuplicates = function(a: Array<PhaseGroup>) {
 			return _.uniq(a).length !== a.length;
 		};
 		expect(hasDuplicates(groups1)).to.be.false;
@@ -265,7 +250,7 @@ describe('Smash GG Event', function(){
 			expect(set).to.be.instanceof(Set);
 
 			let now = moment();
-			let then = moment(set.getCompletedAt());
+			let then = moment(set.getCompletedAt() as Date);
 			let diff = moment.duration(now.diff(then)).minutes();
 			expect(diff <= minutesBack && diff >= 0 && set.getIsComplete()).to.be.true;
 		})

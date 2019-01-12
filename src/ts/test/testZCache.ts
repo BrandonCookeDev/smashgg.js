@@ -1,29 +1,22 @@
 /* eslint-disable */
-'use strict';
-require('../src/js/util/ErrorHandler')
+import '../lib/util/ErrorHandler'
 
-let _ = require('lodash');
-let Promise = require('bluebird');
+import _ from 'lodash'
+import chai from 'chai'
+import cap from 'chai-as-promised'
+chai.use(cap)
+const {expect} = chai
 
-let Tournament  = require('../src/js/Tournament');
-let Event	   = require('../src/js/Event');
-let Phase	   = require('../src/js/Phase');
-let PhaseGroup  = require('../src/js/PhaseGroup');
-let Set		 = require('../src/js/Set');
-let Player	  = require('../src/js/Player');
+import { Tournament, Event, Phase, PhaseGroup, Player, GGSet } from '../lib/internal'
+import { ITournament, IEvent, IPhase, IPhaseGroup, IPlayer, IGGSet } from '../lib/internal'
+import Cache from '../lib/util/Cache'
 
-let Cache = require('../src/js/util/Cache').getInstance();
-
-let chai = require('chai');
-let cap = require('chai-as-promised');
-chai.use(cap);
-
-let expect = chai.expect;
-let assert = chai.assert;
+import testSets from './data/testSets'
+import testPlayers from './data/testPlayers'
 
 let testData = _.extend(
-	require('./data/testSets'),
-	require('./data/testPlayers')
+	testSets, 
+	testPlayers
 );
 
 const TOURNAMENT_NAME1 = 'function1';
@@ -123,7 +116,7 @@ describe('Test Caching', function(){
 		let t1SetsCached = await Cache.get(key1);
 
 		t1SetsCached.forEach(element => {
-			expect(element).to.be.instanceof(Set)
+			expect(element).to.be.instanceof(GGSet)
 		});
 
 		//let t2 = await loadTournament(TOURNAMENT_NAME2);
@@ -397,10 +390,10 @@ describe('Test Caching', function(){
 		let pg2SetsCached = await Cache.get(key2);
 
 		pg1SetsCached.forEach(element => {
-			expect(element).to.be.instanceof(Set)
+			expect(element).to.be.instanceof(GGSet)
 		});
 		pg2SetsCached.forEach(element => {
-			expect(element).to.be.instanceof(Set)
+			expect(element).to.be.instanceof(GGSet)
 		});
 
 		return true;
@@ -408,15 +401,19 @@ describe('Test Caching', function(){
 
 });
 
-function loadTournament(name, expands, isCached){
+function loadTournament(name: string, expands: ITournament.Expands, isCached: boolean) : Promise<Tournament>{
 	return new Promise(function(resolve, reject){
-		let t = new Tournament(name, expands, isCached);
+		let options: ITournament.Options = {
+			isCached: isCached,
+			expands: expands
+		}
+		let t = new Tournament(name, options);
 		t.on('ready', function(){
 			return resolve(t);
 		})
 	})
 }
-function loadEvent(eventName, tournamentName){
+function loadEvent(eventName: string, tournamentName: string) : Promise<Event>{
 	return new Promise(function(resolve, reject){
 		let event = new Event(eventName, tournamentName);
 		event.on('ready', function(){
@@ -424,17 +421,25 @@ function loadEvent(eventName, tournamentName){
 		})
 	})
 }
-function loadPhase(id, expands, isCached){
+function loadPhase(id: number, expands: IPhase.Expands, isCached: boolean){
 	return new Promise(function(resolve, reject){
-		let P = new Phase(id, expands, isCached);
+		let options: IPhase.Options = {
+			isCached: isCached,
+			expands: expands
+		}
+		let P = new Phase(id, options);
 		P.on('ready', function(){
 			resolve(P);
 		})
 	})
 }
-function loadPhaseGroup(id, expands, isCached){
+function loadPhaseGroup(id: number, expands: IPhaseGroup.Expands, isCached: boolean) : Promise<PhaseGroup>{
 	return new Promise(function(resolve, reject){
-		let PG = new PhaseGroup(id, expands, isCached);
+		let options: IPhaseGroup.Options = {
+			expands: expands,
+			isCached: isCached
+		}
+		let PG = new PhaseGroup(id, options);
 		PG.on('ready', function(){
 			resolve(PG);
 		})

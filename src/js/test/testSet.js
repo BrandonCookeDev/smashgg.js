@@ -53,14 +53,14 @@ describe('Smash GG Set', function () {
     before(function (done) {
         Cache_1.default.flush();
         var o1 = testSets_1.default.sets[0];
-        pWinkledink = new internal_1.Player(o1.WinnerPlayer.id, o1.WinnerPlayer.tag, o1.WinnerPlayer.slug, o1.WinnerPlayer.country, o1.WinnerPlayer.region, o1.WinnerPlayer.sponsor, o1.WinnerPlayer.participantId, o1.WinnerPlayer.data);
-        pAmarula = new internal_1.Player(o1.LoserPlayer.id, o1.LoserPlayer.tag, o1.LoserPlayer.slug, o1.LoserPlayer.country, o1.LoserPlayer.region, o1.LoserPlayer.sponsor, o1.LoserPlayer.participantId, o1.LoserPlayer.data);
+        pWinkledink = new internal_1.Player(o1.WinnerPlayer.id, o1.WinnerPlayer.tag, o1.WinnerPlayer.name, o1.WinnerPlayer.country, o1.WinnerPlayer.region, o1.WinnerPlayer.sponsor, o1.WinnerPlayer.participantId, o1.WinnerPlayer.data);
+        pAmarula = new internal_1.Player(o1.LoserPlayer.id, o1.LoserPlayer.tag, o1.LoserPlayer.name, o1.LoserPlayer.country, o1.LoserPlayer.region, o1.LoserPlayer.sponsor, o1.LoserPlayer.participantId, o1.LoserPlayer.data);
         var o2 = testSets_1.default.sets[1];
-        pWizzrobe = new internal_1.Player(o2.WinnerPlayer.id, o2.WinnerPlayer.tag, o2.WinnerPlayer.slug, o2.WinnerPlayer.country, o2.WinnerPlayer.region, o2.WinnerPlayer.sponsor, o2.WinnerPlayer.participantId, o2.WinnerPlayer.data);
-        pWinkledink = new internal_1.Player(o2.LoserPlayer.id, o2.LoserPlayer.tag, o2.LoserPlayer.slug, o2.LoserPlayer.country, o2.LoserPlayer.region, o2.LoserPlayer.sponsor, o2.LoserPlayer.participantId, o2.LoserPlayer.data);
+        pWizzrobe = new internal_1.Player(o2.WinnerPlayer.id, o2.WinnerPlayer.tag, o2.WinnerPlayer.name, o2.WinnerPlayer.country, o2.WinnerPlayer.region, o2.WinnerPlayer.sponsor, o2.WinnerPlayer.participantId, o2.WinnerPlayer.data);
+        pWinkledink = new internal_1.Player(o2.LoserPlayer.id, o2.LoserPlayer.tag, o2.LoserPlayer.name, o2.LoserPlayer.country, o2.LoserPlayer.region, o2.LoserPlayer.sponsor, o2.LoserPlayer.participantId, o2.LoserPlayer.data);
         var o3 = testSets_1.default.sets[2];
-        pBootyBlast = new internal_1.Player(o3.WinnerPlayer.id, o3.WinnerPlayer.tag, o3.WinnerPlayer.slug, o3.WinnerPlayer.country, o3.WinnerPlayer.region, o3.WinnerPlayer.sponsor, o3.WinnerPlayer.participantId, o3.WinnerPlayer.data);
-        pVasculinity = new internal_1.Player(o3.LoserPlayer.id, o3.LoserPlayer.tag, o3.LoserPlayer.slug, o3.LoserPlayer.country, o3.LoserPlayer.region, o3.LoserPlayer.sponsor, o3.LoserPlayer.participantId, o3.LoserPlayer.data);
+        pBootyBlast = new internal_1.Player(o3.WinnerPlayer.id, o3.WinnerPlayer.tag, o3.WinnerPlayer.name, o3.WinnerPlayer.country, o3.WinnerPlayer.region, o3.WinnerPlayer.sponsor, o3.WinnerPlayer.participantId, o3.WinnerPlayer.data);
+        pVasculinity = new internal_1.Player(o3.LoserPlayer.id, o3.LoserPlayer.tag, o3.LoserPlayer.name, o3.LoserPlayer.country, o3.LoserPlayer.region, o3.LoserPlayer.sponsor, o3.LoserPlayer.participantId, o3.LoserPlayer.data);
         set1 = new internal_1.GGSet(o1.id, o1.eventId, o1.round, pWinkledink, pAmarula, true, 3, 2, pWinkledink.id, pAmarula.id, o1.data);
         set2 = new internal_1.GGSet(o2.id, o2.eventId, o2.round, pWizzrobe, pWinkledink, true, 2, 1, pWizzrobe.id, pWinkledink.id, o2.data);
         set3 = new internal_1.GGSet(o3.id, o3.eventId, o3.round, pBootyBlast, pVasculinity, true, 3, 1, pBootyBlast.id, pVasculinity.id, o3.data);
@@ -73,10 +73,10 @@ describe('Smash GG Set', function () {
                 switch (_a.label) {
                     case 0:
                         this.timeout(5000);
-                        return [4 /*yield*/, Set.getSet(15896650)];
+                        return [4 /*yield*/, internal_1.GGSet.getSet(15896650)];
                     case 1:
                         set1 = _a.sent();
-                        return [4 /*yield*/, Set.getSet(15896651)];
+                        return [4 /*yield*/, internal_1.GGSet.getSet(15896651)];
                     case 2:
                         set2 = _a.sent();
                         expect(set1).to.be.instanceof(Set);
@@ -129,15 +129,27 @@ describe('Smash GG Set', function () {
         done();
     });
     it('should give the correct Winners Tournament Placement', function (done) {
-        expect(set1.getWinnersTournamentPlacement()).to.be.equal(set1.getWinner().data.finalPlacement);
-        expect(set2.getWinnersTournamentPlacement()).to.be.equal(set2.getWinner().data.finalPlacement);
-        expect(set3.getWinnersTournamentPlacement()).to.be.equal(set3.getWinner().data.finalPlacement);
+        var winner1 = set1.getWinner();
+        var data1 = winner1.data;
+        expect(set1.getWinnersTournamentPlacement()).to.be.equal(data1.finalPlacement);
+        var winner2 = set2.getWinner();
+        var data2 = winner2.data;
+        expect(set2.getWinnersTournamentPlacement()).to.be.equal(data2.finalPlacement);
+        var winner3 = set3.getWinner();
+        var data3 = winner3.data;
+        expect(set3.getWinnersTournamentPlacement()).to.be.equal(data2.finalPlacement);
         done();
     });
     it('should give the correct Losers Tournament Placement', function (done) {
-        expect(set1.getLosersTournamentPlacement()).to.be.equal(set1.getLoser().data.finalPlacement);
-        expect(set2.getLosersTournamentPlacement()).to.be.equal(set2.getLoser().data.finalPlacement);
-        expect(set3.getLosersTournamentPlacement()).to.be.equal(set3.getLoser().data.finalPlacement);
+        var loser1 = set1.getLoser();
+        var data1 = loser1.data;
+        expect(set1.getLosersTournamentPlacement()).to.be.equal(data1.finalPlacement);
+        var loser2 = set2.getLoser();
+        var data2 = loser2.data;
+        expect(set2.getLosersTournamentPlacement()).to.be.equal(data1.finalPlacement);
+        var loser3 = set3.getLoser();
+        var data3 = loser3.data;
+        expect(set3.getLosersTournamentPlacement()).to.be.equal(data1.finalPlacement);
         done();
     });
     it('should give the correct Phase Group ID', function (done) {

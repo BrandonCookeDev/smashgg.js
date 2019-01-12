@@ -7,7 +7,7 @@ import cap from 'chai-as-promised'
 chai.use(cap)
 const {expect} = chai
 
-import {GGSet, Player} from '../lib/internal'
+import {GGSet, Player, IPlayer} from '../lib/internal'
 import Cache from '../lib/util/Cache'
 
 import expected from './data/testSets'
@@ -28,26 +28,26 @@ describe('Smash GG Set', function(){
 		Cache.flush();
 
 		let o1 = expected.sets[0];
-		pWinkledink = new Player(o1.WinnerPlayer.id, o1.WinnerPlayer.tag, o1.WinnerPlayer.slug,
+		pWinkledink = new Player(o1.WinnerPlayer.id, o1.WinnerPlayer.tag, o1.WinnerPlayer.name,
 			o1.WinnerPlayer.country, o1.WinnerPlayer.region, o1.WinnerPlayer.sponsor,
 			o1.WinnerPlayer.participantId, o1.WinnerPlayer.data);
-		pAmarula = new Player(o1.LoserPlayer.id, o1.LoserPlayer.tag, o1.LoserPlayer.slug,
+		pAmarula = new Player(o1.LoserPlayer.id, o1.LoserPlayer.tag, o1.LoserPlayer.name,
 			o1.LoserPlayer.country, o1.LoserPlayer.region, o1.LoserPlayer.sponsor,
 			o1.LoserPlayer.participantId, o1.LoserPlayer.data);
 
 		let o2 = expected.sets[1];
-		pWizzrobe = new Player(o2.WinnerPlayer.id, o2.WinnerPlayer.tag, o2.WinnerPlayer.slug,
+		pWizzrobe = new Player(o2.WinnerPlayer.id, o2.WinnerPlayer.tag, o2.WinnerPlayer.name,
 			o2.WinnerPlayer.country, o2.WinnerPlayer.region, o2.WinnerPlayer.sponsor,
 			o2.WinnerPlayer.participantId, o2.WinnerPlayer.data);
-		pWinkledink = new Player(o2.LoserPlayer.id, o2.LoserPlayer.tag, o2.LoserPlayer.slug,
+		pWinkledink = new Player(o2.LoserPlayer.id, o2.LoserPlayer.tag, o2.LoserPlayer.name,
 			o2.LoserPlayer.country, o2.LoserPlayer.region, o2.LoserPlayer.sponsor,
 			o2.LoserPlayer.participantId, o2.LoserPlayer.data);
 
 		let o3 = expected.sets[2];
-		pBootyBlast = new Player(o3.WinnerPlayer.id, o3.WinnerPlayer.tag, o3.WinnerPlayer.slug,
+		pBootyBlast = new Player(o3.WinnerPlayer.id, o3.WinnerPlayer.tag, o3.WinnerPlayer.name,
 			o3.WinnerPlayer.country, o3.WinnerPlayer.region, o3.WinnerPlayer.sponsor,
 			o3.WinnerPlayer.participantId, o3.WinnerPlayer.data);
-		pVasculinity = new Player(o3.LoserPlayer.id, o3.LoserPlayer.tag, o3.LoserPlayer.slug,
+		pVasculinity = new Player(o3.LoserPlayer.id, o3.LoserPlayer.tag, o3.LoserPlayer.name,
 			o3.LoserPlayer.country, o3.LoserPlayer.region, o3.LoserPlayer.sponsor,
 			o3.LoserPlayer.participantId, o3.LoserPlayer.data);
 
@@ -61,8 +61,8 @@ describe('Smash GG Set', function(){
 	it('should get a set by id', async function(){
 		this.timeout(5000);
 
-		let set1 = await Set.getSet(15896650);
-		let set2 = await Set.getSet(15896651);
+		let set1 = await GGSet.getSet(15896650);
+		let set2 = await GGSet.getSet(15896651);
 
 		expect(set1).to.be.instanceof(Set);
 		expect(set2).to.be.instanceof(Set);
@@ -120,16 +120,35 @@ describe('Smash GG Set', function(){
 	});
 
 	it('should give the correct Winners Tournament Placement', function(done){
-		expect(set1.getWinnersTournamentPlacement()).to.be.equal(set1.getWinner().data.finalPlacement);
-		expect(set2.getWinnersTournamentPlacement()).to.be.equal(set2.getWinner().data.finalPlacement);
-		expect(set3.getWinnersTournamentPlacement()).to.be.equal(set3.getWinner().data.finalPlacement);
+		
+		let winner1 = set1.getWinner() as Player
+		let data1 = winner1.data as IPlayer.Entity
+		expect(set1.getWinnersTournamentPlacement()).to.be.equal(data1.finalPlacement);
+
+		let winner2 = set2.getWinner() as Player
+		let data2 = winner2.data as IPlayer.Entity
+		expect(set2.getWinnersTournamentPlacement()).to.be.equal(data2.finalPlacement);
+
+		let winner3 = set3.getWinner() as Player
+		let data3 = winner3.data as IPlayer.Entity
+		expect(set3.getWinnersTournamentPlacement()).to.be.equal(data2.finalPlacement);
+
 		done();
 	});
 
 	it('should give the correct Losers Tournament Placement', function(done){
-		expect(set1.getLosersTournamentPlacement()).to.be.equal(set1.getLoser().data.finalPlacement);
-		expect(set2.getLosersTournamentPlacement()).to.be.equal(set2.getLoser().data.finalPlacement);
-		expect(set3.getLosersTournamentPlacement()).to.be.equal(set3.getLoser().data.finalPlacement);
+		let loser1 = set1.getLoser() as Player
+		let data1 = loser1.data as IPlayer.Entity
+		expect(set1.getLosersTournamentPlacement()).to.be.equal(data1.finalPlacement);
+
+		let loser2 = set2.getLoser() as Player
+		let data2 = loser2.data as IPlayer.Entity
+		expect(set2.getLosersTournamentPlacement()).to.be.equal(data1.finalPlacement);
+
+		let loser3 = set3.getLoser() as Player
+		let data3 = loser3.data as IPlayer.Entity
+		expect(set3.getLosersTournamentPlacement()).to.be.equal(data1.finalPlacement);
+
 		done();
 	});
 

@@ -1,5 +1,4 @@
-/* eslint-disable */
-'use strict';
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -35,23 +34,26 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-require('../src/js/util/ErrorHandler');
-var _ = require('lodash');
-var Player = require('../src/js/Player');
-var Cache = require('../src/js/util/Cache').getInstance();
-var chai = require('chai');
-var cap = require('chai-as-promised');
-chai.use(cap);
-var expect = chai.expect;
-var assert = chai.assert;
-var expected = _.extend(require('./data/testPlayers'));
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+/* eslint-disable */
+require("../lib/util/ErrorHandler");
+var chai_1 = __importDefault(require("chai"));
+var chai_as_promised_1 = __importDefault(require("chai-as-promised"));
+chai_1.default.use(chai_as_promised_1.default);
+var expect = chai_1.default.expect;
+var internal_1 = require("../lib/internal");
+var Cache_1 = __importDefault(require("../lib/util/Cache"));
+var testPlayers_1 = __importDefault(require("./data/testPlayers"));
 var p1, p2, p3;
 describe('Smash GG Player', function () {
-    before(Cache.flush);
+    before(Cache_1.default.flush);
     it('should correctly load a player from raw data', function (done) {
-        p1 = Player.resolve(expected.players[0]);
-        p2 = Player.resolve(expected.players[1]);
-        p3 = Player.resolve(expected.players[2]);
+        p1 = internal_1.Player.resolve(testPlayers_1.default.players[0]);
+        p2 = internal_1.Player.resolve(testPlayers_1.default.players[1]);
+        p3 = internal_1.Player.resolve(testPlayers_1.default.players[2]);
         expect(p1.id).to.be.equal(21568);
         expect(p2.id).to.be.equal(244170);
         expect(p3.id).to.be.equal(36490);
@@ -70,9 +72,9 @@ describe('Smash GG Player', function () {
         expect(p1.sponsor).to.be.equal('Test1');
         expect(p2.sponsor).to.be.equal('Test2');
         expect(p3.sponsor).to.be.equal('Test3');
-        expect(p1.data).to.be.equal(expected.players[0]);
-        expect(p2.data).to.be.equal(expected.players[1]);
-        expect(p3.data).to.be.equal(expected.players[2]);
+        expect(p1.data).to.be.equal(testPlayers_1.default.players[0]);
+        expect(p2.data).to.be.equal(testPlayers_1.default.players[1]);
+        expect(p3.data).to.be.equal(testPlayers_1.default.players[2]);
         done();
     });
     it('should get player by id correctly', function () {
@@ -82,10 +84,10 @@ describe('Smash GG Player', function () {
                 switch (_a.label) {
                     case 0:
                         this.timeout(5000);
-                        return [4 /*yield*/, Player.getPlayer(61838)];
+                        return [4 /*yield*/, internal_1.Player.getPlayer(61838)];
                     case 1:
                         player1 = _a.sent();
-                        return [4 /*yield*/, Player.getPlayer(61839)];
+                        return [4 /*yield*/, internal_1.Player.getPlayer(61839)];
                     case 2:
                         player2 = _a.sent();
                         return [2 /*return*/, true];

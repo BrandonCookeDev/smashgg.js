@@ -1,5 +1,4 @@
-/* eslint-disable */
-'use strict';
+"use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -35,11 +34,16 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-require('../src/js/util/ErrorHandler');
-var chai = require('chai');
-var expect = chai.expect;
-var VideoGame = require('../src/js/VideoGame');
-var Cache = require('../src/js/util/Cache');
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+/* eslint-disable */
+require("../lib/util/ErrorHandler");
+var chai_1 = __importDefault(require("chai"));
+var expect = chai_1.default.expect;
+var VideoGame_1 = require("../lib/VideoGame");
+var Cache_1 = __importDefault(require("../lib/util/Cache"));
 var expected = {
     Melee: {
         id: 1,
@@ -68,7 +72,7 @@ describe('SmashGG VideoGame', function () {
     before(function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                Cache.getInstance().flush();
+                Cache_1.default.flush();
                 return [2 /*return*/];
             });
         });
@@ -78,11 +82,11 @@ describe('SmashGG VideoGame', function () {
             var videoGames;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, VideoGame.getAll()];
+                    case 0: return [4 /*yield*/, VideoGame_1.VideoGame.getAll()];
                     case 1:
                         videoGames = _a.sent();
                         videoGames.forEach(function (e) {
-                            expect(e).to.be.instanceof(VideoGame);
+                            expect(e).to.be.instanceof(VideoGame_1.VideoGame);
                         });
                         return [2 /*return*/, true];
                 }
@@ -94,10 +98,10 @@ describe('SmashGG VideoGame', function () {
             var vg1, vg2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, VideoGame.getById(1)];
+                    case 0: return [4 /*yield*/, VideoGame_1.VideoGame.getById(1)];
                     case 1:
                         vg1 = _a.sent();
-                        return [4 /*yield*/, VideoGame.getById(2)];
+                        return [4 /*yield*/, VideoGame_1.VideoGame.getById(2)];
                     case 2:
                         vg2 = _a.sent();
                         expect(vg1).to.deep.equal(expected.Melee);
@@ -112,16 +116,16 @@ describe('SmashGG VideoGame', function () {
             var melee1, melee2, pm1, pm2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, VideoGame.getByName('Super Smash Bros. Melee', { isCached: false })];
+                    case 0: return [4 /*yield*/, VideoGame_1.VideoGame.getByName('Super Smash Bros. Melee', { isCached: false })];
                     case 1:
                         melee1 = _a.sent();
-                        return [4 /*yield*/, VideoGame.getByName('melee', { isCached: false })];
+                        return [4 /*yield*/, VideoGame_1.VideoGame.getByName('melee', { isCached: false })];
                     case 2:
                         melee2 = _a.sent();
-                        return [4 /*yield*/, VideoGame.getByName('pm')];
+                        return [4 /*yield*/, VideoGame_1.VideoGame.getByName('pm')];
                     case 3:
                         pm1 = _a.sent();
-                        return [4 /*yield*/, VideoGame.getByName('Project M')];
+                        return [4 /*yield*/, VideoGame_1.VideoGame.getByName('Project M')];
                     case 4:
                         pm2 = _a.sent();
                         expect(melee1).to.deep.equal(expected.Melee);

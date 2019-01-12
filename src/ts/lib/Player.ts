@@ -208,24 +208,36 @@ export namespace IPlayer{
 	export interface Entity{
 		id: number,
 		eventId: number,
-		mutations: {
-			participants: {
-				[x: string]: {
-					id: number,
-					gamerTag: string
-					[x: string]: any,
-				}
-			},
-			[x: string]: any,
-			players: {
-				name: string,
-				country: string,
-				state: string,
-				prefix: string,
-				[x: string]: any,
-			}
-		}
+		mutations: Mutations,
 		[x: string]: any
+	}
+
+	export interface Mutations{
+		participants: Participants,
+		players: Players
+	}
+
+	export interface Participants{
+		[x: string]: {
+			id: number,
+			gamerTag: string,
+			playerId?: number,
+			prefix?: string,
+			[x: string]: any
+		}
+	}
+
+	export interface Players{
+		[x: string]: {
+			id: number,
+			name?: string,
+			gamerTag: string,
+			country?: string,
+			state?: string,
+			prefix?: string,
+			region?: string,
+			[x: string]: any
+		}
 	}
 
 	export interface Options{

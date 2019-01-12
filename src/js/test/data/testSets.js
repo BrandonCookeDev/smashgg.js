@@ -3,14 +3,14 @@
 module.exports = {
     "sets": {
         0: {
-            "domain": null,
+            "domain": undefined,
             "_events": {},
             "_eventsCount": 0,
             "id": 7922620,
             "eventId": 25545,
             "round": "Winners Round 1",
             "WinnerPlayer": {
-                "domain": null,
+                "domain": undefined,
                 "_events": {},
                 "_eventsCount": 0,
                 "id": 20715,
@@ -26,15 +26,15 @@ module.exports = {
                     "participantIds": [
                         618544
                     ],
-                    "participant1Id": null,
-                    "participant2Id": null,
+                    "participant1Id": undefined,
+                    "participant2Id": undefined,
                     "name": "WCG | Winkledink",
                     "finalPlacement": 81,
                     "defaultSkill": 0,
                     "skill": 1,
                     "skillOrder": 10,
                     "unverified": false,
-                    "isPlaceholder": null,
+                    "isPlaceholder": undefined,
                     "expand": [],
                     "playerIds": {
                         "618544": 20715
@@ -60,7 +60,7 @@ module.exports = {
                                 "name": "Gavin Barnes",
                                 "state": "GA",
                                 "country": "US",
-                                "region": null,
+                                "region": undefined,
                                 "images": [],
                                 "rankings": []
                             }
@@ -69,7 +69,7 @@ module.exports = {
                 }
             },
             "LoserPlayer": {
-                "domain": null,
+                "domain": undefined,
                 "_events": {},
                 "_eventsCount": 0,
                 "id": 24911,
@@ -85,29 +85,29 @@ module.exports = {
                     "participantIds": [
                         603916
                     ],
-                    "participant1Id": null,
-                    "participant2Id": null,
+                    "participant1Id": undefined,
+                    "participant2Id": undefined,
                     "name": "Amarula",
                     "finalPlacement": 145,
                     "defaultSkill": 0,
-                    "skill": null,
+                    "skill": undefined,
                     "skillOrder": 2,
                     "unverified": false,
-                    "isPlaceholder": null,
+                    "isPlaceholder": undefined,
                     "expand": [],
                     "playerIds": {
                         "603916": 24911
                     },
                     "initialSeedNum": 40,
                     "prefixes": {
-                        "603916": null
+                        "603916": undefined
                     },
                     "mutations": {
                         "participants": {
                             "603916": {
                                 "id": 603916,
                                 "gamerTag": "Amarula",
-                                "prefix": null,
+                                "prefix": undefined,
                                 "playerId": 24911
                             }
                         },
@@ -119,7 +119,7 @@ module.exports = {
                                 "name": "Rory Ramsey",
                                 "state": "GA",
                                 "country": "US",
-                                "region": null,
+                                "region": undefined,
                                 "images": [],
                                 "rankings": []
                             }
@@ -131,8 +131,8 @@ module.exports = {
                 "id": 7922620,
                 "eventId": 25545,
                 "phaseGroupId": 327638,
-                "stationId": null,
-                "streamId": null,
+                "stationId": undefined,
+                "streamId": undefined,
                 "entrant1Id": 522133,
                 "entrant2Id": 507832,
                 "winnerId": 522133,
@@ -140,22 +140,22 @@ module.exports = {
                 "bracketId": "58df119c60fbb",
                 "entrant1PrereqType": "seed",
                 "entrant1PrereqId": 5029451,
-                "entrant1PrereqCondition": null,
+                "entrant1PrereqCondition": undefined,
                 "entrant2PrereqType": "seed",
                 "entrant2PrereqId": 4983663,
-                "entrant2PrereqCondition": null,
-                "wProgressionSeedId": null,
-                "lProgressionSeedId": null,
+                "entrant2PrereqCondition": undefined,
+                "wProgressionSeedId": undefined,
+                "lProgressionSeedId": undefined,
                 "wPlacement": 7,
                 "lPlacement": 9,
                 "wOverallPlacement": 113,
                 "lOverallPlacement": 145,
-                "lEligiblePhaseId": null,
-                "wEligiblePhaseId": null,
+                "lEligiblePhaseId": undefined,
+                "wEligiblePhaseId": undefined,
                 "unreachable": false,
                 "isTiebreak": false,
                 "type": 1,
-                "crewPlayerCount": null,
+                "crewPlayerCount": undefined,
                 "identifier": "A",
                 "round": 1,
                 "state": 3,
@@ -169,26 +169,26 @@ module.exports = {
                 "hasPlaceholder": false,
                 "entrant1Present": false,
                 "entrant2Present": false,
-                "adminViewedBy": null,
-                "adminMessagedBy": null,
-                "tasksPruned": null,
+                "adminViewedBy": undefined,
+                "adminMessagedBy": undefined,
+                "tasksPruned": undefined,
                 "subState": [],
-                "modRequestedBy": null,
-                "modRequestedAt": null,
-                "vodUrl": null,
-                "fbUrl": null,
-                "smashggUrl": null,
-                "durationSeconds": null,
+                "modRequestedBy": undefined,
+                "modRequestedAt": undefined,
+                "vodUrl": undefined,
+                "fbUrl": undefined,
+                "smashggUrl": undefined,
+                "durationSeconds": undefined,
                 "createdAt": 1491014044,
                 "updatedAt": 1491063225,
                 "updatedAtMicro": 1491063225.4958,
-                "startAt": null,
-                "startedAt": null,
+                "startAt": undefined,
+                "startedAt": undefined,
                 "completedAt": 1491063225,
-                "adminViewedAt": null,
-                "adminMessagedAt": null,
-                "progressionPlacement": null,
-                "progressionCount": null,
+                "adminViewedAt": undefined,
+                "adminMessagedAt": undefined,
+                "progressionPlacement": undefined,
+                "progressionCount": undefined,
                 "games": [],
                 "videogameId": 1,
                 "eventType": 1,
@@ -206,14 +206,14 @@ module.exports = {
             }
         },
         1: {
-            "domain": null,
+            "domain": undefined,
             "_events": {},
             "_eventsCount": 0,
             "id": 7922627,
             "eventId": 25545,
             "round": "Winners Quarter-Final",
             "WinnerPlayer": {
-                "domain": null,
+                "domain": undefined,
                 "_events": {},
                 "_eventsCount": 0,
                 "id": 1028,
@@ -229,29 +229,29 @@ module.exports = {
                     "participantIds": [
                         572593
                     ],
-                    "participant1Id": null,
-                    "participant2Id": null,
+                    "participant1Id": undefined,
+                    "participant2Id": undefined,
                     "name": "Wizzrobe",
                     "finalPlacement": 1,
                     "defaultSkill": 10,
                     "skill": 10,
                     "skillOrder": 1,
                     "unverified": false,
-                    "isPlaceholder": null,
+                    "isPlaceholder": undefined,
                     "expand": [],
                     "playerIds": {
                         "572593": 1028
                     },
                     "initialSeedNum": 1,
                     "prefixes": {
-                        "572593": null
+                        "572593": undefined
                     },
                     "mutations": {
                         "participants": {
                             "572593": {
                                 "id": 572593,
                                 "gamerTag": "Wizzrobe",
-                                "prefix": null,
+                                "prefix": undefined,
                                 "playerId": 1028
                             }
                         },
@@ -263,7 +263,7 @@ module.exports = {
                                 "name": "justin hallett",
                                 "state": "FL",
                                 "country": "United States",
-                                "region": null,
+                                "region": undefined,
                                 "images": [
                                     {
                                         "id": 5762,
@@ -273,11 +273,11 @@ module.exports = {
                                         "type": "banner",
                                         "url": "https://images.smash.gg/images/player/1028/image-1859cc9dbb13dd3de416899034de8fd2.jpg",
                                         "isOriginal": false,
-                                        "entity": null,
-                                        "entityId": null,
-                                        "uploadedBy": null,
-                                        "createdAt": null,
-                                        "updatedAt": null
+                                        "entity": undefined,
+                                        "entityId": undefined,
+                                        "uploadedBy": undefined,
+                                        "createdAt": undefined,
+                                        "updatedAt": undefined
                                     },
                                     {
                                         "id": 5763,
@@ -287,11 +287,11 @@ module.exports = {
                                         "type": "banner",
                                         "url": "https://images.smash.gg/images/player/1028/image-36b47699ae4f70b78786938ae844bf45.jpg",
                                         "isOriginal": false,
-                                        "entity": null,
-                                        "entityId": null,
-                                        "uploadedBy": null,
-                                        "createdAt": null,
-                                        "updatedAt": null
+                                        "entity": undefined,
+                                        "entityId": undefined,
+                                        "uploadedBy": undefined,
+                                        "createdAt": undefined,
+                                        "updatedAt": undefined
                                     },
                                     {
                                         "id": 5764,
@@ -301,11 +301,11 @@ module.exports = {
                                         "type": "banner",
                                         "url": "https://images.smash.gg/images/player/1028/image-3a8ddcc36a70a77e527a7720e6b8495e.jpg",
                                         "isOriginal": false,
-                                        "entity": null,
-                                        "entityId": null,
-                                        "uploadedBy": null,
-                                        "createdAt": null,
-                                        "updatedAt": null
+                                        "entity": undefined,
+                                        "entityId": undefined,
+                                        "uploadedBy": undefined,
+                                        "createdAt": undefined,
+                                        "updatedAt": undefined
                                     },
                                     {
                                         "id": 5765,
@@ -315,11 +315,11 @@ module.exports = {
                                         "type": "banner",
                                         "url": "https://images.smash.gg/images/player/1028/image-ad3e81f4eb1524c5a53a2a1ec3d4ce6b.jpg",
                                         "isOriginal": true,
-                                        "entity": null,
-                                        "entityId": null,
-                                        "uploadedBy": null,
-                                        "createdAt": null,
-                                        "updatedAt": null
+                                        "entity": undefined,
+                                        "entityId": undefined,
+                                        "uploadedBy": undefined,
+                                        "createdAt": undefined,
+                                        "updatedAt": undefined
                                     },
                                     {
                                         "id": 5766,
@@ -329,11 +329,11 @@ module.exports = {
                                         "type": "profile",
                                         "url": "https://images.smash.gg/images/player/1028/image-f991cc928cbf4b24a92b08b28348ac52.jpg",
                                         "isOriginal": false,
-                                        "entity": null,
-                                        "entityId": null,
-                                        "uploadedBy": null,
-                                        "createdAt": null,
-                                        "updatedAt": null
+                                        "entity": undefined,
+                                        "entityId": undefined,
+                                        "uploadedBy": undefined,
+                                        "createdAt": undefined,
+                                        "updatedAt": undefined
                                     },
                                     {
                                         "id": 5767,
@@ -343,11 +343,11 @@ module.exports = {
                                         "type": "profile",
                                         "url": "https://images.smash.gg/images/player/1028/image-7228e76cb2a4c19dc58777382aafd6e8.jpg",
                                         "isOriginal": false,
-                                        "entity": null,
-                                        "entityId": null,
-                                        "uploadedBy": null,
-                                        "createdAt": null,
-                                        "updatedAt": null
+                                        "entity": undefined,
+                                        "entityId": undefined,
+                                        "uploadedBy": undefined,
+                                        "createdAt": undefined,
+                                        "updatedAt": undefined
                                     },
                                     {
                                         "id": 5768,
@@ -357,11 +357,11 @@ module.exports = {
                                         "type": "profile",
                                         "url": "https://images.smash.gg/images/player/1028/image-2d44c1d3a5122c5ae65d250ffbf78cdf.jpg",
                                         "isOriginal": false,
-                                        "entity": null,
-                                        "entityId": null,
-                                        "uploadedBy": null,
-                                        "createdAt": null,
-                                        "updatedAt": null
+                                        "entity": undefined,
+                                        "entityId": undefined,
+                                        "uploadedBy": undefined,
+                                        "createdAt": undefined,
+                                        "updatedAt": undefined
                                     },
                                     {
                                         "id": 5769,
@@ -371,11 +371,11 @@ module.exports = {
                                         "type": "profile",
                                         "url": "https://images.smash.gg/images/player/1028/image-6b91c47716fbf804531e7389233acfca.jpg",
                                         "isOriginal": true,
-                                        "entity": null,
-                                        "entityId": null,
-                                        "uploadedBy": null,
-                                        "createdAt": null,
-                                        "updatedAt": null
+                                        "entity": undefined,
+                                        "entityId": undefined,
+                                        "uploadedBy": undefined,
+                                        "createdAt": undefined,
+                                        "updatedAt": undefined
                                     }
                                 ],
                                 "rankings": [
@@ -387,7 +387,7 @@ module.exports = {
                                         "rank": 12,
                                         "seriesId": 12,
                                         "videogameId": 1,
-                                        "externalId": null
+                                        "externalId": undefined
                                     },
                                     {
                                         "id": 245789,
@@ -397,7 +397,7 @@ module.exports = {
                                         "rank": 15,
                                         "seriesId": 13,
                                         "videogameId": 1,
-                                        "externalId": null
+                                        "externalId": undefined
                                     },
                                     {
                                         "id": 245072,
@@ -407,7 +407,7 @@ module.exports = {
                                         "rank": 11,
                                         "seriesId": 18,
                                         "videogameId": 4,
-                                        "externalId": null
+                                        "externalId": undefined
                                     },
                                     {
                                         "id": 108647,
@@ -417,7 +417,7 @@ module.exports = {
                                         "rank": 7,
                                         "seriesId": 899,
                                         "videogameId": 4,
-                                        "externalId": null
+                                        "externalId": undefined
                                     }
                                 ]
                             }
@@ -426,7 +426,7 @@ module.exports = {
                 }
             },
             "LoserPlayer": {
-                "domain": null,
+                "domain": undefined,
                 "_events": {},
                 "_eventsCount": 0,
                 "id": 20715,
@@ -442,15 +442,15 @@ module.exports = {
                     "participantIds": [
                         618544
                     ],
-                    "participant1Id": null,
-                    "participant2Id": null,
+                    "participant1Id": undefined,
+                    "participant2Id": undefined,
                     "name": "WCG | Winkledink",
                     "finalPlacement": 81,
                     "defaultSkill": 0,
                     "skill": 1,
                     "skillOrder": 10,
                     "unverified": false,
-                    "isPlaceholder": null,
+                    "isPlaceholder": undefined,
                     "expand": [],
                     "playerIds": {
                         "618544": 20715
@@ -476,7 +476,7 @@ module.exports = {
                                 "name": "Gavin Barnes",
                                 "state": "GA",
                                 "country": "US",
-                                "region": null,
+                                "region": undefined,
                                 "images": [],
                                 "rankings": []
                             }
@@ -488,8 +488,8 @@ module.exports = {
                 "id": 7922627,
                 "eventId": 25545,
                 "phaseGroupId": 327638,
-                "stationId": null,
-                "streamId": null,
+                "stationId": undefined,
+                "streamId": undefined,
                 "entrant1Id": 490258,
                 "entrant2Id": 522133,
                 "winnerId": 490258,
@@ -501,18 +501,18 @@ module.exports = {
                 "entrant2PrereqType": "set",
                 "entrant2PrereqId": 7922620,
                 "entrant2PrereqCondition": "winner",
-                "wProgressionSeedId": null,
-                "lProgressionSeedId": null,
+                "wProgressionSeedId": undefined,
+                "lProgressionSeedId": undefined,
                 "wPlacement": 5,
                 "lPlacement": 7,
                 "wOverallPlacement": 81,
                 "lOverallPlacement": 113,
-                "lEligiblePhaseId": null,
-                "wEligiblePhaseId": null,
+                "lEligiblePhaseId": undefined,
+                "wEligiblePhaseId": undefined,
                 "unreachable": false,
                 "isTiebreak": false,
                 "type": 1,
-                "crewPlayerCount": null,
+                "crewPlayerCount": undefined,
                 "identifier": "B",
                 "round": 2,
                 "state": 3,
@@ -526,26 +526,26 @@ module.exports = {
                 "hasPlaceholder": false,
                 "entrant1Present": false,
                 "entrant2Present": false,
-                "adminViewedBy": null,
-                "adminMessagedBy": null,
-                "tasksPruned": null,
+                "adminViewedBy": undefined,
+                "adminMessagedBy": undefined,
+                "tasksPruned": undefined,
                 "subState": [],
-                "modRequestedBy": null,
-                "modRequestedAt": null,
-                "vodUrl": null,
-                "fbUrl": null,
-                "smashggUrl": null,
-                "durationSeconds": null,
+                "modRequestedBy": undefined,
+                "modRequestedAt": undefined,
+                "vodUrl": undefined,
+                "fbUrl": undefined,
+                "smashggUrl": undefined,
+                "durationSeconds": undefined,
                 "createdAt": 1491014044,
                 "updatedAt": 1491063271,
                 "updatedAtMicro": 1491063271.0505,
-                "startAt": null,
-                "startedAt": null,
+                "startAt": undefined,
+                "startedAt": undefined,
                 "completedAt": 1491063271,
-                "adminViewedAt": null,
-                "adminMessagedAt": null,
-                "progressionPlacement": null,
-                "progressionCount": null,
+                "adminViewedAt": undefined,
+                "adminMessagedAt": undefined,
+                "progressionPlacement": undefined,
+                "progressionCount": undefined,
                 "games": [],
                 "videogameId": 1,
                 "eventType": 1,
@@ -565,14 +565,14 @@ module.exports = {
             }
         },
         2: {
-            "domain": null,
+            "domain": undefined,
             "_events": {},
             "_eventsCount": 0,
             "id": 7922628,
             "eventId": 25545,
             "round": "Winners Quarter-Final",
             "WinnerPlayer": {
-                "domain": null,
+                "domain": undefined,
                 "_events": {},
                 "_eventsCount": 0,
                 "id": 36523,
@@ -588,15 +588,15 @@ module.exports = {
                     "participantIds": [
                         674235
                     ],
-                    "participant1Id": null,
-                    "participant2Id": null,
+                    "participant1Id": undefined,
+                    "participant2Id": undefined,
                     "name": "thotpatrol | booty blast warrior",
                     "finalPlacement": 49,
                     "defaultSkill": 0,
                     "skill": 2,
                     "skillOrder": 8,
                     "unverified": false,
-                    "isPlaceholder": null,
+                    "isPlaceholder": undefined,
                     "expand": [],
                     "playerIds": {
                         "674235": 36523
@@ -622,7 +622,7 @@ module.exports = {
                                 "name": "Andy/Andrew Wyatt",
                                 "state": "GA",
                                 "country": "US",
-                                "region": null,
+                                "region": undefined,
                                 "images": [
                                     {
                                         "id": 166472,
@@ -632,11 +632,11 @@ module.exports = {
                                         "type": "profile",
                                         "url": "https://images.smash.gg/images/player/36523/image-2a2928579b547776a17e64d513b0022c.JPG",
                                         "isOriginal": false,
-                                        "entity": null,
-                                        "entityId": null,
-                                        "uploadedBy": null,
-                                        "createdAt": null,
-                                        "updatedAt": null
+                                        "entity": undefined,
+                                        "entityId": undefined,
+                                        "uploadedBy": undefined,
+                                        "createdAt": undefined,
+                                        "updatedAt": undefined
                                     },
                                     {
                                         "id": 166473,
@@ -646,11 +646,11 @@ module.exports = {
                                         "type": "profile",
                                         "url": "https://images.smash.gg/images/player/36523/image-aca0d8cedca7481e2e2ae0d92d07f5e1.JPG",
                                         "isOriginal": false,
-                                        "entity": null,
-                                        "entityId": null,
-                                        "uploadedBy": null,
-                                        "createdAt": null,
-                                        "updatedAt": null
+                                        "entity": undefined,
+                                        "entityId": undefined,
+                                        "uploadedBy": undefined,
+                                        "createdAt": undefined,
+                                        "updatedAt": undefined
                                     },
                                     {
                                         "id": 166474,
@@ -660,11 +660,11 @@ module.exports = {
                                         "type": "profile",
                                         "url": "https://images.smash.gg/images/player/36523/image-8a5d57317c008b31cc1336adb545c598.JPG",
                                         "isOriginal": false,
-                                        "entity": null,
-                                        "entityId": null,
-                                        "uploadedBy": null,
-                                        "createdAt": null,
-                                        "updatedAt": null
+                                        "entity": undefined,
+                                        "entityId": undefined,
+                                        "uploadedBy": undefined,
+                                        "createdAt": undefined,
+                                        "updatedAt": undefined
                                     },
                                     {
                                         "id": 166475,
@@ -674,11 +674,11 @@ module.exports = {
                                         "type": "profile",
                                         "url": "https://images.smash.gg/images/player/36523/image-d158f26e276d9d43b092bf2728873869.JPG",
                                         "isOriginal": true,
-                                        "entity": null,
-                                        "entityId": null,
-                                        "uploadedBy": null,
-                                        "createdAt": null,
-                                        "updatedAt": null
+                                        "entity": undefined,
+                                        "entityId": undefined,
+                                        "uploadedBy": undefined,
+                                        "createdAt": undefined,
+                                        "updatedAt": undefined
                                     },
                                     {
                                         "id": 208776,
@@ -688,11 +688,11 @@ module.exports = {
                                         "type": "banner",
                                         "url": "https://images.smash.gg/images/player/36523/image-734c2b3fb37806e5429cb5eefc99ccb6.jpg",
                                         "isOriginal": false,
-                                        "entity": null,
-                                        "entityId": null,
-                                        "uploadedBy": null,
-                                        "createdAt": null,
-                                        "updatedAt": null
+                                        "entity": undefined,
+                                        "entityId": undefined,
+                                        "uploadedBy": undefined,
+                                        "createdAt": undefined,
+                                        "updatedAt": undefined
                                     },
                                     {
                                         "id": 208777,
@@ -702,11 +702,11 @@ module.exports = {
                                         "type": "banner",
                                         "url": "https://images.smash.gg/images/player/36523/image-b0598073c40b99c1d582a3d3c890b5de.jpg",
                                         "isOriginal": false,
-                                        "entity": null,
-                                        "entityId": null,
-                                        "uploadedBy": null,
-                                        "createdAt": null,
-                                        "updatedAt": null
+                                        "entity": undefined,
+                                        "entityId": undefined,
+                                        "uploadedBy": undefined,
+                                        "createdAt": undefined,
+                                        "updatedAt": undefined
                                     },
                                     {
                                         "id": 208778,
@@ -716,11 +716,11 @@ module.exports = {
                                         "type": "banner",
                                         "url": "https://images.smash.gg/images/player/36523/image-62b5cdc5bc48a559f194074a127f5b6f.jpg",
                                         "isOriginal": false,
-                                        "entity": null,
-                                        "entityId": null,
-                                        "uploadedBy": null,
-                                        "createdAt": null,
-                                        "updatedAt": null
+                                        "entity": undefined,
+                                        "entityId": undefined,
+                                        "uploadedBy": undefined,
+                                        "createdAt": undefined,
+                                        "updatedAt": undefined
                                     },
                                     {
                                         "id": 208779,
@@ -730,11 +730,11 @@ module.exports = {
                                         "type": "banner",
                                         "url": "https://images.smash.gg/images/player/36523/image-109b906bfcd7ce864c2d07c9aa4b77f1.jpg",
                                         "isOriginal": true,
-                                        "entity": null,
-                                        "entityId": null,
-                                        "uploadedBy": null,
-                                        "createdAt": null,
-                                        "updatedAt": null
+                                        "entity": undefined,
+                                        "entityId": undefined,
+                                        "uploadedBy": undefined,
+                                        "createdAt": undefined,
+                                        "updatedAt": undefined
                                     }
                                 ],
                                 "rankings": []
@@ -744,7 +744,7 @@ module.exports = {
                 }
             },
             "LoserPlayer": {
-                "domain": null,
+                "domain": undefined,
                 "_events": {},
                 "_eventsCount": 0,
                 "id": 60578,
@@ -752,7 +752,7 @@ module.exports = {
                 "name": "Elijah Poulos",
                 "country": "United States",
                 "region": "NC",
-                "sponsor": null,
+                "sponsor": undefined,
                 "participantId": 557531,
                 "data": {
                     "id": 557531,
@@ -760,29 +760,29 @@ module.exports = {
                     "participantIds": [
                         656093
                     ],
-                    "participant1Id": null,
-                    "participant2Id": null,
+                    "participant1Id": undefined,
+                    "participant2Id": undefined,
                     "name": "Vasculinity",
                     "finalPlacement": 113,
                     "defaultSkill": 5,
                     "skill": 3,
                     "skillOrder": 4,
                     "unverified": false,
-                    "isPlaceholder": null,
+                    "isPlaceholder": undefined,
                     "expand": [],
                     "playerIds": {
                         "656093": 60578
                     },
                     "initialSeedNum": 42,
                     "prefixes": {
-                        "656093": null
+                        "656093": undefined
                     },
                     "mutations": {
                         "participants": {
                             "656093": {
                                 "id": 656093,
                                 "gamerTag": "Vasculinity",
-                                "prefix": null,
+                                "prefix": undefined,
                                 "playerId": 60578
                             }
                         },
@@ -790,11 +790,11 @@ module.exports = {
                             "60578": {
                                 "id": 60578,
                                 "gamerTag": "Vasculinity",
-                                "prefix": null,
+                                "prefix": undefined,
                                 "name": "Elijah Poulos",
                                 "state": "NC",
                                 "country": "United States",
-                                "region": null,
+                                "region": undefined,
                                 "images": [],
                                 "rankings": []
                             }
@@ -806,8 +806,8 @@ module.exports = {
                 "id": 7922628,
                 "eventId": 25545,
                 "phaseGroupId": 327638,
-                "stationId": null,
-                "streamId": null,
+                "stationId": undefined,
+                "streamId": undefined,
                 "entrant1Id": 557531,
                 "entrant2Id": 574931,
                 "winnerId": 574931,
@@ -819,18 +819,18 @@ module.exports = {
                 "entrant2PrereqType": "set",
                 "entrant2PrereqId": 7922622,
                 "entrant2PrereqCondition": "winner",
-                "wProgressionSeedId": null,
-                "lProgressionSeedId": null,
+                "wProgressionSeedId": undefined,
+                "lProgressionSeedId": undefined,
                 "wPlacement": 5,
                 "lPlacement": 7,
                 "wOverallPlacement": 81,
                 "lOverallPlacement": 113,
-                "lEligiblePhaseId": null,
-                "wEligiblePhaseId": null,
+                "lEligiblePhaseId": undefined,
+                "wEligiblePhaseId": undefined,
                 "unreachable": false,
                 "isTiebreak": false,
                 "type": 1,
-                "crewPlayerCount": null,
+                "crewPlayerCount": undefined,
                 "identifier": "C",
                 "round": 2,
                 "state": 3,
@@ -844,26 +844,26 @@ module.exports = {
                 "hasPlaceholder": false,
                 "entrant1Present": false,
                 "entrant2Present": false,
-                "adminViewedBy": null,
-                "adminMessagedBy": null,
-                "tasksPruned": null,
+                "adminViewedBy": undefined,
+                "adminMessagedBy": undefined,
+                "tasksPruned": undefined,
                 "subState": [],
-                "modRequestedBy": null,
-                "modRequestedAt": null,
-                "vodUrl": null,
-                "fbUrl": null,
-                "smashggUrl": null,
-                "durationSeconds": null,
+                "modRequestedBy": undefined,
+                "modRequestedAt": undefined,
+                "vodUrl": undefined,
+                "fbUrl": undefined,
+                "smashggUrl": undefined,
+                "durationSeconds": undefined,
                 "createdAt": 1491014044,
                 "updatedAt": 1491063246,
                 "updatedAtMicro": 1491063245.7983,
-                "startAt": null,
-                "startedAt": null,
+                "startAt": undefined,
+                "startedAt": undefined,
                 "completedAt": 1491063245,
-                "adminViewedAt": null,
-                "adminMessagedAt": null,
-                "progressionPlacement": null,
-                "progressionCount": null,
+                "adminViewedAt": undefined,
+                "adminMessagedAt": undefined,
+                "progressionPlacement": undefined,
+                "progressionCount": undefined,
                 "games": [],
                 "videogameId": 1,
                 "eventType": 1,

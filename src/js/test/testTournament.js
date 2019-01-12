@@ -161,8 +161,8 @@ describe('Smash GG Tournament', function () {
     it('should return the correct starting time', function (done) {
         var startTime1 = tournament1.getStartTime();
         var startTime2 = tournament2.getStartTime();
-        var expected1 = moment_1.default('04-01-2017 11:00:00').toDate();
-        var expected2 = moment_1.default('06-24-2016 00:00:00').toDate();
+        var expected1 = moment_1.default('04-01-2017 11:00:00', 'MM-DD-YYYY hh:mm:ss').toDate();
+        var expected2 = moment_1.default('06-24-2016 00:00:00', 'MM-DD-YYYY hh:mm:ss').toDate();
         expect(startTime1.getTime()).to.be.equal(expected1.getTime());
         expect(startTime2.getTime()).to.be.equal(expected2.getTime());
         done();
@@ -187,8 +187,8 @@ describe('Smash GG Tournament', function () {
     it('should return the correct end time', function (done) {
         var endTime1 = tournament1.getEndTime();
         var endTime2 = tournament2.getEndTime();
-        var expected1 = moment_1.default('04-01-2017 23:00:00').toDate();
-        var expected2 = moment_1.default('06-27-2016 00:00:00').toDate();
+        var expected1 = moment_1.default('04-01-2017 23:00:00', 'MM-DD-YYYY hh:mm:ss').toDate();
+        var expected2 = moment_1.default('06-27-2016 00:00:00', 'MM-DD-YYYY hh:mm:ss').toDate();
         expect(endTime1.getTime()).to.be.equal(expected1.getTime());
         expect(endTime2.getTime()).to.be.equal(expected2.getTime());
         done();
@@ -213,8 +213,8 @@ describe('Smash GG Tournament', function () {
     it('should return the correct time registration closes', function (done) {
         var closesTime1 = tournament1.getWhenRegistrationCloses();
         var closesTime2 = tournament2.getWhenRegistrationCloses();
-        var expected1 = moment_1.default('03-30-2017 02:00:00').toDate();
-        var expected2 = moment_1.default('06-13-2016 08:00:00').toDate();
+        var expected1 = moment_1.default('03-30-2017 02:00:00', 'MM-DD-YYYY hh:mm:ss').toDate();
+        var expected2 = moment_1.default('06-13-2016 08:00:00', 'MM-DD-YYYY hh:mm:ss').toDate();
         expect(closesTime1.getTime()).to.be.equal(expected1.getTime());
         expect(closesTime2.getTime()).to.be.equal(expected2.getTime());
         done();

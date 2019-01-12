@@ -70,10 +70,10 @@ var IEvent;
     function getDefaultEventData() {
         return {
             entities: {
-                slug: '',
-                tournamentId: 0,
                 event: {
-                    id: 0
+                    id: 0,
+                    slug: '',
+                    tournamentId: 0
                 }
             }
         };
@@ -248,7 +248,7 @@ var Event = /** @class */ (function (_super) {
                         return [4 /*yield*/, internal_2.getEventDataById(this.eventId, options)];
                     case 5:
                         eventData = _a.sent();
-                        tournamentId = IEvent.getTournamentSlug(eventData.entities.slug);
+                        tournamentId = IEvent.getTournamentSlug(eventData.entities.event.slug);
                         return [4 /*yield*/, internal_2.getTournamentData(tournamentId, internal_1.ITournament.getDefaultOptions())];
                     case 6:
                         tournamentData = _a.sent();

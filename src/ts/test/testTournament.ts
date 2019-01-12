@@ -12,22 +12,19 @@ chai.use(cap)
 import { Tournament, ITournament, Player, GGSet, Event } from '../lib/internal'
 import Cache from '../lib/util/Cache'
 
-
-let tournament1 = {};
-let tournament2 = {};
-let tournament3 = {};
-let tournament4 = {};
-let tournament5 = {};
-let tournament6 = {};
+let tournament1: Tournament;
+let tournament2: Tournament;
+let tournament3: Tournament;
+let tournament4: Tournament;
+let tournament5: Tournament;
+let tournament6: Tournament;
 
 const TOURNAMENT_NAME1 = 'function1';
 const TOURNAMENT_NAME2 = 'ceo2016';
 const TOURNAMENT_NAME3 = 'to12';
 const BAD_TOURNAMENT_NAME = 'badnamedotexe';
 
-let expected = _.extend(
-	require('./data/expectedTournaments')
-);
+import expected from './data/expectedTournaments';
 
 let concurrency = 2;
 
@@ -85,9 +82,9 @@ describe('Smash GG Tournament', function(){
 	it('should implement convenience methods correctly', async function(){
 		this.timeout(15000);
 
-		let cTournament1 = await Tournament.getTournament(TOURNAMENT_NAME1, {rawEncoding: 'utf8'});
-		let cTournament2 = await Tournament.getTournament(TOURNAMENT_NAME2, {rawEncoding: 'base64'});
-		let cTournament3 = await Tournament.getTournament(TOURNAMENT_NAME3);
+		let cTournament1: Tournament = await Tournament.getTournament(TOURNAMENT_NAME1, {rawEncoding: 'utf8'});
+		let cTournament2: Tournament = await Tournament.getTournament(TOURNAMENT_NAME2, {rawEncoding: 'base64'});
+		let cTournament3: Tournament = await Tournament.getTournament(TOURNAMENT_NAME3);
 
 		expect(cTournament1.data).to.deep.equal(tournament1.data);
 		expect(cTournament2.data).to.deep.equal(tournament2.data);
@@ -127,8 +124,8 @@ describe('Smash GG Tournament', function(){
 	});
 
 	it('should return the correct starting time', function(done){
-		let startTime1 = tournament1.getStartTime();
-		let startTime2 = tournament2.getStartTime();
+		let startTime1 = tournament1.getStartTime() as Date;
+		let startTime2 = tournament2.getStartTime() as Date;
 
 		let expected1 = moment('04-01-2017 11:00:00').toDate();
 		let expected2 = moment('06-24-2016 00:00:00').toDate();
@@ -161,8 +158,8 @@ describe('Smash GG Tournament', function(){
 	});
 
 	it('should return the correct end time', function(done){
-		let endTime1 = tournament1.getEndTime();
-		let endTime2 = tournament2.getEndTime();
+		let endTime1 = tournament1.getEndTime() as Date;
+		let endTime2 = tournament2.getEndTime() as Date;
 
 		let expected1 = moment('04-01-2017 23:00:00').toDate();
 		let expected2 = moment('06-27-2016 00:00:00').toDate();
@@ -195,8 +192,8 @@ describe('Smash GG Tournament', function(){
 	});
 
 	it('should return the correct time registration closes', function(done){
-		let closesTime1 = tournament1.getWhenRegistrationCloses();
-		let closesTime2 = tournament2.getWhenRegistrationCloses();
+		let closesTime1 = tournament1.getWhenRegistrationCloses() as Date;
+		let closesTime2 = tournament2.getWhenRegistrationCloses() as Date;
 
 		let expected1 = moment('03-30-2017 02:00:00').toDate();
 		let expected2 = moment('06-13-2016 08:00:00').toDate();
@@ -314,7 +311,7 @@ describe('Smash GG Tournament', function(){
 		let players = await tournament1.getAllPlayers({concurrency: concurrency});
 		expect(players.length).to.be.equal(157);
 
-		var hasDuplicates = function(a) {
+		var hasDuplicates = function(a: Array<Player>) {
 			return _.uniq(a).length !== a.length;
 		};
 		expect(hasDuplicates(players)).to.be.false;
@@ -332,7 +329,7 @@ describe('Smash GG Tournament', function(){
 		let sets = await tournament1.getAllSets({concurrency: concurrency});
 		expect(sets.length).to.be.equal(552);
 
-		var hasDuplicates = function(a) {
+		var hasDuplicates = function(a: Array<GGSet>) {
 			return _.uniq(a).length !== a.length;
 		};
 		expect(hasDuplicates(sets)).to.be.false;
@@ -350,7 +347,7 @@ describe('Smash GG Tournament', function(){
 		let events = await tournament1.getAllEvents({concurrency: concurrency});
 		expect(events.length).to.be.equal(2);
 
-		var hasDuplicates = function(a) {
+		var hasDuplicates = function(a: Array<Event>) {
 			return _.uniq(a).length !== a.length;
 		};
 		expect(hasDuplicates(events)).to.be.false;
@@ -385,7 +382,7 @@ describe('Smash GG Tournament', function(){
 
 		let minutesBack = 15;
 		let t = await Tournament.getTournament('21xx-cameron-s-birthday-bash-1');
-		let tournamentDate = moment(t.getStartTime()).add(30, 'minutes').toDate();
+		let tournamentDate = moment(t.getStartTime() as Date).add(30, 'minutes').toDate();
 		let clock = sinon.useFakeTimers(tournamentDate);
 		let sets = await t.getSetsXMinutesBack(minutesBack);
 		expect(sets.length).to.be.equal(1);
@@ -393,7 +390,7 @@ describe('Smash GG Tournament', function(){
 			expect(set).to.be.instanceof(Set);
 			
 			let now = moment();
-			let then = moment(set.getCompletedAt());
+			let then = moment(set.getCompletedAt() as Date);
 			let diff = moment.duration(now.diff(then)).minutes();
 			expect(diff <= minutesBack && diff >= 0 && set.getIsComplete()).to.be.true;
 		})

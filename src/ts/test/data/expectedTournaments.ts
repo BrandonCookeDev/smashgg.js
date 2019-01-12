@@ -1,6 +1,6 @@
 /* eslint-disable */
 
-module.exports = {
+export = {
 	tournaments: {
 		function1: {
 			"entities": {

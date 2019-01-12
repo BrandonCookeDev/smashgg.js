@@ -86,13 +86,18 @@ export namespace IEvent{
 
 	export interface EventData{
 		entities: {
-			slug: string,
-			tournamentId: number,
-			event: Entity,
-			groups?: [Entity],
-			phase?: [Entity],
-			[x: string]: any
+			event: EventEntity,
+			phase?: [ICommon.Entity],
+			groups?: [ICommon.Entity]
 		}
+	}
+
+	export interface EventEntity{
+		slug: string,
+		tournamentId: number,
+		groups?: [Entity],
+		phase?: [Entity],
+		[x: string]: any
 	}
 
 	export function getDefaultData(): Data{
@@ -105,10 +110,10 @@ export namespace IEvent{
 	export function getDefaultEventData(): EventData{
 		return {
 			entities: {
-				slug: '',
-				tournamentId: 0,
 				event: {
-					id: 0
+					id: 0,
+					slug: '',
+					tournamentId: 0
 				}
 			}
 		}
@@ -257,7 +262,7 @@ export class Event extends EventEmitter implements IEvent.Event{
 	static getEventById(id: number, options: EventOptions={}) : Promise<Event>{
 		return new Promise(function(resolve, reject){
 			try{
-				let E = new Event(id, undefined, options);
+				let E = new Event(id, undefined, options); 
 				E.on('ready', function(){
 					resolve(E);
 				});
@@ -297,7 +302,7 @@ export class Event extends EventEmitter implements IEvent.Event{
 
 				if(typeof this.eventId == 'number'){
 					eventData = await getEventDataById(this.eventId as number, options);
-					let tournamentId: string = IEvent.getTournamentSlug(eventData.entities.slug);
+					let tournamentId: string = IEvent.getTournamentSlug(eventData.entities.event.slug);
 					tournamentData = await getTournamentData(tournamentId, ITournament.getDefaultOptions());
 				}
 				else if(typeof this.eventId == 'string' && this.tournamentId){

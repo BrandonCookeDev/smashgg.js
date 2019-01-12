@@ -101,7 +101,7 @@ describe('Smash GG Event', function(){
 
 	it('should correctly get the event start time', function(done){
 		let startTime1 = event1.getStartTime() as Date;
-		let expected = moment('04-01-2017 11:00:00').toDate();
+		let expected = moment('04-01-2017 11:00:00', 'MM-DD-YYYY hh:mm:ss').toDate();
 		expect(startTime1.getTime()).to.be.equal(expected.getTime());
 		done();
 	});
@@ -120,7 +120,7 @@ describe('Smash GG Event', function(){
 
 	it('should correctly get the event end time', function(done){
 		let endTime1 = event1.getEndTime() as Date;
-		let expected = moment('04-01-2017 12:00:00').toDate();
+		let expected = moment('04-01-2017 12:00:00', 'MM-DD-YYYY hh:mm:ss').toDate();
 		expect(endTime1.getTime()).to.be.equal(expected.getTime());
 		done();
 	});

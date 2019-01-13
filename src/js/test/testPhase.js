@@ -127,7 +127,7 @@ describe('Smash GG Phase', function () {
     });
     it('should correctly get all phase groups', function () {
         return __awaiter(this, void 0, void 0, function () {
-            var phaseGroups1, phaseGroups2, phaseGroups3, hasDuplicates;
+            var phaseGroups1, hasDuplicates;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -135,27 +135,57 @@ describe('Smash GG Phase', function () {
                         return [4 /*yield*/, phase1.getPhaseGroups({ concurrency: concurrency })];
                     case 1:
                         phaseGroups1 = _a.sent();
-                        return [4 /*yield*/, phase2.getPhaseGroups({ concurrency: concurrency })];
-                    case 2:
-                        phaseGroups2 = _a.sent();
-                        return [4 /*yield*/, phase3.getPhaseGroups({ concurrency: concurrency })];
-                    case 3:
-                        phaseGroups3 = _a.sent();
                         expect(phaseGroups1.length).to.be.equal(16);
-                        expect(phaseGroups2.length).to.be.equal(32);
-                        expect(phaseGroups3.length).to.be.equal(16);
                         hasDuplicates = function (a) {
                             return lodash_1.default.uniq(a).length !== a.length;
                         };
                         expect(hasDuplicates(phaseGroups1)).to.be.false;
-                        expect(hasDuplicates(phaseGroups2)).to.be.false;
-                        expect(hasDuplicates(phaseGroups3)).to.be.false;
                         phaseGroups1.forEach(function (set) {
                             expect(set).to.be.an.instanceof(internal_1.PhaseGroup);
                         });
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    it('should correctly get all phase groups 2', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var phaseGroups2, hasDuplicates;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(45000);
+                        return [4 /*yield*/, phase2.getPhaseGroups({ concurrency: concurrency })];
+                    case 1:
+                        phaseGroups2 = _a.sent();
+                        expect(phaseGroups2.length).to.be.equal(32);
+                        hasDuplicates = function (a) {
+                            return lodash_1.default.uniq(a).length !== a.length;
+                        };
+                        expect(hasDuplicates(phaseGroups2)).to.be.false;
                         phaseGroups2.forEach(function (set) {
                             expect(set).to.be.an.instanceof(internal_1.PhaseGroup);
                         });
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    it('should correctly get all phase groups 3', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var phaseGroups3, hasDuplicates;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(45000);
+                        return [4 /*yield*/, phase3.getPhaseGroups({ concurrency: concurrency })];
+                    case 1:
+                        phaseGroups3 = _a.sent();
+                        expect(phaseGroups3.length).to.be.equal(16);
+                        hasDuplicates = function (a) {
+                            return lodash_1.default.uniq(a).length !== a.length;
+                        };
+                        expect(hasDuplicates(phaseGroups3)).to.be.false;
                         phaseGroups3.forEach(function (set) {
                             expect(set).to.be.an.instanceof(internal_1.PhaseGroup);
                         });
@@ -166,7 +196,7 @@ describe('Smash GG Phase', function () {
     });
     it('should correctly get all sets for a phase', function () {
         return __awaiter(this, void 0, void 0, function () {
-            var sets1, sets2;
+            var sets1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -174,15 +204,46 @@ describe('Smash GG Phase', function () {
                         return [4 /*yield*/, phase1.getSets({ concurrency: concurrency })];
                     case 1:
                         sets1 = _a.sent();
-                        return [4 /*yield*/, phase2.getSets({ concurrency: concurrency })];
-                    case 2:
-                        sets2 = _a.sent();
                         expect(sets1.length).to.be.equal(248);
-                        expect(sets2.length).to.be.equal(1292);
                         sets1.forEach(function (set) {
                             expect(set).to.be.instanceof(internal_1.GGSet);
                         });
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    xit('should correctly get all sets for a phase 2', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var sets2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(45000);
+                        return [4 /*yield*/, phase2.getSets({ concurrency: concurrency })];
+                    case 1:
+                        sets2 = _a.sent();
+                        expect(sets2.length).to.be.equal(1292);
                         sets2.forEach(function (set) {
+                            expect(set).to.be.instanceof(internal_1.GGSet);
+                        });
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    it('should correctly get all sets for a phase 3', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var sets3;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(45000);
+                        return [4 /*yield*/, phase3.getSets({ concurrency: concurrency })];
+                    case 1:
+                        sets3 = _a.sent();
+                        expect(sets3.length).to.be.equal(450);
+                        sets3.forEach(function (set) {
                             expect(set).to.be.instanceof(internal_1.GGSet);
                         });
                         return [2 /*return*/, true];
@@ -192,7 +253,7 @@ describe('Smash GG Phase', function () {
     });
     it('should correctly get all players for a phase', function () {
         return __awaiter(this, void 0, void 0, function () {
-            var players1, players2;
+            var players1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -200,14 +261,26 @@ describe('Smash GG Phase', function () {
                         return [4 /*yield*/, phase1.getPlayers({ concurrency: concurrency })];
                     case 1:
                         players1 = _a.sent();
-                        return [4 /*yield*/, phase2.getPlayers({ concurrency: concurrency })];
-                    case 2:
-                        players2 = _a.sent();
                         expect(players1.length).to.be.equal(156);
-                        expect(players2.length).to.be.equal(678);
                         players1.forEach(function (set) {
                             expect(set).to.be.instanceof(internal_1.Player);
                         });
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    it('should correctly get all players for a phase', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var players2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(30000);
+                        return [4 /*yield*/, phase2.getPlayers({ concurrency: concurrency })];
+                    case 1:
+                        players2 = _a.sent();
+                        expect(players2.length).to.be.equal(678);
                         players2.forEach(function (set) {
                             expect(set).to.be.instanceof(internal_1.Player);
                         });

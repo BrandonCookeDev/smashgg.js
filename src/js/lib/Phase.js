@@ -408,7 +408,7 @@ var Phase = /** @class */ (function (_super) {
                         return [4 /*yield*/, this.getSets()];
                     case 2:
                         sets = _a.sent();
-                        filtered = internal_1.GGSet.filterForCompleteSets(sets);
+                        filtered = internal_1.GGSet.filterForXMinutesBack(sets, minutesBack);
                         return [2 /*return*/, filtered];
                     case 3:
                         e_6 = _a.sent();

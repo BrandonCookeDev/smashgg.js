@@ -266,7 +266,7 @@ export class Phase extends EventEmitter implements IPhase.Phase{
 			options.isCached = false;
 
 			let sets = await this.getSets();
-			let filtered = GGSet.filterForCompleteSets(sets);
+			let filtered = GGSet.filterForXMinutesBack(sets, minutesBack);
 			return filtered;
 		} catch(e){
 			log.error('Phase.getSetsXMinutesBack error: %s', e);

@@ -55,7 +55,6 @@ var lodash_1 = __importDefault(require("lodash"));
 var winston_1 = __importDefault(require("winston"));
 var p_map_1 = __importDefault(require("p-map"));
 var util_1 = require("util");
-var moment_1 = __importDefault(require("moment"));
 var request_promise_1 = __importDefault(require("request-promise"));
 var events_1 = require("events");
 var Cache_1 = __importDefault(require("./util/Cache"));
@@ -70,7 +69,7 @@ var DEFAULT_ENCODING = 'json';
 var PhaseGroup = /** @class */ (function (_super) {
     __extends(PhaseGroup, _super);
     function PhaseGroup(id, options) {
-        if (options === void 0) { options = {}; }
+        if (options === void 0) { options = IPhaseGroup.getDefaultOptions(); }
         var _this = _super.call(this) || this;
         _this.id = 0;
         _this.url = '';
@@ -84,21 +83,16 @@ var PhaseGroup = /** @class */ (function (_super) {
         if (!id)
             throw new Error('ID cannot be null for Phase Group');
         // parse options
-        var expands = options.expands;
-        var isCached = options.isCached != undefined ? options.isCached === true : true;
-        var rawEncoding = options.rawEncoding || DEFAULT_ENCODING;
+        options = IPhaseGroup.parseOptions(options);
+        _this.rawEncoding = options.rawEncoding;
+        _this.isCached = options.isCached;
         // set properties
         _this.id = id;
-        _this.isCached = isCached;
-        _this.rawEncoding = LEGAL_ENCODINGS.includes(rawEncoding) ? rawEncoding : DEFAULT_ENCODING;
         // CREATE THE EXPANDS STRING
         _this.expandsString = '';
-        _this.expands = {
-            sets: (expands && expands.sets == false) ? false : true,
-            entrants: (expands && expands.entrants == false) ? false : true,
-            standings: (expands && expands.standings == false) ? false : true,
-            seeds: (expands && expands.seeds == false) ? false : true
-        };
+        if (options.expands) {
+            _this.expands = Object.assign(_this.expands, options.expands);
+        }
         for (var property in _this.expands) {
             if (_this.expands.hasOwnProperty(property))
                 _this.expandsString += util_1.format('expand[]=%s&', property);
@@ -121,12 +115,12 @@ var PhaseGroup = /** @class */ (function (_super) {
         return _this;
     }
     PhaseGroup.prototype.loadData = function (data) {
-        var encoded = this.rawEncoding == 'json' ? data : new Buffer(JSON.stringify(data)).toString(this.rawEncoding);
+        var encoded = this.rawEncoding === 'json' ? data : new Buffer(JSON.stringify(data)).toString(this.rawEncoding);
         this.data = encoded;
         return encoded;
     };
     PhaseGroup.prototype.getData = function () {
-        var decoded = this.rawEncoding == 'json' ? this.data : JSON.parse(new Buffer(this.data.toString(), this.rawEncoding).toString('utf8'));
+        var decoded = this.rawEncoding === 'json' ? this.data : JSON.parse(new Buffer(this.data.toString(), this.rawEncoding).toString('utf8'));
         return decoded;
     };
     // Convenience Methods
@@ -299,7 +293,7 @@ var PhaseGroup = /** @class */ (function (_super) {
     PhaseGroup.prototype.getCompleteSets = function (options) {
         if (options === void 0) { options = {}; }
         return __awaiter(this, void 0, void 0, function () {
-            var sets, completeSets, e_2;
+            var sets, filtered, e_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -312,8 +306,8 @@ var PhaseGroup = /** @class */ (function (_super) {
                         return [4 /*yield*/, this.getSets(options)];
                     case 2:
                         sets = _a.sent();
-                        completeSets = sets.filter(function (set) { return set.isComplete == true; });
-                        return [2 /*return*/, completeSets];
+                        filtered = internal_1.GGSet.filterForCompleteSets(sets);
+                        return [2 /*return*/, filtered];
                     case 3:
                         e_2 = _a.sent();
                         winston_1.default.error('PhaseGroup getCompleteSets error: %s', e_2);
@@ -326,7 +320,7 @@ var PhaseGroup = /** @class */ (function (_super) {
     PhaseGroup.prototype.getIncompleteSets = function (options) {
         if (options === void 0) { options = {}; }
         return __awaiter(this, void 0, void 0, function () {
-            var sets, completeSets, e_3;
+            var sets, filtered, e_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -339,8 +333,8 @@ var PhaseGroup = /** @class */ (function (_super) {
                         return [4 /*yield*/, this.getSets(options)];
                     case 2:
                         sets = _a.sent();
-                        completeSets = sets.filter(function (set) { return set.isComplete == false; });
-                        return [2 /*return*/, completeSets];
+                        filtered = internal_1.GGSet.filterForIncompleteSets(sets);
+                        return [2 /*return*/, filtered];
                     case 3:
                         e_3 = _a.sent();
                         winston_1.default.error('PhaseGroup getIncompleteSets error: %s', e_3);
@@ -351,10 +345,10 @@ var PhaseGroup = /** @class */ (function (_super) {
         });
     };
     // TODO needs coverage
-    PhaseGroup.prototype.getSetsXMinutesBack = function (minutes, options) {
+    PhaseGroup.prototype.getSetsXMinutesBack = function (minutesBack, options) {
         if (options === void 0) { options = {}; }
         return __awaiter(this, void 0, void 0, function () {
-            var now_1, sets, filtered, e_4;
+            var sets, filtered, e_4;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -364,20 +358,10 @@ var PhaseGroup = /** @class */ (function (_super) {
                         _a.trys.push([1, 3, , 4]);
                         // parse options			
                         options = parseOptions(options);
-                        options.isCached = false;
-                        now_1 = moment_1.default();
                         return [4 /*yield*/, this.getSets(options)];
                     case 2:
                         sets = _a.sent();
-                        filtered = sets.filter(function (set) {
-                            var then = moment_1.default(set.getCompletedAt());
-                            var diff = moment_1.default.duration(now_1.diff(then));
-                            var diffMinutes = diff.minutes();
-                            if (diff.hours() > 0 || diff.days() > 0 || diff.months() > 0 || diff.years() > 0)
-                                return false;
-                            else
-                                return diffMinutes <= minutes && diffMinutes >= 0 && set.getIsComplete();
-                        });
+                        filtered = internal_1.GGSet.filterForXMinutesBack(sets, minutesBack);
                         return [2 /*return*/, filtered];
                     case 3:
                         e_4 = _a.sent();
@@ -500,10 +484,10 @@ var IPhaseGroup;
         };
     }
     IPhaseGroup.parseOptions = parseOptions;
-    function getDefaultOptions(options) {
+    function getDefaultOptions() {
         return {
             isCached: true,
-            rawEncoding: 'JSON',
+            rawEncoding: 'json',
             expands: getDefaultExpands()
         };
     }

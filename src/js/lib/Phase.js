@@ -68,7 +68,7 @@ var Common_1 = require("./util/Common");
 var Phase = /** @class */ (function (_super) {
     __extends(Phase, _super);
     function Phase(id, options) {
-        if (options === void 0) { options = {}; }
+        if (options === void 0) { options = IPhase.getDefaultOptions(); }
         var _this = _super.call(this) || this;
         _this.id = 0;
         _this.url = '';
@@ -79,10 +79,11 @@ var Phase = /** @class */ (function (_super) {
         _this.expands = IPhase.getDefaultExpands();
         if (!id)
             throw new Error('ID cannot be null for Phase Group');
+        _this.id = id;
         // parse options
         options = IPhase.parseOptions(options);
-        _this.isCached = options.isCached == true;
-        _this.rawEncoding = LEGAL_ENCODINGS.includes(options.rawEncoding) ? options.rawEncoding : DEFAULT_ENCODING;
+        _this.isCached = options.isCached;
+        _this.rawEncoding = options.rawEncoding;
         // CREATE THE EXPANDS STRING
         _this.expandsString = '';
         if (options.expands) {
@@ -110,12 +111,12 @@ var Phase = /** @class */ (function (_super) {
         return _this;
     }
     Phase.prototype.loadData = function (data) {
-        var encoded = this.rawEncoding == 'json' ? data : new Buffer(JSON.stringify(data)).toString(this.rawEncoding);
+        var encoded = this.rawEncoding === 'json' ? data : new Buffer(JSON.stringify(data)).toString(this.rawEncoding);
         this.data = encoded;
         return encoded;
     };
     Phase.prototype.getData = function () {
-        var decoded = this.rawEncoding == 'json' ? this.data : JSON.parse(new Buffer(this.data.toString(), this.rawEncoding).toString('utf8'));
+        var decoded = this.rawEncoding === 'json' ? this.data : JSON.parse(new Buffer(this.data.toString(), this.rawEncoding).toString('utf8'));
         return decoded;
     };
     // Convenience Methods
@@ -339,38 +340,26 @@ var Phase = /** @class */ (function (_super) {
     Phase.prototype.getIncompleteSets = function (options) {
         if (options === void 0) { options = {}; }
         return __awaiter(this, void 0, void 0, function () {
-            var groups, fn, sets, flattened, e_4;
-            var _this = this;
+            var sets, filtered, e_4;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         winston_1.default.debug('Phase.getIncompleteSets called');
                         _a.label = 1;
                     case 1:
-                        _a.trys.push([1, 4, , 5]);
+                        _a.trys.push([1, 3, , 4]);
                         //parse options
                         options = Common_1.ICommon.parseOptions(options);
-                        return [4 /*yield*/, this.getPhaseGroups(options)];
+                        return [4 /*yield*/, this.getSets(options)];
                     case 2:
-                        groups = _a.sent();
-                        fn = function (group) { return __awaiter(_this, void 0, void 0, function () {
-                            return __generator(this, function (_a) {
-                                switch (_a.label) {
-                                    case 0: return [4 /*yield*/, group.getIncompleteSets(options)];
-                                    case 1: return [2 /*return*/, _a.sent()];
-                                }
-                            });
-                        }); };
-                        return [4 /*yield*/, p_map_1.default(groups, fn, { concurrency: options.concurrency })];
-                    case 3:
                         sets = _a.sent();
-                        flattened = lodash_1.default.flatten(sets);
-                        return [2 /*return*/, flattened];
-                    case 4:
+                        filtered = internal_1.GGSet.filterForIncompleteSets(sets);
+                        return [2 /*return*/, filtered];
+                    case 3:
                         e_4 = _a.sent();
                         winston_1.default.error('Phase.getIncompleteSets error: %s', e_4);
                         throw e_4;
-                    case 5: return [2 /*return*/];
+                    case 4: return [2 /*return*/];
                 }
             });
         });
@@ -378,38 +367,26 @@ var Phase = /** @class */ (function (_super) {
     Phase.prototype.getCompleteSets = function (options) {
         if (options === void 0) { options = {}; }
         return __awaiter(this, void 0, void 0, function () {
-            var groups, fn, sets, flattened, e_5;
-            var _this = this;
+            var sets, filtered, e_5;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         winston_1.default.debug('Phase.getIncompleteSets called');
                         _a.label = 1;
                     case 1:
-                        _a.trys.push([1, 4, , 5]);
+                        _a.trys.push([1, 3, , 4]);
                         //parse options
                         options = Common_1.ICommon.parseOptions(options);
-                        return [4 /*yield*/, this.getPhaseGroups(options)];
+                        return [4 /*yield*/, this.getSets(options)];
                     case 2:
-                        groups = _a.sent();
-                        fn = function (group) { return __awaiter(_this, void 0, void 0, function () {
-                            return __generator(this, function (_a) {
-                                switch (_a.label) {
-                                    case 0: return [4 /*yield*/, group.getCompleteSets(options)];
-                                    case 1: return [2 /*return*/, _a.sent()];
-                                }
-                            });
-                        }); };
-                        return [4 /*yield*/, p_map_1.default(groups, fn, { concurrency: options.concurrency })];
-                    case 3:
                         sets = _a.sent();
-                        flattened = lodash_1.default.flatten(sets);
-                        return [2 /*return*/, flattened];
-                    case 4:
+                        filtered = internal_1.GGSet.filterForCompleteSets(sets);
+                        return [2 /*return*/, filtered];
+                    case 3:
                         e_5 = _a.sent();
                         winston_1.default.error('Phase.getIncompleteSets error: %s', e_5);
                         throw e_5;
-                    case 5: return [2 /*return*/];
+                    case 4: return [2 /*return*/];
                 }
             });
         });
@@ -417,39 +394,27 @@ var Phase = /** @class */ (function (_super) {
     Phase.prototype.getSetsXMinutesBack = function (minutesBack, options) {
         if (options === void 0) { options = {}; }
         return __awaiter(this, void 0, void 0, function () {
-            var groups, fn, sets, flattened, e_6;
-            var _this = this;
+            var sets, filtered, e_6;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         winston_1.default.verbose('Phase.getSetsXMinutesBack called');
                         _a.label = 1;
                     case 1:
-                        _a.trys.push([1, 4, , 5]);
+                        _a.trys.push([1, 3, , 4]);
                         // parse options
                         options = Common_1.ICommon.parseOptions(options);
                         options.isCached = false;
-                        return [4 /*yield*/, this.getPhaseGroups(options)];
+                        return [4 /*yield*/, this.getSets()];
                     case 2:
-                        groups = _a.sent();
-                        fn = function (group) { return __awaiter(_this, void 0, void 0, function () {
-                            return __generator(this, function (_a) {
-                                switch (_a.label) {
-                                    case 0: return [4 /*yield*/, group.getSetsXMinutesBack(minutesBack, options)];
-                                    case 1: return [2 /*return*/, _a.sent()];
-                                }
-                            });
-                        }); };
-                        return [4 /*yield*/, p_map_1.default(groups, fn, { concurrency: options.concurrency })];
-                    case 3:
                         sets = _a.sent();
-                        flattened = lodash_1.default.flatten(sets);
-                        return [2 /*return*/, flattened];
-                    case 4:
+                        filtered = internal_1.GGSet.filterForCompleteSets(sets);
+                        return [2 /*return*/, filtered];
+                    case 3:
                         e_6 = _a.sent();
                         winston_1.default.error('Phase.getSetsXMinutesBack error: %s', e_6);
                         throw e_6;
-                    case 5: return [2 /*return*/];
+                    case 4: return [2 /*return*/];
                 }
             });
         });
@@ -507,13 +472,13 @@ var IPhase;
         };
     }
     IPhase.getDefaultExpands = getDefaultExpands;
-    function getDefaultOptions(options) {
+    function getDefaultOptions() {
         return {
             expands: {
                 groups: true
             },
             isCached: true,
-            rawEncoding: 'JSON'
+            rawEncoding: 'json'
         };
     }
     IPhase.getDefaultOptions = getDefaultOptions;

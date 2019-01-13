@@ -28,7 +28,7 @@ const BAD_TOURNAMENT_NAME = 'badnamedotexe';
 const EVENT_ID_1 = 14335;
 
 
-let concurrency = 2;
+let concurrency = 4;
 
 function loadEvent(eventName: string, tournamentName: string, options: IEvent.Options) : Promise<Event> {
 	return new Promise(function(resolve, reject){
@@ -152,46 +152,72 @@ describe('Smash GG Event', function(){
 		this.timeout(15000);
 
 		let phases1 = await event1.getEventPhases({concurrency: concurrency});
-		let phases2 = await event2.getEventPhases({concurrency: concurrency});
 
 		expect(phases1.length).to.be.equal(4);
-		expect(phases2.length).to.be.equal(2);
 
 		var hasDuplicates = function(a: Array<Phase>) {
 			return _.uniq(a).length !== a.length;
 		};
 		expect(hasDuplicates(phases1)).to.be.false;
-		expect(hasDuplicates(phases2)).to.be.false;
 
 		phases1.forEach(phase => {
 			expect(phase).to.be.instanceof(Phase);
 		});
+
+
+		return true;
+	});
+
+	it('should correctly get the phases 2', async function(){
+		this.timeout(15000);
+		
+		let phases2 = await event2.getEventPhases({concurrency: concurrency});
+
+		expect(phases2.length).to.be.equal(2);
+	
+		var hasDuplicates = function(a: Array<Phase>) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(phases2)).to.be.false;
 
 		phases2.forEach(phase => {
 			expect(phase).to.be.instanceof(Phase);
 		});
 
 		return true;
-	});
+	})
 
 	it('should correctly get the phase groups', async function(){
 		this.timeout(25000);
 
 		let groups1 = await event1.getEventPhaseGroups({concurrency: concurrency});
-		let groups2 = await event2.getEventPhaseGroups({concurrency: concurrency});
 
 		expect(groups1.length).to.be.equal(22);
-		expect(groups2.length).to.be.equal(33);
 
 		var hasDuplicates = function(a: Array<PhaseGroup>) {
 			return _.uniq(a).length !== a.length;
 		};
 		expect(hasDuplicates(groups1)).to.be.false;
-		expect(hasDuplicates(groups2)).to.be.false;
 
 		groups1.forEach(group => {
 			expect(group).to.be.instanceof(PhaseGroup);
 		});
+
+		return true;
+	})
+
+	it('should correctly get the phase groups 2', async function(){
+		this.timeout(25000);
+		
+		let groups2 = await event2.getEventPhaseGroups({concurrency: concurrency});
+
+		expect(groups2.length).to.be.equal(33);
+
+		var hasDuplicates = function(a: Array<PhaseGroup>) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(groups2)).to.be.false;
+
 		groups2.forEach(group => {
 			expect(group).to.be.instanceof(PhaseGroup);
 		});
@@ -203,14 +229,23 @@ describe('Smash GG Event', function(){
 		this.timeout(30000);
 
 		let sets1 = await event1.getSets({concurrency: concurrency});
-		let sets2 = await event2.getSets({concurrency: concurrency});
 
 		expect(sets1.length).to.be.equal(469);
-		expect(sets2.length).to.be.equal(1386);
 
 		sets1.forEach(set => {
 			expect(set).to.be.instanceof(GGSet);
 		})
+
+		return true;
+	})
+
+	xit('should correctly get all sets from an event 2', async function(){
+		this.timeout(30000);
+		
+		let sets2 = await event2.getSets({concurrency: concurrency});
+
+		expect(sets2.length).to.be.equal(1386);
+
 		sets2.forEach(set => {
 			expect(set).to.be.instanceof(GGSet);
 		})
@@ -222,14 +257,23 @@ describe('Smash GG Event', function(){
 		this.timeout(30000);
 		
 		let players1 = await event1.getPlayers({concurrency: concurrency});
-		let players2 = await event2.getPlayers({concurrency: concurrency});
 
 		expect(players1.length).to.be.equal(156);
-		expect(players2.length).to.be.equal(678);
 
 		players1.forEach(set => {
 			expect(set).to.be.instanceof(Player);
 		})
+
+		return true;
+	})
+
+	it('should correctly get all players from an event 2', async function(){
+		this.timeout(30000);
+		
+		let players2 = await event2.getPlayers({concurrency: concurrency});
+
+		expect(players2.length).to.be.equal(678);
+
 		players2.forEach(set => {
 			expect(set).to.be.instanceof(Player);
 		})

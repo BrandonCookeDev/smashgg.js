@@ -86,7 +86,7 @@ var ITournament;
                 stations: true
             },
             isCached: true,
-            rawEncoding: 'JSON'
+            rawEncoding: 'json'
         };
     }
     ITournament.getDefaultOptions = getDefaultOptions;
@@ -135,7 +135,7 @@ function parseTournamentOptions(options) {
 var Tournament = /** @class */ (function (_super) {
     __extends(Tournament, _super);
     function Tournament(tournamentId, options) {
-        if (options === void 0) { options = {}; }
+        if (options === void 0) { options = ITournament.getDefaultOptions(); }
         var _this = _super.call(this) || this;
         _this.url = '';
         _this.expands = {
@@ -157,17 +157,11 @@ var Tournament = /** @class */ (function (_super) {
         //else if(tournamentId instanceof Number)
         //	throw new Error('Due to Smashgg limitations, currently Tournaments may only be retrieved by tournament name (slug)');
         // parse options
-        var isCached = options.isCached != undefined ? options.isCached === true : true;
-        var rawEncoding = options.rawEncoding || DEFAULT_ENCODING;
-        // set properties
-        _this.data = {
-            tournament: {
-                id: 0
-            }
-        };
+        options = ITournament.parseOptions(options);
+        _this.data = ITournament.getDefaultData();
         _this.name = tournamentId; // instanceof String ? tournamentId : +tournamentId;
-        _this.isCached = isCached;
-        _this.rawEncoding = LEGAL_ENCODINGS.includes(rawEncoding) ? rawEncoding : DEFAULT_ENCODING;
+        _this.isCached = options.isCached;
+        _this.rawEncoding = options.rawEncoding;
         // create expands 
         _this.expandsString = '';
         _this.expands = {
@@ -199,12 +193,12 @@ var Tournament = /** @class */ (function (_super) {
         return _this;
     }
     Tournament.prototype.loadData = function (data) {
-        var encoded = this.rawEncoding == 'json' ? data : new Buffer(JSON.stringify(data)).toString(this.rawEncoding);
+        var encoded = this.rawEncoding === 'json' ? data : new Buffer(JSON.stringify(data)).toString(this.rawEncoding);
         this.data = encoded;
         return encoded;
     };
     Tournament.prototype.getData = function () {
-        var decoded = this.rawEncoding == 'json' ? this.data : JSON.parse(new Buffer(this.data.toString(), this.rawEncoding).toString('utf8'));
+        var decoded = this.rawEncoding === 'json' ? this.data : JSON.parse(new Buffer(this.data.toString(), this.rawEncoding).toString('utf8'));
         return decoded;
     };
     // Convenience methods

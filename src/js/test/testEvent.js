@@ -59,7 +59,7 @@ var TOURNAMENT_NAME2 = 'ceo-2016';
 var TOURNAMENT_NAME3 = 'tipped-off-12-presented-by-the-lab-gaming-center';
 var BAD_TOURNAMENT_NAME = 'badnamedotexe';
 var EVENT_ID_1 = 14335;
-var concurrency = 2;
+var concurrency = 4;
 function loadEvent(eventName, tournamentName, options) {
     return new Promise(function (resolve, reject) {
         var event = new internal_1.Event(eventName, tournamentName, options);
@@ -185,7 +185,7 @@ describe('Smash GG Event', function () {
     });
     it('should correctly get the phases', function () {
         return __awaiter(this, void 0, void 0, function () {
-            var phases1, phases2, hasDuplicates;
+            var phases1, hasDuplicates;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -193,19 +193,34 @@ describe('Smash GG Event', function () {
                         return [4 /*yield*/, event1.getEventPhases({ concurrency: concurrency })];
                     case 1:
                         phases1 = _a.sent();
-                        return [4 /*yield*/, event2.getEventPhases({ concurrency: concurrency })];
-                    case 2:
-                        phases2 = _a.sent();
                         expect(phases1.length).to.be.equal(4);
-                        expect(phases2.length).to.be.equal(2);
                         hasDuplicates = function (a) {
                             return lodash_1.default.uniq(a).length !== a.length;
                         };
                         expect(hasDuplicates(phases1)).to.be.false;
-                        expect(hasDuplicates(phases2)).to.be.false;
                         phases1.forEach(function (phase) {
                             expect(phase).to.be.instanceof(internal_1.Phase);
                         });
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    it('should correctly get the phases 2', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var phases2, hasDuplicates;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(15000);
+                        return [4 /*yield*/, event2.getEventPhases({ concurrency: concurrency })];
+                    case 1:
+                        phases2 = _a.sent();
+                        expect(phases2.length).to.be.equal(2);
+                        hasDuplicates = function (a) {
+                            return lodash_1.default.uniq(a).length !== a.length;
+                        };
+                        expect(hasDuplicates(phases2)).to.be.false;
                         phases2.forEach(function (phase) {
                             expect(phase).to.be.instanceof(internal_1.Phase);
                         });
@@ -216,7 +231,7 @@ describe('Smash GG Event', function () {
     });
     it('should correctly get the phase groups', function () {
         return __awaiter(this, void 0, void 0, function () {
-            var groups1, groups2, hasDuplicates;
+            var groups1, hasDuplicates;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -224,19 +239,34 @@ describe('Smash GG Event', function () {
                         return [4 /*yield*/, event1.getEventPhaseGroups({ concurrency: concurrency })];
                     case 1:
                         groups1 = _a.sent();
-                        return [4 /*yield*/, event2.getEventPhaseGroups({ concurrency: concurrency })];
-                    case 2:
-                        groups2 = _a.sent();
                         expect(groups1.length).to.be.equal(22);
-                        expect(groups2.length).to.be.equal(33);
                         hasDuplicates = function (a) {
                             return lodash_1.default.uniq(a).length !== a.length;
                         };
                         expect(hasDuplicates(groups1)).to.be.false;
-                        expect(hasDuplicates(groups2)).to.be.false;
                         groups1.forEach(function (group) {
                             expect(group).to.be.instanceof(internal_1.PhaseGroup);
                         });
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    it('should correctly get the phase groups 2', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var groups2, hasDuplicates;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(25000);
+                        return [4 /*yield*/, event2.getEventPhaseGroups({ concurrency: concurrency })];
+                    case 1:
+                        groups2 = _a.sent();
+                        expect(groups2.length).to.be.equal(33);
+                        hasDuplicates = function (a) {
+                            return lodash_1.default.uniq(a).length !== a.length;
+                        };
+                        expect(hasDuplicates(groups2)).to.be.false;
                         groups2.forEach(function (group) {
                             expect(group).to.be.instanceof(internal_1.PhaseGroup);
                         });
@@ -247,7 +277,7 @@ describe('Smash GG Event', function () {
     });
     it('should correctly get all sets from an event', function () {
         return __awaiter(this, void 0, void 0, function () {
-            var sets1, sets2;
+            var sets1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -255,14 +285,26 @@ describe('Smash GG Event', function () {
                         return [4 /*yield*/, event1.getSets({ concurrency: concurrency })];
                     case 1:
                         sets1 = _a.sent();
-                        return [4 /*yield*/, event2.getSets({ concurrency: concurrency })];
-                    case 2:
-                        sets2 = _a.sent();
                         expect(sets1.length).to.be.equal(469);
-                        expect(sets2.length).to.be.equal(1386);
                         sets1.forEach(function (set) {
                             expect(set).to.be.instanceof(internal_1.GGSet);
                         });
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    xit('should correctly get all sets from an event 2', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var sets2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(30000);
+                        return [4 /*yield*/, event2.getSets({ concurrency: concurrency })];
+                    case 1:
+                        sets2 = _a.sent();
+                        expect(sets2.length).to.be.equal(1386);
                         sets2.forEach(function (set) {
                             expect(set).to.be.instanceof(internal_1.GGSet);
                         });
@@ -273,7 +315,7 @@ describe('Smash GG Event', function () {
     });
     it('should correctly get all players from an event', function () {
         return __awaiter(this, void 0, void 0, function () {
-            var players1, players2;
+            var players1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -281,14 +323,26 @@ describe('Smash GG Event', function () {
                         return [4 /*yield*/, event1.getPlayers({ concurrency: concurrency })];
                     case 1:
                         players1 = _a.sent();
-                        return [4 /*yield*/, event2.getPlayers({ concurrency: concurrency })];
-                    case 2:
-                        players2 = _a.sent();
                         expect(players1.length).to.be.equal(156);
-                        expect(players2.length).to.be.equal(678);
                         players1.forEach(function (set) {
                             expect(set).to.be.instanceof(internal_1.Player);
                         });
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    it('should correctly get all players from an event 2', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var players2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(30000);
+                        return [4 /*yield*/, event2.getPlayers({ concurrency: concurrency })];
+                    case 1:
+                        players2 = _a.sent();
+                        expect(players2.length).to.be.equal(678);
                         players2.forEach(function (set) {
                             expect(set).to.be.instanceof(internal_1.Player);
                         });

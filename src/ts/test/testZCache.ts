@@ -2,6 +2,7 @@
 import '../lib/util/ErrorHandler'
 
 import _ from 'lodash'
+import {format} from 'util'
 import chai from 'chai'
 import cap from 'chai-as-promised'
 chai.use(cap)
@@ -19,8 +20,8 @@ let testData = _.extend(
 	testPlayers
 );
 
-const TOURNAMENT_NAME1 = 'function1';
-const TOURNAMENT_NAME2 = 'ceo2016';
+const TOURNAMENT_NAME1 = 'function-1-recursion-regional';
+const TOURNAMENT_NAME2 = 'ceo-2016';
 const EVENT_NAME1 = 'melee-singles';
 const PHASEID1 = 111483;
 const PHASEID2 = 45262;
@@ -53,10 +54,10 @@ describe('Test Caching', function(){
 		let keys = await Cache.keys();
 		expect(keys.length).to.be.equal(4);
 
-		let key1 = 'tournament::function1::expand[]=event&expand[]=phase&expand[]=groups&expand[]=stations&';
-		let key2 = 'tournament::ceo2016::expand[]=event&expand[]=phase&expand[]=groups&expand[]=stations&';
-		let key1data = 'tournament::function1::json::expand[]=event&expand[]=phase&expand[]=groups&expand[]=stations&::data';
-		let key2data = 'tournament::ceo2016::json::expand[]=event&expand[]=phase&expand[]=groups&expand[]=stations&::data';
+		let key1 = format('tournament::%s::expand[]=event&expand[]=phase&expand[]=groups&expand[]=stations&', TOURNAMENT_NAME1);
+		let key2 = format('tournament::%s::expand[]=event&expand[]=phase&expand[]=groups&expand[]=stations&', TOURNAMENT_NAME2);
+		let key1data = format('tournament::%s::json::expand[]=event&expand[]=phase&expand[]=groups&expand[]=stations&::data', TOURNAMENT_NAME1);
+		let key2data = format('tournament::%s::json::expand[]=event&expand[]=phase&expand[]=groups&expand[]=stations&::data', TOURNAMENT_NAME2);
 
 		expect(keys).to.include(key1);
 		expect(keys).to.include(key2);
@@ -80,7 +81,7 @@ describe('Test Caching', function(){
 		let t1Players = await t1.getAllPlayers();
 
 		let keys = await Cache.keys();
-		let key1 = 'tournament::function1::players';
+		let key1 = format('tournament::%s::players', TOURNAMENT_NAME1);
 
 		expect(keys).to.include(key1);
 
@@ -111,7 +112,7 @@ describe('Test Caching', function(){
 
 		let keys = await Cache.keys();
 
-		let key1 = 'tournament::function1::sets';
+		let key1 = format('tournament::%s::sets', TOURNAMENT_NAME1);
 		expect(keys).to.include(key1);
 		let t1SetsCached = await Cache.get(key1) as Array<GGSet>;
 
@@ -145,8 +146,8 @@ describe('Test Caching', function(){
 
 		let keys = await Cache.keys();
 
-		let key1 = 'tournament::function1::events';
-		let key2 = 'tournament::ceo2016::events';
+		let key1 = format('tournament::%s::events', TOURNAMENT_NAME1);
+		let key2 = format('tournament::%s::events', TOURNAMENT_NAME2);
 
 		expect(keys).to.include(key1);
 		expect(keys).to.include(key2);
@@ -166,18 +167,18 @@ describe('Test Caching', function(){
 
 
 	it('should correctly cache events', async function(){
-		this.timeout(25000);
+		this.timeout(3500);
 
 		let e1 = await loadEvent(EVENT_NAME1, TOURNAMENT_NAME1);
 		let e2 = await loadEvent(EVENT_NAME1, TOURNAMENT_NAME2);
 
-		let key1 = 'event::function1::melee-singles::expand[]=phase&expand[]=groups&';
-		let key1data = 'event::function1::melee-singles::json::expand[]=phase&expand[]=groups&::data';
-		let key2 = 'event::ceo2016::melee-singles::expand[]=phase&expand[]=groups&';
-		let key2data = 'event::ceo2016::melee-singles::json::expand[]=phase&expand[]=groups&::data';
+		let key1 = format('event::%s::%s::expand[]=phase&expand[]=groups&', TOURNAMENT_NAME1, EVENT_NAME1);
+		let key1data = format('event::%s::%s::%s::expand[]=phase&expand[]=groups&::data', TOURNAMENT_NAME1, EVENT_NAME1, 'json');
+		let key2 = format('event::%s::%s::expand[]=phase&expand[]=groups&', TOURNAMENT_NAME2, EVENT_NAME1);
+		let key2data = format('event::%s::%s::%s::expand[]=phase&expand[]=groups&::data', TOURNAMENT_NAME2, EVENT_NAME1, 'json');
 
 		let keys = await Cache.keys();
-		expect(keys.length).to.be.equal(8, `Current cache keys: ${JSON.stringify(keys)}`);
+		expect(keys.length).to.be.equal(4, `Current cache keys: ${JSON.stringify(keys)}`);
 
 		expect(keys).to.include(key1);
 		expect(keys).to.include(key2);
@@ -202,8 +203,8 @@ describe('Test Caching', function(){
 		let phases1 = await e1.getEventPhases();
 		let phases2 = await e2.getEventPhases();
 
-		let key1 = 'event::function1::melee-singles::phases';
-		let key2 = 'event::ceo2016::melee-singles::phases';
+		let key1 = format('event::%s::melee-singles::phases', TOURNAMENT_NAME1);
+		let key2 = format('event::%s::melee-singles::phases', TOURNAMENT_NAME2);
 
 		let keys = await Cache.keys();
 
@@ -233,8 +234,8 @@ describe('Test Caching', function(){
 		let groups1 = await e1.getEventPhaseGroups();
 		let groups2 = await e2.getEventPhaseGroups();
 
-		let key1 = 'event::function1::melee-singles::groups';
-		let key2 = 'event::ceo2016::melee-singles::groups';
+		let key1 = format('event::%s::melee-singles::groups', TOURNAMENT_NAME1);
+		let key2 = format('event::%s::melee-singles::groups', TOURNAMENT_NAME2);
 
 		let keys = await Cache.keys();
 
@@ -261,10 +262,10 @@ describe('Test Caching', function(){
 		let p1 = await loadPhase(PHASEID1);
 		let p2 = await loadPhase(PHASEID2);
 
-		let key1 = 'phase::'+PHASEID1+'::expand[]=groups&';
-		let key2 = 'phase::'+PHASEID2+'::expand[]=groups&';
-		let key1data = 'phase::'+PHASEID1+'::json::expand[]=groups&::data';
-		let key2data = 'phase::'+PHASEID2+'::json::expand[]=groups&::data';
+		let key1 = format('phase::%s::expand[]=groups&', PHASEID1);
+		let key2 = format('phase::%s::expand[]=groups&', PHASEID2);
+		let key1data = format('phase::%s::json::expand[]=groups&::data', PHASEID1);
+		let key2data = format('phase::%s::json::expand[]=groups&::data', PHASEID2);
 
 		let keys = await Cache.keys();
 		expect(keys.length).to.be.equal(4);
@@ -292,8 +293,8 @@ describe('Test Caching', function(){
 		let pg1 = await p1.getPhaseGroups();
 		let pg2 = await p2.getPhaseGroups();
 
-		let key1 = 'phase::'+PHASEID1+'::groups';
-		let key2 = 'phase::'+PHASEID2+'::groups';
+		let key1 = format('phase::%s::groups', PHASEID1);
+		let key2 = format('phase::%s::groups', PHASEID2);
 
 		let keys = await Cache.keys();
 		expect(keys).to.include(key1);
@@ -318,10 +319,10 @@ describe('Test Caching', function(){
 		let pg1 = await loadPhaseGroup(GROUPID1);
 		let pg2 = await loadPhaseGroup(GROUPID2);
 
-		let key1 = 'phasegroup::' + GROUPID1 + '::expand[]=sets&expand[]=entrants&expand[]=standings&expand[]=seeds&';
-		let key2 = 'phasegroup::' + GROUPID2 + '::expand[]=sets&expand[]=entrants&expand[]=standings&expand[]=seeds&';
-		let key1data = 'phasegroup::' + GROUPID1 + '::json::expand[]=sets&expand[]=entrants&expand[]=standings&expand[]=seeds&::data';
-		let key2data = 'phasegroup::' + GROUPID2 + '::json::expand[]=sets&expand[]=entrants&expand[]=standings&expand[]=seeds&::data';
+		let key1 = format('phasegroup::%s::expand[]=sets&expand[]=entrants&expand[]=standings&expand[]=seeds&', GROUPID1);
+		let key2 = format('phasegroup::%s::expand[]=sets&expand[]=entrants&expand[]=standings&expand[]=seeds&', GROUPID2);
+		let key1data = format('phasegroup::%s::json::expand[]=sets&expand[]=entrants&expand[]=standings&expand[]=seeds&::data', GROUPID1);
+		let key2data = format('phasegroup::%s::json::expand[]=sets&expand[]=entrants&expand[]=standings&expand[]=seeds&::data', GROUPID2);
 
 		let keys = await Cache.keys();
 
@@ -349,8 +350,8 @@ describe('Test Caching', function(){
 
 		let keys = await Cache.keys();
 
-		let key1 = 'phasegroup::'+GROUPID1+'::players';
-		let key2 = 'phasegroup::'+GROUPID2+'::players';
+		let key1 = format('phasegroup::%s::players', GROUPID1);
+		let key2 = format('phasegroup::%s::players', GROUPID2);
 
 		expect(keys).to.include(key1);
 		expect(keys).to.include(key2);
@@ -380,8 +381,8 @@ describe('Test Caching', function(){
 
 		let keys = await Cache.keys();
 
-		let key1 = 'phasegroup::'+GROUPID1+'::sets';
-		let key2 = 'phasegroup::'+GROUPID2+'::sets';
+		let key1 = format('phasegroup::%s::sets', GROUPID1);
+		let key2 = format('phasegroup::%s::sets', GROUPID2);
 
 		expect(keys).to.include(key1);
 		expect(keys).to.include(key2);

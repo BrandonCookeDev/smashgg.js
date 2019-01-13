@@ -162,7 +162,13 @@ var Event = /** @class */ (function (_super) {
             if (_this.expands.hasOwnProperty(property))
                 _this.expandsString += util_1.format('expand[]=%s&', property);
         }
+        var ThisEvent = _this;
         _this.load(options, internal_1.ITournament.getDefaultOptions())
+            .then(function (e) {
+            var tournamentName = IEvent.getTournamentSlug(ThisEvent.getSlug());
+            var cacheKey = util_1.format('event::%s::%s::%s', tournamentName, ThisEvent.eventId, ThisEvent.expandsString);
+            Cache_1.default.set(cacheKey, ThisEvent);
+        })
             .then(function () { return _this.emitEventReady(); })
             .catch(function (e) { return _this.emitEventError(e); });
         return _this;
@@ -234,8 +240,8 @@ var Event = /** @class */ (function (_super) {
                         this.loadData(data);
                         return [2 /*return*/, data];
                     case 3:
-                        cacheKey = this.id ?
-                            util_1.format('event::%s::%s::%s::data', this.id, this.rawEncoding, this.expandsString) :
+                        cacheKey = typeof this.eventId === 'number' ?
+                            util_1.format('event::%s::%s::%s::data', this.eventId, this.rawEncoding, this.expandsString) :
                             util_1.format('event::%s::%s::%s::%s::data', this.tournamentId, this.eventId, this.rawEncoding, this.expandsString);
                         return [4 /*yield*/, Cache_1.default.get(cacheKey)];
                     case 4:

@@ -249,7 +249,6 @@ describe('Test Caching', function () {
                         return [4 /*yield*/, Cache_1.default.keys()];
                     case 3:
                         keys = _a.sent();
-                        console.log(keys);
                         expect(keys.length).to.be.equal(4, "Current cache keys: " + JSON.stringify(keys));
                         expect(keys).to.include(key1);
                         expect(keys).to.include(key2);

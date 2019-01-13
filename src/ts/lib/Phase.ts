@@ -1,7 +1,6 @@
 'use strict';
 
 import _ from 'lodash'
-import log from 'winston'
 import pmap from 'p-map'
 import {format} from 'util'
 import request from 'request-promise'
@@ -11,6 +10,7 @@ import * as Common from './util/Common'
 import {PhaseGroup, GGSet, Player} from './internal'
 import Cache from './util/Cache'
 import Encoder from './util/Encoder'
+import log from './util/Logger'
 
 const PHASE_URL = 'https://api.smash.gg/phase/%s?%s';
 const LEGAL_ENCODINGS = ['json', 'utf8', 'base64'];

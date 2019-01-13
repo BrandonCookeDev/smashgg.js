@@ -1,10 +1,10 @@
-import log from 'winston'
 import request from 'request-promise'
 import { format } from 'util'
 import Cache from './util/Cache'
 import Encoder from './util/Encoder'
 
 import { ICommon } from './util/Common'
+import log from './util/Logger'
 
 /* Types */
 import TVideoGame = IVideoGame.VideoGame

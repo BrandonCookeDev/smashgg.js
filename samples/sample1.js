@@ -1,44 +1,47 @@
 'use strict';
 
-var log = require('winston');
-log.level = 'info';
+const chalk = require('chalk');
 
-var Tournament = require('../lib/Tournament');
-var tournament = new Tournament('ceo-2016');
+let smashgg = require('../index')
+let Tournament = smashgg.Tournament
+let Event = smashgg.Event;
 
-tournament.on('ready', async function(){
-	var players = await tournament.getAllPlayers();
-	var sets = await tournament.getAllSets();
-	
-	console.log(players.length + ' players entered ' + tournament.getName() +  ' overall');
-	players.forEach(player => {
-		console.log(
-			'Tag: ' + player.getTag() + '\n',
-			'Name: ' + player.getName() + '\n',
-			'State: ' + player.getState() + '\n',
-			'ID: ' + player.getId()
-		);
-	});
-	
-	console.log(sets.length + ' sets were played at ' + tournament.getName());
-	sets.forEach(set => {
-		console.log(
-			'[%s: %s %s - %s %s]', 
-			set.getRound(),
-			set.getWinner().getTag(), //Player object
-			set.getWinnerScore(),
-			set.getLoserScore(),
-			set.getLoser().getTag()
-		);
-		console.log(
-			'%s placed %s at the tournament \n%s placed %s at the tournament\n',
-			set.getWinner().getTag(),
-			set.getWinnersTournamentPlacement(),
-			set.getLoser().getTag(),
-			set.getLosersTournamentPlacement()
-		);
-	});
+(async function(){
+	try{
+		let t = await Tournament.getTournament('21xx-cameron-s-birthday-bash-1', {rawEncoding: 'base64'});
+		let sets = await t.getAllSets();		
+		let i1 = await t.getIncompleteSets();
+		let c1 = await t.getCompleteSets();	
+		console.log('%s :: %s', i1.length, c1.length);
 
-	console.log('Done!');
-	return process.exit(0);
-});
+		let e = await Event.getEvent('melee-singles', '21xx-cameron-s-birthday-bash-1', {rawEncoding: 'base64'});
+		let incomplete = await e.getIncompleteSets();
+		let complete = await e.getCompleteSets();
+		
+		console.log('==========================================');
+		console.log('COMPLETE: %s | INCOMPLETE: %s | TOTAL: %s', chalk.green(complete.length), chalk.red(incomplete.length), chalk.blue(sets.length));
+		console.log('==========================================');
+		console.log(chalk.yellow('In Progress:'));
+		incomplete.forEach(set => {
+			console.log('%s: %s %s v %s %s', 
+				chalk.magenta(set.getRound()), 
+				chalk.green(set.getPlayer1().getTag()), 
+				chalk.blue(set.getPlayer1Score()), 
+				chalk.blue(set.getPlayer2Score()), 
+				chalk.green(set.getPlayer2().getTag()));
+		});
+		complete.forEach(set => {
+			console.log('%s: %s %s v %s %s', 
+				chalk.magenta(set.getRound()), 
+				chalk.green(set.getPlayer1().getTag()), 
+				chalk.blue(set.getPlayer1Score()), 
+				chalk.blue(set.getPlayer2Score()), 
+				chalk.green(set.getPlayer2().getTag()));
+		});
+		
+		return true;
+	} catch(e){
+		console.error(e);
+		process.exit(1);
+	}
+})();

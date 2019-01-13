@@ -41,6 +41,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /* eslint-disable */
 require("../lib/util/ErrorHandler");
 var lodash_1 = __importDefault(require("lodash"));
+var util_1 = require("util");
 var chai_1 = __importDefault(require("chai"));
 var chai_as_promised_1 = __importDefault(require("chai-as-promised"));
 chai_1.default.use(chai_as_promised_1.default);
@@ -51,8 +52,8 @@ var Cache_1 = __importDefault(require("../lib/util/Cache"));
 var testSets_1 = __importDefault(require("./data/testSets"));
 var testPlayers_1 = __importDefault(require("./data/testPlayers"));
 var testData = lodash_1.default.extend(testSets_1.default, testPlayers_1.default);
-var TOURNAMENT_NAME1 = 'function1';
-var TOURNAMENT_NAME2 = 'ceo2016';
+var TOURNAMENT_NAME1 = 'function-1-recursion-regional';
+var TOURNAMENT_NAME2 = 'ceo-2016';
 var EVENT_NAME1 = 'melee-singles';
 var PHASEID1 = 111483;
 var PHASEID2 = 45262;
@@ -88,10 +89,10 @@ describe('Test Caching', function () {
                     case 3:
                         keys = _a.sent();
                         expect(keys.length).to.be.equal(4);
-                        key1 = 'tournament::function1::expand[]=event&expand[]=phase&expand[]=groups&expand[]=stations&';
-                        key2 = 'tournament::ceo2016::expand[]=event&expand[]=phase&expand[]=groups&expand[]=stations&';
-                        key1data = 'tournament::function1::json::expand[]=event&expand[]=phase&expand[]=groups&expand[]=stations&::data';
-                        key2data = 'tournament::ceo2016::json::expand[]=event&expand[]=phase&expand[]=groups&expand[]=stations&::data';
+                        key1 = util_1.format('tournament::%s::expand[]=event&expand[]=phase&expand[]=groups&expand[]=stations&', TOURNAMENT_NAME1);
+                        key2 = util_1.format('tournament::%s::expand[]=event&expand[]=phase&expand[]=groups&expand[]=stations&', TOURNAMENT_NAME2);
+                        key1data = util_1.format('tournament::%s::json::expand[]=event&expand[]=phase&expand[]=groups&expand[]=stations&::data', TOURNAMENT_NAME1);
+                        key2data = util_1.format('tournament::%s::json::expand[]=event&expand[]=phase&expand[]=groups&expand[]=stations&::data', TOURNAMENT_NAME2);
                         expect(keys).to.include(key1);
                         expect(keys).to.include(key2);
                         expect(keys).to.include(key1data);
@@ -125,7 +126,7 @@ describe('Test Caching', function () {
                         return [4 /*yield*/, Cache_1.default.keys()];
                     case 3:
                         keys = _a.sent();
-                        key1 = 'tournament::function1::players';
+                        key1 = util_1.format('tournament::%s::players', TOURNAMENT_NAME1);
                         expect(keys).to.include(key1);
                         return [4 /*yield*/, Cache_1.default.get(key1)];
                     case 4:
@@ -164,7 +165,7 @@ describe('Test Caching', function () {
                         return [4 /*yield*/, Cache_1.default.keys()];
                     case 3:
                         keys = _a.sent();
-                        key1 = 'tournament::function1::sets';
+                        key1 = util_1.format('tournament::%s::sets', TOURNAMENT_NAME1);
                         expect(keys).to.include(key1);
                         return [4 /*yield*/, Cache_1.default.get(key1)];
                     case 4:
@@ -207,8 +208,8 @@ describe('Test Caching', function () {
                         return [4 /*yield*/, Cache_1.default.keys()];
                     case 5:
                         keys = _a.sent();
-                        key1 = 'tournament::function1::events';
-                        key2 = 'tournament::ceo2016::events';
+                        key1 = util_1.format('tournament::%s::events', TOURNAMENT_NAME1);
+                        key2 = util_1.format('tournament::%s::events', TOURNAMENT_NAME2);
                         expect(keys).to.include(key1);
                         expect(keys).to.include(key2);
                         return [4 /*yield*/, Cache_1.default.get(key1)];
@@ -234,21 +235,22 @@ describe('Test Caching', function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        this.timeout(25000);
+                        this.timeout(3500);
                         return [4 /*yield*/, loadEvent(EVENT_NAME1, TOURNAMENT_NAME1)];
                     case 1:
                         e1 = _a.sent();
                         return [4 /*yield*/, loadEvent(EVENT_NAME1, TOURNAMENT_NAME2)];
                     case 2:
                         e2 = _a.sent();
-                        key1 = 'event::function1::melee-singles::expand[]=phase&expand[]=groups&';
-                        key1data = 'event::function1::melee-singles::json::expand[]=phase&expand[]=groups&::data';
-                        key2 = 'event::ceo2016::melee-singles::expand[]=phase&expand[]=groups&';
-                        key2data = 'event::ceo2016::melee-singles::json::expand[]=phase&expand[]=groups&::data';
+                        key1 = util_1.format('event::%s::%s::expand[]=phase&expand[]=groups&', TOURNAMENT_NAME1, EVENT_NAME1);
+                        key1data = util_1.format('event::%s::%s::%s::expand[]=phase&expand[]=groups&::data', TOURNAMENT_NAME1, EVENT_NAME1, 'json');
+                        key2 = util_1.format('event::%s::%s::expand[]=phase&expand[]=groups&', TOURNAMENT_NAME2, EVENT_NAME1);
+                        key2data = util_1.format('event::%s::%s::%s::expand[]=phase&expand[]=groups&::data', TOURNAMENT_NAME2, EVENT_NAME1, 'json');
                         return [4 /*yield*/, Cache_1.default.keys()];
                     case 3:
                         keys = _a.sent();
-                        expect(keys.length).to.be.equal(8, "Current cache keys: " + JSON.stringify(keys));
+                        console.log(keys);
+                        expect(keys.length).to.be.equal(4, "Current cache keys: " + JSON.stringify(keys));
                         expect(keys).to.include(key1);
                         expect(keys).to.include(key2);
                         expect(keys).to.include(key1data);
@@ -285,8 +287,8 @@ describe('Test Caching', function () {
                         return [4 /*yield*/, e2.getEventPhases()];
                     case 4:
                         phases2 = _a.sent();
-                        key1 = 'event::function1::melee-singles::phases';
-                        key2 = 'event::ceo2016::melee-singles::phases';
+                        key1 = util_1.format('event::%s::melee-singles::phases', TOURNAMENT_NAME1);
+                        key2 = util_1.format('event::%s::melee-singles::phases', TOURNAMENT_NAME2);
                         return [4 /*yield*/, Cache_1.default.keys()];
                     case 5:
                         keys = _a.sent();
@@ -328,8 +330,8 @@ describe('Test Caching', function () {
                         return [4 /*yield*/, e2.getEventPhaseGroups()];
                     case 4:
                         groups2 = _a.sent();
-                        key1 = 'event::function1::melee-singles::groups';
-                        key2 = 'event::ceo2016::melee-singles::groups';
+                        key1 = util_1.format('event::%s::melee-singles::groups', TOURNAMENT_NAME1);
+                        key2 = util_1.format('event::%s::melee-singles::groups', TOURNAMENT_NAME2);
                         return [4 /*yield*/, Cache_1.default.keys()];
                     case 5:
                         keys = _a.sent();
@@ -365,10 +367,10 @@ describe('Test Caching', function () {
                         return [4 /*yield*/, loadPhase(PHASEID2)];
                     case 2:
                         p2 = _a.sent();
-                        key1 = 'phase::' + PHASEID1 + '::expand[]=groups&';
-                        key2 = 'phase::' + PHASEID2 + '::expand[]=groups&';
-                        key1data = 'phase::' + PHASEID1 + '::json::expand[]=groups&::data';
-                        key2data = 'phase::' + PHASEID2 + '::json::expand[]=groups&::data';
+                        key1 = util_1.format('phase::%s::expand[]=groups&', PHASEID1);
+                        key2 = util_1.format('phase::%s::expand[]=groups&', PHASEID2);
+                        key1data = util_1.format('phase::%s::json::expand[]=groups&::data', PHASEID1);
+                        key2data = util_1.format('phase::%s::json::expand[]=groups&::data', PHASEID2);
                         return [4 /*yield*/, Cache_1.default.keys()];
                     case 3:
                         keys = _a.sent();
@@ -409,8 +411,8 @@ describe('Test Caching', function () {
                         return [4 /*yield*/, p2.getPhaseGroups()];
                     case 4:
                         pg2 = _a.sent();
-                        key1 = 'phase::' + PHASEID1 + '::groups';
-                        key2 = 'phase::' + PHASEID2 + '::groups';
+                        key1 = util_1.format('phase::%s::groups', PHASEID1);
+                        key2 = util_1.format('phase::%s::groups', PHASEID2);
                         return [4 /*yield*/, Cache_1.default.keys()];
                     case 5:
                         keys = _a.sent();
@@ -446,10 +448,10 @@ describe('Test Caching', function () {
                         return [4 /*yield*/, loadPhaseGroup(GROUPID2)];
                     case 2:
                         pg2 = _a.sent();
-                        key1 = 'phasegroup::' + GROUPID1 + '::expand[]=sets&expand[]=entrants&expand[]=standings&expand[]=seeds&';
-                        key2 = 'phasegroup::' + GROUPID2 + '::expand[]=sets&expand[]=entrants&expand[]=standings&expand[]=seeds&';
-                        key1data = 'phasegroup::' + GROUPID1 + '::json::expand[]=sets&expand[]=entrants&expand[]=standings&expand[]=seeds&::data';
-                        key2data = 'phasegroup::' + GROUPID2 + '::json::expand[]=sets&expand[]=entrants&expand[]=standings&expand[]=seeds&::data';
+                        key1 = util_1.format('phasegroup::%s::expand[]=sets&expand[]=entrants&expand[]=standings&expand[]=seeds&', GROUPID1);
+                        key2 = util_1.format('phasegroup::%s::expand[]=sets&expand[]=entrants&expand[]=standings&expand[]=seeds&', GROUPID2);
+                        key1data = util_1.format('phasegroup::%s::json::expand[]=sets&expand[]=entrants&expand[]=standings&expand[]=seeds&::data', GROUPID1);
+                        key2data = util_1.format('phasegroup::%s::json::expand[]=sets&expand[]=entrants&expand[]=standings&expand[]=seeds&::data', GROUPID2);
                         return [4 /*yield*/, Cache_1.default.keys()];
                     case 3:
                         keys = _a.sent();
@@ -490,8 +492,8 @@ describe('Test Caching', function () {
                         return [4 /*yield*/, Cache_1.default.keys()];
                     case 5:
                         keys = _a.sent();
-                        key1 = 'phasegroup::' + GROUPID1 + '::players';
-                        key2 = 'phasegroup::' + GROUPID2 + '::players';
+                        key1 = util_1.format('phasegroup::%s::players', GROUPID1);
+                        key2 = util_1.format('phasegroup::%s::players', GROUPID2);
                         expect(keys).to.include(key1);
                         expect(keys).to.include(key2);
                         return [4 /*yield*/, Cache_1.default.get(key1)];
@@ -533,8 +535,8 @@ describe('Test Caching', function () {
                         return [4 /*yield*/, Cache_1.default.keys()];
                     case 5:
                         keys = _a.sent();
-                        key1 = 'phasegroup::' + GROUPID1 + '::sets';
-                        key2 = 'phasegroup::' + GROUPID2 + '::sets';
+                        key1 = util_1.format('phasegroup::%s::sets', GROUPID1);
+                        key2 = util_1.format('phasegroup::%s::sets', GROUPID2);
                         expect(keys).to.include(key1);
                         expect(keys).to.include(key2);
                         return [4 /*yield*/, Cache_1.default.get(key1)];

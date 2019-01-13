@@ -24,6 +24,7 @@
     "testPlayer": "./node_modules/.bin/mocha ./src/js/test/testPlayer",
     "testSet": "./node_modules/.bin/mocha ./src/js/test/testSet",
     "testVideoGame": "./node_modules/.bin/mocha ./src/js/test/testVideoGame",
+    "testCache": "./node_modules/.bin/mocha ./src/js/test/testZCache",
     "testCharacter": "./node_modules/.bin/mocha ./src/js/test/testCharacter",
     "lint": "./node_modules/.bin/eslint .",
     "tsc": "tsc"

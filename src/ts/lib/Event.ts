@@ -226,7 +226,13 @@ export class Event extends EventEmitter implements IEvent.Event{
 				this.expandsString += format('expand[]=%s&', property);
 		}
 
+		let ThisEvent = this;
 		this.load(options, ITournament.getDefaultOptions())
+			.then(e => {
+				let tournamentName = IEvent.getTournamentSlug(ThisEvent.getSlug());
+				let cacheKey = format('event::%s::%s::%s', tournamentName, ThisEvent.eventId, ThisEvent.expandsString)
+				Cache.set(cacheKey, ThisEvent)
+			})
 			.then(() => this.emitEventReady())
 			.catch(e => this.emitEventError(e))
 	}
@@ -290,13 +296,12 @@ export class Event extends EventEmitter implements IEvent.Event{
 				return data;
 			}
 
-			let cacheKey = this.id ?
-				format('event::%s::%s::%s::data', this.id, this.rawEncoding, this.expandsString) : 
+			let cacheKey = typeof this.eventId === 'number' ?
+				format('event::%s::%s::%s::data', this.eventId, this.rawEncoding, this.expandsString) : 
 				format('event::%s::%s::%s::%s::data', this.tournamentId, this.eventId, this.rawEncoding, this.expandsString);
 			let cached = await Cache.get(cacheKey);
 
 			if(!cached){
-
 				let data: Data
 				let encoded: Data | string
 				let eventData: EventData

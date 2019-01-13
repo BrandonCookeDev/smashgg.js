@@ -10,6 +10,7 @@ import { ICommon } from './util/Common'
 import {PhaseGroup, Player} from './internal' 
 
 import Entity = IGGSet.Entity
+import SetEntity = IGGSet.SetEntity
 import Options = ICommon.Options
 import parseOptions = ICommon.parseOptions
 
@@ -27,12 +28,12 @@ export class GGSet extends EventEmitter implements IGGSet.GGSet{
 	score2?: number
 	winnerId?: number
 	loserId?: number
-	data?: Entity
+	data?: SetEntity
 
 	constructor(id: number, eventId: number, round: string, 
 			player1: Player, player2: Player, isComplete: boolean=false, 
 			score1: number=0, score2: number=0, winnerId: number=0, 
-			loserId: number=0, data: Entity){
+			loserId: number=0, data: SetEntity){
 		super();
 
 		if(!id)
@@ -61,7 +62,7 @@ export class GGSet extends EventEmitter implements IGGSet.GGSet{
 		this.data = data;
 	}
 
-	loadData(data: Entity) : void{
+	loadData(data: SetEntity) : void{
 		this.data = data;
 	}
 
@@ -85,8 +86,9 @@ export class GGSet extends EventEmitter implements IGGSet.GGSet{
 				method: 'GET'
 			};
 
-			let resp: Entity = JSON.parse(await request(req));
-			let set: GGSet | null = await GGSet.resolve(resp, false);
+			let resp: IGGSet.Data = JSON.parse(await request(req));
+			let data = resp.entities.sets;
+			let set: GGSet | null = await GGSet.resolve(data, false);
 
 			await Cache.set(cacheKey, set);
 			return set;
@@ -97,7 +99,7 @@ export class GGSet extends EventEmitter implements IGGSet.GGSet{
 		}
 	}
 
-	static async resolveArray(data: Array<Entity>, filterByes: boolean=true): Promise<Array<GGSet | null>> {
+	static async resolveArray(data: Array<SetEntity>, filterByes: boolean=true): Promise<Array<GGSet | null>> {
 		log.verbose('Set resolveArray called')
 		try{
 			return await Promise.all(data.map(async (entity) => await GGSet.resolve(entity, filterByes)))
@@ -107,7 +109,7 @@ export class GGSet extends EventEmitter implements IGGSet.GGSet{
 		}
 	}
 	
-	static async resolve(data: Entity, filterByes: boolean=true) : Promise<GGSet | null> {
+	static async resolve(data: SetEntity, filterByes: boolean=true) : Promise<GGSet | null> {
 		log.verbose('Set resolve called');
 		try{
 			let isBye = false
@@ -355,7 +357,7 @@ export namespace IGGSet{
 		score2?: number
 		winnerId?: number
 		loserId?: number
-		data?: Entity
+		data?: SetEntity
 
 		//getSet(id: number, options: ICommon.Options) : Promise<GGSet>
 		//resolve(data: Entity) : Promise<GGSet>
@@ -385,10 +387,15 @@ export namespace IGGSet{
 	}
 
 	export interface Data{
-		entities: [Entity]
+		entities: Entity
 	}
 
 	export interface Entity{
+		sets: SetEntity,
+		[x: string]: any
+	}
+
+	export interface SetEntity{
 		id: number,
 		eventId: number,
 		fullRoundText: string,

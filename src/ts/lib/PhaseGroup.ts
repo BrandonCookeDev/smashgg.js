@@ -200,8 +200,8 @@ export class PhaseGroup extends EventEmitter implements IPhaseGroup.PhaseGroup{
 			// Fetching logic
 			if(this.getData().entities.sets){
 				let sets: Array<GGSet | null>;
-				let entities: Array<IGGSet.Entity> = this.getData().entities.sets as Array<IGGSet.Entity>;
-				let fn = async (entity: IGGSet.Entity) => GGSet.resolve(entity, true)
+				let entities: Array<IGGSet.SetEntity> = this.getData().entities.sets as Array<IGGSet.SetEntity>;
+				let fn = async (entity: IGGSet.SetEntity) => GGSet.resolve(entity, true)
 				sets = await pmap(entities, fn, {concurrency: options.concurrency});
 				let filtered: Array<GGSet> = sets.filter(set => { return set != null; }) as Array<GGSet>;
 				this.sets = filtered;
@@ -264,7 +264,7 @@ export class PhaseGroup extends EventEmitter implements IPhaseGroup.PhaseGroup{
 		}
 	}
 
-	async resolveSet(set: IGGSet.Entity) : Promise<GGSet | undefined>{
+	async resolveSet(set: IGGSet.SetEntity) : Promise<GGSet | undefined>{
 		try{
 			if (!set.entrant1Id || !set.entrant2Id)
 				return; // HANDLES BYES
@@ -369,7 +369,7 @@ export namespace IPhaseGroup{
 		getCompleteSets(options: Options) : Promise<Array<GGSet>>
 		getIncompleteSets(options: Options) : Promise<Array<GGSet>>
 		getSetsXMinutesBack(minutes: number, options: Options) : Promise<Array<GGSet>>
-		resolveSet(set: IGGSet.Entity) : Promise<GGSet | undefined>
+		resolveSet(set: IGGSet.SetEntity) : Promise<GGSet | undefined>
 		getFromDataEntities(prop: string) : any
 		getPhaseId() : number
 		getEntrants() : Array<IPlayer.Entity> | [] 
@@ -395,7 +395,7 @@ export namespace IPhaseGroup{
 	export interface Data{
 		entities: {
 			id: number,
-			sets?: [IGGSet.Entity],
+			sets?: [IGGSet.SetEntity],
 			entrants?: [PlayerEntity],
 			standings?: [{
 				[x: string]: any

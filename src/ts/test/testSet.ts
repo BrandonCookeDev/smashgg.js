@@ -125,32 +125,48 @@ describe('Smash GG Set', function(){
 		let data1 = winner1.data as IPlayer.Entity
 		expect(set1.getWinnersTournamentPlacement()).to.be.equal(data1.finalPlacement);
 
+		done();
+	});
+
+	it('should give the correct Winners Tournament Placement 2', function(done){
 		let winner2 = set2.getWinner() as Player
 		let data2 = winner2.data as IPlayer.Entity
 		expect(set2.getWinnersTournamentPlacement()).to.be.equal(data2.finalPlacement);
+		
+		done()
+	})
 
+	it('should give the correct Winners Tournament Placement 3', function(done){
 		let winner3 = set3.getWinner() as Player
 		let data3 = winner3.data as IPlayer.Entity
-		expect(set3.getWinnersTournamentPlacement()).to.be.equal(data2.finalPlacement);
+		expect(set3.getWinnersTournamentPlacement()).to.be.equal(data3.finalPlacement);
 
 		done();
-	});
+	})
 
 	it('should give the correct Losers Tournament Placement', function(done){
 		let loser1 = set1.getLoser() as Player
 		let data1 = loser1.data as IPlayer.Entity
 		expect(set1.getLosersTournamentPlacement()).to.be.equal(data1.finalPlacement);
 
-		let loser2 = set2.getLoser() as Player
-		let data2 = loser2.data as IPlayer.Entity
-		expect(set2.getLosersTournamentPlacement()).to.be.equal(data1.finalPlacement);
-
-		let loser3 = set3.getLoser() as Player
-		let data3 = loser3.data as IPlayer.Entity
-		expect(set3.getLosersTournamentPlacement()).to.be.equal(data1.finalPlacement);
-
 		done();
 	});
+
+	it('should give the correct Losers Tournament Placement 2', function(done){
+		let loser2 = set2.getLoser() as Player
+		let data2 = loser2.data as IPlayer.Entity
+		expect(set2.getLosersTournamentPlacement()).to.be.equal(data2.finalPlacement);
+
+		done()
+	})
+
+	it('should give the correct Losers Tournament Placement 3', function(done){
+		let loser3 = set3.getLoser() as Player
+		let data3 = loser3.data as IPlayer.Entity
+		expect(set3.getLosersTournamentPlacement()).to.be.equal(data3.finalPlacement);
+
+		done()
+	})
 
 	it('should give the correct Phase Group ID', function(done){
 		expect(set1.getPhaseGroupId()).to.be.equal(327638);

@@ -132,24 +132,36 @@ describe('Smash GG Set', function () {
         var winner1 = set1.getWinner();
         var data1 = winner1.data;
         expect(set1.getWinnersTournamentPlacement()).to.be.equal(data1.finalPlacement);
+        done();
+    });
+    it('should give the correct Winners Tournament Placement 2', function (done) {
         var winner2 = set2.getWinner();
         var data2 = winner2.data;
         expect(set2.getWinnersTournamentPlacement()).to.be.equal(data2.finalPlacement);
+        done();
+    });
+    it('should give the correct Winners Tournament Placement 3', function (done) {
         var winner3 = set3.getWinner();
         var data3 = winner3.data;
-        expect(set3.getWinnersTournamentPlacement()).to.be.equal(data2.finalPlacement);
+        expect(set3.getWinnersTournamentPlacement()).to.be.equal(data3.finalPlacement);
         done();
     });
     it('should give the correct Losers Tournament Placement', function (done) {
         var loser1 = set1.getLoser();
         var data1 = loser1.data;
         expect(set1.getLosersTournamentPlacement()).to.be.equal(data1.finalPlacement);
+        done();
+    });
+    it('should give the correct Losers Tournament Placement 2', function (done) {
         var loser2 = set2.getLoser();
         var data2 = loser2.data;
-        expect(set2.getLosersTournamentPlacement()).to.be.equal(data1.finalPlacement);
+        expect(set2.getLosersTournamentPlacement()).to.be.equal(data2.finalPlacement);
+        done();
+    });
+    it('should give the correct Losers Tournament Placement 3', function (done) {
         var loser3 = set3.getLoser();
         var data3 = loser3.data;
-        expect(set3.getLosersTournamentPlacement()).to.be.equal(data1.finalPlacement);
+        expect(set3.getLosersTournamentPlacement()).to.be.equal(data3.finalPlacement);
         done();
     });
     it('should give the correct Phase Group ID', function (done) {

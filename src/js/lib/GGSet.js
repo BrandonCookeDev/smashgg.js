@@ -100,7 +100,7 @@ var GGSet = /** @class */ (function (_super) {
     GGSet.getSet = function (id, options) {
         if (options === void 0) { options = {}; }
         return __awaiter(this, void 0, void 0, function () {
-            var cacheKey, cached, req, resp, _a, _b, set, e_1;
+            var cacheKey, cached, req, resp, _a, _b, data, set, e_1;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
@@ -130,7 +130,8 @@ var GGSet = /** @class */ (function (_super) {
                         return [4 /*yield*/, request_promise_1.default(req)];
                     case 4:
                         resp = _b.apply(_a, [_c.sent()]);
-                        return [4 /*yield*/, GGSet.resolve(resp, false)];
+                        data = resp.entities.sets;
+                        return [4 /*yield*/, GGSet.resolve(data, false)];
                     case 5:
                         set = _c.sent();
                         return [4 /*yield*/, Cache_1.default.set(cacheKey, set)];

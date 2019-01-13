@@ -1,5 +1,9 @@
 /** Patch Notes **/
 
+/** 3.0.0 :: 1/12/2019 **/
+* Refactored library to TypeScript
+* Renamed Set object to GGSet to not interfere with native JavaScript Set
+
 /** 2.3.6 :: 08-08-2018 **/
 * Fixed bug where data doesn't store for an event if not cached option selected
 

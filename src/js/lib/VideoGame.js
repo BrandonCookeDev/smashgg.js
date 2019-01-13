@@ -62,12 +62,12 @@ var VideoGame = /** @class */ (function () {
         this.slug = slug;
         this.isCardGame = isCardGame;
     }
-    VideoGame.prototype.encode = function (data, encoding) {
+    VideoGame.prototype.loadData = function (data, encoding) {
         var encoded = encoding == 'json' ? data : new Buffer(JSON.stringify(data)).toString(encoding);
         this.data = encoded;
         return encoded;
     };
-    VideoGame.prototype.decode = function (data, encoding) {
+    VideoGame.prototype.getData = function (data, encoding) {
         var decoded = this.rawEncoding == 'json' ? data : JSON.parse(new Buffer(data.toString(), encoding).toString('utf8'));
         return decoded;
     };
@@ -98,6 +98,11 @@ var VideoGame = /** @class */ (function () {
     VideoGame.prototype.getIsCardGame = function () {
         return this.isCardGame;
     };
+    VideoGame.resolve = function (data) {
+        var vg = new VideoGame(data.id, data.name, data.abbrev, data.displayName, data.minPerEntry, data.maxPerEntry, data.approved, data.slug, data.isCardGame);
+        vg.loadData(data, 'json');
+        return vg;
+    };
     VideoGame.getAll = function (options) {
         if (options === void 0) { options = {}; }
         return __awaiter(this, void 0, void 0, function () {
@@ -124,9 +129,7 @@ var VideoGame = /** @class */ (function () {
                         return [4 /*yield*/, request_promise_1.default(API_URL)];
                     case 4:
                         data = _b.apply(_a, [_c.sent()]);
-                        videoGames = data.entities.videogame.map(function (videoGame) {
-                            return new VideoGame(videoGame.id, videoGame.name, videoGame.abbrev, videoGame.displayName, videoGame.minPerEntry, videoGame.maxPerEntry, videoGame.approved, videoGame.slug, videoGame.isCardGame);
-                        });
+                        videoGames = data.entities.videogame.map(function (vg) { return VideoGame.resolve(vg); });
                         if (!options.isCached) return [3 /*break*/, 6];
                         return [4 /*yield*/, Cache_1.default.getInstance().set(cacheKey, videoGames)];
                     case 5:

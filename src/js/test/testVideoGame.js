@@ -47,6 +47,39 @@ var Cache_1 = __importDefault(require("../lib/util/Cache"));
 var expected = {
     Melee: {
         id: 1,
+        data: {
+            "abbrev": "Melee",
+            "approved": true,
+            "characterTerm": [null],
+            "displayName": "Melee",
+            "enabled": "1",
+            "expand": [],
+            "gameTerm": [null],
+            "id": 1,
+            "images": [
+                {
+                    "createdAt": [null],
+                    "entity": [null],
+                    "entityId": [null],
+                    "height": 190,
+                    "id": 6180,
+                    "isOriginal": true,
+                    "ratio": 0.73,
+                    "type": "primary",
+                    "updatedAt": [null],
+                    "uploadedBy": [null],
+                    "url": "https://images.smash.gg/images/videogame/1/image-f26ab87b8de31d78597a664d225e1c71.jpg",
+                    "width": 138
+                },
+            ],
+            "initialStocks": [null],
+            "isCardGame": [null],
+            "maxPerEntry": 2,
+            "minPerEntry": 1,
+            "name": "Super Smash Bros. Melee",
+            "slug": "melee",
+            "stageTerm": [null]
+        },
         name: 'Super Smash Bros. Melee',
         abbrev: 'Melee',
         displayName: 'Melee',
@@ -54,10 +87,44 @@ var expected = {
         maxPerEntry: 2,
         approved: true,
         slug: 'melee',
+        rawEncoding: 'json',
         isCardGame: null
     },
     PM: {
         id: 2,
+        data: {
+            "abbrev": "pm",
+            "approved": true,
+            "characterTerm": [null],
+            "displayName": "PM",
+            "enabled": "1",
+            "expand": [],
+            "gameTerm": [null],
+            "id": 2,
+            "images": [
+                {
+                    "createdAt": [null],
+                    "entity": [null],
+                    "entityId": [null],
+                    "height": 512,
+                    "id": 1330116,
+                    "isOriginal": true,
+                    "ratio": 0.73,
+                    "type": "primary",
+                    "updatedAt": [null],
+                    "uploadedBy": [null],
+                    "url": "https://images.smash.gg/images/videogame/2/image-11a8d11dbd2af24429b41b7e6a166f42.png",
+                    "width": 372,
+                },
+            ],
+            "initialStocks": [null],
+            "isCardGame": [null],
+            "maxPerEntry": [null],
+            "minPerEntry": [null],
+            "name": "Project M",
+            "slug": "pm",
+            "stageTerm": [null],
+        },
         name: 'Project M',
         abbrev: 'pm',
         displayName: 'PM',
@@ -65,9 +132,22 @@ var expected = {
         maxPerEntry: null,
         approved: true,
         slug: 'pm',
+        rawEncoding: 'json',
         isCardGame: null
     }
 };
+function eq(original, other) {
+    return other.id === original.id &&
+        other.name === original.name &&
+        other.abbrev === original.abbrev &&
+        other.displayName === original.displayName &&
+        other.minPerEntry === original.minPerEntry &&
+        other.maxPerEntry === original.maxPerEntry &&
+        other.approved === original.approved &&
+        other.slug === original.slug &&
+        other.rawEncoding === original.rawEncoding &&
+        other.isCardGame === original.isCardGame;
+}
 describe('SmashGG VideoGame', function () {
     before(function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -95,17 +175,27 @@ describe('SmashGG VideoGame', function () {
     });
     it('should get correct video game by id', function () {
         return __awaiter(this, void 0, void 0, function () {
-            var vg1, vg2;
+            var vg1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, VideoGame_1.VideoGame.getById(1)];
                     case 1:
                         vg1 = _a.sent();
-                        return [4 /*yield*/, VideoGame_1.VideoGame.getById(2)];
-                    case 2:
+                        expect(eq(expected.Melee, vg1)).to.be.true;
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    it('should get correct video game by id 2', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var vg2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, VideoGame_1.VideoGame.getById(2)];
+                    case 1:
                         vg2 = _a.sent();
-                        expect(vg1).to.deep.equal(expected.Melee);
-                        expect(vg2).to.deep.equal(expected.PM);
+                        expect(eq(expected.PM, vg2)).to.be.true;
                         return [2 /*return*/, true];
                 }
             });
@@ -128,10 +218,10 @@ describe('SmashGG VideoGame', function () {
                         return [4 /*yield*/, VideoGame_1.VideoGame.getByName('Project M')];
                     case 4:
                         pm2 = _a.sent();
-                        expect(melee1).to.deep.equal(expected.Melee);
-                        expect(melee2).to.deep.equal(expected.Melee);
-                        expect(pm1).to.deep.equal(expected.PM);
-                        expect(pm2).to.deep.equal(expected.PM);
+                        expect(eq(expected.Melee, melee1)).to.be.true;
+                        expect(eq(expected.Melee, melee2)).to.be.true;
+                        expect(eq(expected.PM, pm1)).to.be.true;
+                        expect(eq(expected.PM, pm2)).to.be.true;
                         return [2 /*return*/, true];
                 }
             });

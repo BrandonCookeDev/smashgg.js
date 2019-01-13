@@ -47,13 +47,13 @@ export class VideoGame implements IVideoGame.VideoGame{
 		this.isCardGame = isCardGame;
 	}
 
-	encode(data: Entity, encoding: string) : Entity | string{
+	loadData(data: Entity, encoding: string) : Entity | string{
 		let encoded = encoding == 'json' ? data : new Buffer(JSON.stringify(data)).toString(encoding);
 		this.data = encoded;
 		return encoded;
 	}
 
-	decode(data: Entity, encoding: string) : Entity{
+	getData(data: Entity, encoding: string) : Entity{
 		let decoded = this.rawEncoding == 'json' ? data : JSON.parse(new Buffer(data.toString(), encoding).toString('utf8'));
 		return decoded;
 	}
@@ -94,7 +94,23 @@ export class VideoGame implements IVideoGame.VideoGame{
 		return this.isCardGame;
 	}
 
-	static async getAll(options: Options={}) : Promise<Array<TVideoGame>>{
+	static resolve(data: IVideoGame.Entity) : VideoGame {
+		let vg = new VideoGame(
+			data.id,
+			data.name,
+			data.abbrev,
+			data.displayName,
+			data.minPerEntry,
+			data.maxPerEntry,
+			data.approved,
+			data.slug,
+			data.isCardGame
+		);
+		vg.loadData(data, 'json');
+		return vg;
+	}
+
+	static async getAll(options: Options={}) : Promise<Array<VideoGame>>{
 		log.debug('VideoGames getAll called');
 		try{
 			// parse options
@@ -102,24 +118,12 @@ export class VideoGame implements IVideoGame.VideoGame{
 
 			let cacheKey = 'videoGames::all';
 			if(options.isCached){
-				let cached: TVideoGame[] = await Cache.getInstance().get(cacheKey) as TVideoGame[];
+				let cached: VideoGame[] = await Cache.getInstance().get(cacheKey) as VideoGame[];
 				if(cached) return cached;
 			}
 			
 			let data: Data = JSON.parse(await request(API_URL));
-			let videoGames = data.entities.videogame.map(videoGame => {
-				return new VideoGame(
-					videoGame.id,
-					videoGame.name,
-					videoGame.abbrev,
-					videoGame.displayName,
-					videoGame.minPerEntry,
-					videoGame.maxPerEntry,
-					videoGame.approved,
-					videoGame.slug,
-					videoGame.isCardGame
-				);
-			});
+			let videoGames = data.entities.videogame.map(vg => VideoGame.resolve(vg));
 
 			if(options.isCached) await Cache.getInstance().set(cacheKey, videoGames);
 			return videoGames;
@@ -129,7 +133,7 @@ export class VideoGame implements IVideoGame.VideoGame{
 		}
 	}
 
-	static async getById(id: number, options: Options={}) : Promise<TVideoGame> {
+	static async getById(id: number, options: Options={}) : Promise<VideoGame> {
 		log.debug('VideoGame getById called [%s]', id);
 		try{
 			// parse options
@@ -137,7 +141,7 @@ export class VideoGame implements IVideoGame.VideoGame{
 
 			let cacheKey = format('VideoGame::id::%s', id);
 			if(options.isCached){
-				let cached = await Cache.getInstance().get(cacheKey) as TVideoGame;
+				let cached = await Cache.getInstance().get(cacheKey) as VideoGame;
 				if(cached) return cached;
 			}
 
@@ -154,7 +158,7 @@ export class VideoGame implements IVideoGame.VideoGame{
 		}
 	}
 
-	static async getByName(name: string, options: Options={}) : Promise<TVideoGame> {
+	static async getByName(name: string, options: Options={}) : Promise<VideoGame> {
 		log.debug('VideoGame getByName called [%s]', name);
 		try{
 			// parse options
@@ -162,7 +166,7 @@ export class VideoGame implements IVideoGame.VideoGame{
 
 			let cacheKey = format('VideoGame::name::%s', name);
 			if(isCached){
-				let cached = await Cache.getInstance().get(cacheKey) as TVideoGame;
+				let cached = await Cache.getInstance().get(cacheKey) as VideoGame;
 				if(cached) return cached;
 			}
 
@@ -201,8 +205,8 @@ export namespace IVideoGame{
 		isCardGame: boolean
 		rawEncoding: string
 
-		encode(data: Entity, encoding: string) : Entity | string
-		decode(data: Entity, encoding: string) : Entity
+		loadData(data: Entity, encoding: string) : Entity | string
+		getData(data: Entity, encoding: string) : Entity
 		getId() : number | undefined
 		getName() : string | undefined
 		getAbbreviation() : string | undefined

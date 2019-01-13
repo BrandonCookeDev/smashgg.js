@@ -41,30 +41,25 @@ export class PhaseGroup extends EventEmitter implements IPhaseGroup.PhaseGroup{
 	sets: Array<GGSet> = []
 
 
-	constructor(id: number, options: PhaseGroupOptions={}){
+	constructor(id: number, options: PhaseGroupOptions=IPhaseGroup.getDefaultOptions()){
 		super();
 
 		if(!id)
 			throw new Error('ID cannot be null for Phase Group');
 
 		// parse options
-		let expands = options.expands;
-		let isCached = options.isCached != undefined ? options.isCached === true : true;
-		let rawEncoding = options.rawEncoding || DEFAULT_ENCODING;
+		options = IPhaseGroup.parseOptions(options);
+		this.rawEncoding = options.rawEncoding as string;
+		this.isCached = options.isCached as boolean;
 
 		// set properties
 		this.id = id;
-		this.isCached = isCached;
-		this.rawEncoding = LEGAL_ENCODINGS.includes(rawEncoding) ? rawEncoding : DEFAULT_ENCODING;
 
 		// CREATE THE EXPANDS STRING
 		this.expandsString = '';
-		this.expands = {
-			sets: (expands && expands.sets == false) ? false : true,
-			entrants: (expands && expands.entrants == false) ? false : true,
-			standings: (expands && expands.standings == false) ? false : true,
-			seeds: (expands && expands.seeds == false) ? false : true
-		};
+		if(options.expands){
+			this.expands = Object.assign(this.expands, options.expands);
+		}
 		for(let property in this.expands){
 			if(this.expands.hasOwnProperty(property))
 				this.expandsString += format('expand[]=%s&', property);
@@ -88,13 +83,13 @@ export class PhaseGroup extends EventEmitter implements IPhaseGroup.PhaseGroup{
 	}
 
 	loadData(data: Data) : Data | string{
-		let encoded = this.rawEncoding == 'json' ? data : new Buffer(JSON.stringify(data)).toString(this.rawEncoding);
+		let encoded = this.rawEncoding === 'json' ? data : new Buffer(JSON.stringify(data)).toString(this.rawEncoding);
 		this.data = encoded;
 		return encoded;
 	}
 
 	getData() : Data{
-		let decoded = this.rawEncoding == 'json' ? this.data : JSON.parse(new Buffer(this.data.toString(), this.rawEncoding).toString('utf8'));
+		let decoded = this.rawEncoding === 'json' ? this.data : JSON.parse(new Buffer(this.data.toString(), this.rawEncoding).toString('utf8'));
 		return decoded;
 	}
 
@@ -227,9 +222,9 @@ export class PhaseGroup extends EventEmitter implements IPhaseGroup.PhaseGroup{
 			//parse options
 			options = parseOptions(options)
 
-			let sets: Array<GGSet> = await this.getSets(options);
-			let completeSets: Array<GGSet> = sets.filter(set => { return set.isComplete == true; });
-			return completeSets;			
+			let sets = await this.getSets(options);
+			let filtered = GGSet.filterForCompleteSets(sets);
+			return filtered;			
 		} catch(e){
 			log.error('PhaseGroup getCompleteSets error: %s', e);
 			throw e;
@@ -243,9 +238,9 @@ export class PhaseGroup extends EventEmitter implements IPhaseGroup.PhaseGroup{
 			//parse options
 			options = parseOptions(options)
 
-			let sets: Array<GGSet> = await this.getSets(options);
-			let completeSets: Array<GGSet> = sets.filter(set => { return set.isComplete == false; });
-			return completeSets;			
+			let sets = await this.getSets(options);
+			let filtered = GGSet.filterForIncompleteSets(sets);
+			return filtered;			
 		} catch(e){
 			log.error('PhaseGroup getIncompleteSets error: %s', e);
 			throw e;
@@ -253,26 +248,15 @@ export class PhaseGroup extends EventEmitter implements IPhaseGroup.PhaseGroup{
 	}
 
 	// TODO needs coverage
-	async getSetsXMinutesBack(minutes: number, options: Options={}) : Promise<Array<GGSet>>{
+	async getSetsXMinutesBack(minutesBack: number, options: Options={}) : Promise<Array<GGSet>>{
 		log.verbose('PhaseGroup getSetsXMinutesBack called');
 
 		try{
 			// parse options			
 			options = parseOptions(options)
-			options.isCached = false
 
-			let now = moment();
-			let sets: Array<GGSet> = await this.getSets(options);
-			let filtered: Array<GGSet> = sets.filter(set => {
-				let then = moment(set.getCompletedAt() as Date);
-				let diff = moment.duration(now.diff(then));
-
-				let diffMinutes = diff.minutes();
-				if(diff.hours() > 0 || diff.days() > 0 || diff.months() > 0 || diff.years() > 0) 
-					return false;
-				else 
-					return diffMinutes <= minutes && diffMinutes >= 0 && set.getIsComplete();
-			});
+			let sets = await this.getSets(options);
+			let filtered = GGSet.filterForXMinutesBack(sets, minutesBack);
 			return filtered;
 		} catch(e){
 			log.error('PhaseGroup getSetsXMinutesBack error: %s', e);
@@ -436,10 +420,10 @@ export namespace IPhaseGroup{
 		}
 	}
 
-	export function getDefaultOptions(options: Options) : Options{
+	export function getDefaultOptions() : Options{
 		return {
 			isCached: true,
-			rawEncoding: 'JSON',
+			rawEncoding: 'json',
 			expands: getDefaultExpands()
 		}
 	}

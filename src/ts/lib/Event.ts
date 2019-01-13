@@ -131,7 +131,7 @@ export namespace IEvent{
 				groups: true
 			},
 			isCached: true,
-			rawEncoding: 'JSON'
+			rawEncoding: 'json'
 		}
 	}
 
@@ -203,7 +203,7 @@ export class Event extends EventEmitter implements IEvent.Event{
 	phases: Array<Phase> = [];
 	groups: Array<PhaseGroup> = [];
 
-	constructor(eventId: string | number, tournamentId?: string, options: EventOptions={}){
+	constructor(eventId: string | number, tournamentId?: string, options: EventOptions=IEvent.getDefaultOptions()){
 		super();
 		
 		if(!eventId)
@@ -212,9 +212,9 @@ export class Event extends EventEmitter implements IEvent.Event{
 		// set properties
 		options = IEvent.parseOptions(options);
 		this.tournamentId = tournamentId;
-		this.isCached = options.isCached != undefined ? options.isCached === true : true;;
+		this.isCached = options.isCached as boolean;
 		this.eventId = typeof(eventId) === 'string' ? eventId : +eventId; 
-		this.rawEncoding = LEGAL_ENCODINGS.includes(this.rawEncoding) ? this.rawEncoding : DEFAULT_ENCODING;
+		this.rawEncoding = options.rawEncoding as string;
 
 		// create expands
 		this.expandsString = '';
@@ -232,13 +232,13 @@ export class Event extends EventEmitter implements IEvent.Event{
 	}
 
 	loadData(data: Data): Data | string {
-		let encoded : Data | string = this.rawEncoding == 'json' ? data as Data : new Buffer(JSON.stringify(data)).toString(this.rawEncoding);
+		let encoded : Data | string = this.rawEncoding === 'json' ? data as Data : new Buffer(JSON.stringify(data)).toString(this.rawEncoding);
 		this.data = encoded;
 		return encoded;
 	}
 
 	getData() : Data {
-		let decoded : Data = this.rawEncoding == 'json' ? this.data as Data : JSON.parse(new Buffer(this.data.toString(), this.rawEncoding).toString('utf8')) as Data;
+		let decoded : Data = this.rawEncoding === 'json' ? this.data as Data : JSON.parse(new Buffer(this.data.toString(), this.rawEncoding).toString('utf8')) as Data;
 		return decoded;
 	}
 
@@ -412,11 +412,11 @@ export class Event extends EventEmitter implements IEvent.Event{
 				if(cached) return cached;
 			}
 
-			let phases: Array<Phase> = await this.getEventPhases(options);
-			let fn = async (phase: Phase) : Promise<Array<GGSet>> => {
-				return await phase.getSets(options);
+			let groups: Array<PhaseGroup> = await this.getEventPhaseGroups(options);
+			let fn = async (group: PhaseGroup) : Promise<Array<GGSet>> => {
+				return await group.getSets(options);
 			};
-			let sets: GGSet[][] = await pmap(phases, fn, {concurrency: options.concurrency});
+			let sets: GGSet[][] = await pmap(groups, fn, {concurrency: options.concurrency});
 
 			let flattened: Array<GGSet> = _.flatten(sets);
 			if(options.isCached) await Cache.set(cacheKey, flattened);
@@ -439,11 +439,11 @@ export class Event extends EventEmitter implements IEvent.Event{
 				if(cached) return cached;
 			}
 
-			let phases: Array<Phase> = await this.getEventPhases(options);
-			let fn = async (phase: Phase) => {
-				return await phase.getPlayers(options);
+			let groups: Array<PhaseGroup> = await this.getEventPhaseGroups(options);
+			let fn = async (group: PhaseGroup) => {
+				return await group.getPlayers(options);
 			};
-			let players: Player[][] = await pmap(phases, fn, {concurrency: options.concurrency});
+			let players: Player[][] = await pmap(groups, fn, {concurrency: options.concurrency});
 
 			let flattened: Array<Player> = _.flatten(players);
 			flattened = _.uniqBy(flattened, 'id');
@@ -461,13 +461,9 @@ export class Event extends EventEmitter implements IEvent.Event{
 			//parse options
 			options = parseOptions(options)
 
-			let phases: Array<Phase> = await this.getEventPhases(options);
-			let fn = async (phase: Phase) => {
-				return await phase.getIncompleteSets(options);
-			};
-			let sets: GGSet[][] = await pmap(phases, fn, {concurrency: options.concurrency});
-			let flattened: Array<GGSet> = _.flatten(sets);
-			return flattened;
+			let sets = await this.getSets(options);
+			let filtered = GGSet.filterForIncompleteSets(sets);
+			return filtered;
 		} catch(e){
 			log.error('Event.getIncompleteSets error: %s', e);
 			throw e;
@@ -480,13 +476,9 @@ export class Event extends EventEmitter implements IEvent.Event{
 			//parse options
 			options = parseOptions(options);
 
-			let phases: Array<Phase> = await this.getEventPhases(options);
-			let fn = async (phase: Phase) => {
-				return await phase.getCompleteSets(options);
-			};
-			let sets: GGSet[][] = await pmap(phases, fn, {concurrency: options.concurrency});
-			let flattened: Array<GGSet> = _.flatten(sets);
-			return flattened;
+			let sets = await this.getSets(options);
+			let filtered = GGSet.filterForCompleteSets(sets);
+			return filtered;
 		} catch(e){
 			log.error('Event.getIncompleteSets error: %s', e);
 			throw e;
@@ -498,14 +490,11 @@ export class Event extends EventEmitter implements IEvent.Event{
 		try{
 			// parse options
 			options=parseOptions(options);
+			options.isCached = false;
 
-			let groups: Array<Phase> = await this.getEventPhases(options);
-			let fn = async (group: Phase) => {
-				return await group.getSetsXMinutesBack(minutesBack, options);
-			};
-			let sets: GGSet[][] = await pmap(groups, fn, {concurrency: options.concurrency});
-			let flattened: Array<GGSet> = _.flatten(sets);
-			return flattened;
+			let sets = await this.getSets();
+			let filtered = GGSet.filterForXMinutesBack(sets, minutesBack);
+			return filtered;
 		} catch(e){
 			log.error('Event.getSetsXMinutesBack error: %s', e);
 			throw e;

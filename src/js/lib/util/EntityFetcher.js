@@ -177,7 +177,7 @@ function getPhaseGroup(phaseGroupId, options) {
                     _c.trys.push([0, 2, , 3]);
                     options = parsePhaseGroupOptions(options);
                     expands = createExpandsString(options.expands);
-                    url = util_1.format(PHASE_URL, phaseGroupId, expands);
+                    url = util_1.format(PHASE_GROUP_URL, phaseGroupId, expands);
                     _b = (_a = JSON).parse;
                     return [4 /*yield*/, request_promise_1.default(url)];
                 case 1:

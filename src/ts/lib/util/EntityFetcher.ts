@@ -91,7 +91,7 @@ export async function getPhaseGroup(phaseGroupId: number, options: PhaseGroupOpt
     try{
         options = parsePhaseGroupOptions(options);
         let expands: string = createExpandsString(options.expands)
-        let url: string = format(PHASE_URL, phaseGroupId, expands);
+        let url: string = format(PHASE_GROUP_URL, phaseGroupId, expands);
         let data: PhaseGroupData = JSON.parse(await request(url));
         return data;
     } catch(err){

@@ -126,7 +126,7 @@ export namespace ITournament{
 				stations: true
 			},
 			isCached: true,
-			rawEncoding: 'JSON'
+			rawEncoding: 'json'
 		}
 	}
 
@@ -211,7 +211,7 @@ export class Tournament extends EventEmitter implements ITournament.Tournament{
 
 	constructor(
         tournamentId: string, 
-        options: TournamentOptions = {}
+        options: TournamentOptions = ITournament.getDefaultOptions()
     ){
 		super();
 
@@ -221,18 +221,11 @@ export class Tournament extends EventEmitter implements ITournament.Tournament{
 		//	throw new Error('Due to Smashgg limitations, currently Tournaments may only be retrieved by tournament name (slug)');
 
 		// parse options
-		let isCached = options.isCached != undefined ? options.isCached === true : true;
-		let rawEncoding = options.rawEncoding || DEFAULT_ENCODING;
-
-		// set properties
-		this.data = {
-			tournament:{
-				id: 0
-			}
-		}
+		options = ITournament.parseOptions(options);
+		this.data = ITournament.getDefaultData()
 		this.name = tournamentId; // instanceof String ? tournamentId : +tournamentId;
-		this.isCached = isCached;
-		this.rawEncoding = LEGAL_ENCODINGS.includes(rawEncoding) ? rawEncoding : DEFAULT_ENCODING;
+		this.isCached = options.isCached as boolean;
+		this.rawEncoding = options.rawEncoding as string;
 
 		// create expands 
 		this.expandsString = '';
@@ -268,13 +261,13 @@ export class Tournament extends EventEmitter implements ITournament.Tournament{
 	}
 
 	loadData(data: object) : Data | string{
-		let encoded: Data | string = this.rawEncoding == 'json' ? data as Data : new Buffer(JSON.stringify(data)).toString(this.rawEncoding);
+		let encoded: Data | string = this.rawEncoding === 'json' ? data as Data : new Buffer(JSON.stringify(data)).toString(this.rawEncoding);
 		this.data = encoded;
 		return encoded;
 	}
 
 	getData() : Data {
-		let decoded: Data = this.rawEncoding == 'json' ? this.data as Data : JSON.parse(new Buffer(this.data.toString(), this.rawEncoding).toString('utf8')) as Data;
+		let decoded: Data = this.rawEncoding === 'json' ? this.data as Data : JSON.parse(new Buffer(this.data.toString(), this.rawEncoding).toString('utf8')) as Data;
 		return decoded;
 	}
 

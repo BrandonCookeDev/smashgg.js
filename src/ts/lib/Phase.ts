@@ -37,16 +37,17 @@ export class Phase extends EventEmitter implements IPhase.Phase{
 	expandsString: string = ''
 	expands: IPhase.Expands = IPhase.getDefaultExpands()
 
-	constructor(id: number, options: PhaseOptions = {}){
+	constructor(id: number, options: PhaseOptions = IPhase.getDefaultOptions()){
 		super();
 
 		if(!id)
 			throw new Error('ID cannot be null for Phase Group');
+		this.id = id;
 
 		// parse options
 		options = IPhase.parseOptions(options);
-		this.isCached = options.isCached == true;
-		this.rawEncoding = LEGAL_ENCODINGS.includes(options.rawEncoding as string) ? options.rawEncoding as string : DEFAULT_ENCODING;
+		this.isCached = options.isCached as boolean;
+		this.rawEncoding = options.rawEncoding as string;
 
 		// CREATE THE EXPANDS STRING
 		this.expandsString = '';
@@ -77,13 +78,13 @@ export class Phase extends EventEmitter implements IPhase.Phase{
 	}
 
 	loadData(data: Data) : Data | string{
-		let encoded: Data | string = this.rawEncoding == 'json' ? data : new Buffer(JSON.stringify(data)).toString(this.rawEncoding);
+		let encoded: Data | string = this.rawEncoding === 'json' ? data : new Buffer(JSON.stringify(data)).toString(this.rawEncoding);
 		this.data = encoded;
 		return encoded;
 	}
 
 	getData() : Data{
-		let decoded = this.rawEncoding == 'json' ? this.data as Data : JSON.parse(new Buffer(this.data.toString(), this.rawEncoding).toString('utf8'));
+		let decoded = this.rawEncoding === 'json' ? this.data as Data : JSON.parse(new Buffer(this.data.toString(), this.rawEncoding).toString('utf8'));
 		return decoded;
 	}
 
@@ -233,13 +234,9 @@ export class Phase extends EventEmitter implements IPhase.Phase{
 			//parse options
 			options = ICommon.parseOptions(options);
 
-			let groups: Array<PhaseGroup> = await this.getPhaseGroups(options);
-			let fn = async (group : PhaseGroup) : Promise<Array<GGSet>> => {
-				return await group.getIncompleteSets(options);
-			};
-			let sets: GGSet[][] = await pmap(groups, fn, {concurrency: options.concurrency});
-			let flattened: GGSet[] = _.flatten(sets);
-			return flattened;
+			let sets = await this.getSets(options);
+			let filtered = GGSet.filterForIncompleteSets(sets);
+			return filtered;
 		} catch(e){
 			log.error('Phase.getIncompleteSets error: %s', e);
 			throw e;
@@ -252,13 +249,9 @@ export class Phase extends EventEmitter implements IPhase.Phase{
 			//parse options
 			options = ICommon.parseOptions(options)
 
-			let groups: Array<PhaseGroup> = await this.getPhaseGroups(options);
-			let fn = async (group: PhaseGroup) : Promise<Array<GGSet>> => {
-				return await group.getCompleteSets(options);
-			};
-			let sets: GGSet[][] = await pmap(groups, fn, {concurrency: options.concurrency});
-			let flattened: GGSet[] = _.flatten(sets);
-			return flattened;
+			let sets = await this.getSets(options);
+			let filtered = GGSet.filterForCompleteSets(sets);
+			return filtered;
 		} catch(e){
 			log.error('Phase.getIncompleteSets error: %s', e);
 			throw e;
@@ -272,13 +265,9 @@ export class Phase extends EventEmitter implements IPhase.Phase{
 			options = ICommon.parseOptions(options)
 			options.isCached = false;
 
-			let groups: Array<PhaseGroup> = await this.getPhaseGroups(options);
-			let fn = async (group: PhaseGroup) : Promise<Array<GGSet>> => {
-				return await group.getSetsXMinutesBack(minutesBack, options);
-			};
-			let sets: GGSet[][] = await pmap(groups, fn, {concurrency: options.concurrency});
-			let flattened: GGSet[] = _.flatten(sets);
-			return flattened;
+			let sets = await this.getSets();
+			let filtered = GGSet.filterForCompleteSets(sets);
+			return filtered;
 		} catch(e){
 			log.error('Phase.getSetsXMinutesBack error: %s', e);
 			throw e;
@@ -404,13 +393,13 @@ export namespace IPhase{
 		}
 	}
 
-	export function getDefaultOptions(options: Options) : Options{
+	export function getDefaultOptions() : Options{
 		return {
 			expands: {
 				groups: true
 			},
 			isCached: true,
-			rawEncoding: 'JSON'
+			rawEncoding: 'json'
 		}
 	}
 

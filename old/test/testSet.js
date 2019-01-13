@@ -1,12 +1,13 @@
 /* eslint-disable */
 'use strict';
+require('../src/js/util/ErrorHandler')
 
 let _ = require('lodash');
 
-let Set = require('../lib/Set');
-let Player = require('../lib/Player');
-let Tournament = require('../lib/Tournament');
-let Cache = require('../lib/util/Cache').getInstance();
+let Set = require('../src/js/Set');
+let Player = require('../src/js/Player');
+let Tournament = require('../src/js/Tournament');
+let Cache = require('../src/js/util/Cache').getInstance();
 
 let chai = require('chai');
 let cap = require('chai-as-promised');

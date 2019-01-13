@@ -25,10 +25,10 @@ npm install --save smashgg.js
     -  [Phase](#phase)
     -  [PhaseGroup](#phasegroup)
     -  [Player](#player)
-    -  [Set](#set)
+    -  [GGSet](#ggset)
     -  [Character](#character)
     -  [VideoGame](#videogame)
-- [Transitioning to V2](#transition)
+- [Upgrading](#transition)
 
 ## Example 
 ```javascript
@@ -215,14 +215,14 @@ ceo2016.on('ready', function(){
     * **tournamentId** - [*required*] tournament name/slug
     * **options** - options for the Tournament object
 
-#### Bulk Pull Promises
+#### Aggregation Promises
 * **getAllPlayers([options])**
     * Returns a Promise that resolves an array of all `Player` objects that partook in the Tournament
     * **options** - options for the bulk pull proceedure
         * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
         * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
 * **getAllSets([options])**
-    * Returns a Promise that resolves an array of all `Set` objects that took place in the Tournament
+    * Returns a Promise that resolves an array of all `GGSet` objects that took place in the Tournament
     * **options** - options for the bulk pull proceedure
         * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
         * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
@@ -232,12 +232,12 @@ ceo2016.on('ready', function(){
         * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
         * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
 * **getCompleteSets([options])**
-    * Returns a Promise that resolves an array of `Set` objects that are completed
+    * Returns a Promise that resolves an array of `GGSet` objects that are completed
     * **options** - options for the bulk pull proceedure
         * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
         * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
 * **getIncompleteSets([options])**
-    * Returns a Promise that resolves an array of `Set` objects that are not completed yet
+    * Returns a Promise that resolves an array of `GGSet` objects that are not completed yet
     * **options** - options for the bulk pull proceedure
         * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
         * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
@@ -370,7 +370,7 @@ event3.on('ready', function(){
     * **tournamentId** - [*required*] tournament slug/shorthand
     * **options** - options for the Event [in constructor]
 
-#### Bulk Pull Promises
+#### Aggregation Promises
 * **getEventPhases([options])**
     * Returns a Promise resolving an array of `Phase` objects for this Event
     * **options** - options for the bulk pull proceedure
@@ -382,7 +382,7 @@ event3.on('ready', function(){
         * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
         * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
 * **getSets([options])**
-    * Returns a Promise resolving an array of `Set` objects belonging to this Event
+    * Returns a Promise resolving an array of `GGSet` objects belonging to this Event
     * **options** - options for the bulk pull proceedure
         * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
         * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
@@ -392,12 +392,12 @@ event3.on('ready', function(){
         * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
         * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
 * **getCompleteSets([options])**
-    * Returns a Promise that resolves an array of `Set` objects that are completed
+    * Returns a Promise that resolves an array of `GGSet` objects that are completed
     * **options** - options for the bulk pull proceedure
         * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
         * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
 * **getIncompleteSets([options])**
-    * Returns a Promise that resolves an array of `Set` objects that are not completed yet
+    * Returns a Promise that resolves an array of `GGSet` objects that are not completed yet
     * **options** - options for the bulk pull proceedure
         * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
         * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
@@ -492,14 +492,14 @@ phase2.on('ready', function(){
     * **id** - [*required*] Id of the Phase
     * **options** - options for the Phase object
 
-#### Bulk Pull Promises
+#### Aggregation Promises
 * **getPhaseGroups([options])**
     * Returns a Promise resolving an array of `PhaseGroup` objects belonging to this Phase
     * **options** - options for the bulk pull proceedure
         * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
         * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
 * **getSets([options])**
-    * Returns a Promise resolving an array of `Set` objects belonging to this Phase
+    * Returns a Promise resolving an array of `GGSet` objects belonging to this Phase
     * **options** - options for the bulk pull proceedure
         * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
         * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
@@ -509,12 +509,12 @@ phase2.on('ready', function(){
         * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
         * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
 * **getCompleteSets([options])**
-    * Returns a Promise that resolves an array of `Set` objects that are completed
+    * Returns a Promise that resolves an array of `GGSet` objects that are completed
     * **options** - options for the bulk pull proceedure
         * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
         * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
 * **getIncompleteSets([options])**
-    * Returns a Promise that resolves an array of `Set` objects that are not completed yet
+    * Returns a Promise that resolves an array of `GGSet` objects that are not completed yet
     * **options** - options for the bulk pull proceedure
         * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
         * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
@@ -611,22 +611,22 @@ phaseGroup2.on('ready', function(){
     * **id** - [*required*] id of the Phase Group
     * **options** - options for the PhaseGroup object
 
-#### Bulk Pull Promises
+#### Aggregation Promises
 * **getPlayers([options])**
     * Returns a Promise that resolves an array of `Player` objects for the Phase Group.
     * **options** - options for the bulk pull proceedure
         * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
 * **getSets([options])**
-    * Return a Promise that resolves an array of `Set` objects for the Phase Group.
+    * Return a Promise that resolves an array of `GGSet` objects for the Phase Group.
     * **options** - options for the bulk pull proceedure
         * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
 * **getCompleteSets([options])**
-    * Returns a Promise that resolves an array of `Set` objects that are completed
+    * Returns a Promise that resolves an array of `GGSet` objects that are completed
     * **options** - options for the bulk pull proceedure
         * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
         * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
 * **getIncompleteSets([options])**
-    * Returns a Promise that resolves an array of `Set` objects that are not completed yet
+    * Returns a Promise that resolves an array of `GGSet` objects that are not completed yet
     * **options** - options for the bulk pull proceedure
         * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
         * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
@@ -695,7 +695,7 @@ tournament.on('ready', async function(){
     * requires **data** property
     * return the final placement of the Player
 
-## Set
+## GGSet
 A Set is a data object that holds information about a tournament set
 that took place at a tournament.
 
@@ -703,18 +703,20 @@ that took place at a tournament.
 var Player1 = new smashgg.Player(000000, 'BootyBlastWarrior', 'Andy', 'US', 'GA', null);
 var Player2 = new smashgg.Player(000001, 'cookiE', 'Brandon Cooke', 'US', 'GA', 'Recursion');
 
-var set = new smashgg.Set(000001, 000002, 'Losers Semis', Player1, Player2, true, 3, 2, 000000, 000001);
-var set2 = new smashgg.Set(000002, 000003, 'Grand Finals', Player1, Player2, false)
+var set = new smashgg.GGSet(000001, 000002, 'Losers Semis', Player1, Player2, true, 3, 2, 000000, 000001);
+var set2 = new smashgg.GGSet(000002, 000003, 'Grand Finals', Player1, Player2, false)
 
 var tournament = new smashgg.Tournament('to12');
 tournament.on('ready', async function(){
     var sets = await tournament.getAllSets();
     //returns a list of Set objects from the tournament
 })
+
+var set1 = await smashgg.getSet(1202)
 ```
 
 ### Constructor
-* **Set(id, eventId, round, Player1, Player2 [, isComplete, score1, score2, winnerId, loserId, data])**
+* **GGSet(id, eventId, round, Player1, Player2 [, isComplete, score1, score2, winnerId, loserId, data])**
     * **id** [required] - unique identifier of the Set object
     * **eventId** [required] - id of the event this Set belongs to
     * **round** [required] - round name of the Set
@@ -934,8 +936,13 @@ let allGames = await VideoGame.getAll()
 * **getIsCardGame()**
     * return the boolean value of if the Video Game is a card game
 
-## Transition
+## Upgrading
 This section is for detailing the transition between major versions. 
+
+### V2 to V3
+In order to transition successfully from V2 to V3, please ensure the following 
+All `Set` objects created by smashgg.js are renamed to GGSet
+
 ### V1 to V2
 In order to transition successfully from V1 to V2, please ensure the following 
 * Event constructors now take eventId parameter before tournamentId parameter.

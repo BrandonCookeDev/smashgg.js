@@ -1,11 +1,12 @@
 /* eslint-disable */
 'use strict';
+require('../src/js/util/ErrorHandler')
 
 let chai = require('chai');
 let expect = chai.expect;
 
-let Character = require('../lib/Character');
-let Cache = require('../lib/util/Cache');
+let Character = require('../src/js/Character');
+let Cache = require('../src/js/util/Cache');
 
 const MELEE_CHAR_COUNT = 27;
 const PM_CHAR_COUNT = 42;

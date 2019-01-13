@@ -1,15 +1,16 @@
 /* eslint-disable */
 'use strict';
+require('../src/js/util/ErrorHandler')
 
 Promise = require('bluebird');
 let _ = require('lodash');3
 let moment = require('moment');
 
-let Tournament = require('../lib/Tournament');
-let Player = require('../lib/Player');
-let Set = require('../lib/Set');
-let Event = require('../lib/Event');
-let Cache = require('../lib/util/Cache').getInstance();
+let Tournament = require('../src/js/Tournament');
+let Player = require('../src/js/Player');
+let Set = require('../src/js/GGSet');
+let Event = require('../src/js/Event');
+let Cache = require('../src/js/util/Cache');
 
 let sinon = require('sinon');
 let chai = require('chai');

@@ -3,11 +3,12 @@
 Promise = require('bluebird');
 
 let _	   = require('lodash');
-let Event   = require('../lib/Event');
+let smashgg = require('../index');
+let Event   = smashgg.Event;
 
 (async function(){
 	try{
-		let event = await Event.getEvent('ceo-2016', 'melee-singles');
+		let event = await Event.getEvent('melee-singles', 'ceo-2016');
 		let phaseGroups = await event.getEventPhaseGroups();
 
 		let players = await Promise.all(

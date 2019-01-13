@@ -1,10 +1,10 @@
-import log from 'winston'
 import {EventEmitter} from 'events'
 import {format} from 'util'
 import request from 'request-promise'
 import Cache from './util/Cache'
 
 import { ICommon } from './util/Common'
+import log from './util/Logger'
 
 import TPlayer = IPlayer.Player
 

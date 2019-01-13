@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import log from 'winston'
 import {format} from 'util'
 import moment from 'moment-timezone'
 import {EventEmitter} from 'events'
@@ -8,6 +7,7 @@ import Cache from './util/Cache'
 
 import { ICommon } from './util/Common'
 import {PhaseGroup, Player} from './internal' 
+import log from './util/Logger'
 
 import Entity = IGGSet.Entity
 import SetEntity = IGGSet.SetEntity

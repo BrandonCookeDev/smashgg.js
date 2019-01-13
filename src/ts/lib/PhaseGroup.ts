@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import log from 'winston'
 import pmap from 'p-map'
 import { format } from 'util'
 import moment from 'moment'
@@ -9,6 +8,7 @@ import { EventEmitter } from 'events'
 import Cache from './util/Cache'
 import {Player, GGSet} from './internal'
 import Encoder from './util/Encoder'
+import log from './util/Logger'
 
 import { ICommon } from './util/Common'
 import { IPlayer } from './Player'

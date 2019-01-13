@@ -149,7 +149,6 @@ export namespace IEvent{
 
 import _ from 'lodash'
 import moment from 'moment'
-import log from 'winston'
 import pmap from 'p-map'
 import request from 'request-promise'
 import { EventEmitter } from 'events'
@@ -158,6 +157,7 @@ import { format } from 'util'
 import * as Common from './util/Common'
 import { Tournament, ITournament, Phase, PhaseGroup, Player, GGSet } from './internal'
 import { getTournamentData, getEventDataById, getEventData } from './internal'
+import log from './util/Logger'
 import Cache from './util/Cache'
 import Encoder from './util/Encoder'
 

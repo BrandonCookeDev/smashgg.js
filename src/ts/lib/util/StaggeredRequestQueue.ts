@@ -1,13 +1,18 @@
 'use strict'
 
-require('colors')
-let Common = require('./Common')
-let EventEmitter = require('events')
+import 'colors'
+import * as Common from './Common'
+import {EventEmitter} from 'events'
 
 const RATE_LIMIT_MS_TIME = process.env.SRQRateLimitMsTime || 1100
 const RETRY_RATE = process.env.SRQRetryRate || 3
 
-class StaggeredRequestQueue extends EventEmitter{
+export default class StaggeredRequestQueue extends EventEmitter implements ISRQ.SRQ{
+
+	queue: Array<Function> = []
+	static initialized: boolean = false
+	static processing: boolean = false
+	static instance: StaggeredRequestQueue
 
 	constructor(){
 		super()
@@ -53,12 +58,12 @@ class StaggeredRequestQueue extends EventEmitter{
 
 			while(StaggeredRequestQueue.getInstance().getLength() > 0){
 				let retryCount = 0
-				let requestFcn = StaggeredRequestQueue.getInstance().pop()
+				let requestFcn: Function = StaggeredRequestQueue.getInstance().pop()
 
 				// retry attempts
 				while(retryCount < RETRY_RATE){
 					try{
-						await Common.sleep(RATE_LIMIT_MS_TIME)
+						await Common.sleep(+RATE_LIMIT_MS_TIME)
 						await requestFcn()
 						break
 					} catch(e){
@@ -74,7 +79,7 @@ class StaggeredRequestQueue extends EventEmitter{
 	}
 
 	// TODO enforce strict type on element being added
-	add(element){
+	add(element: Function) : void{
 		if(element.constructor.name != 'Function')
 			throw new Error('SRQ Error: Elements added must be a function wrapping around a promise')
 
@@ -82,22 +87,35 @@ class StaggeredRequestQueue extends EventEmitter{
 		this.emitAddEvent()
 	}
 
-	pop(){
-		return this.queue.shift()
+	pop() : Function {
+		if(this.queue.length > 0)
+			return this.queue.shift() as Function
+		else 
+			throw new Error('Cannot pop an empty Queue')
 	}
 
-	getLength(){
+	getLength() : number{
 		return this.queue.length
 	}
 
-	emitAddEvent(element){
+	emitAddEvent(element?: Function) : void{
 		this.emit('add', element)
 	}
 
-	emitEmptyEvent(){
+	emitEmptyEvent() : void{
 		this.emit('empty')
 	}
 
+}
+
+namespace ISRQ{
+	export interface SRQ{
+		add(element: Function) : void
+		pop() : Function 
+		getLength() : number
+		emitAddEvent(element?: Function) : void
+		emitEmptyEvent() : void
+	}
 }
 
 module.exports = StaggeredRequestQueue

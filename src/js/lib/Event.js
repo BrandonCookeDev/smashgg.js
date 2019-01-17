@@ -108,7 +108,6 @@ var IEvent;
 })(IEvent = exports.IEvent || (exports.IEvent = {}));
 var lodash_1 = __importDefault(require("lodash"));
 var moment_1 = __importDefault(require("moment"));
-var winston_1 = __importDefault(require("winston"));
 var p_map_1 = __importDefault(require("p-map"));
 var request_promise_1 = __importDefault(require("request-promise"));
 var events_1 = require("events");
@@ -116,6 +115,7 @@ var util_1 = require("util");
 var Common = __importStar(require("./util/Common"));
 var internal_1 = require("./internal");
 var internal_2 = require("./internal");
+var Logger_1 = __importDefault(require("./util/Logger"));
 var Cache_1 = __importDefault(require("./util/Cache"));
 var Encoder_1 = __importDefault(require("./util/Encoder"));
 var EVENT_URL = 'https://api.smash.gg/event/%s?%s';
@@ -192,12 +192,12 @@ var Event = /** @class */ (function (_super) {
                     resolve(E_1);
                 });
                 E_1.on('error', function (e) {
-                    winston_1.default.error('getEvent error: %s', e);
+                    Logger_1.default.error('getEvent error: %s', e);
                     reject(e);
                 });
             }
             catch (e) {
-                winston_1.default.error('getEvent error: %s', e);
+                Logger_1.default.error('getEvent error: %s', e);
                 reject(e);
             }
         });
@@ -211,12 +211,12 @@ var Event = /** @class */ (function (_super) {
                     resolve(E_2);
                 });
                 E_2.on('error', function (e) {
-                    winston_1.default.error('getEventById error: %s', e);
+                    Logger_1.default.error('getEventById error: %s', e);
                     reject(e);
                 });
             }
             catch (e) {
-                winston_1.default.error('getEventById error: %s', e);
+                Logger_1.default.error('getEventById error: %s', e);
                 reject(e);
             }
         });
@@ -228,8 +228,8 @@ var Event = /** @class */ (function (_super) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        winston_1.default.debug('Event.load called');
-                        winston_1.default.verbose('Creating Event from url: %s', this.url);
+                        Logger_1.default.debug('Event.load called');
+                        Logger_1.default.verbose('Creating Event from url: %s', this.url);
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 15, , 16]);
@@ -287,12 +287,12 @@ var Event = /** @class */ (function (_super) {
                     case 14: return [3 /*break*/, 16];
                     case 15:
                         e_1 = _a.sent();
-                        winston_1.default.error('Event.load error: %s', e_1.message);
+                        Logger_1.default.error('Event.load error: %s', e_1.message);
                         if (e_1.name === 'StatusCodeError' && e_1.message.indexOf('404') > -1) {
                             s = this.tournamentId ?
                                 util_1.format('No Event [%s] for tournament [%s] (%s)', this.eventId, this.tournamentId, this.url) :
                                 util_1.format('No Event with id [%s] ( %s )', this.eventId, this.url);
-                            winston_1.default.error(s);
+                            Logger_1.default.error(s);
                         }
                         throw e_1;
                     case 16: return [2 /*return*/];
@@ -309,12 +309,12 @@ var Event = /** @class */ (function (_super) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        winston_1.default.debug('Event.getEventPhases called');
+                        Logger_1.default.debug('Event.getEventPhases called');
                         options = parseOptions(options);
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 6, , 7]);
-                        winston_1.default.info('Getting Phases for Event ' + this.tournamentId);
+                        Logger_1.default.info('Getting Phases for Event ' + this.tournamentId);
                         cacheKey = util_1.format('event::%s::%s::phases', this.tournamentId, this.eventId);
                         if (!options.isCached) return [3 /*break*/, 3];
                         return [4 /*yield*/, Cache_1.default.get(cacheKey)];
@@ -344,7 +344,7 @@ var Event = /** @class */ (function (_super) {
                         return [2 /*return*/, allPhases];
                     case 6:
                         err_1 = _a.sent();
-                        winston_1.default.error('Event.getEventPhaseGroups: ' + err_1);
+                        Logger_1.default.error('Event.getEventPhaseGroups: ' + err_1);
                         throw err_1;
                     case 7: return [2 /*return*/];
                 }
@@ -359,13 +359,13 @@ var Event = /** @class */ (function (_super) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        winston_1.default.debug('Event.getEventPhaseGroups called');
+                        Logger_1.default.debug('Event.getEventPhaseGroups called');
                         // parse options
                         options = parseOptions(options);
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 6, , 7]);
-                        winston_1.default.info('Getting Phase Groups for Event ' + this.tournamentId);
+                        Logger_1.default.info('Getting Phase Groups for Event ' + this.tournamentId);
                         cacheKey = util_1.format('event::%s::%s::groups', this.tournamentId, this.eventId);
                         if (!options.isCached) return [3 /*break*/, 3];
                         return [4 /*yield*/, Cache_1.default.get(cacheKey)];
@@ -394,7 +394,7 @@ var Event = /** @class */ (function (_super) {
                         return [2 /*return*/, allGroups];
                     case 6:
                         err_2 = _a.sent();
-                        winston_1.default.error('Event.getEventPhaseGroups: ' + err_2);
+                        Logger_1.default.error('Event.getEventPhaseGroups: ' + err_2);
                         throw err_2;
                     case 7: return [2 /*return*/];
                 }
@@ -409,7 +409,7 @@ var Event = /** @class */ (function (_super) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        winston_1.default.debug('Event.getSets called');
+                        Logger_1.default.debug('Event.getSets called');
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 8, , 9]);
@@ -446,7 +446,7 @@ var Event = /** @class */ (function (_super) {
                     case 7: return [2 /*return*/, flattened];
                     case 8:
                         e_2 = _a.sent();
-                        winston_1.default.error('Event.getSets error: %s', e_2);
+                        Logger_1.default.error('Event.getSets error: %s', e_2);
                         throw e_2;
                     case 9: return [2 /*return*/];
                 }
@@ -461,7 +461,7 @@ var Event = /** @class */ (function (_super) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        winston_1.default.debug('Event.getSets called');
+                        Logger_1.default.debug('Event.getSets called');
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 8, , 9]);
@@ -499,7 +499,7 @@ var Event = /** @class */ (function (_super) {
                     case 7: return [2 /*return*/, flattened];
                     case 8:
                         e_3 = _a.sent();
-                        winston_1.default.error('Event.getSets error: %s', e_3);
+                        Logger_1.default.error('Event.getSets error: %s', e_3);
                         throw e_3;
                     case 9: return [2 /*return*/];
                 }
@@ -513,7 +513,7 @@ var Event = /** @class */ (function (_super) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        winston_1.default.debug('Event.getIncompleteSets called');
+                        Logger_1.default.debug('Event.getIncompleteSets called');
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 3, , 4]);
@@ -526,7 +526,7 @@ var Event = /** @class */ (function (_super) {
                         return [2 /*return*/, filtered];
                     case 3:
                         e_4 = _a.sent();
-                        winston_1.default.error('Event.getIncompleteSets error: %s', e_4);
+                        Logger_1.default.error('Event.getIncompleteSets error: %s', e_4);
                         throw e_4;
                     case 4: return [2 /*return*/];
                 }
@@ -540,7 +540,7 @@ var Event = /** @class */ (function (_super) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        winston_1.default.debug('Event.getIncompleteSets called');
+                        Logger_1.default.debug('Event.getIncompleteSets called');
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 3, , 4]);
@@ -553,7 +553,7 @@ var Event = /** @class */ (function (_super) {
                         return [2 /*return*/, filtered];
                     case 3:
                         e_5 = _a.sent();
-                        winston_1.default.error('Event.getIncompleteSets error: %s', e_5);
+                        Logger_1.default.error('Event.getIncompleteSets error: %s', e_5);
                         throw e_5;
                     case 4: return [2 /*return*/];
                 }
@@ -567,7 +567,7 @@ var Event = /** @class */ (function (_super) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        winston_1.default.verbose('Event.getSetsXMinutesBack called');
+                        Logger_1.default.verbose('Event.getSetsXMinutesBack called');
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 3, , 4]);
@@ -581,7 +581,7 @@ var Event = /** @class */ (function (_super) {
                         return [2 /*return*/, filtered];
                     case 3:
                         e_6 = _a.sent();
-                        winston_1.default.error('Event.getSetsXMinutesBack error: %s', e_6);
+                        Logger_1.default.error('Event.getSetsXMinutesBack error: %s', e_6);
                         throw e_6;
                     case 4: return [2 /*return*/];
                 }
@@ -593,11 +593,11 @@ var Event = /** @class */ (function (_super) {
         var data = this.getData();
         if (data && data.event.entities && data.event.entities.event) {
             if (!data.event.entities.event[prop])
-                winston_1.default.error(this.nullValueString(prop));
+                Logger_1.default.error(this.nullValueString(prop));
             return data.event.entities.event[prop];
         }
         else {
-            winston_1.default.error('No data to get Tournament property Id');
+            Logger_1.default.error('No data to get Tournament property Id');
             return null;
         }
     };
@@ -605,11 +605,11 @@ var Event = /** @class */ (function (_super) {
         var data = this.getData();
         if (data && data.tournament.entities && data.tournament.entities.tournament) {
             if (!data.tournament.entities.tournament[prop])
-                winston_1.default.error(this.nullValueString(prop));
+                Logger_1.default.error(this.nullValueString(prop));
             return data.tournament.entities.tournament[prop];
         }
         else {
-            winston_1.default.error('No data to get Tournament property Id');
+            Logger_1.default.error('No data to get Tournament property Id');
             return null;
         }
     };
@@ -641,7 +641,7 @@ var Event = /** @class */ (function (_super) {
             return time.toDate();
         }
         else {
-            winston_1.default.error('Event.getStartTime: startAt and timezone properties must both be present');
+            Logger_1.default.error('Event.getStartTime: startAt and timezone properties must both be present');
             return null;
         }
     };
@@ -654,7 +654,7 @@ var Event = /** @class */ (function (_super) {
             return time + " " + zone;
         }
         else {
-            winston_1.default.error('Event.getStartTime: startAt and timezone properties must both be present');
+            Logger_1.default.error('Event.getStartTime: startAt and timezone properties must both be present');
             return null;
         }
     };
@@ -666,7 +666,7 @@ var Event = /** @class */ (function (_super) {
             return time.toDate();
         }
         else {
-            winston_1.default.error('Event.getEndTime: endAt and timezone properties must both be present');
+            Logger_1.default.error('Event.getEndTime: endAt and timezone properties must both be present');
             return null;
         }
     };
@@ -679,7 +679,7 @@ var Event = /** @class */ (function (_super) {
             return time + " " + zone;
         }
         else {
-            winston_1.default.error('Event.getEndTime: endAt and timezone properties must both be present');
+            Logger_1.default.error('Event.getEndTime: endAt and timezone properties must both be present');
             return null;
         }
     };

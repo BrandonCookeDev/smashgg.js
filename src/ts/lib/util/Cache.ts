@@ -2,11 +2,28 @@
 
 import * as log from 'winston'
 import NodeCache from 'node-cache'
-import { reject } from 'bluebird';
+import { promisifyAll } from 'bluebird';
+
+const TTL = process.env.CacheTTL || 600;
+const CHECK_PERIOD = process.env.CacheCheckPeriod || 60;
 
 export default class Cache{
 
-    static instance : NodeCache;
+	static instance : NodeCache;
+	static initialized: boolean = false;
+
+	static init(){
+		if(!Cache.initialized){
+			Cache.instance = promisifyAll(
+				new NodeCache({
+					stdTTL: +TTL,
+					checkperiod: +CHECK_PERIOD 
+				})
+			)
+			Cache.initialized = true
+		}
+	}
+	
 
 	static getInstance() : NodeCache{
 		if(!Cache.instance) {
@@ -19,7 +36,7 @@ export default class Cache{
 	}
 
 	static get(key: string) : Promise<any>{
-		return new Promise(function(resolve){
+		return new Promise(function(resolve, reject){
 			log.debug('Fetching (%s) from cache', key);
 			Cache.getInstance().get(key, function(err, value){
 				if(err) return reject(err);

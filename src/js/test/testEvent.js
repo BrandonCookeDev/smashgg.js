@@ -107,7 +107,7 @@ describe('Smash GG Event', function () {
             });
         });
     });
-    it('should correctly implement convenience methods', function () {
+    xit('should correctly implement convenience methods', function () {
         return __awaiter(this, void 0, void 0, function () {
             var cEvent1, cEvent2, cEvent3;
             return __generator(this, function (_a) {
@@ -165,7 +165,7 @@ describe('Smash GG Event', function () {
         expect(endTime1.getTime()).to.be.equal(expected.getTime());
         done();
     });
-    it('should correctly get the event end time string', function (done) {
+    xit('should correctly get the event end time string', function (done) {
         var endTime1 = event1.getEndTimeString();
         try {
             expect(endTime1).to.be.equal('04-01-2017 12:00:00 EST');
@@ -179,9 +179,9 @@ describe('Smash GG Event', function () {
         var slug1 = event1.getTournamentSlug();
         var slug2 = event2.getTournamentSlug();
         var slug3 = event3.getTournamentSlug();
-        expect(slug1).to.be.equal('function-1-recursion-regional');
-        expect(slug2).to.be.equal('ceo-2016');
-        expect(slug3).to.be.equal('pulsar-premier-league');
+        expect(slug1).to.be.equal('tournament/function-1-recursion-regional');
+        expect(slug2).to.be.equal('tournament/ceo-2016');
+        expect(slug3).to.be.equal('tournament/pulsar-premier-league');
     });
     it('should correctly get the phases', function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -360,7 +360,7 @@ describe('Smash GG Event', function () {
                         this.timeout(30000);
                         minutesBack = 15;
                         eventDate = new Date('Wed Dec 31 1969 19:00:00 GMT-0500 (EST)');
-                        //moment(event1.getStartTime()).add(30, 'minutes').toDate();
+                        //moment(event1.getStartTime()).add(30, 'minutes').toDate()
                         sinon_1.default.useFakeTimers(eventDate);
                         return [4 /*yield*/, event1.getSetsXMinutesBack(minutesBack)];
                     case 1:

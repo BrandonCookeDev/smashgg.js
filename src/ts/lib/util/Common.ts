@@ -5,6 +5,12 @@ const DEFAULT_CONCURRENCY = 4;
 
 import Options = ICommon.Options
 
+export function sleep(ms: number) : Promise<null | undefined>{
+	return new Promise(function(resolve){
+		setTimeout(resolve, ms)
+	})
+}
+
 export function parseOptions(options: Options) : Options {
 	return {
 		isCached: options.isCached != undefined ? options.isCached === true : true,

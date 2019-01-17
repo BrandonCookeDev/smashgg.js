@@ -52,7 +52,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var lodash_1 = __importDefault(require("lodash"));
-var winston_1 = __importDefault(require("winston"));
 var p_map_1 = __importDefault(require("p-map"));
 var util_1 = require("util");
 var request_promise_1 = __importDefault(require("request-promise"));
@@ -60,6 +59,7 @@ var events_1 = require("events");
 var internal_1 = require("./internal");
 var Cache_1 = __importDefault(require("./util/Cache"));
 var Encoder_1 = __importDefault(require("./util/Encoder"));
+var Logger_1 = __importDefault(require("./util/Logger"));
 var PHASE_URL = 'https://api.smash.gg/phase/%s?%s';
 var LEGAL_ENCODINGS = ['json', 'utf8', 'base64'];
 var DEFAULT_ENCODING = 'json';
@@ -105,7 +105,7 @@ var Phase = /** @class */ (function (_super) {
         })
             .catch(function (err) {
             console.error('Error creating Tournament. For more info, implement Tournament.on(\'error\')');
-            winston_1.default.error('Phase error: %s', err.message);
+            Logger_1.default.error('Phase error: %s', err.message);
             ThisPhase.emitPhaseError(err);
         });
         return _this;
@@ -129,12 +129,12 @@ var Phase = /** @class */ (function (_super) {
                     resolve(P_1);
                 });
                 P_1.on('error', function (e) {
-                    winston_1.default.error('getPhase error: %s', e);
+                    Logger_1.default.error('getPhase error: %s', e);
                     reject(e);
                 });
             }
             catch (e) {
-                winston_1.default.error('getPhase error: %s', e);
+                Logger_1.default.error('getPhase error: %s', e);
                 reject(e);
             }
         });
@@ -145,8 +145,8 @@ var Phase = /** @class */ (function (_super) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        winston_1.default.debug('Phase.load called');
-                        winston_1.default.verbose('Creating Phase from url: %s', this.url);
+                        Logger_1.default.debug('Phase.load called');
+                        Logger_1.default.verbose('Creating Phase from url: %s', this.url);
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 9, , 10]);
@@ -173,10 +173,10 @@ var Phase = /** @class */ (function (_super) {
                     case 8: return [3 /*break*/, 10];
                     case 9:
                         e_1 = _a.sent();
-                        winston_1.default.error('Phase.load error: %s', e_1.message);
+                        Logger_1.default.error('Phase.load error: %s', e_1.message);
                         if (e_1.name === 'StatusCodeError' && e_1.message.indexOf('404') > -1) {
                             s = util_1.format('No Phase with id [%s] ( %s )', this.id, this.url);
-                            winston_1.default.error(s);
+                            Logger_1.default.error(s);
                         }
                         throw e_1;
                     case 10: return [2 /*return*/];
@@ -193,7 +193,7 @@ var Phase = /** @class */ (function (_super) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        winston_1.default.debug('Phase.getGroups called');
+                        Logger_1.default.debug('Phase.getGroups called');
                         // parse options
                         options = Common_1.ICommon.parseOptions(options);
                         _a.label = 1;
@@ -225,7 +225,7 @@ var Phase = /** @class */ (function (_super) {
                         return [2 /*return*/, allPhaseGroups];
                     case 5:
                         err_1 = _a.sent();
-                        winston_1.default.error('Phase.getGroups: ' + err_1);
+                        Logger_1.default.error('Phase.getGroups: ' + err_1);
                         throw err_1;
                     case 6: return [2 /*return*/];
                 }
@@ -240,7 +240,7 @@ var Phase = /** @class */ (function (_super) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        winston_1.default.debug('Phase.getSets called');
+                        Logger_1.default.debug('Phase.getSets called');
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 8, , 9]);
@@ -277,7 +277,7 @@ var Phase = /** @class */ (function (_super) {
                     case 7: return [2 /*return*/, flattened];
                     case 8:
                         e_2 = _a.sent();
-                        winston_1.default.error('Phase.getSets error: %s', e_2);
+                        Logger_1.default.error('Phase.getSets error: %s', e_2);
                         throw e_2;
                     case 9: return [2 /*return*/];
                 }
@@ -292,7 +292,7 @@ var Phase = /** @class */ (function (_super) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        winston_1.default.debug('Phase.getPlayers called');
+                        Logger_1.default.debug('Phase.getPlayers called');
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 8, , 9]);
@@ -330,7 +330,7 @@ var Phase = /** @class */ (function (_super) {
                     case 7: return [2 /*return*/, flattened];
                     case 8:
                         e_3 = _a.sent();
-                        winston_1.default.error('Phase.getPlayers error: %s', e_3);
+                        Logger_1.default.error('Phase.getPlayers error: %s', e_3);
                         throw e_3;
                     case 9: return [2 /*return*/];
                 }
@@ -344,7 +344,7 @@ var Phase = /** @class */ (function (_super) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        winston_1.default.debug('Phase.getIncompleteSets called');
+                        Logger_1.default.debug('Phase.getIncompleteSets called');
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 3, , 4]);
@@ -357,7 +357,7 @@ var Phase = /** @class */ (function (_super) {
                         return [2 /*return*/, filtered];
                     case 3:
                         e_4 = _a.sent();
-                        winston_1.default.error('Phase.getIncompleteSets error: %s', e_4);
+                        Logger_1.default.error('Phase.getIncompleteSets error: %s', e_4);
                         throw e_4;
                     case 4: return [2 /*return*/];
                 }
@@ -371,7 +371,7 @@ var Phase = /** @class */ (function (_super) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        winston_1.default.debug('Phase.getIncompleteSets called');
+                        Logger_1.default.debug('Phase.getIncompleteSets called');
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 3, , 4]);
@@ -384,7 +384,7 @@ var Phase = /** @class */ (function (_super) {
                         return [2 /*return*/, filtered];
                     case 3:
                         e_5 = _a.sent();
-                        winston_1.default.error('Phase.getIncompleteSets error: %s', e_5);
+                        Logger_1.default.error('Phase.getIncompleteSets error: %s', e_5);
                         throw e_5;
                     case 4: return [2 /*return*/];
                 }
@@ -398,7 +398,7 @@ var Phase = /** @class */ (function (_super) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        winston_1.default.verbose('Phase.getSetsXMinutesBack called');
+                        Logger_1.default.verbose('Phase.getSetsXMinutesBack called');
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 3, , 4]);
@@ -412,7 +412,7 @@ var Phase = /** @class */ (function (_super) {
                         return [2 /*return*/, filtered];
                     case 3:
                         e_6 = _a.sent();
-                        winston_1.default.error('Phase.getSetsXMinutesBack error: %s', e_6);
+                        Logger_1.default.error('Phase.getSetsXMinutesBack error: %s', e_6);
                         throw e_6;
                     case 4: return [2 /*return*/];
                 }
@@ -424,11 +424,11 @@ var Phase = /** @class */ (function (_super) {
         var data = this.getData();
         if (data && data.entities && data.entities.phase) {
             if (!data.entities.phase[prop])
-                winston_1.default.error(this.nullValueString(prop));
+                Logger_1.default.error(this.nullValueString(prop));
             return data.entities.phase[prop];
         }
         else {
-            winston_1.default.error('No data to get Tournament property Id');
+            Logger_1.default.error('No data to get Tournament property Id');
             return null;
         }
     };

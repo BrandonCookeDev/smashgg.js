@@ -135,14 +135,14 @@ describe('Test Caching', function () {
                             expect(element).to.be.instanceof(internal_1.Player);
                         });
                         /*
-                        let t2 = await loadTournament(TOURNAMENT_NAME2);
-                        let t2Players = await t2.getAllPlayers();
-                        let key2 = 'tournament::ceo2016::players';
-                        expect(keys).to.include(key2);
-                        let t2PlayersCached = await Cache.get(key2);
+                        let t2 = await loadTournament(TOURNAMENT_NAME2)
+                        let t2Players = await t2.getAllPlayers()
+                        let key2 = 'tournament::ceo2016::players'
+                        expect(keys).to.include(key2)
+                        let t2PlayersCached = await Cache.get(key2)
                         t2PlayersCached.forEach(element => {
                             expect(element).to.be.instanceof(Player)
-                        });
+                        })
                         */
                         return [2 /*return*/, true];
                 }
@@ -173,14 +173,14 @@ describe('Test Caching', function () {
                         t1SetsCached.forEach(function (element) {
                             expect(element).to.be.instanceof(internal_1.GGSet);
                         });
-                        //let t2 = await loadTournament(TOURNAMENT_NAME2);
-                        //let t2Sets = await t2.getAllSets();
-                        //let key2 = 'tournament::ceo2016::sets';
-                        //expect(keys).to.include(key2);
-                        //let t2SetsCached = await Cache.get(key2);
+                        //let t2 = await loadTournament(TOURNAMENT_NAME2)
+                        //let t2Sets = await t2.getAllSets()
+                        //let key2 = 'tournament::ceo2016::sets'
+                        //expect(keys).to.include(key2)
+                        //let t2SetsCached = await Cache.get(key2)
                         //t2SetsCached.forEach(element => {
                         //	expect(element).to.be.instanceof(Set)
-                        //});
+                        //})
                         return [2 /*return*/, true];
                 }
             });

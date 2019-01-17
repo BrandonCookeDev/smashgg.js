@@ -48,7 +48,6 @@ var chai_as_promised_1 = __importDefault(require("chai-as-promised"));
 var expect = chai_1.default.expect;
 chai_1.default.use(chai_as_promised_1.default);
 var internal_1 = require("../lib/internal");
-var Cache_1 = __importDefault(require("../lib/util/Cache"));
 var tournament1;
 var tournament2;
 var tournament3;
@@ -70,9 +69,8 @@ function loadTournament(name, options) {
     });
 }
 describe('Smash GG Tournament', function () {
-    before(function () { return console.log('concurrency set to %s', concurrency); });
+    before(function () { return console.log('concurrency set to %s', 0); });
     beforeEach(function () {
-        Cache_1.default.flush();
     });
     it('should correctly load tournament data', function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -80,20 +78,26 @@ describe('Smash GG Tournament', function () {
                 switch (_a.label) {
                     case 0:
                         this.timeout(10000);
-                        return [4 /*yield*/, loadTournament(TOURNAMENT_NAME1, { rawEncoding: 'utf8' })];
+                        return [4 /*yield*/, internal_1.Tournament.getTournament(TOURNAMENT_NAME1, { rawEncoding: 'utf8' })];
                     case 1:
                         tournament1 = _a.sent();
-                        return [4 /*yield*/, loadTournament(TOURNAMENT_NAME2, { rawEncoding: 'base64' })];
+                        return [4 /*yield*/, internal_1.Tournament.getTournament(TOURNAMENT_NAME2, { rawEncoding: 'base64' })];
                     case 2:
                         tournament2 = _a.sent();
-                        return [4 /*yield*/, loadTournament(TOURNAMENT_NAME3, {
-                                expands: {
-                                    event: true,
-                                    phase: true,
-                                    groups: true,
-                                    stations: true
-                                }
-                            })];
+                        return [4 /*yield*/, internal_1.Tournament.getTournament(TOURNAMENT_NAME3)
+                            /*
+                            tournament4 = await loadTournament(TOURNAMENT_NAME1, {
+                                isCached: false,
+                                rawEncoding: 'utf8'
+                            })
+                            tournament5 = await loadTournament(TOURNAMENT_NAME2, {
+                                isCached: false,
+                                rawEncoding: 'base64'
+                            })
+                            */
+                            // TODO BAD TOURNAMENT TEST
+                            //tournament4 = await loadTournament(BAD_TOURNAMENT_NAME)
+                        ];
                     case 3:
                         tournament3 = _a.sent();
                         /*
@@ -107,13 +111,13 @@ describe('Smash GG Tournament', function () {
                         })
                         */
                         // TODO BAD TOURNAMENT TEST
-                        //tournament4 = await loadTournament(BAD_TOURNAMENT_NAME);
+                        //tournament4 = await loadTournament(BAD_TOURNAMENT_NAME)
                         return [2 /*return*/, true];
                 }
             });
         });
     });
-    it('should implement convenience methods correctly', function () {
+    xit('should implement convenience methods correctly', function () {
         return __awaiter(this, void 0, void 0, function () {
             var cTournament1, cTournament2, cTournament3;
             return __generator(this, function (_a) {
@@ -140,21 +144,21 @@ describe('Smash GG Tournament', function () {
     it('should return the correct tournament id', function (done) {
         var id1 = tournament1.getId();
         var id2 = tournament2.getId();
-        expect(id1).to.be.equal(expectedTournaments_1.default.tournaments.function1.entities.tournament.id);
+        expect(id1).to.be.equal(63515);
         expect(id2).to.be.equal(expectedTournaments_1.default.tournaments.ceo2016.entities.tournament.id);
         done();
     });
     it('should return the correct tournament name', function (done) {
         var name1 = tournament1.getName();
         var name2 = tournament2.getName();
-        expect(name1).to.be.equal(expectedTournaments_1.default.tournaments.function1.entities.tournament.name);
+        expect(name1).to.be.equal('21XX: cameron\'s birthday bash');
         expect(name2).to.be.equal(expectedTournaments_1.default.tournaments.ceo2016.entities.tournament.name);
         done();
     });
     it('should return the correct tournament slug', function (done) {
         var slug1 = tournament1.getSlug();
         var slug2 = tournament2.getSlug();
-        expect(slug1).to.be.equal(expectedTournaments_1.default.tournaments.function1.entities.tournament.slug);
+        expect(slug1).to.be.equal('tournament/21xx-cameron-s-birthday-bash-1');
         expect(slug2).to.be.equal(expectedTournaments_1.default.tournaments.ceo2016.entities.tournament.slug);
         done();
     });
@@ -171,10 +175,10 @@ describe('Smash GG Tournament', function () {
         var startTime1 = tournament1.getStartTimeString();
         var startTime2 = tournament2.getStartTimeString();
         try {
-            expect(startTime1).to.be.equal('04-01-2017 11:00:00 EST');
+            expect(startTime1).to.be.equal('07-21-2018 18:00:00 EST');
         }
         catch (e) {
-            expect(startTime1).to.be.equal('04-01-2017 11:00:00 EDT');
+            expect(startTime1).to.be.equal('07-21-2018 18:00:00 EDT');
         }
         try {
             expect(startTime2).to.be.equal('06-24-2016 00:00:00 EST');
@@ -197,10 +201,10 @@ describe('Smash GG Tournament', function () {
         var endTime1 = tournament1.getEndTimeString();
         var endTime2 = tournament2.getEndTimeString();
         try {
-            expect(endTime1).to.be.equal('04-01-2017 23:00:00 EST');
+            expect(endTime1).to.be.equal('07-21-2018 23:59:00 EST');
         }
         catch (e) {
-            expect(endTime1).to.be.equal('04-01-2017 23:00:00 EDT');
+            expect(endTime1).to.be.equal('07-21-2018 23:59:00 EDT');
         }
         try {
             expect(endTime2).to.be.equal('06-27-2016 00:00:00 EST');
@@ -219,7 +223,7 @@ describe('Smash GG Tournament', function () {
         expect(closesTime2.getTime()).to.be.equal(expected2.getTime());
         done();
     });
-    it('should return the correct time registration closes string', function (done) {
+    xit('should return the correct time registration closes string', function (done) {
         var closesTime1 = tournament1.getWhenRegistrationClosesString();
         var closesTime2 = tournament2.getWhenRegistrationClosesString();
         try {
@@ -246,18 +250,18 @@ describe('Smash GG Tournament', function () {
     it('should return the correct city', function (done) {
         var city1 = tournament1.getCity();
         var city2 = tournament2.getCity();
-        expect(city1).to.be.equal('Atlanta');
+        expect(city1).to.be.equal('Marietta');
         expect(city2).to.be.equal('Orlando');
         done();
     });
-    it('should return the correct zip code', function (done) {
+    xit('should return the correct zip code', function (done) {
         var zip1 = tournament1.getZipCode();
         var zip2 = tournament2.getZipCode();
         expect(zip1).to.be.equal('30339');
         expect(zip2).to.be.equal('32819');
         done();
     });
-    it('should return the correct owner id', function (done) {
+    xit('should return the correct owner id', function (done) {
         var ownerId1 = tournament1.getOwnerId();
         var ownerId2 = tournament2.getOwnerId();
         expect(ownerId1).to.be.equal(421);
@@ -267,30 +271,53 @@ describe('Smash GG Tournament', function () {
     it('should return the correct contact email', function (done) {
         var email1 = tournament1.getContactEmail();
         var email2 = tournament2.getContactEmail();
-        expect(email1).to.be.equal('contact@recursion.gg');
+        expect(email1).to.be.null;
         expect(email2).to.be.equal('ceogaming@gmail.com');
         done();
     });
     it('should return the correct contact twitter', function (done) {
         var twitter1 = tournament1.getContactTwitter();
         var twitter2 = tournament2.getContactTwitter();
-        expect(twitter1).to.be.equal('recursiongg');
+        expect(twitter1).to.be.equal('dontcallmeslips');
         expect(twitter2).to.be.equal('ceogaming');
         done();
     });
-    it('should return the correct venue fee', function (done) {
+    xit('should return the correct venue fee', function (done) {
         var venueFee1 = tournament1.getVenueFee();
         var venueFee2 = tournament2.getVenueFee();
         expect(venueFee1).to.be.equal(20);
         expect(venueFee2).to.be.equal(null);
         done();
     });
-    it('should return the correct processing fee', function (done) {
+    xit('should return the correct processing fee', function (done) {
         var processingFee1 = tournament1.getProcessingFee();
         var processingFee2 = tournament2.getProcessingFee();
         expect(processingFee1).to.be.equal(5);
         expect(processingFee2).to.be.equal(5);
         done();
+    });
+    it('should get all players from a tournament 2', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var players, hasDuplicates;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(15000);
+                        return [4 /*yield*/, tournament2.getAllPlayers()];
+                    case 1:
+                        players = _a.sent();
+                        expect(players.length).to.be.equal(3101);
+                        hasDuplicates = function (a) {
+                            return lodash_1.default.uniq(a).length !== a.length;
+                        };
+                        expect(hasDuplicates(players)).to.be.false;
+                        players.forEach(function (player) {
+                            expect(player).to.be.an.instanceof(internal_1.Player);
+                        });
+                        return [2 /*return*/, true];
+                }
+            });
+        });
     });
     it('should get all players from a tournament', function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -299,10 +326,10 @@ describe('Smash GG Tournament', function () {
                 switch (_a.label) {
                     case 0:
                         this.timeout(20000);
-                        return [4 /*yield*/, tournament1.getAllPlayers({ concurrency: concurrency })];
+                        return [4 /*yield*/, tournament3.getAllPlayers()];
                     case 1:
                         players = _a.sent();
-                        expect(players.length).to.be.equal(157);
+                        expect(players.length).to.be.equal(394);
                         hasDuplicates = function (a) {
                             return lodash_1.default.uniq(a).length !== a.length;
                         };
@@ -322,10 +349,13 @@ describe('Smash GG Tournament', function () {
                 switch (_a.label) {
                     case 0:
                         this.timeout(20000);
-                        return [4 /*yield*/, tournament1.getAllSets({ concurrency: concurrency })];
+                        return [4 /*yield*/, tournament2.getAllSetsWithoutEntrants()
+                            //let sets = await tournament1.getAllSetsWithEntrants()
+                        ];
                     case 1:
                         sets = _a.sent();
-                        expect(sets.length).to.be.equal(552);
+                        //let sets = await tournament1.getAllSetsWithEntrants()
+                        expect(sets.length).to.be.equal(67);
                         hasDuplicates = function (a) {
                             return lodash_1.default.uniq(a).length !== a.length;
                         };
@@ -345,10 +375,10 @@ describe('Smash GG Tournament', function () {
                 switch (_a.label) {
                     case 0:
                         this.timeout(20000);
-                        return [4 /*yield*/, tournament1.getAllEvents({ concurrency: concurrency })];
+                        return [4 /*yield*/, tournament1.getAllEvents()];
                     case 1:
                         events = _a.sent();
-                        expect(events.length).to.be.equal(2);
+                        expect(events.length).to.be.equal(1);
                         hasDuplicates = function (a) {
                             return lodash_1.default.uniq(a).length !== a.length;
                         };
@@ -363,16 +393,47 @@ describe('Smash GG Tournament', function () {
     });
     it('should resolve the correct amount of incomplete sets', function () {
         return __awaiter(this, void 0, void 0, function () {
-            var t, sets;
+            return __generator(this, function (_a) {
+                this.timeout(20000);
+                events.forEach(function (event) {
+                    expect(event).to.be.an.instanceof(internal_1.Event);
+                });
+                return [2 /*return*/, true];
+            });
+        });
+    });
+    it('should resolve the correct amount of complete sets', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var groups, hasDuplicates;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         this.timeout(20000);
-                        return [4 /*yield*/, internal_1.Tournament.getTournament('21xx-cameron-s-birthday-bash-1')];
+                        return [4 /*yield*/, tournament2.getPhaseGroups()];
                     case 1:
-                        t = _a.sent();
-                        return [4 /*yield*/, t.getIncompleteSets()];
-                    case 2:
+                        groups = _a.sent();
+                        expect(groups.length).to.be.equal(188);
+                        hasDuplicates = function (a) {
+                            return lodash_1.default.uniq(a).length !== a.length;
+                        };
+                        expect(hasDuplicates(groups)).to.be.false;
+                        groups.forEach(function (event) {
+                            expect(event).to.be.an.instanceof(PhaseGroup);
+                        });
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    it('should resolve the correct amount of incomplete sets', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var sets;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(10000);
+                        return [4 /*yield*/, tournament1.getIncompleteSets()];
+                    case 1:
                         sets = _a.sent();
                         expect(sets.length).to.be.equal(2);
                         return [2 /*return*/, true];
@@ -382,18 +443,15 @@ describe('Smash GG Tournament', function () {
     });
     it('should resolve the correct amount of complete sets', function () {
         return __awaiter(this, void 0, void 0, function () {
-            var t, sets;
+            var sets;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        this.timeout(20000);
-                        return [4 /*yield*/, internal_1.Tournament.getTournament('21xx-cameron-s-birthday-bash-1')];
+                        this.timeout(10000);
+                        return [4 /*yield*/, tournament1.getCompleteSets()];
                     case 1:
-                        t = _a.sent();
-                        return [4 /*yield*/, t.getCompleteSets()];
-                    case 2:
                         sets = _a.sent();
-                        expect(sets.length).to.be.equal(72);
+                        expect(sets.length).to.be.equal(120);
                         return [2 /*return*/, true];
                 }
             });

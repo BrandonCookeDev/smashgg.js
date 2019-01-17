@@ -13,9 +13,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var log = __importStar(require("winston"));
 var node_cache_1 = __importDefault(require("node-cache"));
 var bluebird_1 = require("bluebird");
+var TTL = process.env.CacheTTL || 600;
+var CHECK_PERIOD = process.env.CacheCheckPeriod || 60;
 var Cache = /** @class */ (function () {
     function Cache() {
     }
+    Cache.init = function () {
+        if (!Cache.initialized) {
+            Cache.instance = bluebird_1.promisifyAll(new node_cache_1.default({
+                stdTTL: +TTL,
+                checkperiod: +CHECK_PERIOD
+            }));
+            Cache.initialized = true;
+        }
+    };
     Cache.getInstance = function () {
         if (!Cache.instance) {
             Cache.instance = new node_cache_1.default({
@@ -26,11 +37,11 @@ var Cache = /** @class */ (function () {
         return Cache.instance;
     };
     Cache.get = function (key) {
-        return new Promise(function (resolve) {
+        return new Promise(function (resolve, reject) {
             log.debug('Fetching (%s) from cache', key);
             Cache.getInstance().get(key, function (err, value) {
                 if (err)
-                    return bluebird_1.reject(err);
+                    return reject(err);
                 else
                     return resolve(value);
             });
@@ -64,6 +75,7 @@ var Cache = /** @class */ (function () {
         log.debug('flushing cache');
         Cache.getInstance().flushAll();
     };
+    Cache.initialized = false;
     return Cache;
 }());
 exports.default = Cache;

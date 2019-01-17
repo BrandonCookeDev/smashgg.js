@@ -6,6 +6,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var util_1 = require("util");
 var Encoder_1 = __importDefault(require("./Encoder"));
 var DEFAULT_CONCURRENCY = 4;
+function sleep(ms) {
+    return new Promise(function (resolve) {
+        setTimeout(resolve, ms);
+    });
+}
+exports.sleep = sleep;
 function parseOptions(options) {
     return {
         isCached: options.isCached != undefined ? options.isCached === true : true,

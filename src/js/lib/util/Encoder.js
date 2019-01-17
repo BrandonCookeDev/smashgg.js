@@ -1,7 +1,7 @@
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 var LEGAL_ENCODINGS = ['json', 'utf8', 'base64'];
-var DEFAULT_ENCODING = 'json';
+var DEFAULT_ENCODING = process.env.DefaultEncoding || 'json';
 var Encoder = /** @class */ (function () {
     function Encoder() {
     }

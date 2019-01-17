@@ -38,11 +38,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var winston_1 = __importDefault(require("winston"));
 var request_promise_1 = __importDefault(require("request-promise"));
 var util_1 = require("util");
 var Cache_1 = __importDefault(require("./util/Cache"));
 var Common_1 = require("./util/Common");
+var Logger_1 = __importDefault(require("./util/Logger"));
 var parseOptions = Common_1.ICommon.parseOptions;
 var API_URL = 'https://api.smash.gg/public/videogames';
 //const LEGAL_ENCODINGS = ['json', 'utf8', 'base64'];
@@ -110,7 +110,7 @@ var VideoGame = /** @class */ (function () {
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
-                        winston_1.default.debug('VideoGames getAll called');
+                        Logger_1.default.debug('VideoGames getAll called');
                         _c.label = 1;
                     case 1:
                         _c.trys.push([1, 7, , 8]);
@@ -138,7 +138,7 @@ var VideoGame = /** @class */ (function () {
                     case 6: return [2 /*return*/, videoGames];
                     case 7:
                         e_1 = _c.sent();
-                        winston_1.default.error('VideoGames getAll error: %s', e_1);
+                        Logger_1.default.error('VideoGames getAll error: %s', e_1);
                         throw e_1;
                     case 8: return [2 /*return*/];
                 }
@@ -152,7 +152,7 @@ var VideoGame = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        winston_1.default.debug('VideoGame getById called [%s]', id);
+                        Logger_1.default.debug('VideoGame getById called [%s]', id);
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 5, , 6]);
@@ -178,7 +178,7 @@ var VideoGame = /** @class */ (function () {
                         return [2 /*return*/, videoGame];
                     case 5:
                         e_2 = _a.sent();
-                        winston_1.default.error('VideoGame getById error: %s', e_2);
+                        Logger_1.default.error('VideoGame getById error: %s', e_2);
                         throw e_2;
                     case 6: return [2 /*return*/];
                 }
@@ -192,7 +192,7 @@ var VideoGame = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        winston_1.default.debug('VideoGame getByName called [%s]', name);
+                        Logger_1.default.debug('VideoGame getByName called [%s]', name);
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 5, , 6]);
@@ -222,7 +222,7 @@ var VideoGame = /** @class */ (function () {
                         return [2 /*return*/, videoGame];
                     case 5:
                         e_3 = _a.sent();
-                        winston_1.default.error('VideoGame getByName error: %s', e_3);
+                        Logger_1.default.error('VideoGame getByName error: %s', e_3);
                         throw e_3;
                     case 6: return [2 /*return*/];
                 }

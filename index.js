@@ -5,3 +5,4 @@ exports.Player	  	= require('./src/js/lib/internal').Player;
 exports.Tournament  = require('./src/js/lib/internal').Tournament;
 exports.PhaseGroup  = require('./src/js/lib/internal').PhaseGroup;
 exports.VideoGame	= require('./src/js/lib/internal').VideoGame;
+exports.Character 	= require('./src/js/lib/Character').Character;

@@ -52,7 +52,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var lodash_1 = __importDefault(require("lodash"));
-var winston_1 = __importDefault(require("winston"));
 var p_map_1 = __importDefault(require("p-map"));
 var util_1 = require("util");
 var request_promise_1 = __importDefault(require("request-promise"));
@@ -60,6 +59,7 @@ var events_1 = require("events");
 var Cache_1 = __importDefault(require("./util/Cache"));
 var internal_1 = require("./internal");
 var Encoder_1 = __importDefault(require("./util/Encoder"));
+var Logger_1 = __importDefault(require("./util/Logger"));
 var Common_1 = require("./util/Common");
 var parseOptions = Common_1.ICommon.parseOptions;
 /* Constants */
@@ -109,7 +109,7 @@ var PhaseGroup = /** @class */ (function (_super) {
         })
             .catch(function (err) {
             console.error('Error creating Tournament. For more info, implement PhaseGroup.on(\'error\')');
-            winston_1.default.error('Phase Group: %s', err.message);
+            Logger_1.default.error('Phase Group: %s', err.message);
             ThisPhaseGroup.emitPhaseGroupError(err);
         });
         return _this;
@@ -133,12 +133,12 @@ var PhaseGroup = /** @class */ (function (_super) {
                     resolve(PG_1);
                 });
                 PG_1.on('error', function (e) {
-                    winston_1.default.error('getPhaseGroup error: %s', e);
+                    Logger_1.default.error('getPhaseGroup error: %s', e);
                     reject(e);
                 });
             }
             catch (e) {
-                winston_1.default.error('getPhaseGroup error: %s', e);
+                Logger_1.default.error('getPhaseGroup error: %s', e);
                 reject(e);
             }
         });
@@ -150,8 +150,8 @@ var PhaseGroup = /** @class */ (function (_super) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        winston_1.default.debug('PhaseGroup.load called');
-                        winston_1.default.verbose('Creating Phase Group from url: %s', this.url);
+                        Logger_1.default.debug('PhaseGroup.load called');
+                        Logger_1.default.verbose('Creating Phase Group from url: %s', this.url);
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 9, , 10]);
@@ -178,10 +178,10 @@ var PhaseGroup = /** @class */ (function (_super) {
                     case 8: return [3 /*break*/, 10];
                     case 9:
                         e_1 = _a.sent();
-                        winston_1.default.error('PhaseGroup.load error: %s', e_1.message);
+                        Logger_1.default.error('PhaseGroup.load error: %s', e_1.message);
                         if (e_1.name === 'StatusCodeError' && e_1.message.indexOf('404') > -1) {
                             s = util_1.format('No Phase Group with id [%s] ( %s )', this.id, this.url);
-                            winston_1.default.error(s);
+                            Logger_1.default.error(s);
                         }
                         throw e_1;
                     case 10: return [2 /*return*/];
@@ -197,7 +197,7 @@ var PhaseGroup = /** @class */ (function (_super) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        winston_1.default.debug('PhaseGroup.getPlayers called');
+                        Logger_1.default.debug('PhaseGroup.getPlayers called');
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 7, , 8]);
@@ -228,7 +228,7 @@ var PhaseGroup = /** @class */ (function (_super) {
                     case 6: return [3 /*break*/, 8];
                     case 7:
                         err_1 = _a.sent();
-                        winston_1.default.error('PhaseGroup.getPlayers: ' + err_1);
+                        Logger_1.default.error('PhaseGroup.getPlayers: ' + err_1);
                         throw err_1;
                     case 8: return [2 /*return*/];
                 }
@@ -283,7 +283,7 @@ var PhaseGroup = /** @class */ (function (_super) {
                         return [2 /*return*/, this.sets];
                     case 9:
                         err_2 = _a.sent();
-                        winston_1.default.error('PhaseGroup.getSets: ' + err_2);
+                        Logger_1.default.error('PhaseGroup.getSets: ' + err_2);
                         throw err_2;
                     case 10: return [2 /*return*/];
                 }
@@ -297,7 +297,7 @@ var PhaseGroup = /** @class */ (function (_super) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        winston_1.default.verbose('PhaseGroup getCompleteSets called');
+                        Logger_1.default.verbose('PhaseGroup getCompleteSets called');
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 3, , 4]);
@@ -310,7 +310,7 @@ var PhaseGroup = /** @class */ (function (_super) {
                         return [2 /*return*/, filtered];
                     case 3:
                         e_2 = _a.sent();
-                        winston_1.default.error('PhaseGroup getCompleteSets error: %s', e_2);
+                        Logger_1.default.error('PhaseGroup getCompleteSets error: %s', e_2);
                         throw e_2;
                     case 4: return [2 /*return*/];
                 }
@@ -324,7 +324,7 @@ var PhaseGroup = /** @class */ (function (_super) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        winston_1.default.verbose('PhaseGroup getIncompleteSets called');
+                        Logger_1.default.verbose('PhaseGroup getIncompleteSets called');
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 3, , 4]);
@@ -337,7 +337,7 @@ var PhaseGroup = /** @class */ (function (_super) {
                         return [2 /*return*/, filtered];
                     case 3:
                         e_3 = _a.sent();
-                        winston_1.default.error('PhaseGroup getIncompleteSets error: %s', e_3);
+                        Logger_1.default.error('PhaseGroup getIncompleteSets error: %s', e_3);
                         throw e_3;
                     case 4: return [2 /*return*/];
                 }
@@ -352,7 +352,7 @@ var PhaseGroup = /** @class */ (function (_super) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        winston_1.default.verbose('PhaseGroup getSetsXMinutesBack called');
+                        Logger_1.default.verbose('PhaseGroup getSetsXMinutesBack called');
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 3, , 4]);
@@ -365,7 +365,7 @@ var PhaseGroup = /** @class */ (function (_super) {
                         return [2 /*return*/, filtered];
                     case 3:
                         e_4 = _a.sent();
-                        winston_1.default.error('PhaseGroup getSetsXMinutesBack error: %s', e_4);
+                        Logger_1.default.error('PhaseGroup getSetsXMinutesBack error: %s', e_4);
                         throw e_4;
                     case 4: return [2 /*return*/];
                 }
@@ -413,11 +413,11 @@ var PhaseGroup = /** @class */ (function (_super) {
         var data = this.getData();
         if (data && data.entities && data.entities.groups) {
             if (!data.entities.groups[prop])
-                winston_1.default.error(this.nullValueString(prop));
+                Logger_1.default.error(this.nullValueString(prop));
             return data.entities.groups[prop];
         }
         else {
-            winston_1.default.error('No data to get Tournament property Id');
+            Logger_1.default.error('No data to get Tournament property Id');
             return null;
         }
     };

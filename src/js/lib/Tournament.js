@@ -106,13 +106,13 @@ var ITournament;
 })(ITournament = exports.ITournament || (exports.ITournament = {}));
 var lodash_1 = __importDefault(require("lodash"));
 var moment_timezone_1 = __importDefault(require("moment-timezone"));
-var log = __importStar(require("winston"));
 var p_map_1 = __importDefault(require("p-map"));
 var request_promise_1 = __importDefault(require("request-promise"));
 var util_1 = require("util");
 var events_1 = require("events");
 var Common = __importStar(require("./util/Common"));
 var Cache_1 = __importDefault(require("./util/Cache"));
+var Logger_1 = __importDefault(require("./util/Logger"));
 var internal_1 = require("./internal");
 var Encoder_1 = __importDefault(require("./util/Encoder"));
 var TOURNAMENT_URL = 'https://api.smash.gg/tournament/%s?%s';
@@ -187,7 +187,7 @@ var Tournament = /** @class */ (function (_super) {
         })
             .catch(function (err) {
             console.error('Error creating Tournament. For more info, implement Tournament.on(\'error\')');
-            log.error('Tournament error: %s', err.message);
+            Logger_1.default.error('Tournament error: %s', err.message);
             ThisTournament.emitTournamentError(err);
         });
         return _this;
@@ -211,12 +211,12 @@ var Tournament = /** @class */ (function (_super) {
                     resolve(T_1);
                 });
                 T_1.on('error', function (e) {
-                    log.error('getTournament error: %s', e);
+                    Logger_1.default.error('getTournament error: %s', e);
                     reject(e);
                 });
             }
             catch (e) {
-                log.error('getTournament error: %s', e);
+                Logger_1.default.error('getTournament error: %s', e);
                 reject(e);
             }
         });
@@ -239,7 +239,7 @@ var Tournament = /** @class */ (function (_super) {
                     .catch(reject);
             }
             catch (e) {
-                log.error('getTournamentById error: tournamentId provided is not valid number');
+                Logger_1.default.error('getTournamentById error: tournamentId provided is not valid number');
                 reject(new Error('tournamentId provided is not valid number'));
             }
         });
@@ -250,8 +250,8 @@ var Tournament = /** @class */ (function (_super) {
             return __generator(this, function (_d) {
                 switch (_d.label) {
                     case 0:
-                        log.debug('Tournament.load called');
-                        log.verbose('Creating Tournament from url: %s', this.url);
+                        Logger_1.default.debug('Tournament.load called');
+                        Logger_1.default.verbose('Creating Tournament from url: %s', this.url);
                         _d.label = 1;
                     case 1:
                         _d.trys.push([1, 9, , 10]);
@@ -280,10 +280,10 @@ var Tournament = /** @class */ (function (_super) {
                     case 8: return [3 /*break*/, 10];
                     case 9:
                         e_1 = _d.sent();
-                        log.error('Tournament.load error: %s', e_1.message);
+                        Logger_1.default.error('Tournament.load error: %s', e_1.message);
                         if (e_1.name === 'StatusCodeError' && e_1.message.indexOf('404') > -1) {
                             s = util_1.format('No Tournament with id/name [%s] ( %s )', this.name, this.url);
-                            log.error(s);
+                            Logger_1.default.error(s);
                         }
                         throw e_1;
                     case 10: return [2 /*return*/];
@@ -300,13 +300,13 @@ var Tournament = /** @class */ (function (_super) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        log.debug('Tournament.getAllPlayers called');
+                        Logger_1.default.debug('Tournament.getAllPlayers called');
                         // parse options
                         options = parseOptions(options);
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 6, , 7]);
-                        log.info('Gettings players for ' + this.name);
+                        Logger_1.default.info('Gettings players for ' + this.name);
                         cacheKey = util_1.format('tournament::%s::players', this.name);
                         if (!options.isCached) return [3 /*break*/, 3];
                         return [4 /*yield*/, Cache_1.default.get(cacheKey)];
@@ -343,7 +343,7 @@ var Tournament = /** @class */ (function (_super) {
                         return [2 /*return*/, flattened];
                     case 6:
                         err_1 = _a.sent();
-                        log.error('Tournament.getAllPlayers: ' + err_1);
+                        Logger_1.default.error('Tournament.getAllPlayers: ' + err_1);
                         throw err_1;
                     case 7: return [2 /*return*/];
                 }
@@ -358,13 +358,13 @@ var Tournament = /** @class */ (function (_super) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        log.debug('Tournament.getAllSets called');
+                        Logger_1.default.debug('Tournament.getAllSets called');
                         // parse options
                         options = parseOptions(options);
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 6, , 7]);
-                        log.info('Gettings sets for ' + this.getName());
+                        Logger_1.default.info('Gettings sets for ' + this.getName());
                         cacheKey = util_1.format('tournament::%s::sets', this.name);
                         if (!options.isCached) return [3 /*break*/, 3];
                         return [4 /*yield*/, Cache_1.default.get(cacheKey)];
@@ -401,7 +401,7 @@ var Tournament = /** @class */ (function (_super) {
                         return [2 /*return*/, flattened];
                     case 6:
                         err_2 = _a.sent();
-                        log.error('Tournament.getAllSets: ' + err_2);
+                        Logger_1.default.error('Tournament.getAllSets: ' + err_2);
                         throw err_2;
                     case 7: return [2 /*return*/];
                 }
@@ -416,13 +416,13 @@ var Tournament = /** @class */ (function (_super) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        log.debug('Tournament.getAllEvents called');
+                        Logger_1.default.debug('Tournament.getAllEvents called');
                         // parse options
                         options = parseOptions(options);
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 6, , 7]);
-                        log.info('Getting Events for ' + this.getName());
+                        Logger_1.default.info('Getting Events for ' + this.getName());
                         cacheKey = util_1.format('tournament::%s::events', this.name);
                         if (!options.isCached) return [3 /*break*/, 3];
                         return [4 /*yield*/, Cache_1.default.get(cacheKey)];
@@ -456,7 +456,7 @@ var Tournament = /** @class */ (function (_super) {
                         return [2 /*return*/, allEvents];
                     case 6:
                         err_3 = _a.sent();
-                        log.error('Tournament.getAllEvents: ' + err_3);
+                        Logger_1.default.error('Tournament.getAllEvents: ' + err_3);
                         throw err_3;
                     case 7: return [2 /*return*/];
                 }
@@ -470,7 +470,7 @@ var Tournament = /** @class */ (function (_super) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        log.debug('Tournament.getIncompleteSets called');
+                        Logger_1.default.debug('Tournament.getIncompleteSets called');
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 3, , 4]);
@@ -483,7 +483,7 @@ var Tournament = /** @class */ (function (_super) {
                         return [2 /*return*/, complete];
                     case 3:
                         e_2 = _a.sent();
-                        log.error('Tournament.getIncompleteSets error: %s', e_2);
+                        Logger_1.default.error('Tournament.getIncompleteSets error: %s', e_2);
                         throw e_2;
                     case 4: return [2 /*return*/];
                 }
@@ -497,7 +497,7 @@ var Tournament = /** @class */ (function (_super) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        log.debug('Tournament.getIncompleteSets called');
+                        Logger_1.default.debug('Tournament.getIncompleteSets called');
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 3, , 4]);
@@ -510,7 +510,7 @@ var Tournament = /** @class */ (function (_super) {
                         return [2 /*return*/, incomplete];
                     case 3:
                         e_3 = _a.sent();
-                        log.error('Tournament.getIncompleteSets error: %s', e_3);
+                        Logger_1.default.error('Tournament.getIncompleteSets error: %s', e_3);
                         throw e_3;
                     case 4: return [2 /*return*/];
                 }
@@ -524,7 +524,7 @@ var Tournament = /** @class */ (function (_super) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        log.verbose('Tournament.getSetsXMinutesBack called');
+                        Logger_1.default.verbose('Tournament.getSetsXMinutesBack called');
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 3, , 4]);
@@ -535,7 +535,7 @@ var Tournament = /** @class */ (function (_super) {
                         return [2 /*return*/, filtered];
                     case 3:
                         e_4 = _a.sent();
-                        log.error('Tournament.getSetsXMinutesBack error: %s', e_4);
+                        Logger_1.default.error('Tournament.getSetsXMinutesBack error: %s', e_4);
                         throw e_4;
                     case 4: return [2 /*return*/];
                 }
@@ -547,11 +547,11 @@ var Tournament = /** @class */ (function (_super) {
         var data = this.getData();
         if (data && data.entities && data.entities.tournament) {
             if (!data.entities.tournament[prop])
-                log.error(this.nullValueString(prop));
+                Logger_1.default.error(this.nullValueString(prop));
             return data.entities.tournament[prop];
         }
         else {
-            log.error('No data to get Tournament property Id');
+            Logger_1.default.error('No data to get Tournament property Id');
             return null;
         }
     };
@@ -575,7 +575,7 @@ var Tournament = /** @class */ (function (_super) {
             return time.toDate();
         }
         else {
-            log.error('Tournament.getStartTime: startAt and timezone properties must both be present');
+            Logger_1.default.error('Tournament.getStartTime: startAt and timezone properties must both be present');
             return null;
         }
     };
@@ -588,7 +588,7 @@ var Tournament = /** @class */ (function (_super) {
             return time + " " + zone;
         }
         else {
-            log.error('Tournament.getStartTime: startAt and timezone properties must both be present');
+            Logger_1.default.error('Tournament.getStartTime: startAt and timezone properties must both be present');
             return null;
         }
     };
@@ -600,7 +600,7 @@ var Tournament = /** @class */ (function (_super) {
             return time.toDate();
         }
         else {
-            log.error('Tournament.getStartTime: startAt and timezone properties must both be present');
+            Logger_1.default.error('Tournament.getStartTime: startAt and timezone properties must both be present');
             return null;
         }
     };
@@ -613,7 +613,7 @@ var Tournament = /** @class */ (function (_super) {
             return time + " " + zone;
         }
         else {
-            log.error('Tournament.getStartTime: startAt and timezone properties must both be present');
+            Logger_1.default.error('Tournament.getStartTime: startAt and timezone properties must both be present');
             return null;
         }
     };
@@ -625,7 +625,7 @@ var Tournament = /** @class */ (function (_super) {
             return time.toDate();
         }
         else {
-            log.error('Tournament.getWhenRegistrationCloses: eventRegistrationClosesAt and timezone properties must both be present');
+            Logger_1.default.error('Tournament.getWhenRegistrationCloses: eventRegistrationClosesAt and timezone properties must both be present');
             return null;
         }
     };
@@ -638,7 +638,7 @@ var Tournament = /** @class */ (function (_super) {
             return time + " " + zone;
         }
         else {
-            log.error('Tournament.getWhenRegistrationCloses: eventRegistrationClosesAt and timezone properties must both be present');
+            Logger_1.default.error('Tournament.getWhenRegistrationCloses: eventRegistrationClosesAt and timezone properties must both be present');
             return null;
         }
     };

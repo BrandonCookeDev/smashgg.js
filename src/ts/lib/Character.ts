@@ -11,7 +11,7 @@ import parseOptions = ICommon.parseOptions
 
 const API_URL = 'https://api.smash.gg/characters'
 
-class Character implements ICharacter.Character{
+export class Character implements ICharacter.Character{
 
 	id: number = 0
 	name: string = ''

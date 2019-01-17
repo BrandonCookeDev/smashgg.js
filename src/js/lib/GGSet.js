@@ -52,7 +52,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var lodash_1 = __importDefault(require("lodash"));
-var winston_1 = __importDefault(require("winston"));
 var util_1 = require("util");
 var moment_timezone_1 = __importDefault(require("moment-timezone"));
 var events_1 = require("events");
@@ -60,6 +59,7 @@ var request_promise_1 = __importDefault(require("request-promise"));
 var Cache_1 = __importDefault(require("./util/Cache"));
 var Common_1 = require("./util/Common");
 var internal_1 = require("./internal");
+var Logger_1 = __importDefault(require("./util/Logger"));
 var parseOptions = Common_1.ICommon.parseOptions;
 var API_URL = 'https://api.smash.gg/set/%s';
 var GGSet = /** @class */ (function (_super) {
@@ -104,7 +104,7 @@ var GGSet = /** @class */ (function (_super) {
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
-                        winston_1.default.verbose('Set getSet called');
+                        Logger_1.default.verbose('Set getSet called');
                         _c.label = 1;
                     case 1:
                         _c.trys.push([1, 7, , 8]);
@@ -140,7 +140,7 @@ var GGSet = /** @class */ (function (_super) {
                         return [2 /*return*/, set];
                     case 7:
                         e_1 = _c.sent();
-                        winston_1.default.error('Set getSet error: %s', e_1);
+                        Logger_1.default.error('Set getSet error: %s', e_1);
                         throw e_1;
                     case 8: return [2 /*return*/];
                 }
@@ -155,7 +155,7 @@ var GGSet = /** @class */ (function (_super) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        winston_1.default.verbose('Set resolveArray called');
+                        Logger_1.default.verbose('Set resolveArray called');
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 3, , 4]);
@@ -168,7 +168,7 @@ var GGSet = /** @class */ (function (_super) {
                     case 2: return [2 /*return*/, _a.sent()];
                     case 3:
                         e_2 = _a.sent();
-                        winston_1.default.error('Set resolveArray error: %s', e_2);
+                        Logger_1.default.error('Set resolveArray error: %s', e_2);
                         throw e_2;
                     case 4: return [2 /*return*/];
                 }
@@ -182,7 +182,7 @@ var GGSet = /** @class */ (function (_super) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        winston_1.default.verbose('Set resolve called');
+                        Logger_1.default.verbose('Set resolve called');
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 4, , 5]);
@@ -214,7 +214,7 @@ var GGSet = /** @class */ (function (_super) {
                         return [2 /*return*/, S];
                     case 4:
                         e_3 = _a.sent();
-                        winston_1.default.error('Set resolve error: %s', e_3);
+                        Logger_1.default.error('Set resolve error: %s', e_3);
                         throw e_3;
                     case 5: return [2 /*return*/];
                 }
@@ -222,27 +222,27 @@ var GGSet = /** @class */ (function (_super) {
         });
     };
     GGSet.filterForCompleteSets = function (sets) {
-        winston_1.default.verbose('GGSet.filterForCompleteSets called');
+        Logger_1.default.verbose('GGSet.filterForCompleteSets called');
         try {
             return sets.filter(function (set) { return set.isComplete; });
         }
         catch (e) {
-            winston_1.default.error('GGSet.filterForCompleteSets error: %s', e);
+            Logger_1.default.error('GGSet.filterForCompleteSets error: %s', e);
             throw e;
         }
     };
     GGSet.filterForIncompleteSets = function (sets) {
-        winston_1.default.verbose('GGSet.filterForCompleteSets called');
+        Logger_1.default.verbose('GGSet.filterForCompleteSets called');
         try {
             return sets.filter(function (set) { return !set.isComplete; });
         }
         catch (e) {
-            winston_1.default.error('GGSet.filterForCompleteSets error: %s', e);
+            Logger_1.default.error('GGSet.filterForCompleteSets error: %s', e);
             throw e;
         }
     };
     GGSet.filterForXMinutesBack = function (sets, minutesBack) {
-        winston_1.default.verbose('GGSet.filterForCompleteSets called');
+        Logger_1.default.verbose('GGSet.filterForCompleteSets called');
         try {
             var now_1 = moment_timezone_1.default();
             var filtered = sets.filter(function (set) {
@@ -257,7 +257,7 @@ var GGSet = /** @class */ (function (_super) {
             return filtered;
         }
         catch (e) {
-            winston_1.default.error('GGSet.filterForCompleteSets error: %s', e);
+            Logger_1.default.error('GGSet.filterForCompleteSets error: %s', e);
             throw e;
         }
     };

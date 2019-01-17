@@ -1,5 +1,8 @@
 /** Patch Notes **/
 
+/** 3.1.0 :: 1/16/2019 **
+* Add back in the missing Character class (oops)
+
 /** 3.0.0 :: 1/12/2019 **/
 * Refactored library to TypeScript
 * Renamed Set object to GGSet to not interfere with native JavaScript Set

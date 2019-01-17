@@ -51,12 +51,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var winston_1 = __importDefault(require("winston"));
 var events_1 = require("events");
 var util_1 = require("util");
 var request_promise_1 = __importDefault(require("request-promise"));
 var Cache_1 = __importDefault(require("./util/Cache"));
 var Common_1 = require("./util/Common");
+var Logger_1 = __importDefault(require("./util/Logger"));
 var parseOptions = Common_1.ICommon.parseOptions;
 var API_URL = 'https://api.smash.gg/player/%s';
 var Player = /** @class */ (function (_super) {
@@ -92,7 +92,7 @@ var Player = /** @class */ (function (_super) {
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
-                        winston_1.default.verbose('Player getPlayer called');
+                        Logger_1.default.verbose('Player getPlayer called');
                         _c.label = 1;
                     case 1:
                         _c.trys.push([1, 6, , 7]);
@@ -125,7 +125,7 @@ var Player = /** @class */ (function (_super) {
                         return [2 /*return*/, player];
                     case 6:
                         e_1 = _c.sent();
-                        winston_1.default.error('Player getPlayer error: %s', e_1);
+                        Logger_1.default.error('Player getPlayer error: %s', e_1);
                         throw e_1;
                     case 7: return [2 /*return*/];
                 }

@@ -1,10 +1,7 @@
-exports.setToken 	= require('./lib/util/Initializer')
-
-exports.Set		 	= require('./lib/Set')
-exports.Event	   	= require('./lib/Event')
-exports.Phase	   	= require('./lib/Phase')
-exports.Player	  	= require('./lib/Player')
-exports.Tournament  = require('./lib/Tournament')
-exports.PhaseGroup  = require('./lib/PhaseGroup')
-exports.VideoGame	= require('./lib/VideoGame')
-exports.Character	= require('./lib/Character')
+exports.GGSet		= require('./src/js/lib/internal').GGSet;
+exports.Event	   	= require('./src/js/lib/internal').Event;
+exports.Phase	   	= require('./src/js/lib/internal').Phase;
+exports.Player	  	= require('./src/js/lib/internal').Player;
+exports.Tournament  = require('./src/js/lib/internal').Tournament;
+exports.PhaseGroup  = require('./src/js/lib/internal').PhaseGroup;
+exports.VideoGame	= require('./src/js/lib/internal').VideoGame;

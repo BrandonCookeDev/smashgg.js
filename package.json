@@ -4,7 +4,7 @@
     "name": "Brandon L Cooke",
     "url": "http://linkedin.com/in/BrandonCookeDev"
   },
-  "version": "2.3.6",
+  "version": "3.0.2",
   "description": "Node.JS wrapper for the Smash.gg public API Edit",
   "main": "index.js",
   "engines": {
@@ -15,16 +15,21 @@
     "url": "https://github.com/BrandonCookeDev/smashgg.js"
   },
   "scripts": {
-    "test": "./node_modules/.bin/mocha ./test",
-    "testTournament": "./node_modules/.bin/mocha ./test/testTournament",
-    "testEvent": "./node_modules/.bin/mocha ./test/testEvent",
-    "testPhase": "./node_modules/.bin/mocha ./test/testPhase",
-    "testPhaseGroup": "./node_modules/.bin/mocha ./test/testPhaseGroup",
-    "testPlayer": "./node_modules/.bin/mocha ./test/testPlayer",
-    "testSet": "./node_modules/.bin/mocha ./test/testSet",
-    "testVideoGame": "./node_modules/.bin/mocha ./test/testVideoGame",
-    "testCharacter": "./node_modules/.bin/mocha ./test/testCharacter",
-    "lint": "./node_modules/.bin/eslint ."
+    "pretest": "tsc",
+    "test": "./node_modules/.bin/mocha ./src/js/test",
+    "testTournament": "./node_modules/.bin/mocha ./src/js/test/testTournament",
+    "testEvent": "./node_modules/.bin/mocha ./src/js/test/testEvent",
+    "testPhase": "./node_modules/.bin/mocha ./src/js/test/testPhase",
+    "testPhaseGroup": "./node_modules/.bin/mocha ./src/js/test/testPhaseGroup",
+    "testPlayer": "./node_modules/.bin/mocha ./src/js/test/testPlayer",
+    "testSet": "./node_modules/.bin/mocha ./src/js/test/testSet",
+    "testVideoGame": "./node_modules/.bin/mocha ./src/js/test/testVideoGame",
+    "testCache": "./node_modules/.bin/mocha ./src/js/test/testZCache",
+    "testCharacter": "./node_modules/.bin/mocha ./src/js/test/testCharacter",
+    "lint": "./node_modules/.bin/eslint .",
+    "tsc": "tsc",
+    "sample1": "node ./samples/sample1",
+    "sample2": "node ./samples/sample2"
   },
   "keywords": [
     "super",
@@ -57,11 +62,21 @@
     "p-map": "^1.2.0",
     "request": "^2.87.0",
     "request-promise": "^4.2.2",
+    "typescript-eslint-parser": "^21.0.2",
     "when": "^3.7.8",
-    "winston": "^2.4.3"
+    "winston": "^3.1.0"
   },
   "devDependencies": {
-    "axios": "^0.18.0",
+    "@types/chai": "^4.1.7",
+    "@types/chai-as-promised": "^7.1.0",
+    "@types/lodash": "^4.14.119",
+    "@types/mocha": "^5.2.5",
+    "@types/moment-timezone": "^0.5.10",
+    "@types/node": "^10.12.18",
+    "@types/p-map": "^1.1.0",
+    "@types/request-promise": "^4.1.42",
+    "@types/sinon": "^7.0.3",
+    "@types/winston": "^2.4.4",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
     "chalk": "^2.4.1",

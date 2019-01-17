@@ -1,0 +1,9 @@
+node_modules/
+old/
+test/
+.vscode/
+src/ts/
+.env
+.eslintrc.json
+tsconfig.json
+*.tgz

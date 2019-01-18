@@ -28,7 +28,7 @@ npm install --save smashgg.js
     -  [GGSet](#ggset)
     -  [Character](#character)
     -  [VideoGame](#videogame)
-- [Upgrading](#transition)
+- [Upgrading](#upgrading)
 
 ## Example 
 ```javascript

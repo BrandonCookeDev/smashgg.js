@@ -460,6 +460,25 @@ export class Event extends EventEmitter implements IEvent.Event{
 		}
 	}
 
+	async getTop8Sets(options: Options={}) : Promise<Array<GGSet>>{
+		log.debug('Event.getTop8Sets called')
+		try{
+			options = parseOptions(options)
+
+			const top8Labels = [
+				'Losers Quarter-Final', 'Losers Semi-Final', 'Losers Final',
+				'Winners Quarter-Final', 'Winners Semi-Final', 'Winners Final',
+				'Grand Final', 'Grand Final Reset',
+			]
+			let sets = await this.getSets(options)
+			let top8Sets = sets.filter(set => top8Labels.includes(set.getRound()))
+			return top8Sets
+		} catch(e){
+			log.error('Event.getTop8Sets error: %s', e);
+			throw e;
+		}
+	}
+
 	async getIncompleteSets(options: Options={}) : Promise<Array<GGSet>>{
 		log.debug('Event.getIncompleteSets called');
 		try{

@@ -1,4 +1,4 @@
-import log from 'winston'
+import log from './Logger'
 import request from 'request-promise';
 import { format } from 'util'
 import * as Common from './Common'

@@ -45,7 +45,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var winston_1 = __importDefault(require("winston"));
+var Logger_1 = __importDefault(require("./Logger"));
 var request_promise_1 = __importDefault(require("request-promise"));
 var util_1 = require("util");
 var Common = __importStar(require("./Common"));
@@ -82,7 +82,7 @@ function getTournamentData(tournamentId, options) {
                 case 2:
                     err_1 = _c.sent();
                     console.error('Error creating Tournament. For more info, implement Event.on(\'error\')');
-                    winston_1.default.error('Event error: %s', err_1.message);
+                    Logger_1.default.error('Event error: %s', err_1.message);
                     throw err_1;
                 case 3: return [2 /*return*/];
             }
@@ -108,7 +108,7 @@ function getEventData(eventId, tournamentId, options) {
                 case 2:
                     err_2 = _c.sent();
                     console.error('Error creating Tournament. For more info, implement Event.on(\'error\')');
-                    winston_1.default.error('Event error: %s', err_2.message);
+                    Logger_1.default.error('Event error: %s', err_2.message);
                     throw err_2;
                 case 3: return [2 /*return*/];
             }
@@ -134,7 +134,7 @@ function getEventDataById(eventId, options) {
                 case 2:
                     err_3 = _c.sent();
                     console.error('Error creating Tournament. For more info, implement Event.on(\'error\')');
-                    winston_1.default.error('Event error: %s', err_3.message);
+                    Logger_1.default.error('Event error: %s', err_3.message);
                     throw err_3;
                 case 3: return [2 /*return*/];
             }
@@ -160,7 +160,7 @@ function getPhase(phaseId, options) {
                 case 2:
                     err_4 = _c.sent();
                     console.error('Error creating Tournament. For more info, implement Event.on(\'error\')');
-                    winston_1.default.error('Event error: %s', err_4.message);
+                    Logger_1.default.error('Event error: %s', err_4.message);
                     throw err_4;
                 case 3: return [2 /*return*/];
             }
@@ -186,7 +186,7 @@ function getPhaseGroup(phaseGroupId, options) {
                 case 2:
                     err_5 = _c.sent();
                     console.error('Error creating Tournament. For more info, implement Event.on(\'error\')');
-                    winston_1.default.error('Event error: %s', err_5.message);
+                    Logger_1.default.error('Event error: %s', err_5.message);
                     throw err_5;
                 case 3: return [2 /*return*/];
             }

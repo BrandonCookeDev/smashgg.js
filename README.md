@@ -18,7 +18,7 @@ npm install --save smashgg.js
 
 ## Contents
 - [Example](#example)
-- [Integrations](#integrations)
+- [Logging](#logging)
 - [Docs](#docs)
     -  [Tournament](#tournament)
     -  [Event](#event)
@@ -28,7 +28,7 @@ npm install --save smashgg.js
     -  [GGSet](#ggset)
     -  [Character](#character)
     -  [VideoGame](#videogame)
-- [Upgrading](#transition)
+- [Upgrading](#upgrading)
 
 ## Example 
 ```javascript
@@ -108,33 +108,56 @@ NIX placed 129 at the tournament
 
 ```
 
-## Integrations
+## Logging
 ### Winston
-If you would like to add a Winston log that accesses the API's Winston implementation, you may do the following
+You can access the built in Winston logger by using the following methods
 ```javascript
-let log = require('winston')
-let transports = {
-    file: {
-        level: info,
-        filename: '/tmp/smashgg.js.log',
-        handleExceptions: true,
-        json: false,
-        maxsize: 5242880, //5MB
-        colorize: false
-    },
-    console: {
-        level: debug,
-        json: false,
-        colorize: true,
-        handleExceptions: true
-    }
-}
+const smashgg = require('smashgg.js');
+let log = smashgg.Log;
 
-log.remove(log.transports.Console); //Remove the default implementation
+log.info('Here\'s some text')
+log.debug('Don\'t print this here')
 
-log.add(log.transports.Console, transports.console); //Add new Console implementation
-log.add(log.transports.File, transports.file); //Add new File implementation
+smashgg.setLogLevel('debug')
+log.info('Print everything now!!')
+log.verbose('Not to be verbose...')
+log.debug('but i\'m trying to debug :)')
+
+smashgg.setLogLevel('warn');
 ```
+You can also add a Logger of your own, say if you'd like a File logger added
+```javascript
+const smashgg = require('smashgg.js')
+let log = smashgg.Log
+
+smashgg.addLog('file', {
+    filename: '/tmp/log',
+    level: 'verbose',
+    format: winston.format.combin(
+        winston.format.splat(),
+        winston.format.simple()
+    )
+})
+```
+
+The following are the operations at your disposal
+
+* **setLogLevel(level)**
+    * level: string
+        * Valid values are
+            * error
+            * warn
+            * info
+            * verbose
+            * debug 
+
+* **addLog(type, options)**    
+    * type: string
+        * valid values:
+            * console
+            * file
+    * options: winston.LoggerOptions
+        * if you need this, please see [this link](https://github.com/winstonjs/winston#creating-your-own-logger)
 
 # Docs
 ## Tournament

@@ -1,5 +1,13 @@
 /** Patch Notes **/
 
+/** 3.2.0 :: 1/17/2019 **
+* Added better access to the built-in logging. 
+* Added setLogLevel and addLog accessor function on the index js
+* Added the Logger object on the index js
+
+/** 3.1.0 :: 1/16/2019 **
+* Add back in the missing Character class (oops)
+
 /** 3.0.0 :: 1/12/2019 **/
 * Refactored library to TypeScript
 * Renamed Set object to GGSet to not interfere with native JavaScript Set

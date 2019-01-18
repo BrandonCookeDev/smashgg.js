@@ -4,7 +4,7 @@
     "name": "Brandon L Cooke",
     "url": "http://linkedin.com/in/BrandonCookeDev"
   },
-  "version": "3.1.1",
+  "version": "3.1.2",
   "description": "Node.JS wrapper for the Smash.gg public API Edit",
   "main": "index.js",
   "engines": {
@@ -32,6 +32,11 @@
     "sample2": "node ./samples/sample2"
   },
   "keywords": [
+    "smashgg",
+    "smash.gg",
+    "SDK",
+    "development",
+    "kit",
     "super",
     "smash",
     "bros",
@@ -40,8 +45,6 @@
     "wiiU",
     "tournament",
     "bracket",
-    "smashgg",
-    "smash.gg",
     "api",
     "fgc",
     "street",
@@ -61,7 +64,6 @@
     "request": "^2.87.0",
     "request-promise": "^4.2.2",
     "typescript-eslint-parser": "^21.0.2",
-    "when": "^3.7.8",
     "winston": "^3.1.0"
   },
   "devDependencies": {

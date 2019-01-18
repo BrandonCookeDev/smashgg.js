@@ -1,6 +1,6 @@
 'use strict';
 
-import * as log from 'winston'
+import log from './Logger'
 import NodeCache from 'node-cache'
 import { reject } from 'bluebird';
 

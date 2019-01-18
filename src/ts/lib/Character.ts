@@ -1,4 +1,4 @@
-import log from 'winston'
+import log from './util/Logger'
 import request from 'request-promise'
 import {format} from 'util'
 

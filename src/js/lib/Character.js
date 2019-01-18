@@ -38,7 +38,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var winston_1 = __importDefault(require("winston"));
+var Logger_1 = __importDefault(require("./util/Logger"));
 var request_promise_1 = __importDefault(require("request-promise"));
 var util_1 = require("util");
 var Cache_1 = __importDefault(require("./util/Cache"));
@@ -76,7 +76,7 @@ var Character = /** @class */ (function () {
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
-                        winston_1.default.verbose('getAll called');
+                        Logger_1.default.verbose('getAll called');
                         _c.label = 1;
                     case 1:
                         _c.trys.push([1, 7, , 8]);
@@ -113,7 +113,7 @@ var Character = /** @class */ (function () {
                     case 6: return [2 /*return*/, characters];
                     case 7:
                         e_1 = _c.sent();
-                        winston_1.default.error('getAll error: %s', e_1);
+                        Logger_1.default.error('getAll error: %s', e_1);
                         throw e_1;
                     case 8: return [2 /*return*/];
                 }
@@ -127,7 +127,7 @@ var Character = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        winston_1.default.verbose('Character.getById called');
+                        Logger_1.default.verbose('Character.getById called');
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 7, , 8]);
@@ -154,7 +154,7 @@ var Character = /** @class */ (function () {
                     case 6: return [2 /*return*/, character];
                     case 7:
                         e_2 = _a.sent();
-                        winston_1.default.error('Character.getById error: %s', e_2);
+                        Logger_1.default.error('Character.getById error: %s', e_2);
                         throw e_2;
                     case 8: return [2 /*return*/];
                 }
@@ -168,7 +168,7 @@ var Character = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        winston_1.default.verbose('Character.getByGameId called');
+                        Logger_1.default.verbose('Character.getByGameId called');
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 7, , 8]);
@@ -194,7 +194,7 @@ var Character = /** @class */ (function () {
                     case 6: return [2 /*return*/, characters];
                     case 7:
                         e_3 = _a.sent();
-                        winston_1.default.error('Character.getByGameId error: %s', e_3);
+                        Logger_1.default.error('Character.getByGameId error: %s', e_3);
                         throw e_3;
                     case 8: return [2 /*return*/];
                 }
@@ -208,7 +208,7 @@ var Character = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        winston_1.default.verbose('Character.getByGameName called');
+                        Logger_1.default.verbose('Character.getByGameName called');
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 8, , 9]);
@@ -238,7 +238,7 @@ var Character = /** @class */ (function () {
                     case 7: return [2 /*return*/, character];
                     case 8:
                         e_4 = _a.sent();
-                        winston_1.default.error('Character.getByGameName error: %s', e_4);
+                        Logger_1.default.error('Character.getByGameName error: %s', e_4);
                         throw e_4;
                     case 9: return [2 /*return*/];
                 }
@@ -252,7 +252,7 @@ var Character = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        winston_1.default.verbose('Characters.getByName called');
+                        Logger_1.default.verbose('Characters.getByName called');
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 7, , 8]);
@@ -280,7 +280,7 @@ var Character = /** @class */ (function () {
                     case 6: return [2 /*return*/, characters];
                     case 7:
                         e_5 = _a.sent();
-                        winston_1.default.error('Characters.getByName error: %s', e_5);
+                        Logger_1.default.error('Characters.getByName error: %s', e_5);
                         throw e_5;
                     case 8: return [2 /*return*/];
                 }
@@ -294,7 +294,7 @@ var Character = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        winston_1.default.verbose('Character.getByNameAndGame called');
+                        Logger_1.default.verbose('Character.getByNameAndGame called');
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 7, , 8]);
@@ -321,7 +321,7 @@ var Character = /** @class */ (function () {
                     case 6: return [2 /*return*/, character];
                     case 7:
                         e_6 = _a.sent();
-                        winston_1.default.error('Character.getByNameAndGame error: %s', e_6);
+                        Logger_1.default.error('Character.getByNameAndGame error: %s', e_6);
                         throw e_6;
                     case 8: return [2 /*return*/];
                 }
@@ -335,7 +335,7 @@ var Character = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        winston_1.default.verbose('Character.getByNameAndGame called');
+                        Logger_1.default.verbose('Character.getByNameAndGame called');
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 7, , 8]);
@@ -362,7 +362,7 @@ var Character = /** @class */ (function () {
                         return [2 /*return*/, character];
                     case 7:
                         e_7 = _a.sent();
-                        winston_1.default.error('Character.getByNameAndGame error: %s', e_7);
+                        Logger_1.default.error('Character.getByNameAndGame error: %s', e_7);
                         throw e_7;
                     case 8: return [2 /*return*/];
                 }

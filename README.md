@@ -409,6 +409,12 @@ event3.on('ready', function(){
     * **options** - options for the bulk pull proceedure
         * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
         * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
+* **getTop8Sets([options]**
+    * Returns a Promise resolving an array of Top 8 `GGSet` objects belonging to this Event
+    * This function deterministically returns the Top 8 sets of an event by finding the most-likely Phase name (Top 8, Top 64, etc) and aggregating the Top 8 from there.
+    * **options** - options for the bulk pull proceedure
+        * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
+        * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
 * **getPlayers([options])**
     * Returns a Promise resolving an array of `Player` objects belonging to this Event
     * **options** - options for the bulk pull proceedure

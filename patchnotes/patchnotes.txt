@@ -1,5 +1,8 @@
 /** Patch Notes **/
 
+/** 3.3.0 :: 1/19/2019 **
+* Added getTop8Sets to Event object
+
 /** 3.2.0 :: 1/17/2019 **
 * Added better access to the built-in logging. 
 * Added setLogLevel and addLog accessor function on the index js

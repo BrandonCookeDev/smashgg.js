@@ -353,9 +353,9 @@ event3.on('ready', function(){
     * **eventId** [required] - event id number or slug
         * id ex: 14335
         * slug ex: melee-singles or bracket-pools
-    * **tournamentId** [required] - tournament slug or shorthand name of the tournament
+    * **tournamentId** [required] - tournament slug (**no longer takes shorthand name of the tournament**)
         * slug: ceo-2016
-        * shorthand: to12 (for tipped-off-12-presented-by-the-lab-gaming-center)
+        * shorthand: *removed by gg* - this object no longer takes shorthand for a tournament slug (eg: *to12 for tipped-off-12-presented-by-the-lab-gaming-center*)
     * **options** - object determining options of the Event object
         * **rawEncoding** - string value for what encoding the raw Smashgg data should be in
             * Legal values:
@@ -391,6 +391,11 @@ event3.on('ready', function(){
     * Returns a Promise resolving an Event object
     * **eventId** - [*required*] event name/slug
     * **tournamentId** - [*required*] tournament slug/shorthand
+    * **options** - options for the Event [in constructor]
+
+* **static getEventById(eventId [, options])**
+    * Returns a Promise resolving an Event object
+    * **eventId** - [*required*] event numeric id
     * **options** - options for the Event [in constructor]
 
 #### Aggregation Promises

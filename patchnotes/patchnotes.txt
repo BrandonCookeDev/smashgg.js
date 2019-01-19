@@ -1,7 +1,8 @@
 /** Patch Notes **/
 
-/** 3.3.0 :: 1/19/2019 **
+/** 3.3.1 :: 1/19/2019 **
 * Added getTop8Sets to Event object
+* Major Bug Fix: Players were not coming back correctly from GGSet getWinner/getLoser
 
 /** 3.2.0 :: 1/17/2019 **
 * Added better access to the built-in logging. 

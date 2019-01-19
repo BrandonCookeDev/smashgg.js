@@ -10,8 +10,18 @@ import cap from 'chai-as-promised'
 chai.use(cap)
 const {expect, assert} = chai
 
+const TOP_8_LABELS = [
+	'Losers Quarter-Final', 'Losers Quarter-Final', 
+	'Losers Semi-Final', 'Losers Semi-Final', 
+	'Winners Semi-Final', 'Winners Semi-Final',
+	'Winners Final', 'Grand Final', 'Losers Final'
+]
+const GRAND_FINAL_RESET_TOKEN = 'Grand Final Reset'
+
 import {Phase, PhaseGroup, GGSet, Player, Event, IEvent} from  '../lib/internal'
 import Cache from '../lib/util/Cache'
+import log from '../lib/util/Logger'
+import { setLogLevel } from '../lib/util/Logger'
 
 let event1: Event;
 let event2: Event;
@@ -56,13 +66,27 @@ function loadEventViaId(id: number, options: IEvent.Options) : Promise<Event> {
 
 describe('Smash GG Event', function(){
 
-	before( () => console.log('concurrency set to %s', concurrency) );
+	before(async function(){ 
+		this.timeout(10000)
+
+		console.time('Before All')
+		console.log('concurrency set to %s', concurrency)
+		
+		event1 = await loadEvent(EVENT_NAME1, TOURNAMENT_NAME1, { rawEncoding: 'utf8'});
+		event2 = await loadEvent(EVENT_NAME1, TOURNAMENT_NAME2, {});
+		event3 = await loadEventViaId(EVENT_ID_1, {rawEncoding: 'base64'});
+		event4 = await loadEvent(EVENT_NAME1, TOURNAMENT_NAME3, {})
+
+		console.timeEnd('Before All')
+		return true;
+	});
 
 	beforeEach(function(){
 		Cache.flush();
+		setLogLevel('info')
 	});
 
-	it('should correctly load the data', async function(){
+	xit('should correctly load the data', async function(){
 		this.timeout(30000);
 
 		event1 = await loadEvent(EVENT_NAME1, TOURNAMENT_NAME1, { rawEncoding: 'utf8'});
@@ -246,7 +270,73 @@ describe('Smash GG Event', function(){
 
 		expect(sets2.length).to.be.equal(1386);
 
+		
 		sets2.forEach(set => {
+			expect(set).to.be.instanceof(GGSet);
+		})
+
+		return true;
+	})
+
+	it('should correctly get all top 8 sets from an event', async function(){
+		this.timeout(30000);
+		setLogLevel('verbose')
+
+		let sets = await event1.getTop8Sets({concurrency: concurrency})
+
+		expect(sets.length).to.be.equal(10)
+
+		let rounds = sets.map(set => set.getRound())
+		expect(rounds).to.include.members(TOP_8_LABELS)
+		expect(rounds).to.include.members(['Losers Round 7', 'Losers Round 7'])
+
+		sets.forEach(set => {
+			expect(set).to.be.instanceof(GGSet);
+		})
+
+		return true;
+	})
+
+	it('should correctly get all top 8 sets from an event 2', async function(){
+		this.timeout(30000);
+		setLogLevel('verbose')
+
+		let sets = await event2.getTop8Sets({concurrency: concurrency})
+
+		expect(sets.length).to.be.equal(10)
+
+		let rounds = sets.map(set => set.getRound())
+		expect(rounds).to.include.members(TOP_8_LABELS)
+		expect(rounds).to.include.members(['Losers Round 7', 'Losers Round 7'])
+
+		sets.forEach(set => {
+			expect(set).to.be.instanceof(GGSet);
+		})
+
+		return true;
+	})
+
+	it('should correctly get all top 8 sets from an event 3', async function(){
+		this.timeout(30000);
+
+		expect(await event3.getTop8Sets({concurrency: concurrency})).to.be.empty
+
+		return true;
+	})
+
+	it('should correctly get all top 8 sets from an event 4', async function(){
+		this.timeout(30000);
+		setLogLevel('verbose')
+
+		let sets = await event4.getTop8Sets({concurrency: concurrency})
+
+		expect(sets.length).to.be.equal(10)
+
+		let rounds = sets.map(set => set.getRound())
+		expect(rounds).to.include.members(TOP_8_LABELS)
+		expect(rounds).to.include.members(['Losers Round 1', 'Losers Round 1'])
+
+		sets.forEach(set => {
 			expect(set).to.be.instanceof(GGSet);
 		})
 

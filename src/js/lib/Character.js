@@ -76,7 +76,7 @@ var Character = /** @class */ (function () {
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
-                        Logger_1.default.verbose('getAll called');
+                        Logger_1.default.debug('getAll called');
                         _c.label = 1;
                     case 1:
                         _c.trys.push([1, 7, , 8]);
@@ -127,7 +127,7 @@ var Character = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        Logger_1.default.verbose('Character.getById called');
+                        Logger_1.default.debug('Character.getById called');
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 7, , 8]);
@@ -168,7 +168,7 @@ var Character = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        Logger_1.default.verbose('Character.getByGameId called');
+                        Logger_1.default.debug('Character.getByGameId called');
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 7, , 8]);
@@ -208,7 +208,7 @@ var Character = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        Logger_1.default.verbose('Character.getByGameName called');
+                        Logger_1.default.debug('Character.getByGameName called');
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 8, , 9]);
@@ -252,7 +252,7 @@ var Character = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        Logger_1.default.verbose('Characters.getByName called');
+                        Logger_1.default.debug('Characters.getByName called');
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 7, , 8]);
@@ -294,7 +294,7 @@ var Character = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        Logger_1.default.verbose('Character.getByNameAndGame called');
+                        Logger_1.default.debug('Character.getByNameAndGame called');
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 7, , 8]);
@@ -335,7 +335,7 @@ var Character = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        Logger_1.default.verbose('Character.getByNameAndGame called');
+                        Logger_1.default.debug('Character.getByNameAndGame called');
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 7, , 8]);

@@ -259,7 +259,7 @@ export class Phase extends EventEmitter implements IPhase.Phase{
 	}
 
 	async getSetsXMinutesBack(minutesBack: number, options: Options={}) : Promise<Array<GGSet>>{
-		log.verbose('Phase.getSetsXMinutesBack called');
+		log.debug('Phase.getSetsXMinutesBack called');
 		try{
 			// parse options
 			options = ICommon.parseOptions(options)

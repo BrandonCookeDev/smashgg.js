@@ -460,19 +460,61 @@ export class Event extends EventEmitter implements IEvent.Event{
 		}
 	}
 
+	
+
 	async getTop8Sets(options: Options={}) : Promise<Array<GGSet>>{
 		log.debug('Event.getTop8Sets called')
 		try{
 			options = parseOptions(options)
 
-			const top8Labels = [
-				'Losers Quarter-Final', 'Losers Semi-Final', 'Losers Final',
-				'Winners Quarter-Final', 'Winners Semi-Final', 'Winners Final',
-				'Grand Final', 'Grand Final Reset',
-			]
-			let sets = await this.getSets(options)
-			let top8Sets = sets.filter(set => top8Labels.includes(set.getRound()))
-			return top8Sets
+
+			let phases: Phase[] = await this.getEventPhases(options);
+			let nonPools = phases.filter(phase => phase.getName().toLowerCase() !== 'pools')
+			
+			// if tournament has a single phase, get the top 8 sets from it
+			if(phases.length === 1){
+				log.verbose('Event has single phase, returning top 8 filtered list')
+				let sets = await phases[0].getSets(options)
+				return Common.filterForTop8Sets(sets)
+			}				
+
+			// if a Top 8 phase simply exists, grab it and return its sets
+			let top8 = _.find(nonPools, phase => {
+				return phase.getName().toLowerCase() === 'top 8'
+			})
+			if(top8) {
+				log.verbose('Event has Top 8 Phase, returning all sets')
+				return await top8.getSets(options)
+			}
+
+			// if we can't go off a single phase or Top 8 phase, we need to search for the 
+			// last phase in the event with Top in its name and the lowest number of entrants
+			log.verbose('no single phase or Top 8, finding lowest "Top" phase')
+			let topRegex = new RegExp(/Top ([0-9]{2})/);
+			let topPhases: Phase[] = nonPools.filter(phase => topRegex.test(phase.getName()))
+			
+			// if only one "Top" phase exists, conclude it's the final phase and return its top 8 sets
+			if(topPhases.length === 1){
+				log.verbose('single top phase found: %s', topPhases[0].getName())
+				let sets = await topPhases[0].getSets(options)
+				return Common.filterForTop8Sets(sets)
+			}
+
+			// otherwise go digging for the lowest entrant count in phase name and return it's top 8 sets
+			let topPhaseNumbers: number[] = topPhases.map(phase => (topRegex.exec(phase.getName()) as any[])[1])
+			let nextLowestTopPhaseNumber = Math.min.apply(null, topPhaseNumbers)
+
+			let nextLowestTopPhase = _.find(topPhases, phase => {
+				return phase.getName().toLowerCase() === `Top ${nextLowestTopPhaseNumber}`
+			})
+			if(nextLowestTopPhase){
+				log.verbose('Found the next lowest Top x Phase: %s', nextLowestTopPhase.getName())
+				let sets = await nextLowestTopPhase.getSets(options)
+				return Common.filterForTop8Sets(sets)
+			}
+			
+			log.warn('Could not determine where Top 8 sets lie. Phases: %s', phases.map(phase=>phase.getName()));
+			return []
 		} catch(e){
 			log.error('Event.getTop8Sets error: %s', e);
 			throw e;
@@ -510,7 +552,7 @@ export class Event extends EventEmitter implements IEvent.Event{
 	}
 
 	async getSetsXMinutesBack(minutesBack: number, options: Options={}) : Promise<Array<GGSet>> {
-		log.verbose('Event.getSetsXMinutesBack called');
+		log.debug('Event.getSetsXMinutesBack called');
 		try{
 			// parse options
 			options=parseOptions(options);

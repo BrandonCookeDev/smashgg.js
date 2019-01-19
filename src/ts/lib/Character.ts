@@ -43,7 +43,7 @@ export class Character implements ICharacter.Character{
 	}
 
 	static async getAll(options: Options={}) : Promise<Character[]>{
-		log.verbose('getAll called')
+		log.debug('getAll called')
 		try{
 			// parse options
 			options = parseOptions(options)
@@ -81,7 +81,7 @@ export class Character implements ICharacter.Character{
 	}
 
 	static async getById(id: number, options: Options={}) : Promise<Character | undefined>{
-		log.verbose('Character.getById called')
+		log.debug('Character.getById called')
 		try{
 			// parse options
 			options = parseOptions(options)
@@ -105,7 +105,7 @@ export class Character implements ICharacter.Character{
 	}
 
 	static async getByGameId(id: number, options: Options={}) : Promise<Character[]>{
-		log.verbose('Character.getByGameId called')
+		log.debug('Character.getByGameId called')
 		try{
 			// parse options
 			options = parseOptions(options)
@@ -128,7 +128,7 @@ export class Character implements ICharacter.Character{
 	}
 
 	static async getByGameName(name: string, options: Options={}) : Promise<Character[]>{
-		log.verbose('Character.getByGameName called')
+		log.debug('Character.getByGameName called')
 		try{
 			// parse options
 			options = parseOptions(options)
@@ -153,7 +153,7 @@ export class Character implements ICharacter.Character{
 	}
 
 	static async getByName(name: string, options: Options={}) : Promise<Character[]>{
-		log.verbose('Characters.getByName called')
+		log.debug('Characters.getByName called')
 		try{
 			// parse options
 			options = parseOptions(options)
@@ -178,7 +178,7 @@ export class Character implements ICharacter.Character{
 	}
 
 	static async getByNameAndGameId(name: string, videogameId: number, options: Options={}) : Promise<Character | undefined>{
-		log.verbose('Character.getByNameAndGame called')
+		log.debug('Character.getByNameAndGame called')
 		try{
 			// parse options
 			options = parseOptions(options)
@@ -202,7 +202,7 @@ export class Character implements ICharacter.Character{
 	}
 
 	static async getByNameAndGame(name: string, gameName: string, options: Options={}) : Promise<Character | undefined>{
-		log.verbose('Character.getByNameAndGame called')
+		log.debug('Character.getByNameAndGame called')
 		try{
 			// parse options
 			let isCached = options.isCached != undefined ? options.isCached == true : true

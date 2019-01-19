@@ -47,8 +47,16 @@ var chai_1 = __importDefault(require("chai"));
 var chai_as_promised_1 = __importDefault(require("chai-as-promised"));
 chai_1.default.use(chai_as_promised_1.default);
 var expect = chai_1.default.expect, assert = chai_1.default.assert;
+var TOP_8_LABELS = [
+    'Losers Quarter-Final', 'Losers Quarter-Final',
+    'Losers Semi-Final', 'Losers Semi-Final',
+    'Winners Semi-Final', 'Winners Semi-Final',
+    'Winners Final', 'Grand Final', 'Losers Final'
+];
+var GRAND_FINAL_RESET_TOKEN = 'Grand Final Reset';
 var internal_1 = require("../lib/internal");
 var Cache_1 = __importDefault(require("../lib/util/Cache"));
+var Logger_1 = require("../lib/util/Logger");
 var event1;
 var event2;
 var event3;
@@ -83,11 +91,37 @@ function loadEventViaId(id, options) {
     });
 }
 describe('Smash GG Event', function () {
-    before(function () { return console.log('concurrency set to %s', concurrency); });
+    before(function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(10000);
+                        console.time('Before All');
+                        console.log('concurrency set to %s', concurrency);
+                        return [4 /*yield*/, loadEvent(EVENT_NAME1, TOURNAMENT_NAME1, { rawEncoding: 'utf8' })];
+                    case 1:
+                        event1 = _a.sent();
+                        return [4 /*yield*/, loadEvent(EVENT_NAME1, TOURNAMENT_NAME2, {})];
+                    case 2:
+                        event2 = _a.sent();
+                        return [4 /*yield*/, loadEventViaId(EVENT_ID_1, { rawEncoding: 'base64' })];
+                    case 3:
+                        event3 = _a.sent();
+                        return [4 /*yield*/, loadEvent(EVENT_NAME1, TOURNAMENT_NAME3, {})];
+                    case 4:
+                        event4 = _a.sent();
+                        console.timeEnd('Before All');
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
     beforeEach(function () {
         Cache_1.default.flush();
+        Logger_1.setLogLevel('info');
     });
-    it('should correctly load the data', function () {
+    xit('should correctly load the data', function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
@@ -306,6 +340,91 @@ describe('Smash GG Event', function () {
                         sets2 = _a.sent();
                         expect(sets2.length).to.be.equal(1386);
                         sets2.forEach(function (set) {
+                            expect(set).to.be.instanceof(internal_1.GGSet);
+                        });
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    it('should correctly get all top 8 sets from an event', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var sets, rounds;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(30000);
+                        Logger_1.setLogLevel('verbose');
+                        return [4 /*yield*/, event1.getTop8Sets({ concurrency: concurrency })];
+                    case 1:
+                        sets = _a.sent();
+                        expect(sets.length).to.be.equal(10);
+                        rounds = sets.map(function (set) { return set.getRound(); });
+                        expect(rounds).to.include.members(TOP_8_LABELS);
+                        expect(rounds).to.include.members(['Losers Round 7', 'Losers Round 7']);
+                        sets.forEach(function (set) {
+                            expect(set).to.be.instanceof(internal_1.GGSet);
+                        });
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    it('should correctly get all top 8 sets from an event 2', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var sets, rounds;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(30000);
+                        Logger_1.setLogLevel('verbose');
+                        return [4 /*yield*/, event2.getTop8Sets({ concurrency: concurrency })];
+                    case 1:
+                        sets = _a.sent();
+                        expect(sets.length).to.be.equal(10);
+                        rounds = sets.map(function (set) { return set.getRound(); });
+                        expect(rounds).to.include.members(TOP_8_LABELS);
+                        expect(rounds).to.include.members(['Losers Round 7', 'Losers Round 7']);
+                        sets.forEach(function (set) {
+                            expect(set).to.be.instanceof(internal_1.GGSet);
+                        });
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    it('should correctly get all top 8 sets from an event 3', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        this.timeout(30000);
+                        _a = expect;
+                        return [4 /*yield*/, event3.getTop8Sets({ concurrency: concurrency })];
+                    case 1:
+                        _a.apply(void 0, [_b.sent()]).to.be.empty;
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    it('should correctly get all top 8 sets from an event 4', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var sets, rounds;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(30000);
+                        Logger_1.setLogLevel('verbose');
+                        return [4 /*yield*/, event4.getTop8Sets({ concurrency: concurrency })];
+                    case 1:
+                        sets = _a.sent();
+                        expect(sets.length).to.be.equal(10);
+                        rounds = sets.map(function (set) { return set.getRound(); });
+                        expect(rounds).to.include.members(TOP_8_LABELS);
+                        expect(rounds).to.include.members(['Losers Round 1', 'Losers Round 1']);
+                        sets.forEach(function (set) {
                             expect(set).to.be.instanceof(internal_1.GGSet);
                         });
                         return [2 /*return*/, true];

@@ -67,7 +67,7 @@ export class GGSet extends EventEmitter implements IGGSet.GGSet{
 	}
 
 	static async getSet(id: number, options: Options={}) : Promise<GGSet | null> {
-		log.verbose('Set getSet called');
+		log.debug('Set getSet called');
 		try{
 			// parse options
 			options = parseOptions(options);
@@ -100,7 +100,7 @@ export class GGSet extends EventEmitter implements IGGSet.GGSet{
 	}
 
 	static async resolveArray(data: Array<SetEntity>, filterByes: boolean=true): Promise<Array<GGSet | null>> {
-		log.verbose('Set resolveArray called')
+		log.debug('Set resolveArray called')
 		try{
 			return await Promise.all(data.map(async (entity) => await GGSet.resolve(entity, filterByes)))
 		} catch(e){
@@ -110,7 +110,7 @@ export class GGSet extends EventEmitter implements IGGSet.GGSet{
 	}
 	
 	static async resolve(data: SetEntity, filterByes: boolean=true) : Promise<GGSet | null> {
-		log.verbose('Set resolve called');
+		log.debug('Set resolve called');
 		try{
 			let isBye = false
 			let set = data;
@@ -152,7 +152,7 @@ export class GGSet extends EventEmitter implements IGGSet.GGSet{
 	}
 	
 	static filterForCompleteSets(sets: Array<GGSet>) : Array<GGSet>{
-		log.verbose('GGSet.filterForCompleteSets called');
+		log.debug('GGSet.filterForCompleteSets called');
 
 		try{
 			return sets.filter(set => set.isComplete);
@@ -163,7 +163,7 @@ export class GGSet extends EventEmitter implements IGGSet.GGSet{
 	}
 
 	static filterForIncompleteSets(sets: Array<GGSet>) : Array<GGSet>{
-		log.verbose('GGSet.filterForCompleteSets called');
+		log.debug('GGSet.filterForCompleteSets called');
 
 		try{
 			return sets.filter(set => !set.isComplete);
@@ -174,7 +174,7 @@ export class GGSet extends EventEmitter implements IGGSet.GGSet{
 	}
 
 	static filterForXMinutesBack(sets: Array<GGSet>, minutesBack: number) : Array<GGSet>{
-		log.verbose('GGSet.filterForCompleteSets called');
+		log.debug('GGSet.filterForCompleteSets called');
 
 		try{
 			let now = moment();

@@ -243,13 +243,27 @@ export class GGSet extends EventEmitter implements IGGSet.GGSet{
 
 	getWinner() : Player | undefined {
 		if(this.winnerId && this.loserId && this.player1 && this.player2)
-			return this.player1.id == this.winnerId ? this.player1 : this.player2;
+			switch(this.winnerId){
+			case this.player1.getParticipantId():
+				return this.player1
+			case this.player2.getParticipantId():
+				return this.player2
+			default:
+				throw new Error(`Winner ID ${this.winnerId} does not match either player ID: [${[this.player1.id, this.player2.id].join(',')}]`)
+			}
 		else throw new Error('Set must be complete to get the Winning Player');
 	}
 
 	getLoser() : Player | undefined {
 		if(this.winnerId && this.loserId && this.player1 && this.player2)
-			return this.player1.id == this.loserId ? this.player1 : this.player2;
+			switch(this.loserId){
+			case this.player1.getParticipantId():
+				return this.player1
+			case this.player2.getParticipantId():
+				return this.player2
+			default:
+				throw new Error(`Loser ID ${this.loserId} does not match either player ID: [${[this.player1.id, this.player2.id].join(',')}]`)
+			}
 		else throw new Error('Set must be complete to get the Losing Player');
 	}
 

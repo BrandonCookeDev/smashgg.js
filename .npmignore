@@ -7,3 +7,5 @@ src/ts/
 .eslintrc.json
 tsconfig.json
 *.tgz
+gulpfile.js
+sandbox/

@@ -9,38 +9,28 @@ const ROOT = __dirname
 const SRC_DIR = path.join(ROOT, 'src')
 const TS_DIR = path.join(SRC_DIR, 'ts')
 const JS_DIR = path.join(SRC_DIR, 'js')
-const DIST_DIR = path.join(ROOT, 'dist')
 const TEST_DIR = path.join(JS_DIR, 'test')
 
-function test(){
-	return gulp.src(TEST_DIR)
-		.pipe(mocha())
-}
+const tsProd = ts.createProject('tsconfig.json')
 
 function tsc(){
-	return gulp.src(TS_DIR)
-		.pipe(ts({
-			rootDir: TS_DIR,
-			outDir: JS_DIR,
-			target: 'ES5',
-			module: 'commonjs',
-			lib: [
-				'dom',
-				'es2017'
-			],  
-			strict: true,
-			esModuleInterop: true
-		}))
+	return gulp.src(TS_DIR + '/**/*.ts')
+		.pipe(tsProd())
 		.pipe(gulp.dest(JS_DIR))
 }
 
 function createDTs(){
-	return gulp.src(TS_DIR)
+	return gulp.src(TS_DIR + '/**/*.ts')
 		.pipe(ts({
 			outFile: 'smashgg.js',
 			declaration: true
 		}))
 		.pipe(gulp.dest(__dirname))
+}
+
+function test(){
+	return gulp.src(TEST_DIR)
+		.pipe(mocha())
 }
 
 function testTournament(){
@@ -76,7 +66,9 @@ function testSet(){
 		.pipe(mocha())
 }
 
-
+function watch(){
+	return gulp.watch(TS_DIR + '/**/*.ts', gulp.parallel(tsc))
+}
 
 exports.test = test
 exports.testTournament = testTournament
@@ -88,3 +80,4 @@ exports.testPlayer = testPlayer
 exports.testSet = testSet
 exports.tsc = tsc
 exports.createDTs = createDTs
+exports.watch = watch

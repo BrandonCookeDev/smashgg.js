@@ -9,7 +9,7 @@ const phaseGroupSlugRegex = new RegExp(/(http|https):\/\/api.smash.gg\/tournamen
 
 (async function(){
     /** Put your sandbox code here */
-
+    
     
 })()
 

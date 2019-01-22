@@ -31,23 +31,16 @@ function tsc(){
 			strict: true,
 			esModuleInterop: true
 		}))
+		.pipe(gulp.dest(JS_DIR))
 }
 
 function createDTs(){
-	return gulp.ssrc(TS_DIR)
+	return gulp.src(TS_DIR)
 		.pipe(ts({
-			rootDir: TS_DIR,
-			target: 'ES5',
 			outFile: 'smashgg.js',
-			module: 'amd',
-			lib: [
-				'dom',
-				'es2017'
-			],  
-			declaration: true,
-			strict: true,
-			esModuleInterop: true
+			declaration: true
 		}))
+		.pipe(gulp.dest(__dirname))
 }
 
 function testTournament(){

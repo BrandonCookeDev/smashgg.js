@@ -66,6 +66,7 @@ function testSet(){
 		.pipe(mocha())
 }
 
+
 function watch(){
 	return gulp.watch(TS_DIR + '/**/*.ts', gulp.parallel(tsc))
 }

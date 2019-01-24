@@ -1,7 +1,8 @@
+/* eslint-disable */
 'use strict';
 require('colors')
 
-const smashgg = require('..');
+let smashgg = require('../..')
 const {Event} = smashgg;
 
 (async function(){

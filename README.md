@@ -1,17 +1,29 @@
-# smashgg.js
-## Author: Brandon Cooke
+# <img src="resources/images/smashgg.png" height="75" width="75" alt="smash.gg logo" /> **smashgg.js**
 
-smashgg.js is a Node.js wrapper for the public Smash.gg API, which is rich
+![node version](https://shields-staging.herokuapp.com/node/v/smashgg.js.svg)
+![package version](https://img.shields.io/npm/v/smashgg.js.svg) 
+![downloads](https://img.shields.io/npm/dt/smashgg.js.svg) 
+![last commit](https://img.shields.io/github/last-commit/BrandonCookeDev/smashgg.js/master.svg)
+![minizipp size](https://img.shields.io/bundlephobia/minzip/smashgg.js.svg)
+![repo size](https://img.shields.io/github/repo-size/BrandonCookeDev/smashgg.js.svg)
+![license](https://img.shields.io/npm/l/smashgg.js.svg)
+
+Node.js SDK for the public Smash.gg API, which is rich
 with data about tournament brackets that have occurred on their platform.
+
+![example](resources/images/smashgg.js.jpg)
+
+[See the full sample code](https://github.com/BrandonCookeDev/smashgg.js/blob/master/resources/samples/sample1.js)
+
+## Author: Brandon Cooke
+* Organization: [RecursionGG](http://recursion.gg)
+* Email: BrandonCookeDev@gmail.com
+* Discord: cookiE#7679
 
 ## Installation
 ```bash
 npm install --save smashgg.js
 ```
-
-## Requirements
-* Node.js 7+
-* ecmascript 6
 
 ## Issues
 * Please submit any issues or feature requests to the [Issues Section of the Github](https://github.com/BrandonCookeDev/smashgg.js/issues)

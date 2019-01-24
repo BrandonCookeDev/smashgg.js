@@ -1,4 +1,5 @@
 /* eslint-disable */
+require('colors');
 const smashgg = require('..');
 const {Tournament, Event, GGSet, Player, Phase, PhaseGroup} = smashgg;
 
@@ -8,9 +9,8 @@ const phaseSlugRegex = new RegExp(/(http|https):\/\/api.smash.gg\/tournament\/([
 const phaseGroupSlugRegex = new RegExp(/(http|https):\/\/api.smash.gg\/tournament\/([\S]*)\/events\/([\S]*)\/brackets\/([0-9]*)\/([0-9]*)\/?/);
 
 (async function(){
-    /** Put your sandbox code here */
     
-    
+
 })()
 
 function parseTournamentSlug(slug){

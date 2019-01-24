@@ -688,6 +688,9 @@ var Event = /** @class */ (function (_super) {
     Event.prototype.getTournamentId = function () {
         return this.getFromEventEntities('tournamentId');
     };
+    Event.prototype.getTournamentName = function () {
+        return this.getFromTournamentEntities('name');
+    };
     Event.prototype.getSlug = function () {
         return this.getFromEventEntities('slug');
     };

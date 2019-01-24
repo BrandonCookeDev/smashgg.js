@@ -1,9 +1,10 @@
+/* eslint-disable */
 'use strict';
 
 Promise = require('bluebird');
 
 let _	   = require('lodash');
-let smashgg = require('../index');
+let smashgg = require('../..')
 let Event   = smashgg.Event;
 
 (async function(){

@@ -28,3 +28,15 @@ export function addLog(type: string, options: winston.LoggerOptions): void{
       throw new Error(`${type} is not valid for addLog. Valid values: [console, file]`);
   }
 }
+
+export function disableLog(){
+  logger.transports.forEach(transport => {
+    transport.silent = true;
+  })
+}
+
+export function enableLog(){
+  logger.transports.forEach(transport => {
+    transport.silent = false;
+  })
+}

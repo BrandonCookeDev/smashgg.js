@@ -49,6 +49,8 @@ export namespace IEvent{
 		getTournamentId() : number
 			
 		getSlug() : string
+
+		getTournamentName(): string
 			
 		getTournamentSlug() : string
 			
@@ -604,6 +606,10 @@ export class Event extends EventEmitter implements IEvent.Event{
 
 	getTournamentId() : number{
 		return this.getFromEventEntities('tournamentId');
+	}
+
+	getTournamentName() : string {
+		return this.getFromTournamentEntities('name');
 	}
 
 	getSlug() : string{

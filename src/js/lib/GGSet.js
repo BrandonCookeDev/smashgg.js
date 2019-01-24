@@ -296,13 +296,13 @@ var GGSet = /** @class */ (function (_super) {
         if (this.score1)
             return this.score1;
         else
-            return null;
+            return 0;
     };
     GGSet.prototype.getPlayer2Score = function () {
         if (this.score2)
             return this.score2;
         else
-            return null;
+            return 0;
     };
     GGSet.prototype.getWinner = function () {
         if (this.winnerId && this.loserId && this.player1 && this.player2)

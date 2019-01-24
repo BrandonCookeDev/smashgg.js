@@ -232,13 +232,13 @@ export class GGSet extends EventEmitter implements IGGSet.GGSet{
 	getPlayer1Score() : number | null{
 		if(this.score1)
 			return this.score1;
-		else return null
+		else return 0
 	}
 
 	getPlayer2Score() : number | null{
 		if(this.score2)
 			return this.score2;
-		else return null
+		else return 0
 	}
 
 	getWinner() : Player | undefined {

@@ -1,6 +1,14 @@
 /** Patch Notes **/
 
-/** 3.3.3 :: 1/22/2019 **/
+/** 3.3.3 :: 1/24/2019 **/
+* Added disableLog and enableLog functions to do just that
+* Overhauled the README for aesthetic/informative purposes
+** Added image preview
+** Added information badges
+** Removed draconian example
+** Added more contact information
+
+/** 3.3.2 :: 1/22/2019 **/
 * Added gulp build process
 * Added a sandbox environment
 

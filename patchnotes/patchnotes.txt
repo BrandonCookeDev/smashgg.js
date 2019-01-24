@@ -1,5 +1,8 @@
 /** Patch Notes **/
 
+/** 3.3.4 **/
+* Bug fix: Conditional logic in getPlayer1Score, getPlayer2Score in GGSet would be null if a 0 value was read
+
 /** 3.3.3 :: 1/24/2019 **/
 * Added disableLog and enableLog functions to do just that
 * Overhauled the README for aesthetic/informative purposes

@@ -303,7 +303,7 @@ describe('Smash GG Tournament', function(){
 		let players = await tournament2.getAllPlayers()
 		expect(players.length).to.be.equal(3101)
 
-		var hasDuplicates = function(a) {
+		var hasDuplicates = function(a: Player[]) {
 			return _.uniq(a).length !== a.length
 		}
 		expect(hasDuplicates(players)).to.be.false
@@ -336,7 +336,7 @@ describe('Smash GG Tournament', function(){
 	it('should get all sets from a tournament', async function(){
 		this.timeout(20000);
 
-		let sets = await tournament2.getAllSetsWithoutEntrants()
+		let sets: GGSet = await tournament2.getAllSetsWithoutEntrants()
 		//let sets = await tournament1.getAllSetsWithEntrants()
 		expect(sets.length).to.be.equal(67)
 		//expect(sets.length).to.be.equal(552) //function 1

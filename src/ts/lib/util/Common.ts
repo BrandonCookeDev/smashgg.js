@@ -26,6 +26,8 @@ export function sleep(ms: number) : Promise<null | undefined>{
 	return new Promise(function(resolve){
 		setTimeout(resolve, ms)
 	})
+}
+
 export function orderTop8(sets: GGSet[]) : GGSet[]{
 	let ordered: GGSet[] = [];
 	const fn = (roundName: string) => {

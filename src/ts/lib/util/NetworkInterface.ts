@@ -1,5 +1,5 @@
 import TokenHandler from './TokenHandler'
-import { GraphQLClient } from './graphql-request'
+import { GraphQLClient } from 'graphql-request'
 import * as Common from './Common'
 import SRQ from './StaggeredRequestQueue'
 import request from 'request-promise'

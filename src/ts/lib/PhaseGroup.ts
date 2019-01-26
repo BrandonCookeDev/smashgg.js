@@ -216,7 +216,7 @@ export class PhaseGroup extends EventEmitter implements IPhaseGroup.PhaseGroup{
 	}
 
 	async getCompleteSets(options: Options={}) : Promise<Array<GGSet>>{
-		log.verbose('PhaseGroup getCompleteSets called');
+		log.debug('PhaseGroup getCompleteSets called');
 
 		try{
 			//parse options
@@ -232,7 +232,7 @@ export class PhaseGroup extends EventEmitter implements IPhaseGroup.PhaseGroup{
 	}
 
 	async getIncompleteSets(options: Options={}) : Promise<Array<GGSet>>{
-		log.verbose('PhaseGroup getIncompleteSets called');
+		log.debug('PhaseGroup getIncompleteSets called');
 
 		try{
 			//parse options
@@ -249,7 +249,7 @@ export class PhaseGroup extends EventEmitter implements IPhaseGroup.PhaseGroup{
 
 	// TODO needs coverage
 	async getSetsXMinutesBack(minutesBack: number, options: Options={}) : Promise<Array<GGSet>>{
-		log.verbose('PhaseGroup getSetsXMinutesBack called');
+		log.debug('PhaseGroup getSetsXMinutesBack called');
 
 		try{
 			// parse options			

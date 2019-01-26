@@ -92,7 +92,7 @@ var Player = /** @class */ (function (_super) {
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
-                        Logger_1.default.verbose('Player getPlayer called');
+                        Logger_1.default.debug('Player getPlayer called');
                         _c.label = 1;
                     case 1:
                         _c.trys.push([1, 6, , 7]);

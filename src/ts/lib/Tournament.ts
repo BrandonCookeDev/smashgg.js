@@ -484,7 +484,7 @@ export class Tournament extends EventEmitter implements ITournament.Tournament{
 	}
 
 	async getSetsXMinutesBack(minutesBack: number, options: Options={}) : Promise<Array<GGSet>> {
-		log.verbose('Tournament.getSetsXMinutesBack called');
+		log.debug('Tournament.getSetsXMinutesBack called');
 		try{
 			let sets = await this.getAllSets()
 			let filtered = GGSet.filterForXMinutesBack(sets, minutesBack)			

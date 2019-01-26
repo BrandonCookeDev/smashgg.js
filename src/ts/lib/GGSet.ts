@@ -67,7 +67,7 @@ export class GGSet extends EventEmitter implements IGGSet.GGSet{
 	}
 
 	static async getSet(id: number, options: Options={}) : Promise<GGSet | null> {
-		log.verbose('Set getSet called');
+		log.debug('Set getSet called');
 		try{
 			// parse options
 			options = parseOptions(options);
@@ -100,7 +100,7 @@ export class GGSet extends EventEmitter implements IGGSet.GGSet{
 	}
 
 	static async resolveArray(data: Array<SetEntity>, filterByes: boolean=true): Promise<Array<GGSet | null>> {
-		log.verbose('Set resolveArray called')
+		log.debug('Set resolveArray called')
 		try{
 			return await Promise.all(data.map(async (entity) => await GGSet.resolve(entity, filterByes)))
 		} catch(e){
@@ -110,7 +110,7 @@ export class GGSet extends EventEmitter implements IGGSet.GGSet{
 	}
 	
 	static async resolve(data: SetEntity, filterByes: boolean=true) : Promise<GGSet | null> {
-		log.verbose('Set resolve called');
+		log.debug('Set resolve called');
 		try{
 			let isBye = false
 			let set = data;
@@ -152,7 +152,7 @@ export class GGSet extends EventEmitter implements IGGSet.GGSet{
 	}
 	
 	static filterForCompleteSets(sets: Array<GGSet>) : Array<GGSet>{
-		log.verbose('GGSet.filterForCompleteSets called');
+		log.debug('GGSet.filterForCompleteSets called');
 
 		try{
 			return sets.filter(set => set.isComplete);
@@ -163,7 +163,7 @@ export class GGSet extends EventEmitter implements IGGSet.GGSet{
 	}
 
 	static filterForIncompleteSets(sets: Array<GGSet>) : Array<GGSet>{
-		log.verbose('GGSet.filterForCompleteSets called');
+		log.debug('GGSet.filterForCompleteSets called');
 
 		try{
 			return sets.filter(set => !set.isComplete);
@@ -174,7 +174,7 @@ export class GGSet extends EventEmitter implements IGGSet.GGSet{
 	}
 
 	static filterForXMinutesBack(sets: Array<GGSet>, minutesBack: number) : Array<GGSet>{
-		log.verbose('GGSet.filterForCompleteSets called');
+		log.debug('GGSet.filterForCompleteSets called');
 
 		try{
 			let now = moment();
@@ -232,24 +232,38 @@ export class GGSet extends EventEmitter implements IGGSet.GGSet{
 	getPlayer1Score() : number | null{
 		if(this.score1)
 			return this.score1;
-		else return null
+		else return 0
 	}
 
 	getPlayer2Score() : number | null{
 		if(this.score2)
 			return this.score2;
-		else return null
+		else return 0
 	}
 
 	getWinner() : Player | undefined {
 		if(this.winnerId && this.loserId && this.player1 && this.player2)
-			return this.player1.id == this.winnerId ? this.player1 : this.player2;
+			switch(this.winnerId){
+			case this.player1.getParticipantId():
+				return this.player1
+			case this.player2.getParticipantId():
+				return this.player2
+			default:
+				throw new Error(`Winner ID ${this.winnerId} does not match either player ID: [${[this.player1.id, this.player2.id].join(',')}]`)
+			}
 		else throw new Error('Set must be complete to get the Winning Player');
 	}
 
 	getLoser() : Player | undefined {
 		if(this.winnerId && this.loserId && this.player1 && this.player2)
-			return this.player1.id == this.loserId ? this.player1 : this.player2;
+			switch(this.loserId){
+			case this.player1.getParticipantId():
+				return this.player1
+			case this.player2.getParticipantId():
+				return this.player2
+			default:
+				throw new Error(`Loser ID ${this.loserId} does not match either player ID: [${[this.player1.id, this.player2.id].join(',')}]`)
+			}
 		else throw new Error('Set must be complete to get the Losing Player');
 	}
 

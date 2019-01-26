@@ -1,5 +1,24 @@
 /** Patch Notes **/
 
+/** 3.3.4 **/
+* Bug fix: Conditional logic in getPlayer1Score, getPlayer2Score in GGSet would be null if a 0 value was read
+
+/** 3.3.3 :: 1/24/2019 **/
+* Added disableLog and enableLog functions to do just that
+* Overhauled the README for aesthetic/informative purposes
+** Added image preview
+** Added information badges
+** Removed draconian example
+** Added more contact information
+
+/** 3.3.2 :: 1/22/2019 **/
+* Added gulp build process
+* Added a sandbox environment
+
+/** 3.3.1 :: 1/19/2019 **
+* Added getTop8Sets to Event object
+* Major Bug Fix: Players were not coming back correctly from GGSet getWinner/getLoser
+
 /** 3.2.0 :: 1/17/2019 **
 * Added better access to the built-in logging. 
 * Added setLogLevel and addLog accessor function on the index js

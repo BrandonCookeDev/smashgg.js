@@ -51,7 +51,7 @@ export class Player extends EventEmitter implements IPlayer.Player{
 	}
 
 	static async getPlayer(id: number, options: Options={}) : Promise<Player>{
-		log.verbose('Player getPlayer called');
+		log.debug('Player getPlayer called');
 		try{
 			// parse options
 			options = parseOptions(options)

@@ -104,7 +104,7 @@ var GGSet = /** @class */ (function (_super) {
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
-                        Logger_1.default.verbose('Set getSet called');
+                        Logger_1.default.debug('Set getSet called');
                         _c.label = 1;
                     case 1:
                         _c.trys.push([1, 7, , 8]);
@@ -155,7 +155,7 @@ var GGSet = /** @class */ (function (_super) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        Logger_1.default.verbose('Set resolveArray called');
+                        Logger_1.default.debug('Set resolveArray called');
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 3, , 4]);
@@ -182,7 +182,7 @@ var GGSet = /** @class */ (function (_super) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        Logger_1.default.verbose('Set resolve called');
+                        Logger_1.default.debug('Set resolve called');
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 4, , 5]);
@@ -222,7 +222,7 @@ var GGSet = /** @class */ (function (_super) {
         });
     };
     GGSet.filterForCompleteSets = function (sets) {
-        Logger_1.default.verbose('GGSet.filterForCompleteSets called');
+        Logger_1.default.debug('GGSet.filterForCompleteSets called');
         try {
             return sets.filter(function (set) { return set.isComplete; });
         }
@@ -232,7 +232,7 @@ var GGSet = /** @class */ (function (_super) {
         }
     };
     GGSet.filterForIncompleteSets = function (sets) {
-        Logger_1.default.verbose('GGSet.filterForCompleteSets called');
+        Logger_1.default.debug('GGSet.filterForCompleteSets called');
         try {
             return sets.filter(function (set) { return !set.isComplete; });
         }
@@ -242,7 +242,7 @@ var GGSet = /** @class */ (function (_super) {
         }
     };
     GGSet.filterForXMinutesBack = function (sets, minutesBack) {
-        Logger_1.default.verbose('GGSet.filterForCompleteSets called');
+        Logger_1.default.debug('GGSet.filterForCompleteSets called');
         try {
             var now_1 = moment_timezone_1.default();
             var filtered = sets.filter(function (set) {
@@ -296,23 +296,37 @@ var GGSet = /** @class */ (function (_super) {
         if (this.score1)
             return this.score1;
         else
-            return null;
+            return 0;
     };
     GGSet.prototype.getPlayer2Score = function () {
         if (this.score2)
             return this.score2;
         else
-            return null;
+            return 0;
     };
     GGSet.prototype.getWinner = function () {
         if (this.winnerId && this.loserId && this.player1 && this.player2)
-            return this.player1.id == this.winnerId ? this.player1 : this.player2;
+            switch (this.winnerId) {
+                case this.player1.getParticipantId():
+                    return this.player1;
+                case this.player2.getParticipantId():
+                    return this.player2;
+                default:
+                    throw new Error("Winner ID " + this.winnerId + " does not match either player ID: [" + [this.player1.id, this.player2.id].join(',') + "]");
+            }
         else
             throw new Error('Set must be complete to get the Winning Player');
     };
     GGSet.prototype.getLoser = function () {
         if (this.winnerId && this.loserId && this.player1 && this.player2)
-            return this.player1.id == this.loserId ? this.player1 : this.player2;
+            switch (this.loserId) {
+                case this.player1.getParticipantId():
+                    return this.player1;
+                case this.player2.getParticipantId():
+                    return this.player2;
+                default:
+                    throw new Error("Loser ID " + this.loserId + " does not match either player ID: [" + [this.player1.id, this.player2.id].join(',') + "]");
+            }
         else
             throw new Error('Set must be complete to get the Losing Player');
     };

@@ -398,7 +398,7 @@ var Phase = /** @class */ (function (_super) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        Logger_1.default.verbose('Phase.getSetsXMinutesBack called');
+                        Logger_1.default.debug('Phase.getSetsXMinutesBack called');
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 3, , 4]);

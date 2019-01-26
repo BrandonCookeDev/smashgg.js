@@ -506,34 +506,73 @@ var Event = /** @class */ (function (_super) {
             });
         });
     };
-    Event.prototype.getIncompleteSets = function (options) {
+    Event.prototype.getTop8Sets = function (options) {
         if (options === void 0) { options = {}; }
         return __awaiter(this, void 0, void 0, function () {
-            var sets, filtered, e_4;
+            var phases, nonPools, sets, top8, topRegex_1, topPhases, sets, topPhaseNumbers, nextLowestTopPhaseNumber_1, nextLowestTopPhase, sets, e_4;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        Logger_1.default.debug('Event.getIncompleteSets called');
+                        Logger_1.default.debug('Event.getTop8Sets called');
                         _a.label = 1;
                     case 1:
-                        _a.trys.push([1, 3, , 4]);
-                        //parse options
+                        _a.trys.push([1, 11, , 12]);
                         options = parseOptions(options);
-                        return [4 /*yield*/, this.getSets(options)];
+                        return [4 /*yield*/, this.getEventPhases(options)];
                     case 2:
-                        sets = _a.sent();
-                        filtered = internal_1.GGSet.filterForIncompleteSets(sets);
-                        return [2 /*return*/, filtered];
+                        phases = _a.sent();
+                        nonPools = phases.filter(function (phase) { return phase.getName().toLowerCase() !== 'pools'; });
+                        if (!(phases.length === 1)) return [3 /*break*/, 4];
+                        Logger_1.default.verbose('Event has single phase, returning top 8 filtered list');
+                        return [4 /*yield*/, phases[0].getSets(options)];
                     case 3:
+                        sets = _a.sent();
+                        return [2 /*return*/, Common.filterForTop8Sets(sets)];
+                    case 4:
+                        top8 = lodash_1.default.find(nonPools, function (phase) {
+                            return phase.getName().toLowerCase() === 'top 8';
+                        });
+                        if (!top8) return [3 /*break*/, 6];
+                        Logger_1.default.verbose('Event has Top 8 Phase, returning all sets');
+                        return [4 /*yield*/, top8.getSets(options)];
+                    case 5: return [2 /*return*/, _a.sent()];
+                    case 6:
+                        // if we can't go off a single phase or Top 8 phase, we need to search for the 
+                        // last phase in the event with Top in its name and the lowest number of entrants
+                        Logger_1.default.verbose('no single phase or Top 8, finding lowest "Top" phase');
+                        topRegex_1 = new RegExp(/Top ([0-9]{2})/);
+                        topPhases = nonPools.filter(function (phase) { return topRegex_1.test(phase.getName()); });
+                        if (!(topPhases.length === 1)) return [3 /*break*/, 8];
+                        Logger_1.default.verbose('single top phase found: %s', topPhases[0].getName());
+                        return [4 /*yield*/, topPhases[0].getSets(options)];
+                    case 7:
+                        sets = _a.sent();
+                        return [2 /*return*/, Common.filterForTop8Sets(sets)];
+                    case 8:
+                        topPhaseNumbers = topPhases.map(function (phase) { return topRegex_1.exec(phase.getName())[1]; });
+                        nextLowestTopPhaseNumber_1 = Math.min.apply(null, topPhaseNumbers);
+                        nextLowestTopPhase = lodash_1.default.find(topPhases, function (phase) {
+                            return phase.getName().toLowerCase() === "Top " + nextLowestTopPhaseNumber_1;
+                        });
+                        if (!nextLowestTopPhase) return [3 /*break*/, 10];
+                        Logger_1.default.verbose('Found the next lowest Top x Phase: %s', nextLowestTopPhase.getName());
+                        return [4 /*yield*/, nextLowestTopPhase.getSets(options)];
+                    case 9:
+                        sets = _a.sent();
+                        return [2 /*return*/, Common.filterForTop8Sets(sets)];
+                    case 10:
+                        Logger_1.default.warn('Could not determine where Top 8 sets lie. Phases: %s', phases.map(function (phase) { return phase.getName(); }));
+                        return [2 /*return*/, []];
+                    case 11:
                         e_4 = _a.sent();
-                        Logger_1.default.error('Event.getIncompleteSets error: %s', e_4);
+                        Logger_1.default.error('Event.getTop8Sets error: %s', e_4);
                         throw e_4;
-                    case 4: return [2 /*return*/];
+                    case 12: return [2 /*return*/];
                 }
             });
         });
     };
-    Event.prototype.getCompleteSets = function (options) {
+    Event.prototype.getIncompleteSets = function (options) {
         if (options === void 0) { options = {}; }
         return __awaiter(this, void 0, void 0, function () {
             var sets, filtered, e_5;
@@ -549,7 +588,7 @@ var Event = /** @class */ (function (_super) {
                         return [4 /*yield*/, this.getSets(options)];
                     case 2:
                         sets = _a.sent();
-                        filtered = internal_1.GGSet.filterForCompleteSets(sets);
+                        filtered = internal_1.GGSet.filterForIncompleteSets(sets);
                         return [2 /*return*/, filtered];
                     case 3:
                         e_5 = _a.sent();
@@ -560,14 +599,41 @@ var Event = /** @class */ (function (_super) {
             });
         });
     };
-    Event.prototype.getSetsXMinutesBack = function (minutesBack, options) {
+    Event.prototype.getCompleteSets = function (options) {
         if (options === void 0) { options = {}; }
         return __awaiter(this, void 0, void 0, function () {
             var sets, filtered, e_6;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        Logger_1.default.verbose('Event.getSetsXMinutesBack called');
+                        Logger_1.default.debug('Event.getIncompleteSets called');
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 3, , 4]);
+                        //parse options
+                        options = parseOptions(options);
+                        return [4 /*yield*/, this.getSets(options)];
+                    case 2:
+                        sets = _a.sent();
+                        filtered = internal_1.GGSet.filterForCompleteSets(sets);
+                        return [2 /*return*/, filtered];
+                    case 3:
+                        e_6 = _a.sent();
+                        Logger_1.default.error('Event.getIncompleteSets error: %s', e_6);
+                        throw e_6;
+                    case 4: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    Event.prototype.getSetsXMinutesBack = function (minutesBack, options) {
+        if (options === void 0) { options = {}; }
+        return __awaiter(this, void 0, void 0, function () {
+            var sets, filtered, e_7;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        Logger_1.default.debug('Event.getSetsXMinutesBack called');
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 3, , 4]);
@@ -580,9 +646,9 @@ var Event = /** @class */ (function (_super) {
                         filtered = internal_1.GGSet.filterForXMinutesBack(sets, minutesBack);
                         return [2 /*return*/, filtered];
                     case 3:
-                        e_6 = _a.sent();
-                        Logger_1.default.error('Event.getSetsXMinutesBack error: %s', e_6);
-                        throw e_6;
+                        e_7 = _a.sent();
+                        Logger_1.default.error('Event.getSetsXMinutesBack error: %s', e_7);
+                        throw e_7;
                     case 4: return [2 /*return*/];
                 }
             });
@@ -621,6 +687,9 @@ var Event = /** @class */ (function (_super) {
     };
     Event.prototype.getTournamentId = function () {
         return this.getFromEventEntities('tournamentId');
+    };
+    Event.prototype.getTournamentName = function () {
+        return this.getFromTournamentEntities('name');
     };
     Event.prototype.getSlug = function () {
         return this.getFromEventEntities('slug');

@@ -1,17 +1,29 @@
-# smashgg.js
-## Author: Brandon Cooke
+# <img src="resources/images/smashgg.png" height="75" width="75" alt="smash.gg logo" /> **smashgg.js**
 
-smashgg.js is a Node.js wrapper for the public Smash.gg API, which is rich
+![node version](https://shields-staging.herokuapp.com/node/v/smashgg.js.svg)
+![package version](https://img.shields.io/npm/v/smashgg.js.svg) 
+![downloads](https://img.shields.io/npm/dt/smashgg.js.svg) 
+![last commit](https://img.shields.io/github/last-commit/BrandonCookeDev/smashgg.js/master.svg)
+![minizipp size](https://img.shields.io/bundlephobia/minzip/smashgg.js.svg)
+![repo size](https://img.shields.io/github/repo-size/BrandonCookeDev/smashgg.js.svg)
+![license](https://img.shields.io/npm/l/smashgg.js.svg)
+
+Node.js SDK for the public Smash.gg API, which is rich
 with data about tournament brackets that have occurred on their platform.
+
+![example](resources/images/smashgg.js.jpg)
+
+[See the full sample code](https://github.com/BrandonCookeDev/smashgg.js/blob/master/resources/samples/sample1.js)
+
+## Author: Brandon Cooke
+* Organization: [RecursionGG](http://recursion.gg)
+* Email: BrandonCookeDev@gmail.com
+* Discord: cookiE#7679
 
 ## Installation
 ```bash
 npm install --save smashgg.js
 ```
-
-## Requirements
-* Node.js 7+
-* ecmascript 6
 
 ## Issues
 * Please submit any issues or feature requests to the [Issues Section of the Github](https://github.com/BrandonCookeDev/smashgg.js/issues)
@@ -29,84 +41,6 @@ npm install --save smashgg.js
     -  [Character](#character)
     -  [VideoGame](#videogame)
 - [Upgrading](#upgrading)
-
-## Example 
-```javascript
-// Will not work on < NodeJS 7+
-(async function(){
-    var smashgg = require('smashgg.js')
-    var { Tournament } = smashgg
-    var tournament = await Tournament.getTournament('ceo-2016')
-
-    var players = await tournament.getAllPlayers()
-    var sets = await tournament.getAllSets()
-
-    console.log(players.length + ' players entered ' + tournament.getName() +  ' overall')
-    players.forEach(player => {
-        console.log(
-            'Tag: ' + player.getTag() + '\n',
-            'Name: ' + player.getName() + '\n',
-            'State: ' + player.getState() + '\n'
-        )
-    })
-
-    console.log(sets.length + ' sets were played at ' + tournament.getName())
-    sets.forEach(set => {
-            console.log(
-                '[%s: %s %s - %s %s]',
-            set.getRound(),
-            set.getWinner().getTag(), //Player object
-            set.getWinnerScore(),
-            set.getLoserScore(),
-            set.getLoser().getTag()
-        )
-        console.log(
-            '%s placed %s at the tournament \n%s placed %s at the tournament\n',
-            set.getWinner().getTag(),
-            set.getWinnersTournamentPlacement(),
-            set.getLoser().getTag(),
-            set.getLosersTournamentPlacement()
-        )
-    })
-
-    console.log('Done!')
-    return process.exit(0)
-})()
-```
-
-##### Output
-```
-2592 players entered CEO 2016 overall
-Tag: Gwabs
- Name: Ian Chiong
- State: FL
-
-Tag: Benteezy
- Name: Benny Frias
- State: NY
-
-Tag: Jinzo
- Name: Gene Zhou
- State: FL
-
-.... continues ....
-
-8150 sets were played at CEO 2016
-[Losers Semi-Final: Haus 2 - 1 Benteezy]
-Haus placed 33 at the tournament
-Benteezy placed 97 at the tournament
-
-[Winners Round 2: Benteezy 2 - 0 Sabelan]
-Benteezy placed 97 at the tournament
-Sabelan placed 257 at the tournament
-
-[Losers Quarter-Final: Benteezy 2 - 0 NIX]
-Benteezy placed 97 at the tournament
-NIX placed 129 at the tournament
-
-.... continues ....
-
-```
 
 ## Logging
 ### Winston
@@ -158,6 +92,12 @@ The following are the operations at your disposal
             * file
     * options: winston.LoggerOptions
         * if you need this, please see [this link](https://github.com/winstonjs/winston#creating-your-own-logger)
+
+* **disableLog()**
+    * disabled the embedded logger
+
+* **enableLog()**
+    * enables the embedded logger
 
 # Docs
 ## Tournament
@@ -353,9 +293,9 @@ event3.on('ready', function(){
     * **eventId** [required] - event id number or slug
         * id ex: 14335
         * slug ex: melee-singles or bracket-pools
-    * **tournamentId** [required] - tournament slug or shorthand name of the tournament
+    * **tournamentId** [required] - tournament slug (**no longer takes shorthand name of the tournament**)
         * slug: ceo-2016
-        * shorthand: to12 (for tipped-off-12-presented-by-the-lab-gaming-center)
+        * shorthand: *removed by gg* - this object no longer takes shorthand for a tournament slug (eg: *to12 for tipped-off-12-presented-by-the-lab-gaming-center*)
     * **options** - object determining options of the Event object
         * **rawEncoding** - string value for what encoding the raw Smashgg data should be in
             * Legal values:
@@ -393,6 +333,11 @@ event3.on('ready', function(){
     * **tournamentId** - [*required*] tournament slug/shorthand
     * **options** - options for the Event [in constructor]
 
+* **static getEventById(eventId [, options])**
+    * Returns a Promise resolving an Event object
+    * **eventId** - [*required*] event numeric id
+    * **options** - options for the Event [in constructor]
+
 #### Aggregation Promises
 * **getEventPhases([options])**
     * Returns a Promise resolving an array of `Phase` objects for this Event
@@ -406,6 +351,12 @@ event3.on('ready', function(){
         * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
 * **getSets([options])**
     * Returns a Promise resolving an array of `GGSet` objects belonging to this Event
+    * **options** - options for the bulk pull proceedure
+        * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
+        * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
+* **getTop8Sets([options]**
+    * Returns a Promise resolving an array of Top 8 `GGSet` objects belonging to this Event
+    * This function deterministically returns the Top 8 sets of an event by finding the most-likely Phase name (Top 8, Top 64, etc) and aggregating the Top 8 from there.
     * **options** - options for the bulk pull proceedure
         * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
         * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4

@@ -29,3 +29,15 @@ function addLog(type, options) {
     }
 }
 exports.addLog = addLog;
+function disableLog() {
+    logger.transports.forEach(function (transport) {
+        transport.silent = true;
+    });
+}
+exports.disableLog = disableLog;
+function enableLog() {
+    logger.transports.forEach(function (transport) {
+        transport.silent = false;
+    });
+}
+exports.enableLog = enableLog;

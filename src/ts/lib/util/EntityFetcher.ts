@@ -73,7 +73,7 @@ export async function getEventDataById(eventId: number, options: EventOptions): 
     }
 }
 
-export async function getPhase(phaseId: number, options: PhaseOptions): Promise<PhaseData> {
+export async function getPhaseData(phaseId: number, options: PhaseOptions): Promise<PhaseData> {
     try{
         options = parsePhaseOptions(options);
         let expands: string = createExpandsString(options.expands)
@@ -87,7 +87,7 @@ export async function getPhase(phaseId: number, options: PhaseOptions): Promise<
     }
 }
 
-export async function getPhaseGroup(phaseGroupId: number, options: PhaseGroupOptions): Promise<PhaseGroupData> {
+export async function getPhaseGroupData(phaseGroupId: number, options: PhaseGroupOptions): Promise<PhaseGroupData> {
     try{
         options = parsePhaseGroupOptions(options);
         let expands: string = createExpandsString(options.expands)

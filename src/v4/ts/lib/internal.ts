@@ -1,3 +1,5 @@
+export * from './Venue'
+export * from './Oraganizer'
 export * from './Tournament'
 export * from './Phase'
 export * from './PhaseGroup'

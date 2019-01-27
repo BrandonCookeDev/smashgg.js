@@ -1,23 +1,12 @@
 
 export namespace ITournament{
 	export interface Tournament{
-		url: string
+		id: number
+		name: string
+		slug: string
+		startTime: Date
+		endTime: Date
 		data: Data | string
-		name: string | number
-		expands: Expands 
-		expandsString: string 
-		isCached: boolean
-		rawEncoding: string 
-		
-		loadData(data: object) : object | string
-
-		getData() : Data
-
-		//getTournament(tournamentId: string, options: Options) : Tournament
-
-		//getTournamentById(tournamentId: number, options: Options) : Tournament
-
-		load() : Promise<Data | string> 
 
 		getAllPlayers(options: Options) : Promise<Array<Player>> 
 
@@ -156,14 +145,17 @@ import { EventEmitter } from 'events'
 import * as Common from './util/Common'
 import Cache from './util/Cache'
 import log from './util/Logger'
-import { Event, Phase, PhaseGroup, Player, GGSet } from './internal'
+import { Event, Phase, PhaseGroup, Player, GGSet, Organizer, Venue } from './internal'
 
 import Encoder from './util/Encoder'
+// import Fetcher from './util/EntityFetcher'
+import NI from './util/NetworkInterface'
+import * as queries from './scripts/tournamentQueries'
 
-const TOURNAMENT_URL = 'https://api.smash.gg/tournament/%s?%s';
-const LEGAL_ENCODINGS = ['json', 'utf8', 'base64'];
-const DEFAULT_ENCODING = 'json';
-const DEFAULT_CONCURRENCY = 4;
+const TOURNAMENT_URL = 'https://api.smash.gg/tournament/%s?%s'
+const LEGAL_ENCODINGS = ['json', 'utf8', 'base64']
+const DEFAULT_ENCODING = 'json'
+const DEFAULT_CONCURRENCY = 4
 
 import { ICommon } from './util/Common'
 
@@ -189,159 +181,75 @@ function parseTournamentOptions(options: TournamentOptions) : TournamentOptions 
 
 export class Tournament extends EventEmitter implements ITournament.Tournament{
 
-	url: string = ''
-    data: Data | string
-	name: string | number
-    expands: TournamentExpands = {
-		event: true,
-		groups: true,
-		phase: true,
-		stations: true
-	}
-    expandsString: string = ''
-    isCached: boolean = true
+	id: number
+	name: string
+	slug: string
+	startTime: Date
+	endTime: Date
+	timezone: string
+	venue: Venue
+	organizer: Organizer
 	rawEncoding: string = DEFAULT_ENCODING
-	
-	sets: Array<GGSet> = []
-	events: Array<Event> = []
-	phases: Array<Phase> = []
-	players: Array<Player> = []
-	phaseGroups: Array<PhaseGroup> = []
+	data: Data | string
 
-
-	constructor(
-        tournamentId: string, 
-        options: TournamentOptions = ITournament.getDefaultOptions()
-    ){
+	constructor(id: number, name: string, slug: string,
+			startTime: Date, endTime: Date, timezone: string, 
+			venue: Venue, organizer: Organizer,
+			rawEncoding: string, data: Data | string){
 		super();
 
-		if(!tournamentId)
-			throw new Error('Tournament Name cannot be null');
-		//else if(tournamentId instanceof Number)
-		//	throw new Error('Due to Smashgg limitations, currently Tournaments may only be retrieved by tournament name (slug)');
-
-		// parse options
-		options = ITournament.parseOptions(options);
-		this.data = ITournament.getDefaultData()
-		this.name = tournamentId; // instanceof String ? tournamentId : +tournamentId;
-		this.isCached = options.isCached as boolean;
-		this.rawEncoding = options.rawEncoding as string;
-
-		// create expands 
-		this.expandsString = '';
-		this.expands = {
-			event: (options.expands != undefined && options.expands.event == false) ? false : true,
-			phase: (options.expands != undefined && options.expands.phase == false) ? false : true,
-			groups: (options.expands != undefined && options.expands.groups == false) ? false : true,
-			stations: (options.expands != undefined && options.expands.stations == false) ? false : true
-		};
-		for(let property in this.expands){
-			if(this.expands.hasOwnProperty(property))
-				this.expandsString += format('expand[]=%s&', property);
-		}
-
-		// format api url
-		this.url = format(TOURNAMENT_URL, this.name, this.expandsString);
-
-		let ThisTournament = this;
-		this.load()
-			.then(function(){
-                let cacheKey = format('tournament::%s::%s', ThisTournament.name, ThisTournament.expandsString);
-				Cache.set(cacheKey, ThisTournament);
-				
-			})
-			.then(function() {
-				ThisTournament.emitTournamentReady();
-			})
-			.catch(function(err){
-				console.error('Error creating Tournament. For more info, implement Tournament.on(\'error\')');
-				log.error('Tournament error: %s', err.message);
-				ThisTournament.emitTournamentError(err);
-			});
+		this.id = id
+		this.name = name
+		this.slug = slug
+		this.startTime = startTime
+		this.endTime = endTime
+		this.timezone = timezone
+		this.venue = venue
+		this.organizer = organizer
+		this.rawEncoding = rawEncoding
+		this.data = data
+	}
+	
+	static async getTournament(slug: string, options: TournamentOptions={}) : Promise<Tournament> {
+		return await Tournament.get(slug, options)
 	}
 
-	loadData(data: object) : Data | string{
-		let encoded: Data | string = this.rawEncoding === 'json' ? data as Data : new Buffer(JSON.stringify(data)).toString(this.rawEncoding);
-		this.data = encoded;
-		return encoded;
+	static async get(slug: string, options: TournamentOptions) : Promise<Tournament>{
+		let cacheKey = format('tournament::%s', slug)
+		let cached = await Cache.get(cacheKey)
+		if(cached && options.isCached) return cached;
+
+		let data = await NI.query(queries.tournament, {slug: slug })
+		let venue = new Venue(
+			data.venueName, data.venueAddress, data.city,
+			data.addrState, data.countryCode, data.region, 
+			data.postalCode, data.lat, data.lng
+		)
+		let organizer = new Organizer(
+			data.ownerId, data.contactEmai, data.contactPhone,
+			data.contactTwitter, data.contactInfo
+		)
+
+		let startTime = new Date(0)
+		let endTime = new Date(0)
+		startTime.setUTCSeconds(data.startAt)
+		endTime.setUTCSeconds(data.endAt)
+
+
+		let encoding = options.rawEncoding || DEFAULT_ENCODING
+		let encoded = Encoder.encode(data, encoding) as Data | string
+
+		let T = new Tournament(
+			data.id, data.name, data.slug,
+			startTime, endTime, data.timezone, 
+			venue, organizer, encoding, encoded
+		)
+		if(options.isCached) await Cache.set(cacheKey, T);
+		return T;
 	}
 
-	getData() : Data {
-		let decoded: Data = this.rawEncoding === 'json' ? this.data as Data : JSON.parse(new Buffer(this.data.toString(), this.rawEncoding).toString('utf8')) as Data;
-		return decoded;
-	}
-
-	// Convenience methods
-	static getTournament(tournamentName: string, options: TournamentOptions={}) : Promise<Tournament> {
-        return new Promise(function(resolve, reject){
-            try{
-                let T: Tournament = new Tournament(tournamentName, options);
-                T.on('ready', function(){
-                    resolve(T);
-                });
-                T.on('error', function(e){
-                    log.error('getTournament error: %s', e);
-                    reject(e);
-                });
-            } catch(e){
-                log.error('getTournament error: %s', e);
-                reject(e);
-            }
-        });
-	}
-
-	/**
-	 * @deprecated
-	 * This method is not in use yet because Smashgg doesn't support pulling
-	 * tournaments by id yet
-	 * 
-	 * @param {*} tournamentId 
-	 * @param {*} expands 
-	 * @param {*} isCached 
-	 */
-	static getTournamentById(tournamentId: number, options: TournamentOptions={}) : Promise<Tournament>{
-		return new Promise(function(resolve, reject){
-            try{
-                return Tournament.getTournamentById(tournamentId, options)
-                    .then(resolve)
-                    .catch(reject);
-            } catch(e){
-                log.error('getTournamentById error: tournamentId provided is not valid number');
-                reject(new Error('tournamentId provided is not valid number'));
-            }
-        })
-	}
-
-	async load() : Promise<Data | string> {
-		log.debug('Tournament.load called');
-		log.verbose('Creating Tournament from url: %s', this.url);
-		try{
-			if(!this.isCached)
-				return this.data = JSON.parse(await request(this.url));
-
-			let cacheKey: string = format('tournament::%s::%s::%s::data', this.name, this.rawEncoding, this.expandsString);
-			let cached: Data | string = await Cache.get(cacheKey) as Data | string;
-
-			if(!cached){
-				let response: string = await request(this.url);
-				let encoded: Data | string = this.loadData(JSON.parse(response));
-				await Cache.set(cacheKey, encoded);
-				return encoded;
-			}
-			else {
-				this.data = cached;
-				return this.data;
-			}
-		} catch(e){
-			log.error('Tournament.load error: %s', e.message);
-
-			if(e.name === 'StatusCodeError' && e.message.indexOf('404') > -1){
-				let s = format('No Tournament with id/name [%s] ( %s )', this.name, this.url);
-				log.error(s);
-			}
-
-			throw e;
-		}
+	getData() : Data{
+		return Encoder.decode(this.data as object | string, this.rawEncoding) as Data
 	}
 
 	/** PROMISES **/
@@ -356,10 +264,7 @@ export class Tournament extends EventEmitter implements ITournament.Tournament{
 			let cacheKey: string = format('tournament::%s::players', this.name);
 			if(options.isCached){
 				let cached: Array<Player> = await Cache.get(cacheKey) as Array<Player>;
-				if(cached){
-					this.players = cached;
-					return cached;
-				}
+				if(cached) return cached;
 			}
 			
 			let groups: Array<Entity> = this.getData().entities.groups;
@@ -371,7 +276,7 @@ export class Tournament extends EventEmitter implements ITournament.Tournament{
 
 			let flattened: Player[] = _.flatten(allPlayers);
 			flattened = _.uniqBy(flattened, 'id');
-			this.players = flattened;
+			
 			await Cache.set(cacheKey, flattened);
 			return flattened;
 
@@ -392,10 +297,8 @@ export class Tournament extends EventEmitter implements ITournament.Tournament{
 			let cacheKey: string = format('tournament::%s::sets', this.name);
 			if(options.isCached){
 				let cached: Array<GGSet> = await Cache.get(cacheKey) as Array<GGSet>;
-				if(cached){
-					this.sets = cached;
-					return cached;
-				}
+				if(cached) return cached;
+
 			}
 
 			let groups: Array<Entity> = this.getData().entities.groups;
@@ -408,7 +311,6 @@ export class Tournament extends EventEmitter implements ITournament.Tournament{
 			let flattened: GGSet[] = _.flatten(allSets);
 			flattened = _.uniqBy(flattened, 'id');
 
-			this.sets = flattened;
 			await Cache.set(cacheKey, flattened);
 			return flattened;
 
@@ -430,10 +332,7 @@ export class Tournament extends EventEmitter implements ITournament.Tournament{
 			let cacheKey = format('tournament::%s::events', this.name);
 			if(options.isCached){
 				let cached: Array<Event> = await Cache.get(cacheKey) as Array<Event>;
-				if(cached){
-					this.events = cached;
-					return cached;
-				}
+				if(cached) return cached
 			}
 
 			let events: [Entity] = this.getData().entities.event;
@@ -443,8 +342,7 @@ export class Tournament extends EventEmitter implements ITournament.Tournament{
 			};
 			let allEvents: Event[] = await pmap(events, fn, {concurrency: options.concurrency});
 
-			this.events = allEvents;
-			await Cache.set(cacheKey, this.events);
+			await Cache.set(cacheKey, allEvents);
 			return allEvents;
 
 		} catch(err) {
@@ -579,37 +477,6 @@ export class Tournament extends EventEmitter implements ITournament.Tournament{
 		}
 		else{
 			log.error('Tournament.getStartTime: startAt and timezone properties must both be present');
-			return null;
-		}
-	}
-
-	getWhenRegistrationCloses() : Date | null{
-		let closesAt = this.getFromDataEntities('eventRegistrationClosesAt');
-		let tz = this.getFromDataEntities('timezone');
-
-
-		if(this.getData().entities.tournament.startAt && this.getData().entities.tournament.timezone) {
-			let time = moment.unix(closesAt).tz(tz);
-			return time.toDate();
-		}
-		else{
-			log.error('Tournament.getWhenRegistrationCloses: eventRegistrationClosesAt and timezone properties must both be present');
-			return null;
-		}
-	}
-
-	getWhenRegistrationClosesString() : string | null{
-		let closesAt: number = this.getFromDataEntities('eventRegistrationClosesAt');
-		let tz: string = this.getFromDataEntities('timezone');
-
-
-		if(this.getData().entities.tournament.startAt && this.getData().entities.tournament.timezone) {
-			let time: string = moment.unix(closesAt).tz(tz).format('MM-DD-YYYY HH:mm:ss');
-			let zone: string = moment.tz(tz).zoneName();
-			return `${time} ${zone}`;
-		}
-		else{
-			log.error('Tournament.getWhenRegistrationCloses: eventRegistrationClosesAt and timezone properties must both be present');
 			return null;
 		}
 	}

@@ -1,11 +1,5 @@
-<<<<<<< HEAD:samples/sample1.js
-'use strict'
-const path = require('path')
-require('dotenv').config({path: path.join(__dirname, '..', '.env')})
-=======
 /* eslint-disable */
 'use strict';
->>>>>>> master:resources/samples/sample1.js
 
 const chalk = require('chalk');
 let smashgg = require('../..')

@@ -66,7 +66,10 @@ var User = /** @class */ (function () {
         this.gamerTagChangedAt = gamerTagChangedAt;
     }
     User.parse = function (data) {
-        return new User(data.player.id, data.player.gamerTag, data.player.prefix, data.player.color, data.player.twitchStream, data.player.twitterHandle, data.player.youtube, data.player.region, data.player.state, data.player.country, data.player.gamerTagChangedAt);
+        return new User(data.id, data.gamerTag, data.prefix, data.color, data.twitchStream, data.twitterHandle, data.youtube, data.region, data.state, data.country, data.gamerTagChangedAt);
+    };
+    User.parseFull = function (data) {
+        return User.parse(data.player);
     };
     User.getById = function (id) {
         return __awaiter(this, void 0, void 0, function () {
@@ -78,7 +81,7 @@ var User = /** @class */ (function () {
                         return [4 /*yield*/, NetworkInterface_1.default.query(queries.user, { id: id })];
                     case 1:
                         data = _a.sent();
-                        return [2 /*return*/, User.parse(data)];
+                        return [2 /*return*/, User.parseFull(data)];
                 }
             });
         });

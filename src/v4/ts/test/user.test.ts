@@ -7,6 +7,7 @@ import sinon from 'sinon'
 import {expect} from 'chai'
 import {User} from '../lib/User'
 import Initializer from '../lib/util/Initializer'
+import * as testData from './data/user.testData'
 
 let user1: User, user2: User, user3: User
 const USER_ID_1 = 159429 // Davemon
@@ -28,11 +29,22 @@ const DAVEMON_RANKINGS = [
 describe('smashgg User', function(){
 	before(async function(){
 		this.timeout(15000)
-		await Initializer(process.env.API_TOKEN as string)
+		await Initializer(process.env.API_TOKEN!)
 		user1 = await User.getById(USER_ID_1)
 		user2 = await User.getById(USER_ID_2)
 		user3 = await User.getById(USER_ID_3)
 		return true
+	})
+
+	// equality
+	it('should be the expected User object', function(){
+		expect(user1).to.deep.equal(User.parse(testData.user1));
+	})
+	it('should be the expected User object', function(){
+		expect(user2).to.deep.equal(User.parse(testData.user2));
+	})
+	it('should be the expected User object', function(){
+		expect(user3).to.deep.equal(User.parse(testData.user3));
 	})
 
 	// id

@@ -1,26 +1,7 @@
+import * as Schema from './schema'
 export const tournament = `query TournamentQuery($slug: String) {
     tournament(slug: $slug){
-        id
-        name
-        slug
-        city
-        postalCode
-        addrState
-        countryCode
-        region
-        venueAddress
-        venueName
-        gettingThere
-        lat
-        lng
-        timezone
-        startAt
-        endAt
-        contactInfo
-        contactEmail
-        contactTwitter
-        contactPhone
-        ownerId
+        ${Schema.tournament}
     }
 }`
 
@@ -111,24 +92,7 @@ export const tournamentSets = `query TournamentSets($slug: String){
         events{
             phaseGroups{
                 sets{
-                    id
-                    round
-                    fullRoundText
-                    startedAt
-                    completedAt
-                    winnerId
-                    totalGames
-                    state
-                    slots{
-                        id
-                        entrant {
-                            id
-                            name
-                            participants {
-                                id
-                            }
-                        }
-                    }
+                    ${Schema.set}
                 }
             }
         }

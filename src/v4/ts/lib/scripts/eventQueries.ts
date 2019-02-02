@@ -1,21 +1,11 @@
+import * as Schema from './schema'
 export const event = `query EventByTournamentSlugQuery($slug:String){
     tournament(slug:$slug){
         id
         name
         slug
         events{
-            id
-            name
-            slug
-            state
-            startAt
-          	numEntrants
-          	checkInBuffer
-          	checkInDuration
-          	checkInEnabled
-            isOnline
-          	teamNameAllowed
-          	teamManagementDeadline
+            ${Schema.event}
         }
   	}
 }`
@@ -35,10 +25,7 @@ export const eventPlayers = `query EventParticipantQuery($slug: String, $eventId
         },
         isAdmin: false){
             nodes{
-                id
-                playerId
-                gamerTag
-                prefix
+                ${Schema.attendee}
             }
         }
     }  

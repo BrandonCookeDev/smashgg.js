@@ -1,16 +1,7 @@
+import * as Schema from './schema'
 export const user = `query UserQuery($id: Int!) {
 	player(id:$id){
-		id
-		gamerTag
-		prefix
-		color
-		twitchStream
-		twitterHandle
-		youtube
-		region
-		state
-		country
-		gamerTagChangedAt
+		${Schema.user}
 	}
 }`
 
@@ -29,23 +20,7 @@ export const userRecentGGSets = `query UserRecentSets($id: Int!) {
 	player(id:$id){
 		id
 		recentSets{
-      		id
-			displayScore
-			round
-			fullRoundText
-			createdAt
-			completedAt
-			startedAt
-			state
-			totalGames
-			winnerId
-			wPlacement
-			lPlacement
-			slots(includeByes:true){
-				entrant{
-				name
-				}
-			}      
+      		${Schema.set}     
 		}
 	}
 }`

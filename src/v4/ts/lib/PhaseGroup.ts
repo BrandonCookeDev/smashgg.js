@@ -11,7 +11,7 @@ import Encoder from './util/Encoder'
 import log from './util/Logger'
 
 import { ICommon } from './util/Common'
-import { IPlayer } from './Player2'
+import { IPlayer } from './Player'
 import { IGGSet } from './GGSet'
 
 /* Convenience */

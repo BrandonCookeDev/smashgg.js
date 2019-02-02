@@ -45,26 +45,30 @@ export class User implements IUser.User{
 		this.gamerTagChangedAt = gamerTagChangedAt  
 	}
 
-	static parse(data: IUser.Data) : User{
+	static parse(data: IUser.UserData) : User{
 		return new User(
-			data.player.id, 
-			data.player.gamerTag,
-			data.player.prefix,
-			data.player.color,
-			data.player.twitchStream,
-			data.player.twitterHandle,
-			data.player.youtube,
-			data.player.region,
-			data.player.state,
-			data.player.country,
-			data.player.gamerTagChangedAt
+			data.id, 
+			data.gamerTag,
+			data.prefix,
+			data.color,
+			data.twitchStream,
+			data.twitterHandle,
+			data.youtube,
+			data.region,
+			data.state,
+			data.country,
+			data.gamerTagChangedAt
 		)
+	}
+
+	static parseFull(data: IUser.Data) : User{
+		return User.parse(data.player);
 	}
 
 	static async getById(id: number) : Promise<User>{
 		Log.info('Getting User (smash.gg Player) with id %s', id);
 		let data = await NI.query(queries.user, {id: id})
-		return User.parse(data)
+		return User.parseFull(data)
 	}
 
 	getId() {
@@ -157,19 +161,21 @@ export namespace IUser{
 	}
 
 	export interface Data{
-		"player": {
-			"id": number,
-			"gamerTag": string,
-			"prefix": string | null
-			"color": string | null
-			"twitchStream": string | null
-			"twitterHandle": string | null
-			"youtube":string | null
-			"region":string | null
-			"state": string | null
-			"country": string | null
-			"gamerTagChangedAt": number | null
-		}
+		"player": UserData
+	}
+
+	export interface UserData{
+		"id": number,
+		"gamerTag": string,
+		"prefix": string | null
+		"color": string | null
+		"twitchStream": string | null
+		"twitterHandle": string | null
+		"youtube":string | null
+		"region":string | null
+		"state": string | null
+		"country": string | null
+		"gamerTagChangedAt": number | null
 	}
 
 	export interface DataUserRankings{

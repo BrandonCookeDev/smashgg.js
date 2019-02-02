@@ -1,4 +1,4 @@
-
+import * as Schema from './schema'
 exports.phaseGroupSets = `query PhaseGroupSetsById($id: Int){
     phaseGroup(id: $id){
         sets{

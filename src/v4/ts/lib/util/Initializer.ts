@@ -11,7 +11,7 @@ function handleErrors(e: Error) : void{
 	log.debug(e)
 }
 
-module.exports = function(token: string){
+export default function(token: string){
 	//process.on('error', handleErrors)
 	(process as NodeJS.EventEmitter).on('error', handleErrors);
 	process.on('unhandledRejection', handleErrors)

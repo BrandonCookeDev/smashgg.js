@@ -45,11 +45,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var TokenHandler_1 = __importDefault(require("./TokenHandler"));
-var graphql_request_1 = require("./graphql-request");
+var request_promise_1 = __importDefault(require("request-promise"));
+var graphql_request_1 = require("graphql-request");
 var Common = __importStar(require("./Common"));
 var StaggeredRequestQueue_1 = __importDefault(require("./StaggeredRequestQueue"));
-var request_promise_1 = __importDefault(require("request-promise"));
+var TokenHandler_1 = __importDefault(require("./TokenHandler"));
+var V1 = __importStar(require("./EntityFetcher"));
 var API_URL = process.env.ApiUrl || 'https://api.smash.gg/gql/alpha';
 var RATE_LIMIT_MS_TIME = process.env.RateLimitMsTime || 1000;
 var NetworkInterface = /** @class */ (function () {
@@ -85,6 +86,7 @@ var NetworkInterface = /** @class */ (function () {
      * @returns {promise} resolving the results of the query after being staggered in the request queue
      */
     NetworkInterface.query = function (query, variables) {
+        //console.log(query, variables)
         return new Promise(function (resolve, reject) {
             StaggeredRequestQueue_1.default.getInstance().add(function () {
                 return NetworkInterface.client.request(query, variables)
@@ -130,6 +132,21 @@ var NetworkInterface = /** @class */ (function () {
                 }
             });
         });
+    };
+    NetworkInterface.prototype.getTournamentFromV1 = function (tournamentName, options) {
+        return V1.getTournamentData(tournamentName, options);
+    };
+    NetworkInterface.prototype.getEventFromV1 = function (eventName, tournamentName, options) {
+        return V1.getEventData(eventName, tournamentName, options);
+    };
+    NetworkInterface.prototype.getEventByIdFromV1 = function (eventId, options) {
+        return V1.getEventDataById(eventId, options);
+    };
+    NetworkInterface.prototype.getPhaseFromV1 = function (phaseId, options) {
+        return V1.getPhaseData(phaseId, options);
+    };
+    NetworkInterface.prototype.getPhaseGroupFromV1 = function (phaseGroupId, options) {
+        return V1.getPhaseGroupData(phaseGroupId, options);
     };
     NetworkInterface.initialized = false;
     return NetworkInterface;

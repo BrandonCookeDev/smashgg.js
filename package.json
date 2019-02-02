@@ -64,6 +64,7 @@
   "devDependencies": {
     "@types/chai": "^4.1.7",
     "@types/chai-as-promised": "^7.1.0",
+    "@types/dotenv": "^6.1.0",
     "@types/lodash": "^4.14.119",
     "@types/mocha": "^5.2.5",
     "@types/moment-timezone": "^0.5.10",

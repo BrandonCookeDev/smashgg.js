@@ -50,6 +50,7 @@ export default class NetworkInterface{
 	 * @returns {promise} resolving the results of the query after being staggered in the request queue
 	 */
 	static query(query: string, variables: Variables) : Promise<any>{
+		//console.log(query, variables)
 		return new Promise(function(resolve, reject){ 
 			SRQ.getInstance().add(() => {
 				return NetworkInterface.client.request(query, variables)

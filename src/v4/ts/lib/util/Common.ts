@@ -87,6 +87,12 @@ export function createExpandsString(expands: any) : string{
 	return expandsString;
 }
 
+export function convertEpochToDate(epoch: number) : Date{
+	let d = new Date(0)
+	d.setUTCSeconds(epoch)
+	return d;
+}
+
 export namespace ICommon{
 	export interface Options{
 		isCached?: boolean, 

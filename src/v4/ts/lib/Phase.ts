@@ -327,12 +327,8 @@ Phase.prototype.toString = function(){
 export namespace IPhase{
 	export interface Phase{
 		id: number
-		url: string
-		data: Data | string
-		isCached: boolean
-		rawEncoding: string
-		expandsString: string
-		expands: Expands
+		numSeeds: number
+		
 
 		loadData(data: Data) : Data | string
 		

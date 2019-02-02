@@ -66,6 +66,12 @@ export class GGSet extends EventEmitter implements IGGSet.GGSet{
 		this.data = data;
 	}
 
+	static parse(data: IGGSet.Data) : IGGSet{
+		return new GGSet(
+
+		);
+	}
+
 	static async getSet(id: number, options: Options={}) : Promise<GGSet | null> {
 		log.debug('Set getSet called');
 		try{

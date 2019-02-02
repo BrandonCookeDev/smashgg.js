@@ -6,7 +6,7 @@ export default class TokenHandler implements ITokenHandler.TokenHandler{
 
 	static setToken(token: string) : void{
 		if(!tokenRegex.test(token))
-			throw new Error('Incorrect token format. Must be 32 alphanumeric, lowercase characters')
+			throw new Error(`Invalid token '${token}'. Must be 32 alphanumeric, lowercase characters.`)
 		TokenHandler.token = token
 	}
 

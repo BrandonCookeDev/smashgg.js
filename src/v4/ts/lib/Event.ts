@@ -250,6 +250,12 @@ export class Event extends EventEmitter implements IEvent.Event{
 		return decoded;
 	}
 
+	// TODO implement
+	static parse(data: Data) : Event { 
+		let E = new Event(0, undefined, {})
+		return E
+	}
+
 	// Convenience methods	
 	static getEvent(eventName: string, tournamentName: string, options: EventOptions={}) : Promise<Event> {
 		return new Promise(function(resolve, reject){

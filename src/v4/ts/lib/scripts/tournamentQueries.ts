@@ -6,7 +6,6 @@ export const tournament = `query TournamentQuery($slug: String) {
         city
         postalCode
         addrState
-        country
         countryCode
         region
         venueAddress
@@ -17,10 +16,20 @@ export const tournament = `query TournamentQuery($slug: String) {
         timezone
         startAt
         endAt
+        contactInfo
         contactEmail
         contactTwitter
         ownerId
     }
+}`
+
+export const getTournamentOrganizer = `query tournamentOrganizer($slug: String){
+    tournament(slug: $slug){
+        ownerId
+        contactEmail
+        contactTwitter
+        contactInfos
+    }   
 }`
 
 export const tournamentVenue = `query tournamentVenue($slug: String) {

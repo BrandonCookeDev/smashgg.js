@@ -93,6 +93,12 @@ export class PhaseGroup extends EventEmitter implements IPhaseGroup.PhaseGroup{
 		return decoded;
 	}
 
+	// TODO implement
+	static parse() : PhaseGroup{
+		let PG = new PhaseGroup(0, {})
+		return PG
+	}
+
 	// Convenience Methods
 	static getPhaseGroup(id: number, options: Options={}) : Promise<PhaseGroup>{
 		return new Promise(function(resolve, reject){

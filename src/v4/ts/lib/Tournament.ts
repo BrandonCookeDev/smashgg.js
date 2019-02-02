@@ -1,4 +1,9 @@
 
+const TOURNAMENT_URL = 'https://api.smash.gg/tournament/%s?%s'
+const LEGAL_ENCODINGS = ['json', 'utf8', 'base64']
+const DEFAULT_ENCODING = 'json'
+const DEFAULT_CONCURRENCY = 4
+
 export namespace ITournament{
 	export interface Tournament{
 		id: number
@@ -6,21 +11,27 @@ export namespace ITournament{
 		slug: string
 		startTime: Date
 		endTime: Date
+		timezone: string
+		venue: Venue
+		organizer: Organizer
+		rawEncoding: string
 		data: Data | string
-
+		
 		getAllPlayers(options: Options) : Promise<Array<Player>> 
 
 		getAllSets(options: Options) : Promise<Array<GGSet>>
 
 		getAllEvents(options: Options) : Promise<Array<Event>>
 
+		getAllPhases(options: Options) : Promise<Array<Phase>>
+
+		getAllPhaseGroups(options: Options) : Promise<Array<PhaseGroup>>
+
 		getIncompleteSets(options: Options) : Promise<Array<GGSet>>
 	
 		getCompleteSets(options: Options) : Promise<Array<GGSet>>
 
 		getSetsXMinutesBack(minutesBack: number, options: Options) : Promise<Array<GGSet>>
-
-		getFromDataEntities(prop: string) : any
 
 		getId() : number
 
@@ -38,31 +49,23 @@ export namespace ITournament{
 
 		getEndTimeString() : string | null
 
-		getWhenRegistrationCloses() : Date | null
-
-		getWhenRegistrationClosesString() : string | null
+		getVenue() : Venue
 
 		getCity() : string
 		
 		getState() : string
 		
 		getZipCode() : string
+
+		getOrganizer() : Organizer
+
+		getContactInfo() : string
 		
 		getContactEmail() : string
 		
 		getContactTwitter() : string
 		
-		getOwnerId() : string 
-
-		getVenueFee() : string
-		
-		getProcessingFee() : string 
-		
-		nullValueString(prop: string) : string
-		
-		emitTournamentReady() : void
-		
-		emitTournamentError(err: Error) : void
+		getOwnerId() : number 
 	}
 
 	export interface Options{
@@ -79,21 +82,60 @@ export namespace ITournament{
 	}
 
 	export interface Data{
-		tournament: Entity
-		event?: [Entity],
-		phase?: [Entity],
-		groups?: [Entity],
-		stations?: {
-			[x: string]: any
-		},
-		[x: string]: any
+		"data": {
+			"tournament": {
+			  "id": number,
+			  "name": string,
+			  "slug": string,
+			  "city": string | null,
+			  "postalCode": string | null,
+			  "addrState": string | null,
+			  "countryCode": string | null,
+			  "region": string | null,
+			  "venueAddress": string | null,
+			  "venueName": string | null,
+			  "gettingThere": string | null,
+			  "lat": number | null,
+			  "lng": number | null,
+			  "timezone": string | null,
+			  "startAt": number | null,
+			  "endAt": number | null,
+			  "contactInfo": string | null,
+			  "contactEmail": string | null,
+			  "contactTwitter": string | null,
+			  "ownerId": number | null
+			}
+		  },
+		  "actionRecords": []
 	}
 
 	export function getDefaultData(): Data{
 		return {
-			tournament:{ 
-				id: 0
-			}
+			"data": {
+				"tournament": {
+				  "id": 0,
+				  "name": '',
+				  "slug": '',
+				  "city": '',
+				  "postalCode": '',
+				  "addrState": '',
+				  "countryCode": '',
+				  "region": '',
+				  "venueAddress": '',
+				  "venueName": '',
+				  "gettingThere": '',
+				  "lat": 0,
+				  "lng": 0,
+				  "timezone": '',
+				  "startAt": 0,
+				  "endAt": 0,
+				  "contactInfo": '',
+				  "contactEmail": '',
+				  "contactTwitter": '',
+				  "ownerId": 0
+				}
+			  },
+			  "actionRecords": []
 		}
 	}
 
@@ -150,12 +192,9 @@ import { Event, Phase, PhaseGroup, Player, GGSet, Organizer, Venue } from './int
 import Encoder from './util/Encoder'
 // import Fetcher from './util/EntityFetcher'
 import NI from './util/NetworkInterface'
-import * as queries from './scripts/tournamentQueries'
+import * as tourneyQueries from './scripts/tournamentQueries'
+import * as eventQueries from './scripts/eventQueries'
 
-const TOURNAMENT_URL = 'https://api.smash.gg/tournament/%s?%s'
-const LEGAL_ENCODINGS = ['json', 'utf8', 'base64']
-const DEFAULT_ENCODING = 'json'
-const DEFAULT_CONCURRENCY = 4
 
 import { ICommon } from './util/Common'
 
@@ -214,20 +253,15 @@ export class Tournament extends EventEmitter implements ITournament.Tournament{
 		return await Tournament.get(slug, options)
 	}
 
-	static async get(slug: string, options: TournamentOptions) : Promise<Tournament>{
-		let cacheKey = format('tournament::%s', slug)
-		let cached = await Cache.get(cacheKey)
-		if(cached && options.isCached) return cached;
-
-		let data = await NI.query(queries.tournament, {slug: slug })
+	static parse(data: Data, options: Options): Tournament{ 
 		let venue = new Venue(
-			data.venueName, data.venueAddress, data.city,
-			data.addrState, data.countryCode, data.region, 
-			data.postalCode, data.lat, data.lng
+			data.data.tournament.venueName, data.venueAddress, data.city,
+			data.data.tournament.addrState, data.countryCode, data.region, 
+			data.data.tournament.postalCode, data.lat, data.lng
 		)
 		let organizer = new Organizer(
-			data.ownerId, data.contactEmai, data.contactPhone,
-			data.contactTwitter, data.contactInfo
+			data.data.tournament.ownerId, data.data.tournament.contactEmai, data.data.tournament.contactPhone,
+			data.data.tournament.contactTwitter, data.data.tournament.contactInfo
 		)
 
 		let startTime = new Date(0)
@@ -244,8 +278,18 @@ export class Tournament extends EventEmitter implements ITournament.Tournament{
 			startTime, endTime, data.timezone, 
 			venue, organizer, encoding, encoded
 		)
-		if(options.isCached) await Cache.set(cacheKey, T);
 		return T;
+	}
+
+	static async get(slug: string, options: TournamentOptions) : Promise<Tournament>{
+		let cacheKey = format('tournament::%s', slug)
+		let cached = await Cache.get(cacheKey)
+		if(cached && options.isCached) return cached;
+
+		let data = await NI.query(tourneyQueries.tournament, {slug: slug })
+		let T = Tournament.parse(data, options);
+		if(options.isCached) await Cache.set(cacheKey, T);
+		return T
 	}
 
 	getData() : Data{
@@ -322,33 +366,108 @@ export class Tournament extends EventEmitter implements ITournament.Tournament{
 	}
 
 	async getAllEvents(options: Options={}) : Promise<Array<Event>> {
-		log.debug('Tournament.getAllEvents called');
+		log.info('Getting Events for ' + this.getName())
+
+		// check cache
+		let cacheKey = format('tournament::%s::events', this.name)
+		if(options.isCached){
+			let cached = await Cache.get(cacheKey)
+			if(cached) return cached
+		}
+
+		// get and format data
+		let results = await NI.query(eventQueries.event, {slug: this.name}) 
+		let eventData = results.tournament.events
+
+		// format the tournament data
+		let tournamentData = results.tournament
+		delete tournamentData.events
+
+		// format the event data
+		let events = eventData.map(event => {
+			let data = {}
+			let E = Event.parse(event)
+			data.tournament = tournamentData
+			data.event = event
+			E.loadData(data)
+			return E
+		})
+		await Cache.set(cacheKey, events)
+		return events
+	}
+
+	async getAllPhases(options: Options={}) : Promise<Array<Phase>> {
+		log.debug('Tournament.getPhases called')
 
 		// parse options
-		options = parseOptions(options);
+		let isCached = options.isCached != undefined ? options.isCached === true : true
+		let rawEncoding = options.rawEncoding
 
-		try{
-			log.info('Getting Events for ' + this.getName());
-			let cacheKey = format('tournament::%s::events', this.name);
-			if(options.isCached){
-				let cached: Array<Event> = await Cache.get(cacheKey) as Array<Event>;
-				if(cached) return cached
-			}
-
-			let events: [Entity] = this.getData().entities.event;
-			let fn = async (event: Entity) : Promise<Event> => {
-				let eventId = event.id;
-				return await Event.getEventById(eventId);
-			};
-			let allEvents: Event[] = await pmap(events, fn, {concurrency: options.concurrency});
-
-			await Cache.set(cacheKey, allEvents);
-			return allEvents;
-
-		} catch(err) {
-			log.error('Tournament.getAllEvents: ' + err);
-			throw err;
+		// check the cache
+		let cacheKey = format('tournament::%s::phases', this.name)
+		if(isCached){
+			let cached = await Cache.get(cacheKey)
+			if(cached) return cached
 		}
+
+		// get and format data
+		let results = await NI.query(graphQueries.tournamentPhases, {slug: this.name})
+		let eventData = results.tournament.events
+		let tournamentData = results.tournament
+		delete tournamentData.events
+
+		// format and create array of Phase objects
+		let phases = _.flatten(eventData.map(event => {
+			return event.phases.map(phase => {
+				let data = {}
+				let P = new Phase(phase.id, {loadData: false, rawEncoding: rawEncoding, isCached: isCached})
+				data.tournament = tournamentData
+				data.event = _.clone(event)
+				delete data.event.phases
+				data.phase = phase
+				P.loadData(data)
+				return P
+			})
+		}))
+		if(isCached) await Cache.set(cacheKey, phases)
+		return phases
+	}
+
+	async getAllPhaseGroups(options: Options={}) : Promise<Array<PhaseGroup>> {
+		log.debug('Tournament.getPhaseGroups called')
+
+		// parse options
+		let isCached = options.isCached != undefined ? options.isCached === true : true
+		let rawEncoding = options.rawEncoding
+
+		// check cache
+		let cacheKey = format('tournament::%s::phaseGroups', this.name)
+		if(isCached){
+			let cached = await Cache.get(cacheKey)
+			if(cached) return cached
+		}
+
+		// get and format data
+		let results = await NI.query(graphQueries.tournamentPhaseGroups, {slug: this.name})
+		let eventData = results.tournament.events
+		let tournamentData = results.tournament
+		delete tournamentData.events
+
+		// format and create array of PhaseGroup objects
+		let phaseGroups = _.flatten(eventData.map(event => {
+			return event.phaseGroups.map(phaseGroup => {
+				let data = {}
+				let PG = new PhaseGroup(phaseGroup.id, {loadData: false, rawEncoding: rawEncoding, isCached: isCached})
+				data.tournament = tournamentData
+				data.event = _.clone(event)
+				delete data.event.phaseGroups
+				data.phaseGroup = phaseGroup
+				PG.loadData(data)
+				return PG
+			})
+		}))
+		await Cache.set(cacheKey, phaseGroups)
+		return phaseGroups
 	}
 
 	async getIncompleteSets(options: Options={}) : Promise<Array<GGSet>> {
@@ -393,125 +512,87 @@ export class Tournament extends EventEmitter implements ITournament.Tournament{
 		}
 	}
 
-	/** SIMPLE GETTERS **/
-	getFromDataEntities(prop: string){
-		let data: Data = this.getData();
-		if(data && data.entities && data.entities.tournament) {
-			if (!data.entities.tournament[prop])
-				log.error(this.nullValueString(prop));
-			return data.entities.tournament[prop];
-		}
-		else{
-			log.error('No data to get Tournament property Id');
-			return null;
-		}
-	}
-
 	getId() : number {
-		return this.getFromDataEntities('id');
+		return this.id
 	}
 
 	getName() : string {
-		return this.getFromDataEntities('name');
+		return this.name
 	}
 
 	getSlug() : string {
-		return this.getFromDataEntities('slug');
+		return this.slug
 	}
 
 	getTimezone() : string {
-		return this.getFromDataEntities('timezone');
+		return this.timezone
 	}
 
 	getStartTime() : Date | null{
-		let startAt = this.getFromDataEntities('startAt');
-		let tz = this.getFromDataEntities('timezone');
-
-		if(this.getData().entities.tournament.startAt && this.getData().entities.tournament.timezone) {
-			let time = moment.unix(startAt).tz(tz);
-			return time.toDate();
-		}
-		else{
-			log.error('Tournament.getStartTime: startAt and timezone properties must both be present');
-			return null;
-		}
+		return this.startTime
 	}
 
 	getStartTimeString() : string | null{
-		let startAt = this.getFromDataEntities('startAt');
-		let tz = this.getFromDataEntities('timezone');
-
-		if(this.getData().entities.tournament.startAt && this.getData().entities.tournament.timezone) {
-			let time = moment.unix(startAt).tz(tz).format('MM-DD-YYYY HH:mm:ss');
-			let zone = moment.tz(tz).zoneName();
-			return `${time} ${zone}`;
-		}
-		else{
-			log.error('Tournament.getStartTime: startAt and timezone properties must both be present');
-			return null;
-		}
+		return `${this.getStartTime()} ${this.getTimezone()}`
 	}
 
 	getEndTime() : Date | null {
-		let endAt = this.getFromDataEntities('endAt');
-		let tz = this.getFromDataEntities('timezone');
-
-		if(this.getData().entities.tournament.startAt && this.getData().entities.tournament.timezone) {
-			let time = moment.unix(endAt).tz(tz);
-			return time.toDate();
-		}
-		else{
-			log.error('Tournament.getStartTime: startAt and timezone properties must both be present');
-			return null;
-		}
+		return this.endTime
 	}
 
 	getEndTimeString() : string | null{
-		let endAt = this.getFromDataEntities('endAt');
-		let tz = this.getFromDataEntities('timezone');
+		return `${this.getEndTime()} ${this.getTimezone()}`
+	}
 
-		if(this.getData().entities.tournament.startAt && this.getData().entities.tournament.timezone) {
-			let time = moment.unix(endAt).tz(tz).format('MM-DD-YYYY HH:mm:ss');
-			let zone = moment.tz(tz).zoneName();
-			return `${time} ${zone}`;
-		}
-		else{
-			log.error('Tournament.getStartTime: startAt and timezone properties must both be present');
-			return null;
-		}
+	getVenue() : Venue{
+		return this.venue
 	}
 
 	getCity() : string {
-		return this.getFromDataEntities('city');
+		return this.getVenue().getCity()
 	}
 
 	getState() : string {
-		return this.getFromDataEntities('addrState');
+		return this.getVenue().getState()
 	}
 
 	getZipCode() : string {
-		return this.getFromDataEntities('postalCode');
+		return this.getVenue().getPostalCode()
+	}
+
+	getOrganizer() : Organizer{
+		return this.organizer
+	}
+
+	getContactInfo() : string { 
+		return this.getOrganizer().getInfo()
 	}
 
 	getContactEmail() : string {
-		return this.getFromDataEntities('contactEmail');
+		return this.getOrganizer().getEmail()
 	}
 
 	getContactTwitter() : string {
-		return this.getFromDataEntities('contactTwitter');
+		return this.getOrganizer().getTwitter()
 	}
 
-	getOwnerId() : string {
-		return this.getFromDataEntities('ownerId');
+	getOwnerId() : number {
+		return this.getOrganizer().getId()
 	}
 
-	getVenueFee() : string {
-		return this.getFromDataEntities('venueFee');
-	}
+	/**
+	 * @deprecated
+	 */
+	//getVenueFee() : string {
+	//	return this.getFromDataEntities('venueFee');
+	//}
 
-	getProcessingFee() : string {
-		return this.getFromDataEntities('processingFee');
-	}
+	/**
+	 * @deprecated
+	 */
+	//getProcessingFee() : string {
+	//	return this.getFromDataEntities('processingFee');
+	//}
 
 	/** NULL VALUES **/
 	nullValueString(prop: string) : string{

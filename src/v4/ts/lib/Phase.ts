@@ -88,6 +88,12 @@ export class Phase extends EventEmitter implements IPhase.Phase{
 		return decoded;
 	}
 
+	// TODO implement
+	static parse() : Phase{
+		let P = new Phase(0, {})
+		return P
+	}
+
 	// Convenience Methods
 	static getPhase(id: number, options: PhaseOptions={}) : Promise<Phase> {
 		return new Promise(function(resolve, reject){ 

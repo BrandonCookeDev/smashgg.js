@@ -7,9 +7,9 @@ const mocha = require('gulp-mocha')
 
 const ROOT = __dirname
 const SRC_DIR = path.join(ROOT, 'src')
-const TS_DIR = path.join(SRC_DIR, 'ts')
-const JS_DIR = path.join(SRC_DIR, 'js')
-const TEST_DIR = path.join(JS_DIR, 'test')
+const TS_DIR = path.join(SRC_DIR, 'v4', 'ts')
+const JS_DIR = path.join(SRC_DIR, 'v4', 'js')
+const TEST_DIR = path.join(JS_DIR, 'v4', 'test')
 
 const tsProd = ts.createProject('tsconfig.json')
 

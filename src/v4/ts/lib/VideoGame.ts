@@ -110,7 +110,7 @@ export class VideoGame implements IVideoGame.VideoGame{
 		return vg;
 	}
 
-	static async getAll(options: Options={}) : Promise<Array<VideoGame>>{
+	static async getAll(options: Options={}) : Promise<VideoGame[]>{
 		log.debug('VideoGames getAll called');
 		try{
 			// parse options

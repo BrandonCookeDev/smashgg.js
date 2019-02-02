@@ -2,19 +2,24 @@
 export namespace IEvent{
 	export interface Event{
 		id: number 
-		url: string 
+		name: string
+		slug: string
+		tournamentId: string
+		tournamentName: string
+		tournamentSlug: string
 		data: Data | string
-		eventId: string | number
-		expands: Expands 
-		expandsString: string 
-		tournamentId: string | undefined
-		tournamentSlug: string 
-		isCached: boolean 
-		rawEncoding: string 
-		phases: Array<Phase> 
-		groups: Array<PhaseGroup> 
-		
-		loadData(data: object): object | string 
+		rawEncoding: string
+		isCached: boolean
+
+		state: string | null
+		startAt: number | null
+		numEntrants: number | null
+		checkInBuffer: number | null
+		checkInDuration: number | null
+		checkInEnabled: boolean | null
+		isOnline: boolean | null
+		teamNameAllowed: boolean | null
+		teamManagementDeadline: number | null
 	
 		getData() : Data
 				
@@ -24,19 +29,19 @@ export namespace IEvent{
 			
 		load(options: Options, tournamentOptions: TournamentOptions) : Promise<Data | string>
 				
-		getEventPhases(options: Options) : Promise<Array<Phase>>
+		getEventPhases(options: Options) : Promise<Phase[]>
 	
-		getEventPhaseGroups(options: Options) : Promise<Array<PhaseGroup>>
+		getEventPhaseGroups(options: Options) : Promise<PhaseGroup[]>
 			
-		getSets(options: Options) : Promise<Array<GGSet>>
+		getSets(options: Options) : Promise<GGSet[]>
 			
-		getPlayers(options: Options) : Promise<Array<Player>>
+		getPlayers(options: Options) : Promise<Player[]>
 				
-		getIncompleteSets(options: Options) : Promise<Array<GGSet>>
+		getIncompleteSets(options: Options) : Promise<GGSet[]>
 	
-		getCompleteSets(options: Options) : Promise<Array<GGSet>>
+		getCompleteSets(options: Options) : Promise<GGSet[]>
 			
-		getSetsXMinutesBack(minutesBack: number, options: Options) : Promise<Array<GGSet>> 
+		getSetsXMinutesBack(minutesBack: number, options: Options) : Promise<GGSet[]> 
 			
 		getFromEventEntities(prop: string) : any
 
@@ -45,29 +50,34 @@ export namespace IEvent{
 		getId() : number
 			
 		getName() : string
-			
-		getTournamentId() : number
-			
+
 		getSlug() : string
 
-		getTournamentName(): string
-			
+		getTournamentId() : number
+
+		getTournamentName() : string
+
 		getTournamentSlug() : string
 			
 		getStartTime() : Date | null
 			
 		getStartTimeString() : string | null
-			
-		getEndTime() : Date | null
-			
-		getEndTimeString() : string | null
-			
-		nullValueString(prop: string) : string
-	
-		emitEventReady() : void
-			
-		emitEventError(err: Error) : void
 		
+		getState() : string | null
+		
+		getNumEntrants() : number | null
+		
+		getCheckInBuffer() : number | null
+		
+		getCheckInDuration() : number | null
+		
+		getCheckInEnabled() : boolean | null
+		
+		getIsOnline() : boolean | null
+		
+		getTeamNameAllowed() : boolean | null
+		
+		getTeamManagementDeadline() : number | null
 	}
 
 	export interface Options{
@@ -189,60 +199,67 @@ import parseOptions = Common.parseOptions
 
 export class Event extends EventEmitter implements IEvent.Event{
 
-	id: number = 0
-	url: string = ''
-	data: Data | string = IEvent.getDefaultData()
-	eventId: string | number
-	expands: EventExpands = {
-		phase: true,
-		groups: true
-	};
-	expandsString: string = ''
-	tournamentId: string | undefined
-	tournamentSlug: string = ''
+	id: number 
+	name: string
+	slug: string
+	tournamentId: string
+	tournamentName: string
+	tournamentSlug: string
+	data: Data | string
+	rawEncoding: string
 	isCached: boolean = true
-	rawEncoding: string = DEFAULT_ENCODING
-	phases: Array<Phase> = [];
-	groups: Array<PhaseGroup> = [];
 
-	constructor(eventId: string | number, tournamentId?: string, options: EventOptions=IEvent.getDefaultOptions()){
+	state: string | null
+	startAt: number | null
+	numEntrants: number | null
+	checkInBuffer: number | null
+	checkInDuration: number | null
+	checkInEnabled: boolean | null
+	isOnline: boolean | null
+	teamNameAllowed: boolean | null
+	teamManagementDeadline: number | null
+
+	constructor(
+		id: number ,
+		name: string,
+		slug: string,
+		tournamentId: string,
+		tournamentName: string,
+		tournamentSlug: string,
+		data: Data | string,
+		options: EventOptions,
+
+		state: string | null,
+		startAt: number | null,
+		numEntrants: number | null,
+		checkInBuffer: number | null,
+		checkInDuration: number | null,
+		checkInEnabled: boolean | null,
+		isOnline: boolean | null,
+		teamNameAllowed: boolean | null,
+		teamManagementDeadline: number | null
+	){
 		super();
 		
-		if(!eventId)
-			throw new Error('Event Constructor: Event Name/ID cannot be null for Event');
+		this.id =  id
+		this.name = name
+		this.slug = slug
+		this.tournamentId = tournamentId 
+		this.tournamentName = tournamentName
+		this.tournamentSlug = tournamentSlug
+		this.data = Encoder.encode(data as object, options.rawEncoding) as string | Data
+		this.rawEncoding = Encoder.determineEncoding(options.rawEncoding)
+		this.isCached = options.isCached != undefined ? options.isCached == true : true
 
-		// set properties
-		options = IEvent.parseOptions(options);
-		this.tournamentId = tournamentId;
-		this.isCached = options.isCached as boolean;
-		this.eventId = typeof(eventId) === 'string' ? eventId : +eventId; 
-		this.rawEncoding = options.rawEncoding as string;
-
-		// create expands
-		this.expandsString = '';
-		if(options.expands){
-			this.expands = Object.assign(this.expands, options.expands);
-		}
-		for(let property in this.expands){
-			if(this.expands.hasOwnProperty(property))
-				this.expandsString += format('expand[]=%s&', property);
-		}
-
-		let ThisEvent = this;
-		this.load(options, ITournament.getDefaultOptions())
-			.then(e => {
-				let tournamentName = IEvent.getTournamentSlug(ThisEvent.getSlug());
-				let cacheKey = format('event::%s::%s::%s', tournamentName, ThisEvent.eventId, ThisEvent.expandsString)
-				Cache.set(cacheKey, ThisEvent)
-			})
-			.then(() => this.emitEventReady())
-			.catch(e => this.emitEventError(e))
-	}
-
-	loadData(data: Data): Data | string {
-		let encoded : Data | string = this.rawEncoding === 'json' ? data as Data : new Buffer(JSON.stringify(data)).toString(this.rawEncoding);
-		this.data = encoded;
-		return encoded;
+		this.state = state 
+		this.startAt =  startAt
+		this.numEntrants =  numEntrants
+		this.checkInBuffer =  checkInBuffer
+		this.checkInDuration = checkInDuration
+		this.checkInEnabled = checkInEnabled
+		this.isOnline =  isOnline
+		this.teamNameAllowed =  teamNameAllowed
+		this.teamManagementDeadline = teamManagementDeadline
 	}
 
 	getData() : Data {
@@ -354,7 +371,7 @@ export class Event extends EventEmitter implements IEvent.Event{
 	}
 
 	/** BULK PULL PROMISES **/
-	async getEventPhases(options: Options={}) : Promise<Array<Phase>>{
+	async getEventPhases(options: Options={}) : Promise<Phase[]>{
 		log.debug('Event.getEventPhases called');
 
 		options = parseOptions(options);
@@ -383,7 +400,7 @@ export class Event extends EventEmitter implements IEvent.Event{
 		}
 	}
 
-	async getEventPhaseGroups(options: Options={}) : Promise<Array<PhaseGroup>>{
+	async getEventPhaseGroups(options: Options={}) : Promise<PhaseGroup[]>{
 		log.debug('Event.getEventPhaseGroups called');
 
 		// parse options
@@ -413,7 +430,7 @@ export class Event extends EventEmitter implements IEvent.Event{
 		}
 	}
 
-	async getSets(options: Options={}) : Promise<Array<GGSet>>{
+	async getSets(options: Options={}) : Promise<GGSet[]>{
 		log.debug('Event.getSets called');
 		try{
 			// parse options
@@ -426,7 +443,7 @@ export class Event extends EventEmitter implements IEvent.Event{
 			}
 
 			let groups: Array<PhaseGroup> = await this.getEventPhaseGroups(options);
-			let fn = async (group: PhaseGroup) : Promise<Array<GGSet>> => {
+			let fn = async (group: PhaseGroup) : Promise<GGSet[]> => {
 				return await group.getSets(options);
 			};
 			let sets: GGSet[][] = await pmap(groups, fn, {concurrency: options.concurrency});
@@ -440,7 +457,7 @@ export class Event extends EventEmitter implements IEvent.Event{
 		}
 	}
 
-	async getPlayers(options: Options={}) : Promise<Array<Player>>{
+	async getPlayers(options: Options={}) : Promise<Player[]>{
 		log.debug('Event.getSets called');
 		try{
 			// parse options
@@ -470,7 +487,7 @@ export class Event extends EventEmitter implements IEvent.Event{
 
 	
 
-	async getTop8Sets(options: Options={}) : Promise<Array<GGSet>>{
+	async getTop8Sets(options: Options={}) : Promise<GGSet[]>{
 		log.debug('Event.getTop8Sets called')
 		try{
 			options = parseOptions(options)
@@ -529,7 +546,7 @@ export class Event extends EventEmitter implements IEvent.Event{
 		}
 	}
 
-	async getIncompleteSets(options: Options={}) : Promise<Array<GGSet>>{
+	async getIncompleteSets(options: Options={}) : Promise<GGSet[]>{
 		log.debug('Event.getIncompleteSets called');
 		try{
 			//parse options
@@ -544,7 +561,7 @@ export class Event extends EventEmitter implements IEvent.Event{
 		}
 	}
 
-	async getCompleteSets(options: Options={}) : Promise<Array<GGSet>>{
+	async getCompleteSets(options: Options={}) : Promise<GGSet[]>{
 		log.debug('Event.getIncompleteSets called');
 		try{
 			//parse options
@@ -559,7 +576,7 @@ export class Event extends EventEmitter implements IEvent.Event{
 		}
 	}
 
-	async getSetsXMinutesBack(minutesBack: number, options: Options={}) : Promise<Array<GGSet>> {
+	async getSetsXMinutesBack(minutesBack: number, options: Options={}) : Promise<GGSet[]> {
 		log.debug('Event.getSetsXMinutesBack called');
 		try{
 			// parse options
@@ -690,18 +707,44 @@ export class Event extends EventEmitter implements IEvent.Event{
 		}
 	}
 
-	/** NULL VALUES **/
-	nullValueString(prop: string) : string{
-		return prop + ' not available for Event ' + this.getData().event.entities.event.name;
-	}
+	getState() : string | null {
 
-	/** EVENTS **/
-	emitEventReady() : void{
-		this.emit('ready');
+		return null;
 	}
+		
+	getNumEntrants() : number | null {
 
-	emitEventError(err: Error) : void{
-		this.emit('error', err);
+		return null;
+	}
+	
+	getCheckInBuffer() : number | null {
+
+		return null;
+	}
+	
+	getCheckInDuration() : number | null {
+
+		return null;
+	}
+	
+	getCheckInEnabled() : boolean | null {
+
+		return null;
+	}
+	
+	getIsOnline() : boolean | null {
+
+		return null;
+	}
+	
+	getTeamNameAllowed() : boolean | null {
+
+		return null;
+	}
+	
+	getTeamManagementDeadline() : number | null {
+
+		return null;
 	}
 }
 

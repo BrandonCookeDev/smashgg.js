@@ -19,16 +19,18 @@ export const tournament = `query TournamentQuery($slug: String) {
         contactInfo
         contactEmail
         contactTwitter
+        contactPhone
         ownerId
     }
 }`
 
-export const getTournamentOrganizer = `query tournamentOrganizer($slug: String){
+export const tournamentOrganizer = `query tournamentOrganizer($slug: String){
     tournament(slug: $slug){
         ownerId
         contactEmail
         contactTwitter
-        contactInfos
+        contactPhone
+        contactInfo
     }   
 }`
 

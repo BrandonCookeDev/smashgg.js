@@ -1,3 +1,6 @@
+export * from './Prize'
+export * from './Standings'
+export * from './VideoGame'
 export * from './Venue'
 export * from './Oraganizer'
 export * from './Tournament'

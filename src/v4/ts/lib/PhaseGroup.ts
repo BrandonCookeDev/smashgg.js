@@ -152,7 +152,7 @@ export class PhaseGroup extends EventEmitter implements IPhaseGroup.PhaseGroup{
 	}
 
 	/** PROMISES **/
-	async getPlayers(options: Options={}) : Promise<Array<Player>>{
+	async getPlayers(options: Options={}) : Promise<Player[]>{
 		log.debug('PhaseGroup.getPlayers called');
 		try {
 			if(this.getData().entities.entrants){
@@ -185,7 +185,7 @@ export class PhaseGroup extends EventEmitter implements IPhaseGroup.PhaseGroup{
 		}
 	}
 	
-	async getSets(options: Options={}) : Promise<Array<GGSet>>{
+	async getSets(options: Options={}) : Promise<GGSet[]>{
 		// parse options
 		options = parseOptions(options)
 
@@ -221,7 +221,7 @@ export class PhaseGroup extends EventEmitter implements IPhaseGroup.PhaseGroup{
 		}
 	}
 
-	async getCompleteSets(options: Options={}) : Promise<Array<GGSet>>{
+	async getCompleteSets(options: Options={}) : Promise<GGSet[]>{
 		log.debug('PhaseGroup getCompleteSets called');
 
 		try{
@@ -237,7 +237,7 @@ export class PhaseGroup extends EventEmitter implements IPhaseGroup.PhaseGroup{
 		}
 	}
 
-	async getIncompleteSets(options: Options={}) : Promise<Array<GGSet>>{
+	async getIncompleteSets(options: Options={}) : Promise<GGSet[]>{
 		log.debug('PhaseGroup getIncompleteSets called');
 
 		try{
@@ -254,7 +254,7 @@ export class PhaseGroup extends EventEmitter implements IPhaseGroup.PhaseGroup{
 	}
 
 	// TODO needs coverage
-	async getSetsXMinutesBack(minutesBack: number, options: Options={}) : Promise<Array<GGSet>>{
+	async getSetsXMinutesBack(minutesBack: number, options: Options={}) : Promise<GGSet[]>{
 		log.debug('PhaseGroup getSetsXMinutesBack called');
 
 		try{
@@ -370,11 +370,11 @@ export namespace IPhaseGroup{
 		loadData(data: Data) : Data | string
 		getData() : Data
 		load() : Promise<Data | string>
-		getPlayers(options: Options) : Promise<Array<Player>>
-		getSets(options: Options) : Promise<Array<GGSet>>
-		getCompleteSets(options: Options) : Promise<Array<GGSet>>
-		getIncompleteSets(options: Options) : Promise<Array<GGSet>>
-		getSetsXMinutesBack(minutes: number, options: Options) : Promise<Array<GGSet>>
+		getPlayers(options: Options) : Promise<Player[]>
+		getSets(options: Options) : Promise<GGSet[]>
+		getCompleteSets(options: Options) : Promise<GGSet[]>
+		getIncompleteSets(options: Options) : Promise<GGSet[]>
+		getSetsXMinutesBack(minutes: number, options: Options) : Promise<GGSet[]>
 		resolveSet(set: IGGSet.SetEntity) : Promise<GGSet | undefined>
 		getFromDataEntities(prop: string) : any
 		getPhaseId() : number

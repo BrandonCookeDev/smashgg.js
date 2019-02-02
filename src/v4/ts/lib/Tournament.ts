@@ -1,3 +1,11 @@
+import _ from 'lodash'
+import moment from 'moment-timezone'
+
+import pmap from 'p-map'
+import request from 'request-promise'
+
+import { format } from 'util'
+import { EventEmitter } from 'events'
 
 const TOURNAMENT_URL = 'https://api.smash.gg/tournament/%s?%s'
 const LEGAL_ENCODINGS = ['json', 'utf8', 'base64']
@@ -9,29 +17,29 @@ export namespace ITournament{
 		id: number
 		name: string
 		slug: string
-		startTime: Date
-		endTime: Date
-		timezone: string
+		startTime: Date | null
+		endTime: Date | null
+		timezone: string | null
 		venue: Venue
 		organizer: Organizer
 		rawEncoding: string
 		data: Data | string
 		
-		getAllPlayers(options: Options) : Promise<Array<Player>> 
+		getAllPlayers(options: Options) : Promise<Player[]> 
 
-		getAllSets(options: Options) : Promise<Array<GGSet>>
+		getAllSets(options: Options) : Promise<GGSet[]>
 
-		getAllEvents(options: Options) : Promise<Array<Event>>
+		getAllEvents(options: Options) : Promise<Event[]>
 
-		getAllPhases(options: Options) : Promise<Array<Phase>>
+		getAllPhases(options: Options) : Promise<Phase[]>
 
-		getAllPhaseGroups(options: Options) : Promise<Array<PhaseGroup>>
+		getAllPhaseGroups(options: Options) : Promise<PhaseGroup[]>
 
-		getIncompleteSets(options: Options) : Promise<Array<GGSet>>
+		getIncompleteSets(options: Options) : Promise<GGSet[]>
 	
-		getCompleteSets(options: Options) : Promise<Array<GGSet>>
+		getCompleteSets(options: Options) : Promise<GGSet[]>
 
-		getSetsXMinutesBack(minutesBack: number, options: Options) : Promise<Array<GGSet>>
+		getSetsXMinutesBack(minutesBack: number, options: Options) : Promise<GGSet[]>
 
 		getId() : number
 
@@ -39,7 +47,7 @@ export namespace ITournament{
 
 		getSlug() : string
 
-		getTimezone() : string
+		getTimezone() : string | null
 
 		getStartTime() : Date | null
 
@@ -88,9 +96,9 @@ export namespace ITournament{
 			  "name": string,
 			  "slug": string,
 			  "city": string | null,
-			  "postalCode": string | null,
+			  "postalCode": number | null,
 			  "addrState": string | null,
-			  "countryCode": string | null,
+			  "countryCode": number | null,
 			  "region": string | null,
 			  "venueAddress": string | null,
 			  "venueName": string | null,
@@ -103,6 +111,7 @@ export namespace ITournament{
 			  "contactInfo": string | null,
 			  "contactEmail": string | null,
 			  "contactTwitter": string | null,
+			  "contactPhone": string | null,
 			  "ownerId": number | null
 			}
 		  },
@@ -117,9 +126,9 @@ export namespace ITournament{
 				  "name": '',
 				  "slug": '',
 				  "city": '',
-				  "postalCode": '',
+				  "postalCode": 0,
 				  "addrState": '',
-				  "countryCode": '',
+				  "countryCode": 0,
 				  "region": '',
 				  "venueAddress": '',
 				  "venueName": '',
@@ -132,6 +141,7 @@ export namespace ITournament{
 				  "contactInfo": '',
 				  "contactEmail": '',
 				  "contactTwitter": '',
+				  "contactPhone": '',
 				  "ownerId": 0
 				}
 			  },
@@ -175,26 +185,19 @@ export namespace ITournament{
 	}
 }
 
-import _ from 'lodash'
-import moment from 'moment-timezone'
 
-import pmap from 'p-map'
-import request from 'request-promise'
-
-import { format } from 'util'
-import { EventEmitter } from 'events'
 
 import * as Common from './util/Common'
 import Cache from './util/Cache'
 import log from './util/Logger'
 import { Event, Phase, PhaseGroup, Player, GGSet, Organizer, Venue } from './internal'
+import { IEvent, IPhase, IPhaseGroup, IPlayer, IGGSet } from './internal'
 
 import Encoder from './util/Encoder'
 // import Fetcher from './util/EntityFetcher'
 import NI from './util/NetworkInterface'
 import * as tourneyQueries from './scripts/tournamentQueries'
 import * as eventQueries from './scripts/eventQueries'
-
 
 import { ICommon } from './util/Common'
 
@@ -203,6 +206,9 @@ import Options = ICommon.Options
 import Data = ITournament.Data
 import TournamentOptions = ITournament.Options
 import TournamentExpands = ITournament.Expands
+import EventData = IEvent.Data;
+import PhaseData = IPhase.Data;
+import PhaseGroupData = IPhaseGroup.Data;
 import parseOptions = Common.parseOptions
 
 function parseTournamentOptions(options: TournamentOptions) : TournamentOptions {
@@ -223,18 +229,25 @@ export class Tournament extends EventEmitter implements ITournament.Tournament{
 	id: number
 	name: string
 	slug: string
-	startTime: Date
-	endTime: Date
-	timezone: string
+	startTime: Date | null
+	endTime: Date | null
+	timezone: string | null
 	venue: Venue
 	organizer: Organizer
 	rawEncoding: string = DEFAULT_ENCODING
 	data: Data | string
 
-	constructor(id: number, name: string, slug: string,
-			startTime: Date, endTime: Date, timezone: string, 
-			venue: Venue, organizer: Organizer,
-			rawEncoding: string, data: Data | string){
+	constructor(
+			id: number, 
+			name: string,
+			slug: string,
+			startTime: Date | null, 
+			endTime: Date | null, 
+			timezone: string | null, 
+			venue: Venue,
+			organizer: Organizer,
+			rawEncoding: string, 
+			data: Data | string){
 		super();
 
 		this.id = id
@@ -255,27 +268,36 @@ export class Tournament extends EventEmitter implements ITournament.Tournament{
 
 	static parse(data: Data, options: Options): Tournament{ 
 		let venue = new Venue(
-			data.data.tournament.venueName, data.venueAddress, data.city,
-			data.data.tournament.addrState, data.countryCode, data.region, 
-			data.data.tournament.postalCode, data.lat, data.lng
+			data.data.tournament.venueName, data.data.tournament.venueAddress, data.data.tournament.city,
+			data.data.tournament.addrState, data.data.tournament.countryCode, data.data.tournament.region, 
+			data.data.tournament.postalCode, data.data.tournament.lat, data.data.tournament.lng
 		)
 		let organizer = new Organizer(
-			data.data.tournament.ownerId, data.data.tournament.contactEmai, data.data.tournament.contactPhone,
+			data.data.tournament.ownerId, data.data.tournament.contactEmail, data.data.tournament.contactPhone,
 			data.data.tournament.contactTwitter, data.data.tournament.contactInfo
 		)
 
-		let startTime = new Date(0)
-		let endTime = new Date(0)
-		startTime.setUTCSeconds(data.startAt)
-		endTime.setUTCSeconds(data.endAt)
+		let startTime = null, endTime = null;
+		if(data.data.tournament.startAt){
+			startTime = new Date(0);
+			startTime.setUTCSeconds(data.data.tournament.startAt);
+		}
+
+		if(data.data.tournament.endAt){
+			endTime = new Date(0);
+			endTime.setUTCSeconds(data.data.tournament.endAt);
+		}
 
 
 		let encoding = options.rawEncoding || DEFAULT_ENCODING
 		let encoded = Encoder.encode(data, encoding) as Data | string
 
 		let T = new Tournament(
-			data.id, data.name, data.slug,
-			startTime, endTime, data.timezone, 
+			data.data.tournament.id, 
+			data.data.tournament.name, 
+			data.data.tournament.slug,
+			startTime, endTime, 
+			data.data.tournament.timezone, 
 			venue, organizer, encoding, encoded
 		)
 		return T;
@@ -297,7 +319,7 @@ export class Tournament extends EventEmitter implements ITournament.Tournament{
 	}
 
 	/** PROMISES **/
-	async getAllPlayers(options: Options={}) : Promise<Array<Player>> {
+	async getAllPlayers(options: Options={}) : Promise<Player[]> {
 		log.debug('Tournament.getAllPlayers called');
 
 		// parse options
@@ -312,7 +334,7 @@ export class Tournament extends EventEmitter implements ITournament.Tournament{
 			}
 			
 			let groups: Array<Entity> = this.getData().entities.groups;
-			let fn = async (group: Entity) : Promise<Array<Player>> => {
+			let fn = async (group: Entity) : Promise<Player[]> => {
 				let PG: PhaseGroup = await PhaseGroup.getPhaseGroup(group.id);
 				return await PG.getPlayers();
 			};
@@ -330,7 +352,7 @@ export class Tournament extends EventEmitter implements ITournament.Tournament{
 		}
 	}
 
-	async getAllSets(options: Options={}) : Promise<Array<GGSet>> {
+	async getAllSets(options: Options={}) : Promise<GGSet[]> {
 		log.debug('Tournament.getAllSets called');
 
 		// parse options
@@ -346,7 +368,7 @@ export class Tournament extends EventEmitter implements ITournament.Tournament{
 			}
 
 			let groups: Array<Entity> = this.getData().entities.groups;
-			let fn = async (group: Entity) : Promise<Array<GGSet>> => {
+			let fn = async (group: Entity) : Promise<GGSet[]> => {
 				let PG: PhaseGroup = await PhaseGroup.getPhaseGroup(group.id);
 				return await PG.getSets();
 			};
@@ -365,7 +387,7 @@ export class Tournament extends EventEmitter implements ITournament.Tournament{
 		}
 	}
 
-	async getAllEvents(options: Options={}) : Promise<Array<Event>> {
+	async getAllEvents(options: Options={}) : Promise<[Event]> {
 		log.info('Getting Events for ' + this.getName())
 
 		// check cache
@@ -384,19 +406,12 @@ export class Tournament extends EventEmitter implements ITournament.Tournament{
 		delete tournamentData.events
 
 		// format the event data
-		let events = eventData.map(event => {
-			let data = {}
-			let E = Event.parse(event)
-			data.tournament = tournamentData
-			data.event = event
-			E.loadData(data)
-			return E
-		})
+		let events: [Event] = eventData.map( (event: EventData) => Event.parse(event));
 		await Cache.set(cacheKey, events)
 		return events
 	}
 
-	async getAllPhases(options: Options={}) : Promise<Array<Phase>> {
+	async getAllPhases(options: Options={}) : Promise<Phase[]> {
 		log.debug('Tournament.getPhases called')
 
 		// parse options
@@ -433,7 +448,7 @@ export class Tournament extends EventEmitter implements ITournament.Tournament{
 		return phases
 	}
 
-	async getAllPhaseGroups(options: Options={}) : Promise<Array<PhaseGroup>> {
+	async getAllPhaseGroups(options: Options={}) : Promise<PhaseGroup[]> {
 		log.debug('Tournament.getPhaseGroups called')
 
 		// parse options
@@ -470,7 +485,7 @@ export class Tournament extends EventEmitter implements ITournament.Tournament{
 		return phaseGroups
 	}
 
-	async getIncompleteSets(options: Options={}) : Promise<Array<GGSet>> {
+	async getIncompleteSets(options: Options={}) : Promise<GGSet[]> {
 		log.debug('Tournament.getIncompleteSets called');
 		try{
 			//parse options
@@ -485,7 +500,7 @@ export class Tournament extends EventEmitter implements ITournament.Tournament{
 		}
 	}
 
-	async getCompleteSets(options: Options={}) : Promise<Array<GGSet>> {
+	async getCompleteSets(options: Options={}) : Promise<GGSet[]> {
 		log.debug('Tournament.getIncompleteSets called');
 		try{
 			//parse options
@@ -500,7 +515,7 @@ export class Tournament extends EventEmitter implements ITournament.Tournament{
 		}
 	}
 
-	async getSetsXMinutesBack(minutesBack: number, options: Options={}) : Promise<Array<GGSet>> {
+	async getSetsXMinutesBack(minutesBack: number, options: Options={}) : Promise<GGSet[]> {
 		log.debug('Tournament.getSetsXMinutesBack called');
 		try{
 			let sets = await this.getAllSets()

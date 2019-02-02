@@ -1,32 +1,23 @@
-
 export const event = `query EventByTournamentSlugQuery($slug:String){
     tournament(slug:$slug){
         id
         name
         slug
-        timezone
         events{
             id
             name
             slug
+            state
             startAt
+          	numEntrants
+          	checkInBuffer
+          	checkInDuration
+          	checkInEnabled
+            isOnline
+          	teamNameAllowed
+          	teamManagementDeadline
         }
-    }
-}`
-
-export const eventById = `query EventByIdQuery($id: Int) {
-    event(id: $id){
-        id
-        name
-        slug
-        startAt
-        tournament{
-            id
-            name
-            slug
-            timezone
-        }
-    }
+  	}
 }`
 
 export const eventPlayers = `query EventParticipantQuery($slug: String, $eventIds: [Int]) {
@@ -51,4 +42,56 @@ export const eventPlayers = `query EventParticipantQuery($slug: String, $eventId
             }
         }
     }  
+}`
+
+export const eventVideoGame = `query EventVideoGame($slug: String){
+    
+}`
+
+export const eventWithEverything = `query EventByTournamentSlugQuery($slug:String){
+    tournament(slug:$slug){
+        id
+        events{
+            id
+            name
+            slug
+            startAt
+          	numEntrants
+          	checkInBuffer
+          	checkInDuration
+          	checkInEnabled
+          	teamNameAllowed
+          	teamManagementDeadline
+          	prizingInfo
+          	videogame {
+          	  id
+              name
+              slug
+              displayName
+          	}
+            tournament{
+			  id
+              name
+              slug
+              city
+              postalCode
+              addrState
+              countryCode
+              region
+              venueAddress
+              venueName
+              gettingThere
+              lat
+              lng
+              timezone
+              startAt
+              endAt
+              contactInfo
+              contactEmail
+              contactTwitter
+              contactPhone
+              ownerId
+            }
+        }
+    }
 }`

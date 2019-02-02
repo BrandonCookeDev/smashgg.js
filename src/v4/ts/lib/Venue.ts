@@ -1,43 +1,61 @@
+import NI from './util/NetworkInterface'
+import * as queries from './scripts/tournamentQueries'
 
 export namespace IVenue{
 	export interface Venue{
-		name: string
-		address: string
-		city: string
-		state: string
-		postalCode: string
-		countryCode: number
-		region: string
-		latitude: number
-		longitude: number
+		name: string | null
+		address: string | null
+		city: string | null
+		state: string | null
+		postalCode: number | null
+		countryCode: number | null
+		region: string | null
+		latitude: number | null
+		longitude: number | null
 
-		getName(): string
-		getAddress(): string
-		getCity(): string
-		getState(): string
-		getPostalCode(): string
-		getCountryCode(): number
-		getRegion(): string
-		getLatitude(): number
-		getLongitude(): number
+		getName(): string | null
+		getAddress(): string | null
+		getCity(): string | null
+		getState(): string | null
+		getPostalCode(): number | null
+		getCountryCode(): number | null
+		getRegion(): string | null
+		getLatitude(): number | null
+		getLongitude(): number | null
+	}
+
+	export interface Data{
+		data:{
+			tournament:{
+				venueName: string | null
+				venueAddress: string | null
+				city: string | null
+				addrState: string | null
+				countryCode: number | null
+				region: string | null
+				postalCode: number | null
+				lat: number | null
+				lng: number | null
+			}
+		}
 	}
 }
 
 export class Venue implements IVenue.Venue{
 	
-	name: string
-	address: string
-	city: string
-	state: string
-	postalCode: string
-	countryCode: number
-	region: string
-	latitude: number
-	longitude: number
+	name: string | null
+	address: string | null
+	city: string | null
+	state: string | null
+	postalCode: number | null
+	countryCode: number | null
+	region: string | null
+	latitude: number | null
+	longitude: number | null
 
-	constructor(name: string, address: string, city: string, state: string, 
-				countryCode: number, region: string, postalCode: string, 
-				latitude: number, longitude: number){
+	constructor(name: string | null, address: string | null, city: string | null, state: string | null, 
+				countryCode: number | null, region: string | null, postalCode: number | null, 
+				latitude: number | null, longitude: number | null){
 					
 		this.name = name
 		this.address = address
@@ -86,5 +104,19 @@ export class Venue implements IVenue.Venue{
 	getLongitude() {
 	  return this.longitude
 	}
+
+	static parse(data: IVenue.Data) : Venue{
+		let venue = new Venue(
+			data.data.tournament.venueName, data.data.tournament.venueAddress, data.data.tournament.city,
+			data.data.tournament.addrState, data.data.tournament.countryCode, data.data.tournament.region, 
+			data.data.tournament.postalCode, data.data.tournament.lat, data.data.tournament.lng
+		)
+		return venue;
+	}
 	
+	static async getByTournament(tournamentSlug: string) : Promise<Venue>{
+		let data = await NI.query(queries.tournamentVenue, {slug: tournamentSlug})
+		return Venue.parse(data);
+	}
+
 }

@@ -146,7 +146,7 @@ export class Phase extends EventEmitter implements IPhase.Phase{
 	}
 
 	/** PROMISES **/
-	async getPhaseGroups(options: Options={}) : Promise<Array<PhaseGroup>>{
+	async getPhaseGroups(options: Options={}) : Promise<PhaseGroup[]>{
 		log.debug('Phase.getGroups called');
 
 		// parse options
@@ -176,7 +176,7 @@ export class Phase extends EventEmitter implements IPhase.Phase{
 		}
 	}
 
-	async getSets(options: Options={}) : Promise<Array<GGSet>>{
+	async getSets(options: Options={}) : Promise<GGSet[]>{
 		log.debug('Phase.getSets called');
 
 		try{
@@ -190,7 +190,7 @@ export class Phase extends EventEmitter implements IPhase.Phase{
 			}
 
 			let phaseGroups: Array<PhaseGroup> = await this.getPhaseGroups(options);
-			let fn = async (group: PhaseGroup) : Promise<Array<GGSet>> => {
+			let fn = async (group: PhaseGroup) : Promise<GGSet[]> => {
 				return await group.getSets(options);
 			};
 			let sets: GGSet[][] = await pmap(phaseGroups, fn, {concurrency: options.concurrency});
@@ -205,7 +205,7 @@ export class Phase extends EventEmitter implements IPhase.Phase{
 		}
 	}
 
-	async getPlayers(options: Options={}) : Promise<Array<Player>>{
+	async getPlayers(options: Options={}) : Promise<Player[]>{
 		log.debug('Phase.getPlayers called');
 
 		try{
@@ -219,7 +219,7 @@ export class Phase extends EventEmitter implements IPhase.Phase{
 			}
 
 			let phaseGroups: Array<PhaseGroup> = await this.getPhaseGroups(options);
-			let fn = async (group: PhaseGroup) : Promise<Array<Player>> => {
+			let fn = async (group: PhaseGroup) : Promise<Player[]> => {
 				return await group.getPlayers(options);
 			};
 			let players: Player[][] = await pmap(phaseGroups, fn, {concurrency: options.concurrency});
@@ -234,7 +234,7 @@ export class Phase extends EventEmitter implements IPhase.Phase{
 		}
 	}
 
-	async getIncompleteSets(options: Options={}) : Promise<Array<GGSet>>{
+	async getIncompleteSets(options: Options={}) : Promise<GGSet[]>{
 		log.debug('Phase.getIncompleteSets called');
 		try{
 			//parse options
@@ -249,7 +249,7 @@ export class Phase extends EventEmitter implements IPhase.Phase{
 		}
 	}
 
-	async getCompleteSets(options: Options={}) : Promise<Array<GGSet>>{
+	async getCompleteSets(options: Options={}) : Promise<GGSet[]>{
 		log.debug('Phase.getIncompleteSets called');
 		try{
 			//parse options
@@ -264,7 +264,7 @@ export class Phase extends EventEmitter implements IPhase.Phase{
 		}
 	}
 
-	async getSetsXMinutesBack(minutesBack: number, options: Options={}) : Promise<Array<GGSet>>{
+	async getSetsXMinutesBack(minutesBack: number, options: Options={}) : Promise<GGSet[]>{
 		log.debug('Phase.getSetsXMinutesBack called');
 		try{
 			// parse options
@@ -342,17 +342,17 @@ export namespace IPhase{
 		
 		load(): Promise<Data | string> 
 		
-		getPhaseGroups(options: Options) : Promise<Array<PhaseGroup>>
+		getPhaseGroups(options: Options) : Promise<PhaseGroup[]>
 		
-		getSets(options: Options) : Promise<Array<GGSet>>
+		getSets(options: Options) : Promise<GGSet[]>
 		
-		getPlayers(options: Options) : Promise<Array<Player>>
+		getPlayers(options: Options) : Promise<Player[]>
 		
-		getIncompleteSets(options: Options) : Promise<Array<GGSet>>
+		getIncompleteSets(options: Options) : Promise<GGSet[]>
 		
-		getCompleteSets(options: Options) : Promise<Array<GGSet>>
+		getCompleteSets(options: Options) : Promise<GGSet[]>
 		
-		getSetsXMinutesBack(minutesBack: number, options: Options) : Promise<Array<GGSet>>
+		getSetsXMinutesBack(minutesBack: number, options: Options) : Promise<GGSet[]>
 		
 		getFromDataEntities(prop: string) : any
 		

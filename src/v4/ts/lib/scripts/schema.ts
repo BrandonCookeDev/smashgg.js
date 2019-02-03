@@ -96,21 +96,35 @@ gamerTagChangedAt`
 
 export const set = `
 id
-round
+eventId
+phaseGroupId
+displayScore  
 fullRoundText
+round
 startedAt
 completedAt
 winnerId
 totalGames
 state
-slots{
+slots(includeByes:false){
 	id
 	entrant {
 		id
 		name
 		participants {
 			id
-			gamerTag
 		}
 	}
+} `
+
+export const game = `
+id
+state
+winnerId
+orderNum
+selections{
+	selectionType
+	selectionValue
+	entrantId
+	participantId
 }`

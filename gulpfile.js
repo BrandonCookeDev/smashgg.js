@@ -66,9 +66,20 @@ function testSet(){
 		.pipe(mocha())
 }
 
-
 function watch(){
 	return gulp.watch(TS_DIR + '/**/*.ts', gulp.parallel(tsc))
+}
+
+function getQueries(cb){
+	let queries = require('./src/v4/js/lib/scripts/schema')
+	for(var prop in queries){
+		console.log('=================')
+		console.log(prop)
+		console.log('----------')
+		console.log(queries[prop])
+		console.log('=================')
+	}
+	cb(null)
 }
 
 exports.test = test
@@ -82,3 +93,4 @@ exports.testSet = testSet
 exports.tsc = tsc
 exports.createDTs = createDTs
 exports.watch = watch
+exports.getQueries = getQueries

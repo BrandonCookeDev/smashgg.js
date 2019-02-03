@@ -1,4 +1,8 @@
-/* eslint-disable */
+import path from 'path'
+const ROOT = path.join(__dirname, '..', '..', '..', '..', '.env');
+import {config} from 'dotenv'
+config({path: ROOT})
+
 import '../lib/util/ErrorHandler'
 
 import _ from 'lodash'

@@ -21,7 +21,7 @@ export class Game implements IGame.Game{
 
 	static parse(data: IGame.GameData) : Game{
 		return new Game(
-			data.id,
+			+data.id,
 			data.state,
 			data.winnerId,
 			data.orderNum,
@@ -77,7 +77,7 @@ export namespace IGame{
 	}
 
 	export interface GameData{
-		id: number
+		id: string
 		state: number,
 		winnerId: number
 		orderNum: number
@@ -86,8 +86,8 @@ export namespace IGame{
 
 	export interface Selections{
 		selectionType: string
-		selectionValue: string
+		selectionValue: number
 		entrantId: number
-		participantId: number
+		participantId: number | null
 	}
 }

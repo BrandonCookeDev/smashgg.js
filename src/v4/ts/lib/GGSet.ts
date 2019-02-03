@@ -21,35 +21,21 @@ const DISPLAY_SCORE_REGEX = new RegExp(/^[\S\s]* [0-9]{1,3} - [0-9]{1,3} [\S\s]*
 
 export class GGSet extends EventEmitter implements IGGSet.GGSet{
 
-	/*
-	id: number
-	eventId: number
-	round: string
-	player1: IGGSet.PlayerLite
-	player2: IGGSet.PlayerLite
-	isComplete: boolean
-	score1?: number
-	score2?: number
-	winnerId?: number
-	loserId?: number
-	data?: IGGSet.SetData
-	*/
-
 	id: number
 	eventId: number
 	phaseGroupId: number
 	displayScore: string 
 	fullRoundText: string
-	round: string
-	startedAt: number
-	completedAt: number
-	winnerId: number
-	totalGames: number
-	state: number
+	round: number
+	startedAt: number | null
+	completedAt: number | null
+	winnerId: number | null
+	totalGames: number | null
+	state: number | null
 	player1: IGGSet.PlayerLite
 	player2: IGGSet.PlayerLite
-	score1: number
-	score2: number
+	score1: number | null
+	score2: number | null
 
 	constructor(
 		id: number,
@@ -57,16 +43,16 @@ export class GGSet extends EventEmitter implements IGGSet.GGSet{
 		phaseGroupId: number,
 		displayScore: string ,
 		fullRoundText: string,
-		round: string,
-		startedAt: number,
-		completedAt: number,
-		winnerId: number,
-		totalGames: number,
-		state: number,
+		round: number,
+		startedAt: number | null,
+		completedAt: number | null,
+		winnerId: number | null,
+		totalGames: number | null,
+		state: number | null,
 		player1: IGGSet.PlayerLite,
 		player2: IGGSet.PlayerLite,
-		score1: number,
-		score2: number
+		score1: number | null,
+		score2: number | null
 	){
 		super();
 
@@ -98,8 +84,8 @@ export class GGSet extends EventEmitter implements IGGSet.GGSet{
 			tag2 = parsed[4]
 		}
 		return {
-			tag1: tag1,
-			tag2: tag2,
+			tag1: tag1 || null,
+			tag2: tag2 || null,
 			score1: score1 || 0,
 			score2: score2 || 0
 		}
@@ -107,16 +93,15 @@ export class GGSet extends EventEmitter implements IGGSet.GGSet{
 
 	static async get(id: number) : Promise<GGSet> {
 		let data: IGGSet.Data = await NI.query(queries.set, {id: id})
-		let parsed: GGSet[] = GGSet.parseFull(data)
-		return parsed[0]
+		return GGSet.parseFull(data)
 	}
 
 	static parse(data: IGGSet.SetData) : GGSet{
 		let displayScoreParsed = GGSet.parseDisplayScore(data.displayScore);
-		let p1 = new IGGSet.PlayerLite(displayScoreParsed.tag1, data.slots[0].id, data.slots[0].entrant.id)
-		let p2 = new IGGSet.PlayerLite(displayScoreParsed.tag2, data.slots[1].id, data.slots[1].entrant.id)
+		let p1 = new IGGSet.PlayerLite(displayScoreParsed.tag1, +data.slots[0].id, +data.slots[0].entrant.id)
+		let p2 = new IGGSet.PlayerLite(displayScoreParsed.tag2, +data.slots[1].id, +data.slots[1].entrant.id)
 		return new GGSet(
-			data.id,
+			+data.id,
 			data.eventId,
 			data.phaseGroupId,
 			data.displayScore,
@@ -134,8 +119,8 @@ export class GGSet extends EventEmitter implements IGGSet.GGSet{
 		)
 	}
 
-	static parseFull(data: IGGSet.Data) : GGSet[] {
-		return data.paginatedSets.nodes.map(setNode => GGSet.parse(setNode))
+	static parseFull(data: IGGSet.Data) : GGSet {
+		return GGSet.parse(data.set)
 	}
 
 	/** Instance Based **/
@@ -157,11 +142,11 @@ export class GGSet extends EventEmitter implements IGGSet.GGSet{
 		return this.fullRoundText
 	}
 
-	getRound() : string{
+	getRound() : number{
 		return this.round
 	}
 
-	getState() : number{
+	getState() : number | null{
 		return this.state
 	}
 
@@ -169,15 +154,15 @@ export class GGSet extends EventEmitter implements IGGSet.GGSet{
 		return this.player1
 	}
 
-	getPlayer1Tag() : string | undefined {
+	getPlayer1Tag() : string | null {
 		return this.player1.tag
 	}
 
-	getPlayer1AttendeeId() : number | undefined {
+	getPlayer1AttendeeId() : number | null {
 		return this.player1.attendeeId
 	}
 
-	getPlayer1PlayerId() : number | undefined {
+	getPlayer1PlayerId() : number | null {
 		return this.player1.playerId
 	}
 
@@ -185,15 +170,15 @@ export class GGSet extends EventEmitter implements IGGSet.GGSet{
 		return this.player2
 	}
 
-	getPlayer2Tag() : string | undefined {
+	getPlayer2Tag() : string | null {
 		return this.player2.tag
 	}
 
-	getPlayer2AttendeeId() : number | undefined {
+	getPlayer2AttendeeId() : number | null {
 		return this.player2.attendeeId
 	}
 
-	getPlayer2PlayerId() : number | undefined {
+	getPlayer2PlayerId() : number | null {
 		return this.player2.playerId
 	}
 	
@@ -395,11 +380,11 @@ GGSet.prototype.toString = function(){
 export namespace IGGSet{
 
 	export class PlayerLite{
-		tag?: string
-		playerId?: number
-		attendeeId?: number
+		tag: string | null
+		playerId: number | null
+		attendeeId: number | null
 
-		constructor(tag?: string, playerId?: number, attendeeId?: number){
+		constructor(tag: string | null, playerId: number | null, attendeeId: number | null){
 			this.tag = tag;
 			this.playerId = playerId;
 			this.attendeeId = attendeeId;
@@ -414,16 +399,16 @@ export namespace IGGSet{
 		phaseGroupId: number
 		displayScore: string 
 		fullRoundText: string
-		round: string
-		startedAt: number
-		completedAt: number
-		winnerId: number
-		totalGames: number
-		state: number
+		round: number
+		startedAt: number | null
+		completedAt: number | null
+		winnerId: number | null
+		totalGames: number | null
+		state: number | null
 		player1: IGGSet.PlayerLite
 		player2: IGGSet.PlayerLite
-		score1: number
-		score2: number
+		score1: number | null
+		score2: number | null
 		
 		getEventId() : number
 		getPhaseGroupId() : number
@@ -431,16 +416,16 @@ export namespace IGGSet{
 		getCompletedAt() : Date | null 
 		getDisplayScore() : string
 		getFullRoundText() : string
-		getRound() : string
-		getState() : number
-		getPlayer1() : PlayerLite | undefined
-		getPlayer1Tag() : string | undefined
-		getPlayer1PlayerId() : number | undefined
-		getPlayer1AttendeeId() : number | undefined
-		getPlayer2() : PlayerLite | undefined
-		getPlayer2Tag() : string | undefined
-		getPlayer2PlayerId() : number | undefined
-		getPlayer2AttendeeId() : number | undefined
+		getRound() : number
+		getState() : number | null
+		getPlayer1() : PlayerLite | undefined | null
+		getPlayer1Tag() : string | undefined | null
+		getPlayer1PlayerId() : number | undefined | null
+		getPlayer1AttendeeId() : number | undefined | null
+		getPlayer2() : PlayerLite | undefined | null
+		getPlayer2Tag() : string | undefined | null
+		getPlayer2PlayerId() : number | undefined | null
+		getPlayer2AttendeeId() : number | undefined | null
 		getWinnerId() : number | null
 		getLoserId() : number | null
 		getIsComplete() : boolean | null
@@ -461,34 +446,38 @@ export namespace IGGSet{
 	}
 
 	export interface Data{
-		paginatedSets: {
-			nodes: SetData[]
+		set: SetData
+	}
+
+	export interface DataWithGames{
+		set: {
+			games: IGame.GameData[]
 		}
 	}
 
 	export interface SetData{
-		id: number
+		id: string
 		eventId: number
 		phaseGroupId: number
 		displayScore: string
 	  	fullRoundText: string
-		round: string
-		startedAt: number
-		completedAt: number
-		winnerId: number
-		totalGames: number
-		state: number
+		round: number
+		startedAt: number | null
+		completedAt: number | null
+		winnerId: number | null
+		totalGames: number | null
+		state: number | null
 		slots: Slots[]
 	}
 
 	export interface Slots{
-		id: number
+		id: string
 		entrant: {
 			id: number
 			name: string
 			participants: {
 				id: number
-			}
+			}[]
 		}
 	}
 }

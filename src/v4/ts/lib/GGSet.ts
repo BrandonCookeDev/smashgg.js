@@ -74,7 +74,7 @@ export class GGSet extends EventEmitter implements IGGSet.GGSet{
 	}
 
 	static parseDisplayScore(displayScore: string){
-		const DISPLAY_SCORE_REGEX = new RegExp(/^[\S\s]* [0-9]{1,3} - [0-9]{1,3} [\S\s]*$/);
+		const DISPLAY_SCORE_REGEX = new RegExp(/^([\S\s]*) ([0-9]{1,3}) - ([\S\s]*) ([0-9]{1,3})$/);
 		let parsed = DISPLAY_SCORE_REGEX.exec(displayScore);
 		let tag1, score1, tag2, score2;
 		if(parsed){

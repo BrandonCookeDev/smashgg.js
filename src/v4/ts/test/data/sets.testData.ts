@@ -1,6 +1,7 @@
 import { IGGSet } from '../../lib/GGSet'
 import Data = IGGSet.Data
 import SetData = IGGSet.SetData
+import PlayerLite = IGGSet.PlayerLite
 import * as gameData from './games.testData'
 
 //11186682
@@ -151,4 +152,48 @@ export const set2Full: IGGSet.Data = {
 }
 export const set3Full: IGGSet.Data = {
 	"set": set3
+}
+
+export const p1: PlayerLite = new PlayerLite(
+	'MVG FOX | Mew2King', 1106474, 1148324
+)
+
+export const p2: PlayerLite = new PlayerLite(
+	'Ginger', 784069, 863946
+)
+
+export const p3: PlayerLite = new PlayerLite(
+	'SS | Colbol', 1171874, 1207468
+)
+
+export const p4: PlayerLite = new PlayerLite(
+	'Balance | Druggedfox', 757871, 840037
+)
+
+export const p5: PlayerLite = new PlayerLite(
+	'Balance | Druggedfox',	789171, 868742
+)
+
+export const p6: PlayerLite = new PlayerLite(
+	'RNG | Swedish Delight', 767565,849572
+)
+
+export const parsedDisplayScore1 = {
+	tag1: 'MVG FOX | Mew2King',
+	tag2: 'Ginger',
+	score1: 3,
+	score2: 0
+}
+
+export const parsedDisplayScore2 = {
+	tag1: 'SS | Colbol',
+	tag2: 'Balance | Druggedfox',
+	score1: 3,
+	score2: 0
+}
+export const parsedDisplayScore3 = {
+	tag1: 'Balance | Druggedfox',
+	tag2: 'RNG | Swedish Delight',
+	score1: 3,
+	score2: 1
 }

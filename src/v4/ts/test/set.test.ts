@@ -11,80 +11,138 @@ import cap from 'chai-as-promised'
 chai.use(cap)
 const {expect} = chai
 
-import {GGSet, Player, IPlayer} from '../lib/internal'
+import {GGSet, IGGSet, Player, IPlayer} from '../lib/internal'
 import Cache from '../lib/util/Cache'
+import * as testData from './data/sets.testData'
 
-import expected from './data/testSets'
-
-let pWinkledink: Player, 
-	pAmarula: Player,
-	pWizzrobe: Player, 
-	pBootyBlast: Player,
-	pVasculinity: Player;
-
-let set1: GGSet, 
-	set2: GGSet, 
-	set3: GGSet;
+let set1: GGSet, set2: GGSet, set3: GGSet;
+const SET_ID_1 = '11186682'
+const SET_ID_2 = '11186683'
+const SET_ID_3 = '8798920'
 
 describe('Smash GG Set', function(){
 
 	before(function(done){
 		Cache.flush()
-
-		let o1 = expected.sets[0];
-		pWinkledink = new Player(o1.WinnerPlayer.id, o1.WinnerPlayer.tag, o1.WinnerPlayer.name,
-			o1.WinnerPlayer.country, o1.WinnerPlayer.region, o1.WinnerPlayer.sponsor,
-			o1.WinnerPlayer.participantId, o1.WinnerPlayer.data);
-		pAmarula = new Player(o1.LoserPlayer.id, o1.LoserPlayer.tag, o1.LoserPlayer.name,
-			o1.LoserPlayer.country, o1.LoserPlayer.region, o1.LoserPlayer.sponsor,
-			o1.LoserPlayer.participantId, o1.LoserPlayer.data)
-
-		let o2 = expected.sets[1];
-		pWizzrobe = new Player(o2.WinnerPlayer.id, o2.WinnerPlayer.tag, o2.WinnerPlayer.name,
-			o2.WinnerPlayer.country, o2.WinnerPlayer.region, o2.WinnerPlayer.sponsor,
-			o2.WinnerPlayer.participantId, o2.WinnerPlayer.data);
-		pWinkledink = new Player(o2.LoserPlayer.id, o2.LoserPlayer.tag, o2.LoserPlayer.name,
-			o2.LoserPlayer.country, o2.LoserPlayer.region, o2.LoserPlayer.sponsor,
-			o2.LoserPlayer.participantId, o2.LoserPlayer.data)
-
-		let o3 = expected.sets[2];
-		pBootyBlast = new Player(o3.WinnerPlayer.id, o3.WinnerPlayer.tag, o3.WinnerPlayer.name,
-			o3.WinnerPlayer.country, o3.WinnerPlayer.region, o3.WinnerPlayer.sponsor,
-			o3.WinnerPlayer.participantId, o3.WinnerPlayer.data);
-		pVasculinity = new Player(o3.LoserPlayer.id, o3.LoserPlayer.tag, o3.LoserPlayer.name,
-			o3.LoserPlayer.country, o3.LoserPlayer.region, o3.LoserPlayer.sponsor,
-			o3.LoserPlayer.participantId, o3.LoserPlayer.data)
-
-		set1 = new GGSet(o1.id, o1.eventId, o1.round, pWinkledink, pAmarula, true, 3, 2, pWinkledink.id, pAmarula.id, o1.data);
-		set2 = new GGSet(o2.id, o2.eventId, o2.round, pWizzrobe, pWinkledink, true, 2, 1, pWizzrobe.id, pWinkledink.id, o2.data);
-		set3 = new GGSet(o3.id, o3.eventId, o3.round, pBootyBlast, pVasculinity, true, 3, 1, pBootyBlast.id, pVasculinity.id, o3.data);
-
-		done()
 	})
 	
 	it('should get a set by id', async function(){
 		this.timeout(5000)
+		
+		expect(GGSet.parseDisplayScore(testData.set1.displayScore)).to.deep.equal(testData.parsedDisplayScore1)
+		expect(GGSet.parseDisplayScore(testData.set2.displayScore)).to.deep.equal(testData.parsedDisplayScore2)
+		expect(GGSet.parseDisplayScore(testData.set3.displayScore)).to.deep.equal(testData.parsedDisplayScore3)
 
-		let set1 = await GGSet.getSet(15896650);
-		let set2 = await GGSet.getSet(15896651);
-
-		expect(set1).to.be.instanceof(GGSet);
-		expect(set2).to.be.instanceof(GGSet);
+		set1 = GGSet.parse(testData.set1)
+		set2 = GGSet.parse(testData.set2)
+		set3 = GGSet.parse(testData.set3)
 
 		return true
 	})
 
-	it('should give the correct Winner', function(done){
-		expect(set1.getWinner()).to.deep.equal(pWinkledink)
-		expect(set2.getWinner()).to.deep.equal(pWizzrobe)
-		expect(set3.getWinner()).to.deep.equal(pBootyBlast)
+	// event id
+	it('should return the correct event id 1', function(){
+		expect(set1.getEventId()).to.be.equal(testData.set1.eventId)
+	})
+	it('should return the correct event id 2', function(){
+		expect(set2.getEventId()).to.be.equal(testData.set2.eventId)
+	})
+	it('should return the correct event id 3', function(){
+		expect(set3.getEventId()).to.be.equal(testData.set3.eventId)
+	})
+
+	// phase group id
+	it('should return the correct phase group 1', function(){
+		expect(set1.getPhaseGroupId()).to.be.equal(testData.set1.phaseGroupId)
+	})
+	it('should return the correct phase group 2', function(){
+		expect(set2.getPhaseGroupId()).to.be.equal(testData.set2.phaseGroupId)
+	})
+	it('should return the correct phase group 3', function(){
+		expect(set3.getPhaseGroupId()).to.be.equal(testData.set3.phaseGroupId)
+	})
+
+	// started at time
+	it('should return the correct starting time 1', function(){
+		expect(set1.getStartedAt).to.be.equal(set1.startedAt)
+	})
+	it('should return the correct starting time 2 ', function(){
+		expect(set2.getStartedAt).to.be.equal(set2.startedAt)
+	})
+	it('should return the correct starting time 3', function(){
+		expect(set3.getStartedAt).to.be.equal(set3.startedAt)
+	})
+
+	// completed at time
+	it('should return the correct completed time 1', function(){
+		expect(set1.getCompletedAt()).to.be.equal(set1.completedAt)
+	})
+	it('should return the correct completed time 2', function(){
+		expect(set2.getCompletedAt()).to.be.equal(set2.completedAt)
+	})
+	it('should return the correct completed time 3', function(){
+		expect(set3.getCompletedAt()).to.be.equal(set3.completedAt)
+	})
+
+	// completed at time date
+	it('should return the correct completed Datetime 1', function(){
+		let expected = new Date(0)
+		expected.setUTCSeconds(set1.completedAt!)
+		expect(set1.getCompletedTime()).to.be.equal(expected)
+	})
+	it('should return the correct completed Datetime 2', function(){
+		let expected = new Date(0)
+		expected.setUTCSeconds(set2.completedAt!)
+		expect(set2.getCompletedTime()).to.be.equal(expected)
+	})
+	it('should return the correct completed Datetime 3', function(){
+		let expected = new Date(0)
+		expected.setUTCSeconds(set3.completedAt!)
+		expect(set3.getCompletedTime()).to.be.equal(expected)
+	})
+
+	// display score
+
+	/*
+		getDisplayScore() : string
+		getFullRoundText() : string
+		getRound() : number
+		getState() : number | null
+		getPlayer1() : PlayerLite | undefined | null
+		getPlayer1Tag() : string | undefined | null
+		getPlayer1PlayerId() : number | undefined | null
+		getPlayer1AttendeeId() : number | undefined | null
+		getPlayer2() : PlayerLite | undefined | null
+		getPlayer2Tag() : string | undefined | null
+		getPlayer2PlayerId() : number | undefined | null
+		getPlayer2AttendeeId() : number | undefined | null
+		*/
+
+	// getting winner
+	it('should give the correct Winner 1', function(done){
+		expect(set1.getWinner()).to.deep.equal(testData.p1)
+		done()
+	})
+	it('should give the correct Winner 2', function(done){
+		expect(set1.getWinner()).to.deep.equal(testData.p3)
+		done()
+	})
+	it('should give the correct Winner 3', function(done){
+		expect(set1.getWinner()).to.deep.equal(testData.p5)
 		done()
 	})
 
-	it('should give the correct Loser', function(done){
-		expect(set1.getLoser()).to.deep.equal(pAmarula)
-		expect(set2.getLoser()).to.deep.equal(pWinkledink)
-		expect(set3.getLoser()).to.deep.equal(pVasculinity)
+	// getting loser
+	it('should give the correct Winner 1', function(done){
+		expect(set1.getLoser()).to.deep.equal(testData.p2)
+		done()
+	})
+	it('should give the correct Winner 2', function(done){
+		expect(set1.getLoser()).to.deep.equal(testData.p4)
+		done()
+	})
+	it('should give the correct Winner 3', function(done){
+		expect(set1.getLoser()).to.deep.equal(testData.p6)
 		done()
 	})
 

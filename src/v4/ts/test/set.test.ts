@@ -6,38 +6,40 @@ config({path: ROOT})
 import '../lib/util/ErrorHandler'
 
 import _ from 'lodash'
+import moment from 'moment'
 import chai from 'chai'
 import cap from 'chai-as-promised'
 chai.use(cap)
 const {expect} = chai
 
-import {GGSet, IGGSet, Player, IPlayer} from '../lib/internal'
+import {GGSet, IGGSet} from '../lib/GGSet'
+import {Game, IGame} from '../lib/Game'
 import Cache from '../lib/util/Cache'
 import * as testData from './data/sets.testData'
+import * as gameData from './data/games.testData'
+import Initializer from '../lib/util/Initializer';
 
 let set1: GGSet, set2: GGSet, set3: GGSet;
-const SET_ID_1 = '11186682'
-const SET_ID_2 = '11186683'
-const SET_ID_3 = '8798920'
+const SET_ID_1 = +'11186682'
+const SET_ID_2 = +'11186683'
+const SET_ID_3 = +'8798920'
 
 describe('Smash GG Set', function(){
+	this.timeout(10000)
 
-	before(function(done){
-		Cache.flush()
-	})
-	
-	it('should get a set by id', async function(){
-		this.timeout(5000)
-		
+	before(async function(){
+		await Initializer(process.env.API_TOKEN!)
+
+		console.log('Testing displayScore parsing first...')
 		expect(GGSet.parseDisplayScore(testData.set1.displayScore)).to.deep.equal(testData.parsedDisplayScore1)
 		expect(GGSet.parseDisplayScore(testData.set2.displayScore)).to.deep.equal(testData.parsedDisplayScore2)
 		expect(GGSet.parseDisplayScore(testData.set3.displayScore)).to.deep.equal(testData.parsedDisplayScore3)
+		console.log('Success!')
 
-		set1 = GGSet.parse(testData.set1)
-		set2 = GGSet.parse(testData.set2)
-		set3 = GGSet.parse(testData.set3)
-
-		return true
+		set1 = await GGSet.get(SET_ID_1)
+		set2 = await GGSet.get(SET_ID_2)
+		set3 = await GGSet.get(SET_ID_3)
+		return true;
 	})
 
 	// event id
@@ -63,184 +65,320 @@ describe('Smash GG Set', function(){
 	})
 
 	// started at time
-	it('should return the correct starting time 1', function(){
-		expect(set1.getStartedAt).to.be.equal(set1.startedAt)
+	it('should return the correct starting timestamp 1', function(){
+		expect(set1.getStartedAtTimestamp()).to.be.equal(set1.startedAt)
 	})
-	it('should return the correct starting time 2 ', function(){
-		expect(set2.getStartedAt).to.be.equal(set2.startedAt)
+	it('should return the correct starting timestamp 2 ', function(){
+		expect(set2.getStartedAtTimestamp()).to.be.equal(set2.startedAt)
 	})
-	it('should return the correct starting time 3', function(){
-		expect(set3.getStartedAt).to.be.equal(set3.startedAt)
+	it('should return the correct starting timestamp 3', function(){
+		expect(set3.getStartedAtTimestamp()).to.be.equal(set3.startedAt)
 	})
 
 	// completed at time
-	it('should return the correct completed time 1', function(){
-		expect(set1.getCompletedAt()).to.be.equal(set1.completedAt)
+	it('should return the correct completed timestamp 1', function(){
+		expect(set1.getCompletedAtTimestamp()).to.be.equal(set1.completedAt)
 	})
-	it('should return the correct completed time 2', function(){
-		expect(set2.getCompletedAt()).to.be.equal(set2.completedAt)
+	it('should return the correct completed timestamp 2', function(){
+		expect(set2.getCompletedAtTimestamp()).to.be.equal(set2.completedAt)
 	})
-	it('should return the correct completed time 3', function(){
-		expect(set3.getCompletedAt()).to.be.equal(set3.completedAt)
+	it('should return the correct completed timestamp 3', function(){
+		expect(set3.getCompletedAtTimestamp()).to.be.equal(set3.completedAt)
 	})
 
 	// completed at time date
 	it('should return the correct completed Datetime 1', function(){
-		let expected = new Date(0)
-		expected.setUTCSeconds(set1.completedAt!)
-		expect(set1.getCompletedTime()).to.be.equal(expected)
+		let expected = moment.unix(set1.completedAt!).toDate()
+		expect(moment(set1.getCompletedAt()!).isSame(expected)).to.to.true
 	})
 	it('should return the correct completed Datetime 2', function(){
-		let expected = new Date(0)
-		expected.setUTCSeconds(set2.completedAt!)
-		expect(set2.getCompletedTime()).to.be.equal(expected)
+		let expected = moment.unix(set2.completedAt!).toDate()
+		expect(moment(set2.getCompletedAt()!).isSame(expected)).to.to.true
 	})
 	it('should return the correct completed Datetime 3', function(){
-		let expected = new Date(0)
-		expected.setUTCSeconds(set3.completedAt!)
-		expect(set3.getCompletedTime()).to.be.equal(expected)
+		let expected = moment.unix(set3.completedAt!).toDate()
+		expect(moment(set3.getCompletedAt()!).isSame(expected)).to.to.true
 	})
 
 	// display score
+	it('should return the correct display score string 1', function(){
+		expect(set1.getDisplayScore()).to.be.equal(set1.displayScore)
+	})
+	it('should return the correct display score string 2', function(){
+		expect(set2.getDisplayScore()).to.be.equal(set2.displayScore)
+	})
+	it('should return the correct display score string 3', function(){
+		expect(set3.getDisplayScore()).to.be.equal(set3.displayScore)
+	})
 
-	/*
-		getDisplayScore() : string
-		getFullRoundText() : string
-		getRound() : number
-		getState() : number | null
-		getPlayer1() : PlayerLite | undefined | null
-		getPlayer1Tag() : string | undefined | null
-		getPlayer1PlayerId() : number | undefined | null
-		getPlayer1AttendeeId() : number | undefined | null
-		getPlayer2() : PlayerLite | undefined | null
-		getPlayer2Tag() : string | undefined | null
-		getPlayer2PlayerId() : number | undefined | null
-		getPlayer2AttendeeId() : number | undefined | null
-		*/
+	// full round text
+	it('should return the full round text 1', function(){
+		expect(set1.getFullRoundText()).to.be.equal(set1.fullRoundText)
+	})
+	it('should return the full round text 2', function(){
+		expect(set2.getFullRoundText()).to.be.equal(set2.fullRoundText)
+	})
+	it('should return the full round text 3', function(){
+		expect(set3.getFullRoundText()).to.be.equal(set3.fullRoundText)
+	})
+
+	// round
+	it('should return the round 1', function(){
+		expect(set1.getRound()).to.be.equal(set1.round)
+	})
+	it('should return the round 2', function(){
+		expect(set2.getRound()).to.be.equal(set2.round)
+	})
+	it('should return the round 3', function(){
+		expect(set3.getRound()).to.be.equal(set3.round)
+	})
+
+	// state
+	it('should return the state 1', function(){
+		expect(set1.getState()).to.be.equal(set1.state)
+	})
+	it('should return the state 2', function(){
+		expect(set2.getState()).to.be.equal(set2.state)
+	})
+	it('should return the state 3', function(){
+		expect(set3.getState()).to.be.equal(set3.state)
+	})
+
+	// player 1
+	it('should return player1 1', function(){
+		expect(set1.getPlayer1()).to.deep.equal(testData.p1)
+	})
+	it('should return player1 2', function(){
+		expect(set2.getPlayer1()).to.deep.equal(testData.p3)
+	})
+	it('should return player1 3', function(){
+		expect(set3.getPlayer1()).to.deep.equal(testData.p5)
+	})
+
+	// player 1 playerId
+	it('should return player1 1 playerId', function(){
+		expect(set1.getPlayer1PlayerId()).to.be.equal(testData.p1.playerId)
+	})
+	it('should return player1 2 playerId', function(){
+		expect(set2.getPlayer1PlayerId()).to.be.equal(testData.p3.playerId)
+	})
+	it('should return player1 3 playerId', function(){
+		expect(set3.getPlayer1PlayerId()).to.be.equal(testData.p5.playerId)
+	})
+
+	// player 1 attendee id
+	it('should return player1 1 attendeeId', function(){
+		expect(set1.getPlayer1AttendeeId()).to.be.equal(testData.p1.attendeeId)
+	})
+	it('should return player1 2 attendeeId', function(){
+		expect(set2.getPlayer1AttendeeId()).to.be.equal(testData.p3.attendeeId)
+	})
+	it('should return player1 3 attendeeId', function(){
+		expect(set3.getPlayer1AttendeeId()).to.be.equal(testData.p5.attendeeId)
+	})
+
+	// player 2
+	it('should return player1 1', function(){
+		expect(set1.getPlayer2()).to.deep.equal(testData.p2)
+	})
+	it('should return player1 2', function(){
+		expect(set2.getPlayer2()).to.deep.equal(testData.p4)
+	})
+	it('should return player1 3', function(){
+		expect(set3.getPlayer2()).to.deep.equal(testData.p6)
+	})
+
+	// player 2 playerId
+	it('should return player1 1 playerId', function(){
+		expect(set1.getPlayer2PlayerId()).to.be.equal(testData.p2.playerId)
+	})
+	it('should return player1 2 playerId', function(){
+		expect(set2.getPlayer2PlayerId()).to.be.equal(testData.p4.playerId)
+	})
+	it('should return player1 3 playerId', function(){
+		expect(set3.getPlayer2PlayerId()).to.be.equal(testData.p6.playerId)
+	})
+
+	// player 2 attendee id
+	it('should return player1 1 attendeeId', function(){
+		expect(set1.getPlayer2AttendeeId()).to.be.equal(testData.p2.attendeeId)
+	})
+	it('should return player1 2 attendeeId', function(){
+		expect(set2.getPlayer2AttendeeId()).to.be.equal(testData.p4.attendeeId)
+	})
+	it('should return player1 3 attendeeId', function(){
+		expect(set3.getPlayer2AttendeeId()).to.be.equal(testData.p6.attendeeId)
+	})
+
+	// getting winner id
+	it('should give the correct Winner ID 1', function(){
+		expect(set1.getWinnerId()).to.deep.equal(testData.set1.winnerId)
+	})
+	it('should give the correct Winner ID 2', function(){
+		expect(set2.getWinnerId()).to.deep.equal(testData.set2.winnerId)
+	})
+	it('should give the correct Winner ID 3', function(){
+		expect(set3.getWinnerId()).to.deep.equal(testData.set3.winnerId)
+	})
+
+	// getting loser id
+	it('should give the correct Loser ID 1', function(){
+		expect(set1.getLoserId()).to.deep.equal(testData.p2.playerId)
+	})
+	it('should give the correct Loser ID 2', function(){
+		expect(set2.getLoserId()).to.deep.equal(testData.p4.playerId)
+	})
+	it('should give the correct Loser ID 3', function(){
+		expect(set3.getLoserId()).to.deep.equal(testData.p6.playerId)
+	})
 
 	// getting winner
-	it('should give the correct Winner 1', function(done){
+	it('should give the correct Winner 1', function(){
 		expect(set1.getWinner()).to.deep.equal(testData.p1)
-		done()
 	})
-	it('should give the correct Winner 2', function(done){
-		expect(set1.getWinner()).to.deep.equal(testData.p3)
-		done()
+	it('should give the correct Winner 2', function(){
+		expect(set2.getWinner()).to.deep.equal(testData.p3)
 	})
-	it('should give the correct Winner 3', function(done){
-		expect(set1.getWinner()).to.deep.equal(testData.p5)
-		done()
+	it('should give the correct Winner 3', function(){
+		expect(set3.getWinner()).to.deep.equal(testData.p5)
 	})
 
 	// getting loser
-	it('should give the correct Winner 1', function(done){
+	it('should give the correct Loser 1', function(){
 		expect(set1.getLoser()).to.deep.equal(testData.p2)
-		done()
 	})
-	it('should give the correct Winner 2', function(done){
-		expect(set1.getLoser()).to.deep.equal(testData.p4)
-		done()
+	it('should give the correct Loser 2', function(){
+		expect(set2.getLoser()).to.deep.equal(testData.p4)
 	})
-	it('should give the correct Winner 3', function(done){
-		expect(set1.getLoser()).to.deep.equal(testData.p6)
-		done()
+	it('should give the correct Loser 3', function(){
+		expect(set3.getLoser()).to.deep.equal(testData.p6)
 	})
 
-	it('should give the correct round', function(done){
-		expect(set1.getRound()).to.be.equal('Winners Round 1')
-		expect(set2.getRound()).to.be.equal('Winners Quarter-Final')
-		expect(set3.getRound()).to.be.equal('Winners Quarter-Final')
-		done()
+	// total games
+	it('should give the correct bestOf count 1', function(){
+		expect(set1.getBestOfCount()).to.be.equal(5)
+	})
+	it('should give the correct bestOf count 2', function(){
+		expect(set2.getBestOfCount()).to.be.equal(5)
+	})
+	it('should give the correct bestOf count 3', function(){
+		expect(set3.getBestOfCount()).to.be.equal(5)
 	})
 
-	it('should give the correct bestOf count', function(done){
-		expect(set1.getBestOfCount()).to.be.equal(3)
-		expect(set2.getBestOfCount()).to.be.equal(3)
-		expect(set3.getBestOfCount()).to.be.equal(3)
-		done()
+	// Winner score
+	it('should give the correct Winner score 1', function(){
+		expect(set1.getWinnerScore()).to.be.equal(3)
+	})
+	it('should give the correct Winner score 2', function(){
+		expect(set2.getWinnerScore()).to.be.equal(3)
+	})
+	it('should give the correct Winner score 3', function(){
+		expect(set3.getWinnerScore()).to.be.equal(3)
 	})
 
-	it('should give the correct Winner score', function(done){
-		expect(set1.getWinnerScore()).to.be.equal(2)
-		expect(set2.getWinnerScore()).to.be.equal(2)
-		expect(set3.getWinnerScore()).to.be.equal(2)
-		done()
-	})
-
-	it('should give the correct Loser score', function(done){
+	// Loser score
+	it('should give the correct Loser score 1', function(){
 		expect(set1.getLoserScore()).to.be.equal(0)
+	})
+	it('should give the correct Loser score 2', function(){
 		expect(set2.getLoserScore()).to.be.equal(0)
+	})
+	it('should give the correct Loser score 3', function(){
 		expect(set3.getLoserScore()).to.be.equal(1)
+	})
+
+
+	// games
+	it('should get the list of games played in the set 1', async function(){
+		let expected = gameData.games1.map(gameData => Game.parse(gameData))
+		expect(await set1.getGames()).to.have.deep.members(expected)
+		return true
+	})
+	it('should get the list of games played in the set 2', async function(){
+		let expected = gameData.games2.map(gameData => Game.parse(gameData))
+		expect(await set2.getGames()).to.have.deep.members(expected)
+		return true
+	})
+	it('should get the list of games played in the set 3', async function(){
+		let expected = gameData.games3.map(gameData => Game.parse(gameData))
+		expect(await set3.getGames()).to.have.deep.members(expected)
+		return true		
+	})
+
+	xit('should give the correct Bracket ID', function(done){
+		//expect(set1.getBracketId()).to.be.equal('58df119c60fbb')
+		//expect(set2.getBracketId()).to.be.equal('58df119c60fbb')
+		//expect(set3.getBracketId()).to.be.equal('58df119c60fbb')
 		done()
 	})
 
-	it('should give the correct Bracket ID', function(done){
-		expect(set1.getBracketId()).to.be.equal('58df119c60fbb')
-		expect(set2.getBracketId()).to.be.equal('58df119c60fbb')
-		expect(set3.getBracketId()).to.be.equal('58df119c60fbb')
-		done()
-	})
-
-	it('should give the correct Winners Tournament Placement', function(done){
-		
+	xit('should give the correct Winners Tournament Placement', function(done){
+		/*
 		let winner1 = set1.getWinner() as Player
 		let data1 = winner1.data as IPlayer.Entity
 		expect(set1.getWinnersTournamentPlacement()).to.be.equal(data1.finalPlacement);
 
 		done();
+		*/
 	});
 
-	it('should give the correct Winners Tournament Placement 2', function(done){
+	xit('should give the correct Winners Tournament Placement 2', function(done){
+		/*
 		let winner2 = set2.getWinner() as Player
 		let data2 = winner2.data as IPlayer.Entity
 		expect(set2.getWinnersTournamentPlacement()).to.be.equal(data2.finalPlacement);
 		
 		done()
+		*/
 	})
 
-	it('should give the correct Winners Tournament Placement 3', function(done){
+	xit('should give the correct Winners Tournament Placement 3', function(done){
+		/*
 		let winner3 = set3.getWinner() as Player
 		let data3 = winner3.data as IPlayer.Entity
 		expect(set3.getWinnersTournamentPlacement()).to.be.equal(data3.finalPlacement);
 
 		done();
+		*/
 	})
 
-	it('should give the correct Losers Tournament Placement', function(done){
+	xit('should give the correct Losers Tournament Placement', function(done){
+		/*
 		let loser1 = set1.getLoser() as Player
 		let data1 = loser1.data as IPlayer.Entity
 		expect(set1.getLosersTournamentPlacement()).to.be.equal(data1.finalPlacement);
 
-		done();
+		done()
+		*/;
 	});
 
-	it('should give the correct Losers Tournament Placement 2', function(done){
+	xit('should give the correct Losers Tournament Placement 2', function(done){
+		/*
 		let loser2 = set2.getLoser() as Player
 		let data2 = loser2.data as IPlayer.Entity
 		expect(set2.getLosersTournamentPlacement()).to.be.equal(data2.finalPlacement);
 
 		done()
+		*/
 	})
 
-	it('should give the correct Losers Tournament Placement 3', function(done){
+	xit('should give the correct Losers Tournament Placement 3', function(done){
+		/*
 		let loser3 = set3.getLoser() as Player
 		let data3 = loser3.data as IPlayer.Entity
 		expect(set3.getLosersTournamentPlacement()).to.be.equal(data3.finalPlacement);
 
 		done()
+		*/
 	})
 
-	it('should give the correct Phase Group ID', function(done){
-		expect(set1.getPhaseGroupId()).to.be.equal(327638)
-		expect(set2.getPhaseGroupId()).to.be.equal(327638)
-		expect(set3.getPhaseGroupId()).to.be.equal(327638)
-		done()
-	})
 
-	it('should give the correct Midsize Round Text', function(done){
+	xit('should give the correct Midsize Round Text', function(done){
+		/*
 		expect(set1.getMidsizeRoundText()).to.be.equal('Winners 1')
 		expect(set2.getMidsizeRoundText()).to.be.equal('Winners Quarters')
 		expect(set3.getMidsizeRoundText()).to.be.equal('Winners Quarters')
 		done()
+		*/
 	})
 })

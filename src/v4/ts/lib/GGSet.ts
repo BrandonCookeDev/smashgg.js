@@ -1,23 +1,17 @@
 import _ from 'lodash'
-import {format} from 'util'
 import moment from 'moment-timezone'
 import {EventEmitter} from 'events'
-import request from 'request-promise'
-import Cache from './util/Cache'
 
-import { ICommon } from './util/Common'
-import {PhaseGroup, Player, Attendee, Game, IGame} from './internal' 
+import {Game, IGame} from './Game' // TODO change to internal later 
 import log from './util/Logger'
 
 import NI from './util/NetworkInterface'
 import * as queries from './scripts/setQueries'
 
-import Options = ICommon.Options
-import parseOptions = ICommon.parseOptions
 import PlayerLite = IGGSet.PlayerLite
 
 const API_URL = 'https://api.smash.gg/set/%s';
-const DISPLAY_SCORE_REGEX = new RegExp(/^[\S\s]* [0-9]{1,3} - [0-9]{1,3} [\S\s]*$/);
+const DISPLAY_SCORE_REGEX = new RegExp(/^([\S\s]*) ([0-9]{1,3}) - ([\S\s]*) ([0-9]{1,3})$/);
 
 export class GGSet extends EventEmitter implements IGGSet.GGSet{
 
@@ -80,8 +74,8 @@ export class GGSet extends EventEmitter implements IGGSet.GGSet{
 		if(parsed){
 			tag1 = parsed[1]
 			score1 = +parsed[2]
-			score2 = +parsed[3]
-			tag2 = parsed[4]
+			tag2 = parsed[3]
+			score2 = +parsed[4]
 		}
 		return {
 			tag1: tag1 || null,
@@ -91,15 +85,16 @@ export class GGSet extends EventEmitter implements IGGSet.GGSet{
 		}
 	}
 
-	static async get(id: number) : Promise<GGSet> {
-		let data: IGGSet.Data = await NI.query(queries.set, {id: id})
+	static async get(id: number | string) : Promise<GGSet> {
+		log.info('Getting set with id %s', id);
+		let data: IGGSet.Data = await NI.query(queries.set, {id: id.toString()})
 		return GGSet.parseFull(data)
 	}
 
 	static parse(data: IGGSet.SetData) : GGSet{
 		let displayScoreParsed = GGSet.parseDisplayScore(data.displayScore);
-		let p1 = new IGGSet.PlayerLite(displayScoreParsed.tag1, +data.slots[0].id, +data.slots[0].entrant.id)
-		let p2 = new IGGSet.PlayerLite(displayScoreParsed.tag2, +data.slots[1].id, +data.slots[1].entrant.id)
+		let p1 = new IGGSet.PlayerLite(displayScoreParsed.tag1, +data.slots[0].entrant.id, +data.slots[0].entrant.participants[0].id)
+		let p2 = new IGGSet.PlayerLite(displayScoreParsed.tag2, +data.slots[1].entrant.id, +data.slots[1].entrant.participants[0].id)
 		return new GGSet(
 			+data.id,
 			data.eventId,
@@ -181,6 +176,27 @@ export class GGSet extends EventEmitter implements IGGSet.GGSet{
 	getPlayer2PlayerId() : number | null {
 		return this.player2.playerId
 	}
+
+	getStartedAtTimestamp() : number | null {
+		return this.startedAt
+	}
+
+	getCompletedAtTimestamp(): number | null {
+		return this.completedAt
+	}
+
+	// Todo needs coverage
+	getStartedAt() : Date | null {
+		if(this.startedAt)	
+			return moment.unix(this.startedAt).toDate();
+		else return null
+	}
+
+	getCompletedAt() : Date | null {
+		if(this.completedAt)
+			return moment.unix(this.completedAt).toDate();
+		else return null
+	}
 	
 	// calculated
 	getWinnerId() : number | null{
@@ -250,30 +266,22 @@ export class GGSet extends EventEmitter implements IGGSet.GGSet{
 		return this.totalGames || 0
 	}
 
-	getWinnerScore() : number | string {
-		if(this.completedAt && this.score1 && this.score2)
-			return this.score1 > this.score2 ? this.score1 : this.score2;
-		else throw new Error('No data to get Set property Winner Score');
+	getWinnerScore() : number {
+		if(!this.completedAt)
+			throw new Error('Cannot get winner score of incomplete set')
+		else if(this.score1 == null || this.score2 == null){
+			if(this.score1 == null) return this.score2!
+			else return this.score2!
+		 }
+		 else return this.score1 > this.score2 ? this.score1 : this.score2
 	}
 
-	getLoserScore() : number | string {
-		if(this.completedAt && this.score1 && this.score2)
-			return this.score1 < this.score2 ? this.score1 : this.score2;
-		else throw new Error('No data to get Set property Loser Score');
-	}
-
-	// Todo needs coverage
-	getStartedAt() : Date | null {
-		if(this.startedAt)	
-			return moment.unix(this.startedAt).toDate();
-		else return null
-	}
-
-	// Todo needs coverage
-	getCompletedAt() : Date | null {
-		if(this.completedAt)
-			return moment.unix(this.completedAt).toDate();
-		else return null
+	getLoserScore() : number {
+		if(!this.completedAt)
+			throw new Error('Cannot get loser score of incomplete set')
+		else if(this.score1 == null || this.score2 == null)
+			return 0
+		else return this.score1 < this.score2 ? this.score1 : this.score2
 	}
 
 	// deprecated
@@ -312,6 +320,7 @@ export class GGSet extends EventEmitter implements IGGSet.GGSet{
 
 	// Aggregation
 	async getGames() : Promise<Game[]> {
+		log.info('Gettings Games for set (%s)', this.id)
 		let data: IGame.Data = await NI.query(queries.games, {id: this.id});
 		return Game.parseFull(data)
 	}

@@ -7,6 +7,7 @@ __export(require("./User"));
 __export(require("./Attendee"));
 __export(require("./Player"));
 __export(require("./Prize"));
+__export(require("./Game"));
 __export(require("./Standings"));
 __export(require("./VideoGame"));
 __export(require("./Venue"));

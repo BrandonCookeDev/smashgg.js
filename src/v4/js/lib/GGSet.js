@@ -50,184 +50,283 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-var lodash_1 = __importDefault(require("lodash"));
-var util_1 = require("util");
 var moment_timezone_1 = __importDefault(require("moment-timezone"));
 var events_1 = require("events");
-var request_promise_1 = __importDefault(require("request-promise"));
-var Cache_1 = __importDefault(require("./util/Cache"));
-var Common_1 = require("./util/Common");
-var internal_1 = require("./internal");
+var Game_1 = require("./Game"); // TODO change to internal later 
 var Logger_1 = __importDefault(require("./util/Logger"));
-var parseOptions = Common_1.ICommon.parseOptions;
+var NetworkInterface_1 = __importDefault(require("./util/NetworkInterface"));
+var queries = __importStar(require("./scripts/setQueries"));
 var API_URL = 'https://api.smash.gg/set/%s';
+var DISPLAY_SCORE_REGEX = new RegExp(/^([\S\s]*) ([0-9]{1,3}) - ([\S\s]*) ([0-9]{1,3})$/);
 var GGSet = /** @class */ (function (_super) {
     __extends(GGSet, _super);
-    function GGSet(id, eventId, round, player1, player2, isComplete, score1, score2, winnerId, loserId, data) {
-        if (isComplete === void 0) { isComplete = false; }
-        if (score1 === void 0) { score1 = 0; }
-        if (score2 === void 0) { score2 = 0; }
-        if (winnerId === void 0) { winnerId = 0; }
-        if (loserId === void 0) { loserId = 0; }
+    function GGSet(id, eventId, phaseGroupId, displayScore, fullRoundText, round, startedAt, completedAt, winnerId, totalGames, state, player1, player2, score1, score2) {
         var _this = _super.call(this) || this;
-        if (!id)
-            throw new Error('Id for Set cannot be null');
-        if (!eventId)
-            throw new Error('Event Id for Set cannot be null');
-        if (!round)
-            throw new Error('Round for Set cannot be null');
-        //if(!player1 && !(player1 instanceof Player))
-        //	throw new Error('Winner Player for Set cannot be null, and must be an instance of Player');
-        //if(!player2 && !(player2 instanceof Player))
-        //	throw new Error('Loser Player for Set cannot be null, and must be an instance of Player');
         _this.id = id;
         _this.eventId = eventId;
+        _this.phaseGroupId = phaseGroupId;
+        _this.displayScore = displayScore;
+        _this.fullRoundText = fullRoundText;
         _this.round = round;
+        _this.startedAt = startedAt;
+        _this.completedAt = completedAt;
+        _this.winnerId = winnerId;
+        _this.totalGames = totalGames;
+        _this.state = state;
         _this.player1 = player1;
         _this.player2 = player2;
         _this.score1 = score1;
         _this.score2 = score2;
-        _this.isComplete = isComplete;
-        _this.winnerId = winnerId;
-        _this.loserId = loserId;
-        _this.data = data;
         return _this;
     }
-    GGSet.prototype.loadData = function (data) {
-        this.data = data;
+    GGSet.parseDisplayScore = function (displayScore) {
+        var DISPLAY_SCORE_REGEX = new RegExp(/^([\S\s]*) ([0-9]{1,3}) - ([\S\s]*) ([0-9]{1,3})$/);
+        var parsed = DISPLAY_SCORE_REGEX.exec(displayScore);
+        var tag1, score1, tag2, score2;
+        if (parsed) {
+            tag1 = parsed[1];
+            score1 = +parsed[2];
+            tag2 = parsed[3];
+            score2 = +parsed[4];
+        }
+        return {
+            tag1: tag1 || null,
+            tag2: tag2 || null,
+            score1: score1 || 0,
+            score2: score2 || 0
+        };
+    };
+    GGSet.get = function (id) {
+        return __awaiter(this, void 0, void 0, function () {
+            var data;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        Logger_1.default.info('Getting set with id %s', id);
+                        return [4 /*yield*/, NetworkInterface_1.default.query(queries.set, { id: id.toString() })];
+                    case 1:
+                        data = _a.sent();
+                        return [2 /*return*/, GGSet.parseFull(data)];
+                }
+            });
+        });
     };
     GGSet.parse = function (data) {
-        return new GGSet();
+        var displayScoreParsed = GGSet.parseDisplayScore(data.displayScore);
+        var p1 = new IGGSet.PlayerLite(displayScoreParsed.tag1, +data.slots[0].entrant.id, +data.slots[0].entrant.participants[0].id);
+        var p2 = new IGGSet.PlayerLite(displayScoreParsed.tag2, +data.slots[1].entrant.id, +data.slots[1].entrant.participants[0].id);
+        return new GGSet(+data.id, data.eventId, data.phaseGroupId, data.displayScore, data.fullRoundText, data.round, data.startedAt, data.completedAt, data.winnerId, data.totalGames, data.state, p1, p2, displayScoreParsed.score1, displayScoreParsed.score2);
     };
-    GGSet.getSet = function (id, options) {
-        if (options === void 0) { options = {}; }
-        return __awaiter(this, void 0, void 0, function () {
-            var cacheKey, cached, req, resp, _a, _b, data, set, e_1;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
-                    case 0:
-                        Logger_1.default.debug('Set getSet called');
-                        _c.label = 1;
-                    case 1:
-                        _c.trys.push([1, 7, , 8]);
-                        // parse options
-                        options = parseOptions(options);
-                        cacheKey = util_1.format('set::%s', id);
-                        if (!options.isCached) return [3 /*break*/, 3];
-                        return [4 /*yield*/, Cache_1.default.get(cacheKey)];
-                    case 2:
-                        cached = _c.sent();
-                        if (cached)
-                            return [2 /*return*/, cached];
-                        _c.label = 3;
-                    case 3:
-                        req = {
-                            uri: util_1.format(API_URL, id),
-                            headers: {
-                                'X-SOURCE': 'smashgg.js'
-                            },
-                            method: 'GET'
-                        };
-                        _b = (_a = JSON).parse;
-                        return [4 /*yield*/, request_promise_1.default(req)];
-                    case 4:
-                        resp = _b.apply(_a, [_c.sent()]);
-                        data = resp.entities.sets;
-                        return [4 /*yield*/, GGSet.resolve(data, false)];
-                    case 5:
-                        set = _c.sent();
-                        return [4 /*yield*/, Cache_1.default.set(cacheKey, set)];
-                    case 6:
-                        _c.sent();
-                        return [2 /*return*/, set];
-                    case 7:
-                        e_1 = _c.sent();
-                        Logger_1.default.error('Set getSet error: %s', e_1);
-                        throw e_1;
-                    case 8: return [2 /*return*/];
-                }
-            });
-        });
+    GGSet.parseFull = function (data) {
+        return GGSet.parse(data.set);
     };
-    GGSet.resolveArray = function (data, filterByes) {
-        if (filterByes === void 0) { filterByes = true; }
+    /** Instance Based **/
+    // simple
+    GGSet.prototype.getEventId = function () {
+        return this.eventId;
+    };
+    GGSet.prototype.getPhaseGroupId = function () {
+        return this.phaseGroupId;
+    };
+    GGSet.prototype.getDisplayScore = function () {
+        return this.displayScore;
+    };
+    GGSet.prototype.getFullRoundText = function () {
+        return this.fullRoundText;
+    };
+    GGSet.prototype.getRound = function () {
+        return this.round;
+    };
+    GGSet.prototype.getState = function () {
+        return this.state;
+    };
+    GGSet.prototype.getPlayer1 = function () {
+        return this.player1;
+    };
+    GGSet.prototype.getPlayer1Tag = function () {
+        return this.player1.tag;
+    };
+    GGSet.prototype.getPlayer1AttendeeId = function () {
+        return this.player1.attendeeId;
+    };
+    GGSet.prototype.getPlayer1PlayerId = function () {
+        return this.player1.playerId;
+    };
+    GGSet.prototype.getPlayer2 = function () {
+        return this.player2;
+    };
+    GGSet.prototype.getPlayer2Tag = function () {
+        return this.player2.tag;
+    };
+    GGSet.prototype.getPlayer2AttendeeId = function () {
+        return this.player2.attendeeId;
+    };
+    GGSet.prototype.getPlayer2PlayerId = function () {
+        return this.player2.playerId;
+    };
+    GGSet.prototype.getStartedAtTimestamp = function () {
+        return this.startedAt;
+    };
+    GGSet.prototype.getCompletedAtTimestamp = function () {
+        return this.completedAt;
+    };
+    // Todo needs coverage
+    GGSet.prototype.getStartedAt = function () {
+        if (this.startedAt)
+            return moment_timezone_1.default.unix(this.startedAt).toDate();
+        else
+            return null;
+    };
+    GGSet.prototype.getCompletedAt = function () {
+        if (this.completedAt)
+            return moment_timezone_1.default.unix(this.completedAt).toDate();
+        else
+            return null;
+    };
+    // calculated
+    GGSet.prototype.getWinnerId = function () {
+        return this.winnerId ? this.winnerId : null;
+    };
+    GGSet.prototype.getLoserId = function () {
+        switch (this.winnerId) {
+            case this.player1.playerId:
+                return this.player2.playerId ? this.player2.playerId : null;
+            case this.player2.playerId:
+                return this.player1.playerId ? this.player1.playerId : null;
+            default:
+                return null;
+        }
+    };
+    GGSet.prototype.getIsComplete = function () {
+        return this.completedAt ? true : false;
+    };
+    GGSet.prototype.getCompletedTime = function () {
+        if (this.completedAt)
+            return moment_timezone_1.default.unix(this.completedAt).toDate();
+        else
+            return null;
+    };
+    GGSet.prototype.getPlayer1Score = function () {
+        if (this.score1)
+            return this.score1;
+        else
+            return 0;
+    };
+    GGSet.prototype.getPlayer2Score = function () {
+        if (this.score2)
+            return this.score2;
+        else
+            return 0;
+    };
+    GGSet.prototype.getWinner = function () {
+        if (this.winnerId && this.player2.playerId && this.player1.playerId)
+            switch (this.winnerId) {
+                case this.player1.playerId:
+                    return this.player1;
+                case this.player2.playerId:
+                    return this.player2;
+                default:
+                    throw new Error("Winner ID " + this.winnerId + " does not match either player ID: [" + [this.player1.playerId, this.player2.playerId].join(',') + "]");
+            }
+        else
+            throw new Error("Set (" + this.id + ") must be complete to get the Winning Player");
+    };
+    GGSet.prototype.getLoser = function () {
+        if (this.winnerId && this.player1.playerId && this.player2.playerId)
+            switch (this.winnerId) {
+                case this.player1.playerId:
+                    return this.player2;
+                case this.player2.playerId:
+                    return this.player1;
+                default:
+                    throw new Error("Loser ID does not match either player ID: [" + [this.player1.playerId, this.player2.playerId].join(',') + "]");
+            }
+        else
+            throw new Error("Set (" + this.id + ") must be complete to get the Losing Player");
+    };
+    GGSet.prototype.getBestOfCount = function () {
+        return this.totalGames || 0;
+    };
+    GGSet.prototype.getWinnerScore = function () {
+        if (!this.completedAt)
+            throw new Error('Cannot get winner score of incomplete set');
+        else if (this.score1 == null || this.score2 == null) {
+            if (this.score1 == null)
+                return this.score2;
+            else
+                return this.score2;
+        }
+        else
+            return this.score1 > this.score2 ? this.score1 : this.score2;
+    };
+    GGSet.prototype.getLoserScore = function () {
+        if (!this.completedAt)
+            throw new Error('Cannot get loser score of incomplete set');
+        else if (this.score1 == null || this.score2 == null)
+            return 0;
+        else
+            return this.score1 < this.score2 ? this.score1 : this.score2;
+    };
+    // deprecated
+    /*
+    getBracketId() : number | string {
+        if(this.data)
+            return this.data.bracketId || this.nullValueString('Bracket ID');
+        else throw new Error('No data to get Set property Bracket ID');
+    }
+
+    // deprecated
+    getMidsizeRoundText() : string{
+        if(this.data)
+            return this.data.midRoundText || this.nullValueString('Midsize Round Text');
+        else throw new Error('No data to get Set property Midsize Round Text');
+    }
+    */
+    // deprecated for the time being
+    /*
+    getWinnersTournamentPlacement() : number | string{
+        let winner = this.getWinner()
+        if(winner && this.isComplete)
+            return winner.getFinalPlacement() || this.nullValueString('Winner Tournament Placement');
+        else throw new Error('Set must be complete to get Winner\'s tournament placement');
+    }
+
+    getLosersTournamentPlacement() : number | string{
+        let loser = this.getLoser()
+        if(loser && this.isComplete)
+            return loser.getFinalPlacement() || this.nullValueString('Loser Tournament Placement');
+        else throw new Error('Set must be complete to get Loser\'s tournament placement');
+    }
+    */
+    // Aggregation
+    GGSet.prototype.getGames = function () {
         return __awaiter(this, void 0, void 0, function () {
-            var e_2;
-            var _this = this;
+            var data;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        Logger_1.default.debug('Set resolveArray called');
-                        _a.label = 1;
+                        Logger_1.default.info('Gettings Games for set (%s)', this.id);
+                        return [4 /*yield*/, NetworkInterface_1.default.query(queries.games, { id: this.id })];
                     case 1:
-                        _a.trys.push([1, 3, , 4]);
-                        return [4 /*yield*/, Promise.all(data.map(function (entity) { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
-                                switch (_a.label) {
-                                    case 0: return [4 /*yield*/, GGSet.resolve(entity, filterByes)];
-                                    case 1: return [2 /*return*/, _a.sent()];
-                                }
-                            }); }); }))];
-                    case 2: return [2 /*return*/, _a.sent()];
-                    case 3:
-                        e_2 = _a.sent();
-                        Logger_1.default.error('Set resolveArray error: %s', e_2);
-                        throw e_2;
-                    case 4: return [2 /*return*/];
+                        data = _a.sent();
+                        return [2 /*return*/, Game_1.Game.parseFull(data)];
                 }
             });
         });
     };
-    GGSet.resolve = function (data, filterByes) {
-        if (filterByes === void 0) { filterByes = true; }
-        return __awaiter(this, void 0, void 0, function () {
-            var isBye, set, group, groupParticipants, Player1, Player2, isComplete, S, e_3;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        Logger_1.default.debug('Set resolve called');
-                        _a.label = 1;
-                    case 1:
-                        _a.trys.push([1, 4, , 5]);
-                        isBye = false;
-                        set = data;
-                        return [4 /*yield*/, internal_1.PhaseGroup.getPhaseGroup(set.phaseGroupId)];
-                    case 2:
-                        group = _a.sent();
-                        return [4 /*yield*/, group.getPlayers()];
-                    case 3:
-                        groupParticipants = _a.sent();
-                        if (!set.entrant1Id || !set.entrant2Id)
-                            isBye = true; // HANDLES BYES
-                        Player1 = lodash_1.default.find(groupParticipants, { 'participantId': set.entrant1Id });
-                        Player2 = lodash_1.default.find(groupParticipants, { 'participantId': set.entrant2Id });
-                        isComplete = false;
-                        if (set.winnerId && set.loserId)
-                            isComplete = true;
-                        S = void 0;
-                        if (isBye && filterByes)
-                            return [2 /*return*/, null];
-                        else if (isBye && !filterByes)
-                            S = new GGSet(set.id, set.eventId, 'BYE', Player1, Player2, isComplete, undefined, undefined, undefined, undefined, data);
-                        else if (isComplete)
-                            S = new GGSet(set.id, set.eventId, set.fullRoundText, Player1, Player2, isComplete, set.entrant1Score, set.entrant2Score, set.winnerId, set.loserId, data);
-                        else
-                            S = new GGSet(set.id, set.eventId, set.fullRoundText, Player1, Player2, isComplete, undefined, undefined, undefined, undefined, data);
-                        S.loadData(set);
-                        return [2 /*return*/, S];
-                    case 4:
-                        e_3 = _a.sent();
-                        Logger_1.default.error('Set resolve error: %s', e_3);
-                        throw e_3;
-                    case 5: return [2 /*return*/];
-                }
-            });
-        });
-    };
+    // Statics
     GGSet.filterForCompleteSets = function (sets) {
         Logger_1.default.debug('GGSet.filterForCompleteSets called');
         try {
-            return sets.filter(function (set) { return set.isComplete; });
+            return sets.filter(function (set) { return set.getIsComplete(); });
         }
         catch (e) {
             Logger_1.default.error('GGSet.filterForCompleteSets error: %s', e);
@@ -237,7 +336,7 @@ var GGSet = /** @class */ (function (_super) {
     GGSet.filterForIncompleteSets = function (sets) {
         Logger_1.default.debug('GGSet.filterForCompleteSets called');
         try {
-            return sets.filter(function (set) { return !set.isComplete; });
+            return sets.filter(function (set) { return !set.getIsComplete(); });
         }
         catch (e) {
             Logger_1.default.error('GGSet.filterForCompleteSets error: %s', e);
@@ -264,149 +363,6 @@ var GGSet = /** @class */ (function (_super) {
             throw e;
         }
     };
-    /** Instance Based **/
-    GGSet.prototype.getRound = function () {
-        return this.round;
-    };
-    GGSet.prototype.getPlayer1 = function () {
-        if (this.player1)
-            return this.player1;
-        else
-            return null;
-    };
-    GGSet.prototype.getPlayer2 = function () {
-        if (this.player2)
-            return this.player2;
-        else
-            return null;
-    };
-    GGSet.prototype.getWinnerId = function () {
-        if (this.winnerId)
-            return this.winnerId;
-        else
-            return null;
-    };
-    GGSet.prototype.getLoserId = function () {
-        if (this.loserId)
-            return this.loserId;
-        else
-            return null;
-    };
-    GGSet.prototype.getIsComplete = function () {
-        return this.isComplete;
-    };
-    GGSet.prototype.getPlayer1Score = function () {
-        if (this.score1)
-            return this.score1;
-        else
-            return 0;
-    };
-    GGSet.prototype.getPlayer2Score = function () {
-        if (this.score2)
-            return this.score2;
-        else
-            return 0;
-    };
-    GGSet.prototype.getWinner = function () {
-        if (this.winnerId && this.loserId && this.player1 && this.player2)
-            switch (this.winnerId) {
-                case this.player1.getParticipantId():
-                    return this.player1;
-                case this.player2.getParticipantId():
-                    return this.player2;
-                default:
-                    throw new Error("Winner ID " + this.winnerId + " does not match either player ID: [" + [this.player1.id, this.player2.id].join(',') + "]");
-            }
-        else
-            throw new Error('Set must be complete to get the Winning Player');
-    };
-    GGSet.prototype.getLoser = function () {
-        if (this.winnerId && this.loserId && this.player1 && this.player2)
-            switch (this.loserId) {
-                case this.player1.getParticipantId():
-                    return this.player1;
-                case this.player2.getParticipantId():
-                    return this.player2;
-                default:
-                    throw new Error("Loser ID " + this.loserId + " does not match either player ID: [" + [this.player1.id, this.player2.id].join(',') + "]");
-            }
-        else
-            throw new Error('Set must be complete to get the Losing Player');
-    };
-    GGSet.prototype.getGames = function () {
-        if (this.data)
-            return this.data.games || this.nullValueString('Games');
-        else
-            throw new Error('No data to get Set property Games');
-    };
-    GGSet.prototype.getBestOfCount = function () {
-        if (this.data)
-            return this.data.bestOf || this.nullValueString('Best-Of Count');
-        else
-            throw new Error('No data to get Set property Best-Of Count');
-    };
-    GGSet.prototype.getWinnerScore = function () {
-        if (this.data && this.isComplete)
-            return this.data.entrant1Score > this.data.entrant2Score ? this.data.entrant1Score : this.data.entrant2Score;
-        else
-            throw new Error('No data to get Set property Winner Score');
-    };
-    GGSet.prototype.getLoserScore = function () {
-        if (this.data && this.isComplete)
-            return this.data.entrant1Score < this.data.entrant2Score ? this.data.entrant1Score : this.data.entrant2Score;
-        else
-            throw new Error('No data to get Set property Loser Score');
-    };
-    GGSet.prototype.getBracketId = function () {
-        if (this.data)
-            return this.data.bracketId || this.nullValueString('Bracket ID');
-        else
-            throw new Error('No data to get Set property Bracket ID');
-    };
-    GGSet.prototype.getMidsizeRoundText = function () {
-        if (this.data)
-            return this.data.midRoundText || this.nullValueString('Midsize Round Text');
-        else
-            throw new Error('No data to get Set property Midsize Round Text');
-    };
-    GGSet.prototype.getPhaseGroupId = function () {
-        if (this.data)
-            return this.data.phaseGroupId || this.nullValueString('Phase Group Id');
-        else
-            throw new Error('No data to get Set property Phase Group Id');
-    };
-    GGSet.prototype.getWinnersTournamentPlacement = function () {
-        var winner = this.getWinner();
-        if (winner && this.isComplete)
-            return winner.getFinalPlacement() || this.nullValueString('Winner Tournament Placement');
-        else
-            throw new Error('Set must be complete to get Winner\'s tournament placement');
-    };
-    GGSet.prototype.getLosersTournamentPlacement = function () {
-        var loser = this.getLoser();
-        if (loser && this.isComplete)
-            return loser.getFinalPlacement() || this.nullValueString('Loser Tournament Placement');
-        else
-            throw new Error('Set must be complete to get Loser\'s tournament placement');
-    };
-    // Todo needs coverage
-    GGSet.prototype.getStartedAt = function () {
-        if (this.data && this.data.startedAt)
-            return moment_timezone_1.default.unix(this.data.startedAt).toDate();
-        else
-            return null;
-    };
-    // Todo needs coverage
-    GGSet.prototype.getCompletedAt = function () {
-        if (this.data && this.data.completedAt)
-            return moment_timezone_1.default.unix(this.data.completedAt).toDate();
-        else
-            return null;
-    };
-    /** NULL VALUES **/
-    GGSet.prototype.nullValueString = function (prop) {
-        return prop + ' not available for Set ' + this.id;
-    };
     return GGSet;
 }(events_1.EventEmitter));
 exports.GGSet = GGSet;
@@ -417,9 +373,21 @@ GGSet.prototype.toString = function () {
         '\nRound: ' + this.round +
         '\nPlayer1: ' + this.player1 +
         '\nPlayer2: ' + this.player2 +
-        '\nIs Complete: ' + this.isComplete +
+        '\nIs Complete: ' + this.getIsComplete() +
         '\nPlayer1 Score: ' + this.score1 +
         '\nPlayer2 Score: ' + this.score2 +
         '\nWinner ID: ' + this.winnerId +
-        '\nLoser ID: ' + this.loserId;
+        '\nLoser ID: ' + this.getLoserId();
 };
+var IGGSet;
+(function (IGGSet) {
+    var PlayerLite = /** @class */ (function () {
+        function PlayerLite(tag, playerId, attendeeId) {
+            this.tag = tag;
+            this.playerId = playerId;
+            this.attendeeId = attendeeId;
+        }
+        return PlayerLite;
+    }());
+    IGGSet.PlayerLite = PlayerLite;
+})(IGGSet = exports.IGGSet || (exports.IGGSet = {}));

@@ -115,7 +115,7 @@ slots(includeByes:false){
 			id
 		}
 	}
-} `
+}`
 
 export const game = `
 id

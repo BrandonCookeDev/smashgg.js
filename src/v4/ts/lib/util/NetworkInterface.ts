@@ -5,7 +5,7 @@ import * as Common from './Common'
 import SRQ from './StaggeredRequestQueue'
 import TokenHandler from './TokenHandler'
 import * as V1 from './EntityFetcher'
-import {ITournament, IEvent, IPhase, IPhaseGroup, IPlayer, IGGSet} from '../internal'
+//import {ITournament, IEvent, IPhase, IPhaseGroup, IPlayer, IGGSet} from '../internal'
 
 const API_URL = process.env.ApiUrl || 'https://api.smash.gg/gql/alpha'
 const RATE_LIMIT_MS_TIME = process.env.RateLimitMsTime || 1000
@@ -80,6 +80,7 @@ export default class NetworkInterface{
 		return await request(options)
 	}
 
+	/*
 	getTournamentFromV1(tournamentName: string, options: ITournament.Options){
 		return V1.getTournamentData(tournamentName, options)
 	}
@@ -99,6 +100,7 @@ export default class NetworkInterface{
 	getPhaseGroupFromV1(phaseGroupId: number, options: IPhaseGroup.Options){
 		return V1.getPhaseGroupData(phaseGroupId, options);
 	}
+	*/
 }
 
 namespace INetworkInterface{

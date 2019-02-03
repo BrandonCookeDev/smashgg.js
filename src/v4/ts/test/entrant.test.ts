@@ -5,19 +5,19 @@ config({path: ROOT})
 
 import sinon from 'sinon'
 import {expect, assert} from 'chai'
-import {Player} from '../lib/Player'
+import {Entrant} from '../lib/Entrant'
 import {Attendee} from '../lib/Attendee'
 import Initializer from '../lib/util/Initializer'
 
 import * as testData from './data/player.testData';
-let player1: Player, player2: Player, player3: Player
+let player1: Entrant, player2: Entrant, player3: Entrant
 
 describe('smashgg Player (Entrant) Singles', function(){
 	before(async function(){
 		await Initializer(process.env.API_TOKEN!)
-		player1 = Player.parse(testData.player1Data) as Player
-		player2 = Player.parse(testData.player2Data) as Player
-		player3 = Player.parse(testData.player3Data) as Player
+		player1 = Entrant.parse(testData.player1Data) as Entrant
+		player2 = Entrant.parse(testData.player2Data) as Entrant
+		player3 = Entrant.parse(testData.player3Data) as Entrant
 		return true;
 	})
 

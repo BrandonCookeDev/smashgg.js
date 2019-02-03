@@ -1,7 +1,7 @@
 /** aka Entrant **/
 import {Attendee, IAttendee} from './Attendee' // TODO later change this to internal
 
-export class Player implements IPlayer.Player{
+export class Entrant implements IEntrant.Entrant{
 	id: number
 	name: string
 	eventId: number
@@ -22,11 +22,11 @@ export class Player implements IPlayer.Player{
 		this.attendeeData = attendeeData
 	}
 
-	static parse(data: IPlayer.PlayerData) : Player | Player[]{
+	static parse(data: IEntrant.EntrantData) : Entrant | Entrant[]{
 		let attendeeData = data.participants.map(attendeeData => Attendee.parse(attendeeData))
 		
 		if(attendeeData.length == 1)
-			return new Player(
+			return new Entrant(
 				data.id,
 				data.name,
 				data.eventId,
@@ -35,7 +35,7 @@ export class Player implements IPlayer.Player{
 			)
 		else if(attendeeData.length > 1)
 			return attendeeData.map(attendee => {
-				return new Player(
+				return new Entrant(
 					data.id,
 					data.name,
 					data.eventId,
@@ -46,8 +46,8 @@ export class Player implements IPlayer.Player{
 		else throw new Error('No attendee data')
 	}
 
-	static parseFull(data: IPlayer.Data) : Player | Player[]{
-		return Player.parse(data.entrant)
+	static parseFull(data: IEntrant.Data) : Entrant | Entrant[]{
+		return Entrant.parse(data.entrant)
 	}
 
 	getId(): number{
@@ -131,8 +131,8 @@ export class Player implements IPlayer.Player{
 	}
 }
 
-export namespace IPlayer{
-	export interface Player{
+export namespace IEntrant{
+	export interface Entrant{
 		id: number,
 		name: string, 
 		eventId: number,
@@ -162,10 +162,10 @@ export namespace IPlayer{
 	}	
 
 	export interface Data{
-		"entrant": PlayerData
+		"entrant": EntrantData
 	}
 
-	export interface PlayerData{
+	export interface EntrantData{
 		"id": number,
 		"name": string,
 		"eventId": number,

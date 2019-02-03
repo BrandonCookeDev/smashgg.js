@@ -1,5 +1,5 @@
 
-import {Player} from './internal'
+import {Entrant} from './internal'
 
 export class Seed implements ISeed.Seed{
 	constructor(){
@@ -10,7 +10,7 @@ export class Seed implements ISeed.Seed{
 export namespace ISeed{
 	export interface Seed{
 		id: number,
-		entrant: Player,
+		entrant: Entrant,
 		placeholderName: string,
 		entrantId: number,
 

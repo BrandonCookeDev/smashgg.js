@@ -1,5 +1,23 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.selectionsS1G1P2 = {
+    "selectionType": "CHARACTER",
+    "selectionValue": 23,
+    "entrantId": 1106474,
+    "participantId": null
+};
+exports.selectionsS1G2P2 = {
+    "selectionType": "CHARACTER",
+    "selectionValue": 23,
+    "entrantId": 1106474,
+    "participantId": null
+};
+exports.selectionsS1G3P2 = {
+    "selectionType": "CHARACTER",
+    "selectionValue": 23,
+    "entrantId": 1106474,
+    "participantId": null
+};
 // set id 11186682
 exports.games1 = [
     {

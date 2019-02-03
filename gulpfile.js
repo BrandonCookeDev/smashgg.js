@@ -6,10 +6,10 @@ const ts = require('gulp-typescript')
 const mocha = require('gulp-mocha')
 
 const ROOT = __dirname
-const SRC_DIR = path.join(ROOT, 'src')
-const TS_DIR = path.join(SRC_DIR, 'v4', 'ts')
-const JS_DIR = path.join(SRC_DIR, 'v4', 'js')
-const TEST_DIR = path.join(JS_DIR, 'v4', 'test')
+const SRC_DIR = path.join(ROOT, 'src', 'v4')
+const TS_DIR = path.join(SRC_DIR, 'ts')
+const JS_DIR = path.join(SRC_DIR, 'js')
+const TEST_DIR = path.join(JS_DIR, 'test')
 
 const tsProd = ts.createProject('tsconfig.json')
 
@@ -57,12 +57,24 @@ function testCache(){
 	return gulp.src(TEST_DIR, 'testZCache.js')
 		.pipe(mocha())
 }
+function testUser(){
+	return gulp.src(TEST_DIR, 'user.test.js')
+		.pipe(mocha())
+}
+function testAttendee(){
+	return gulp.src(TEST_DIR, 'attendee.test.js')
+		.pipe(mocha())
+}
 function testPlayer(){
-	return gulp.src(TEST_DIR, 'testPlayer.js')
+	return gulp.src(TEST_DIR, 'player.test.js')
 		.pipe(mocha())
 }
 function testSet(){
-	return gulp.src(TEST_DIR, 'testSet.js')
+	return gulp.src(TEST_DIR, 'set.test.js')
+		.pipe(mocha())
+}
+function testGame(){
+	return gulp.src(TEST_DIR, 'game.test.js')
 		.pipe(mocha())
 }
 
@@ -90,6 +102,11 @@ exports.testPhaseGroup = testPhaseGroup
 exports.testCache = testCache
 exports.testPlayer = testPlayer
 exports.testSet = testSet
+exports.testGame = testGame
+exports.testUser = testUser
+exports.testAttendee = testAttendee
+exports.testPlayer = testPlayer
+
 exports.tsc = tsc
 exports.createDTs = createDTs
 exports.watch = watch

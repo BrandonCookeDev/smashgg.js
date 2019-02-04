@@ -9,7 +9,7 @@ import cap from 'chai-as-promised'
 const { expect } = chai;
 chai.use(cap)
 
-import { Tournament, ITournament, Player, GGSet, Event } from '../lib/internal'
+import { Tournament, ITournament, Entrant, GGSet, Event } from '../lib/internal'
 import Cache from '../lib/util/Cache'
 
 let tournament1: Tournament;
@@ -280,13 +280,13 @@ describe('Smash GG Tournament', function(){
 		let players = await tournament2.getAllPlayers()
 		expect(players.length).to.be.equal(3101)
 
-		var hasDuplicates = function(a: Player[]) {
+		var hasDuplicates = function(a: Entrant[]) {
 			return _.uniq(a).length !== a.length
 		}
 		expect(hasDuplicates(players)).to.be.false
 
 		players.forEach(player => {
-			expect(player).to.be.an.instanceof(Player)
+			expect(player).to.be.an.instanceof(Entrant)
 		})
 
 		return true
@@ -298,13 +298,13 @@ describe('Smash GG Tournament', function(){
 		let players = await tournament3.getAllPlayers()
 		expect(players.length).to.be.equal(394)
 
-		var hasDuplicates = function(a: Array<Player>) {
+		var hasDuplicates = function(a: Array<Entrant>) {
 			return _.uniq(a).length !== a.length;
 		};
 		expect(hasDuplicates(players)).to.be.false;
 
 		players.forEach(player => {
-			expect(player).to.be.an.instanceof(Player)
+			expect(player).to.be.an.instanceof(Entrant)
 		})
 
 		return true

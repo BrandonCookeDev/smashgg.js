@@ -18,7 +18,7 @@ const TOP_8_LABELS = [
 ]
 const GRAND_FINAL_RESET_TOKEN = 'Grand Final Reset'
 
-import {Phase, PhaseGroup, GGSet, Player, Event, IEvent} from  '../lib/internal'
+import {Phase, PhaseGroup, GGSet, Entrant, Event, IEvent} from  '../lib/internal'
 import Cache from '../lib/util/Cache'
 import log from '../lib/util/Logger'
 import { setLogLevel } from '../lib/util/Logger'
@@ -351,7 +351,7 @@ describe('Smash GG Event', function(){
 		expect(players1.length).to.be.equal(156);
 
 		players1.forEach(set => {
-			expect(set).to.be.instanceof(Player)
+			expect(set).to.be.instanceof(Entrant)
 		})
 
 		return true;
@@ -365,7 +365,7 @@ describe('Smash GG Event', function(){
 		expect(players2.length).to.be.equal(678);
 
 		players2.forEach(set => {
-			expect(set).to.be.instanceof(Player)
+			expect(set).to.be.instanceof(Entrant)
 		})
 
 		return true

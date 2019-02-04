@@ -35,12 +35,14 @@ isOnline
 teamNameAllowed
 teamManagementDeadline`
 
-export const phase = `id
+export const phase = `
+id
 name
 numSeeds
 groupCount`
 
-export const phaseGroup = `id
+export const phaseGroup = `
+id
 displayIdentifier
 firstRoundTime
 state
@@ -81,7 +83,7 @@ events{
 }`
 
 
-export const player = `
+export const entrant = `
 id
 name
 eventId
@@ -136,4 +138,34 @@ selections{
 	selectionValue
 	entrantId
 	participantId
+}`
+
+export const seeds = `
+id
+entrantId
+placeholderName
+seedNum
+placement
+isBye
+players{
+	id
+}`
+
+export const standings = `
+id
+entrantId
+placeholderName
+seedNum
+placement
+isBye
+players{
+	id
+}
+standings{
+	stats{
+		score{
+			label
+			value
+		}
+	}
 }`

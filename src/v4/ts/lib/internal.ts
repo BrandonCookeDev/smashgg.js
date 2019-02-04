@@ -1,6 +1,6 @@
 export * from './User'
 export * from './Attendee'
-export * from './Player'
+export * from './Entrant'
 export * from './Prize'
 export * from './Game'
 export * from './Standings'

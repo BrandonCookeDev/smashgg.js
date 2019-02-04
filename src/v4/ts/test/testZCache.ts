@@ -8,8 +8,8 @@ import cap from 'chai-as-promised'
 chai.use(cap)
 const {expect} = chai
 
-import { Tournament, Event, Phase, PhaseGroup, Player, GGSet } from '../lib/internal'
-import { ITournament, IEvent, IPhase, IPhaseGroup, IPlayer, IGGSet } from '../lib/internal'
+import { Tournament, Event, Phase, PhaseGroup, Entrant, GGSet } from '../lib/internal'
+import { ITournament, IEvent, IPhase, IPhaseGroup, Entrant, IGGSet } from '../lib/internal'
 import Cache from '../lib/util/Cache'
 
 import testSets from './data/testSets'
@@ -85,9 +85,9 @@ describe('Test Caching', function(){
 
 		expect(keys).to.include(key1)
 
-		let t1PlayersCached = await Cache.get(key1) as Array<Player>;
+		let t1PlayersCached = await Cache.get(key1) as Array<Entrant>;
 		t1PlayersCached.forEach(element => {
-			expect(element).to.be.instanceof(Player)
+			expect(element).to.be.instanceof(Entrant)
 		})
 
 		/*
@@ -356,14 +356,14 @@ describe('Test Caching', function(){
 		expect(keys).to.include(key1)
 		expect(keys).to.include(key2)
 
-		let pg1PlayersCached = await Cache.get(key1) as Array<Player>;
-		let pg2PlayersCached = await Cache.get(key2) as Array<Player>;
+		let pg1PlayersCached = await Cache.get(key1) as Array<Entrant>;
+		let pg2PlayersCached = await Cache.get(key2) as Array<Entrant>;
 
 		pg1PlayersCached.forEach(element => {
-			expect(element).to.be.instanceof(Player)
+			expect(element).to.be.instanceof(Entrant)
 		})
 		pg2PlayersCached.forEach(element => {
-			expect(element).to.be.instanceof(Player)
+			expect(element).to.be.instanceof(Entrant)
 		})
 
 		return true

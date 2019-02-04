@@ -9,7 +9,7 @@ import cap from 'chai-as-promised'
 chai.use(cap)
 const {expect} = chai
 
-import {Event, Phase, PhaseGroup, IPhase, GGSet, Player} from '../lib/internal'
+import {Event, Phase, PhaseGroup, IPhase, GGSet, Entrant} from '../lib/internal'
 import Cache from '../lib/util/Cache'
 
 import expected from './data/testSets'
@@ -186,7 +186,7 @@ describe('Smash GG Phase', function(){
 		expect(players1.length).to.be.equal(156);
 
 		players1.forEach(set => {
-			expect(set).to.be.instanceof(Player)
+			expect(set).to.be.instanceof(Entrant)
 		})
 
 		return true;
@@ -200,7 +200,7 @@ describe('Smash GG Phase', function(){
 		expect(players2.length).to.be.equal(678);
 
 		players2.forEach(set => {
-			expect(set).to.be.instanceof(Player)
+			expect(set).to.be.instanceof(Entrant)
 		})
 
 		return true

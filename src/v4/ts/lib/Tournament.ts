@@ -25,7 +25,7 @@ export namespace ITournament{
 		rawEncoding: string
 		data: Data | string
 		
-		getAllPlayers(options: Options) : Promise<Player[]> 
+		getAllPlayers(options: Options) : Promise<Entrant[]> 
 
 		getAllSets(options: Options) : Promise<GGSet[]>
 
@@ -190,8 +190,8 @@ export namespace ITournament{
 import * as Common from './util/Common'
 import Cache from './util/Cache'
 import log from './util/Logger'
-import { Event, Phase, PhaseGroup, Player, GGSet, Organizer, Venue } from './internal'
-import { IEvent, IPhase, IPhaseGroup, IPlayer, IGGSet } from './internal'
+import { Event, Phase, PhaseGroup, Entrant, GGSet, Organizer, Venue } from './internal'
+import { IEvent, IPhase, IPhaseGroup, Entrant, IGGSet } from './internal'
 
 import Encoder from './util/Encoder'
 // import Fetcher from './util/EntityFetcher'
@@ -319,7 +319,7 @@ export class Tournament extends EventEmitter implements ITournament.Tournament{
 	}
 
 	/** PROMISES **/
-	async getAllPlayers(options: Options={}) : Promise<Player[]> {
+	async getAllPlayers(options: Options={}) : Promise<Entrant[]> {
 		log.debug('Tournament.getAllPlayers called');
 
 		// parse options
@@ -329,18 +329,18 @@ export class Tournament extends EventEmitter implements ITournament.Tournament{
 			log.info('Gettings players for ' + this.name);
 			let cacheKey: string = format('tournament::%s::players', this.name);
 			if(options.isCached){
-				let cached: Array<Player> = await Cache.get(cacheKey) as Array<Player>;
+				let cached: Array<Entrant> = await Cache.get(cacheKey) as Array<Entrant>;
 				if(cached) return cached;
 			}
 			
 			let groups: Array<Entity> = this.getData().entities.groups;
-			let fn = async (group: Entity) : Promise<Player[]> => {
+			let fn = async (group: Entity) : Promise<Entrant[]> => {
 				let PG: PhaseGroup = await PhaseGroup.getPhaseGroup(group.id);
 				return await PG.getPlayers();
 			};
-			let allPlayers: Player[][] = await pmap(groups, fn, {concurrency: options.concurrency});
+			let allPlayers: Entrant[][] = await pmap(groups, fn, {concurrency: options.concurrency});
 
-			let flattened: Player[] = _.flatten(allPlayers);
+			let flattened: Entrant[] = _.flatten(allPlayers);
 			flattened = _.uniqBy(flattened, 'id');
 			
 			await Cache.set(cacheKey, flattened);

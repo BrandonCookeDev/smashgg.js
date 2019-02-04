@@ -35,6 +35,8 @@ export class Seed implements ISeed.Seed{
 	//static parse(data: )
 }
 
+export class 
+
 export namespace ISeed{
 	export interface Seed{
 		id: number,

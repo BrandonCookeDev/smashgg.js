@@ -1,15 +1,30 @@
 
-import {Entrant} from './internal'
+import {Entrant} from './Entrant'
+import {User} from './User'
+import NI from './util/NetworkInterface'
 
 export class Standings implements IStandings.Standings{
     id: number | null
     placement: number | null
-    player: Entrant | null
+    entrantId: number | null
     
-    constructor(id: number | null, placement: number | null, player: Entrant | null){
-        this.id = id;
-        this.placement = placement;
-        this.player = player;
+    constructor(
+        id: number | null, 
+        placement: number | null, 
+        entrantId: number | null,
+        userIds: number[] | null
+    ){
+        this.id = id
+        this.placement = placement
+        this.entrantId = entrantId
+    }
+}
+
+export class StandingsStats implements IStandings.Stats{
+    score: IStandings.Score
+
+    constructor(score: IStandings.Score){
+        this.score = score
     }
 }
 
@@ -17,6 +32,15 @@ export namespace IStandings{
     export interface Standings{
         id: number | null,
         placement: number | null,
-        player: Entrant | null
+        entrantId: number | null
+    }
+
+    export interface Stats{
+        score: Score
+    }
+
+    export interface Score{
+        label: string,
+        value: number
     }
 }

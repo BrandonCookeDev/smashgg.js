@@ -21,62 +21,30 @@ export namespace IEvent{
 		teamNameAllowed: boolean | null
 		teamManagementDeadline: number | null
 	
-		getData() : Data
-				
-		//getEvent(eventName: string, tournamentName: string, options: Options) : Promise<Event>
-	
-		//getEventById(id: number, options: Options) : Promise<Event>
-			
-		load(options: Options, tournamentOptions: TournamentOptions) : Promise<Data | string>
-				
 		getEventPhases(options: Options) : Promise<Phase[]>
-	
 		getEventPhaseGroups(options: Options) : Promise<PhaseGroup[]>
-			
 		getSets(options: Options) : Promise<GGSet[]>
-			
-		getPlayers(options: Options) : Promise<Player[]>
-				
+		getPlayers(options: Options) : Promise<Entrant[]>
 		getIncompleteSets(options: Options) : Promise<GGSet[]>
-	
 		getCompleteSets(options: Options) : Promise<GGSet[]>
-			
 		getSetsXMinutesBack(minutesBack: number, options: Options) : Promise<GGSet[]> 
-			
 		getFromEventEntities(prop: string) : any
-
 		getFromTournamentEntities(prop: string) : any
-
 		getId() : number
-			
 		getName() : string
-
 		getSlug() : string
-
 		getTournamentId() : number
-
 		getTournamentName() : string
-
 		getTournamentSlug() : string
-			
 		getStartTime() : Date | null
-			
 		getStartTimeString() : string | null
-		
 		getState() : string | null
-		
 		getNumEntrants() : number | null
-		
 		getCheckInBuffer() : number | null
-		
 		getCheckInDuration() : number | null
-		
 		getCheckInEnabled() : boolean | null
-		
 		getIsOnline() : boolean | null
-		
 		getTeamNameAllowed() : boolean | null
-		
 		getTeamManagementDeadline() : number | null
 	}
 
@@ -167,7 +135,7 @@ import { EventEmitter } from 'events'
 import { format } from 'util'
 
 import * as Common from './util/Common'
-import { Tournament, ITournament, Phase, PhaseGroup, Player, GGSet } from './internal'
+import { Tournament, ITournament, Phase, PhaseGroup, Entrant, GGSet } from './internal'
 import { getTournamentData, getEventDataById, getEventData } from './internal'
 import log from './util/Logger'
 import Cache from './util/Cache'
@@ -457,7 +425,7 @@ export class Event extends EventEmitter implements IEvent.Event{
 		}
 	}
 
-	async getPlayers(options: Options={}) : Promise<Player[]>{
+	async getPlayers(options: Options={}) : Promise<Entrant[]>{
 		log.debug('Event.getSets called');
 		try{
 			// parse options
@@ -465,7 +433,7 @@ export class Event extends EventEmitter implements IEvent.Event{
 
 			let cacheKey = format('event::%s::%s::players', this.tournamentId, this.eventId);
 			if(options.isCached){
-				let cached: Array<Player> = await Cache.get(cacheKey) as Array<Player>;
+				let cached: Array<Entrant> = await Cache.get(cacheKey) as Array<Entrant>;
 				if(cached) return cached;
 			}
 
@@ -473,9 +441,9 @@ export class Event extends EventEmitter implements IEvent.Event{
 			let fn = async (group: PhaseGroup) => {
 				return await group.getPlayers(options);
 			};
-			let players: Player[][] = await pmap(groups, fn, {concurrency: options.concurrency});
+			let players: Entrant[][] = await pmap(groups, fn, {concurrency: options.concurrency});
 
-			let flattened: Array<Player> = _.flatten(players);
+			let flattened: Array<Entrant> = _.flatten(players);
 			flattened = _.uniqBy(flattened, 'id');
 			if(options.isCached) await Cache.set(cacheKey, flattened);
 			return flattened;

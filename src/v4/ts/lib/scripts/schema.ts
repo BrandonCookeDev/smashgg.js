@@ -35,9 +35,18 @@ isOnline
 teamNameAllowed
 teamManagementDeadline`
 
-export const phase = ``
+export const phase = `id
+name
+numSeeds
+groupCount`
 
-export const phaseGroup = ``
+export const phaseGroup = `id
+displayIdentifier
+firstRoundTime
+state
+phaseId
+waveId
+tiebreakOrder`
 
 
 // smash.gg participant

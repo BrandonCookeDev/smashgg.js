@@ -1,11 +1,5 @@
 import _ from 'lodash'
-import pmap from 'p-map'
-import { format } from 'util'
-import moment from 'moment'
-import request from 'request-promise'
-import { EventEmitter } from 'events'
 
-import Cache from './util/Cache'
 import {Entrant, GGSet} from './internal'
 import Encoder from './util/Encoder'
 import log from './util/Logger'
@@ -55,6 +49,21 @@ export class PhaseGroup implements IPhaseGroup.PhaseGroup{
 		this.tiebreakOrder = tiebreakOrder  
 	}
 
+	static parse(data: IPhaseGroup.PhaseGroupData) : PhaseGroup{
+		return new PhaseGroup(
+			data.id,
+			data.phaseId,
+			data.displayIdentifier,
+			data.firstRoundTime,
+			data.state,
+			data.waveId,
+			data.tiebreakOrder
+		)
+	}
+
+	static parseFull(data: IPhaseGroup.Data) : PhaseGroup[]{
+		return data.event.phaseGroups.map(pg => PhaseGroup.parse(pg));
+	}
 }
 
 export namespace IPhaseGroup{
@@ -83,73 +92,23 @@ export namespace IPhaseGroup{
 		getSetsXMinutesBack(minutes: number, options: Options) : Promise<GGSet[]>
 		getFromDataEntities(prop: string) : any
 		getPhaseId() : number
-		getEntrants() : Array<Entrant.Entity> | [] 
+		getEntrants() : Entrant[] | [] 
 		findPlayerByParticipantId(id: number) : Promise<Entrant | undefined>
 	}
 
-	export interface Options{
-		isCached?: boolean,
-		rawEncoding?: string,
-		expands?: Expands
-	}
-
-	export interface Expands{
-		sets: boolean,
-		entrants: boolean,
-		standings: boolean,
-		seeds: boolean
-	}
-
 	export interface Data{
-		entities: {
-			id: number,
-			sets?: [IGGSet.SetEntity],
-			entrants?: [PlayerEntity],
-			standings?: [{
-				[x: string]: any
-			}],
-			seeds?: [{
-				[x: string]: any
-			}],
-			[x: string]: any
+		event:{
+			phaseGroups: PhaseGroupData[]
 		}
 	}
 
-	export function parseOptions(options: Options) : Options{
-		return{
-			expands: {
-				sets: (options.expands != undefined  && options.expands.sets == false) ? false : true,
-				entrants: (options.expands != undefined  && options.expands.entrants == false) ? false : true,
-				standings: (options.expands != undefined  && options.expands.standings == false) ? false : true,
-				seeds: (options.expands != undefined  && options.expands.seeds == false) ? false : true
-			},
-			isCached: options.isCached != undefined ? options.isCached === true : true,
-			rawEncoding: Encoder.determineEncoding(options.rawEncoding)
-		}
-	}
-
-	export function getDefaultOptions() : Options{
-		return {
-			isCached: true,
-			rawEncoding: 'json',
-			expands: getDefaultExpands()
-		}
-	}
-
-	export function getDefaultData(): Data{
-		return {
-			entities:{
-				id: 0
-			}
-		}
-	}
-
-	export function getDefaultExpands() : Expands{
-		return {
-			sets: true,
-			entrants: true,
-			standings: true,
-			seeds: true
-		}
+	export interface PhaseGroupData{
+		id: number
+		phaseId: number
+		displayIdentifier: string | null
+		firstRoundTime: number | null
+		state: number | null
+		waveId: number | null
+		tiebreakOrder: object | null
 	}
 }

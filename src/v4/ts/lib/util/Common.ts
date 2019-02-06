@@ -22,6 +22,15 @@ const losersRoundRegex = new RegExp(/Losers Round ([0-9])/)
 
 import Options = ICommon.Options
 
+export function merge(target: string, obj: any): string{
+	let ret = _.clone(target)
+	for(let prop in obj){
+		let regex = new RegExp(`{${prop}}`, 'g')
+		ret = ret.replace(regex, obj[prop])
+	}
+	return ret
+}
+
 export function sleep(ms: number) : Promise<null | undefined>{
 	return new Promise(function(resolve){
 		setTimeout(resolve, ms)

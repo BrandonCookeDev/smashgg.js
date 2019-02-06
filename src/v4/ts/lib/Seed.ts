@@ -9,8 +9,6 @@ export class Seed implements ISeed.Seed{
 	seedNumber: number
 	placement: number
 	isBye: boolean
-	entrant: Entrant
-	stadings: Standings
 
 	constructor(
 		id: number,
@@ -18,9 +16,7 @@ export class Seed implements ISeed.Seed{
 		placeholderName: string,
 		seedNumber: number,
 		placement: number,
-		isBye: boolean,
-		entrant: Entrant,
-		stadings: Standings
+		isBye: boolean
 	){
 		this.id = id
 		this.entrantId = entrantId
@@ -28,14 +24,26 @@ export class Seed implements ISeed.Seed{
 		this.seedNumber = seedNumber
 		this.placement = placement
 		this.isBye = isBye
-		this.entrant = entrant
-		this.stadings = stadings
 	}
 
-	//static parse(data: )
+	static parse(data: ISeed.SeedData) : Seed {
+		return new Seed(
+			data.id,
+			data.entrantId,
+			data.placeholderName,
+			data.seedNumber,
+			data.placement,
+			data.isBye
+		)
+	}
+
+	static parseFull(data: ISeed.Data) : Seed[]{
+		return data.seed.map(seedData => Seed.parse(seedData))
+	}
+
+	// TODO get entrant.... somehow
 }
 
-export class 
 
 export namespace ISeed{
 	export interface Seed{
@@ -44,9 +52,19 @@ export namespace ISeed{
 		placeholderName: string,
 		seedNumber: number,
 		placement: number,
-		isBye: boolean,
-		entrant: Entrant,
-		stadings: Standings
-		
+		isBye: boolean
+	}
+
+	export interface Data{
+		seed: SeedData[]
+	}
+
+	export interface SeedData{
+		id: number,
+		entrantId: number,
+		placeholderName: string,
+		seedNumber: number,
+		placement: number,
+		isBye: boolean
 	}
 }

@@ -13,6 +13,10 @@ export class Prize implements IPrize.Prize{
             this.payoutTotal = payoutTotal;
             this.prizing = prizing;
     }
+
+    static parse(data: IPrize.Prizing) : Prize  | null{
+        return null
+    }
 }
 
 export namespace IPrize{
@@ -27,5 +31,19 @@ export namespace IPrize{
         id: number,
         placement: number,
         percent: number
+    }
+
+    export interface Data{
+        prize: {
+            markdown: string | null
+            payoutType: string | null
+            payoutTotal: string | null
+        }
+    }
+
+    export interface PrieData{
+        markdown: string | null
+        payoutType: string | null
+        payoutTotal: string | null
     }
 }

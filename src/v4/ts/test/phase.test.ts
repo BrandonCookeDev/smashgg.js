@@ -1,23 +1,28 @@
-/* eslint-disable */
+import path from 'path'
+const ROOT = path.join(__dirname, '..', '..', '..', '..', '.env');
+import {config} from 'dotenv'
+config({path: ROOT})
+
 import '../lib/util/ErrorHandler'
 
 import _ from 'lodash'
 import moment from 'moment'
-import sinon from 'sinon'
 import chai from 'chai'
 import cap from 'chai-as-promised'
 chai.use(cap)
 const {expect} = chai
 
-import {Event, Phase, PhaseGroup, IPhase, GGSet, Entrant} from '../lib/internal'
-import Cache from '../lib/util/Cache'
+import {Phase, IPhase} from '../lib/Phase'
+import Initializer from '../lib/util/Initializer';
+import * as testData from './data/phase.testData'
 
-import expected from './data/testSets'
 
-
-let ID1 = 111483
-let ID2 = 45262
-let ID3 = 100046
+const ID1 = 111483
+const ID2 = 45262
+const ID3 = 100046
+const EVENT_ID_1 = 25545
+const EVENT_ID_2 = 11787
+const EVENT_ID_3 = 23596
 
 let phase1: Phase; 
 let phase2: Phase; 
@@ -25,60 +30,78 @@ let phase3: Phase;
 let concurrency = 4;
 
 
-function loadPhase(id: number, options: IPhase.Options) : Promise<Phase>{
-	return new Promise(function(resolve, reject){
-		let P = new Phase(id, options)
-		P.on('ready', function(){
-			resolve(P)
-		})
-	})
-}
-
 describe('Smash GG Phase', function(){
+	this.timeout(10000)
 
-	before( () => console.log('concurrency set to %s', concurrency) )
-
-	beforeEach(function(){
-		Cache.flush()
+	before(async () => {
+		await Initializer(process.env.API_TOKEN!)
+		phase1 = await Phase.get(ID1, EVENT_ID_1)
+		phase2 = await Phase.get(ID2, EVENT_ID_2)
+		phase3 = await Phase.get(ID3, EVENT_ID_3)
+		return
 	})
 
-	it('should correctly load the Phase', async function(){
-		this.timeout(10000)
 
-		phase1 = await loadPhase(ID1, {rawEncoding: 'utf8'});
-		phase2 = await loadPhase(ID2, {});
-		phase3 = await loadPhase(ID3, {rawEncoding: 'base64'});
-		return true;
-	});
-
-	it('should implement the convenience methods correctly', async function(){
-		this.timeout(10000)
-
-		let cPhase1 = await Phase.getPhase(ID1, {rawEncoding: 'utf8'})
-		let cPhase2 = await Phase.getPhase(ID2)
-		let cPhase3 = await Phase.getPhase(ID3, {rawEncoding: 'base64'})
-
-		expect(cPhase1.data).to.deep.equal(phase1.data)
-		expect(cPhase2.data).to.deep.equal(phase2.data)
-		expect(cPhase3.data).to.deep.equal(phase3.data)
-
-		return true
+	// id
+	it('should get the correct id of the Phase 1', function(){
+		expect(phase1.getId()).to.be.equal(testData.phase1.id)
+	})	
+	it('should get the correct id of the Phase 2', function(){
+		expect(phase2.getId()).to.be.equal(testData.phase2.id)
+	})
+	it('should get the correct id of the Phase 3', function(){
+		expect(phase3.getId()).to.be.equal(testData.phase3.id)
 	})
 
-	it('should get the name of the Phase', function(done){
-		expect(phase1.getName()).to.be.equal('Pools')
-		expect(phase2.getName()).to.be.equal('Pools')
-		expect(phase3.getName()).to.be.equal('Bracket Pools')
-		done()
+	// name
+	it('should get the name of the Phase 1', function(){
+		expect(phase1.getName()).to.be.equal(testData.phase1.name)
+	})
+	it('should get the name of the Phase 2', function(){
+		expect(phase2.getName()).to.be.equal(testData.phase2.name)
+	})
+	it('should get the name of the Phase 3', function(){
+		expect(phase3.getName()).to.be.equal(testData.phase3.name)
 	})
 
-	it('should get the event id', function(done){
-		expect(phase1.getEventId()).to.be.equal(25545)
-		expect(phase2.getEventId()).to.be.equal(11787)
-		expect(phase3.getEventId()).to.be.equal(23596)
-		done()
+
+	// event id
+	it('should get the event id 1', function(){
+		expect(phase1.getEventId()).to.be.equal(EVENT_ID_1)
+	})
+	it('should get the event id 2', function(){
+		expect(phase2.getEventId()).to.be.equal(EVENT_ID_2)
+	})
+	it('should get the event id 3', function(){
+		expect(phase3.getEventId()).to.be.equal(EVENT_ID_3)
 	})
 
+
+	// num seeds
+	it('should get the Phase num seeds 1', function(){
+		expect(phase1.getNumSeeds()).to.be.equal(testData.phase1.numSeeds)
+	})
+	it('should get the Phase num seeds 2', function(){
+		expect(phase2.getNumSeeds()).to.be.equal(testData.phase2.numSeeds)
+	})
+	it('should get the Phase num seeds 3', function(){
+		expect(phase3.getNumSeeds()).to.be.equal(testData.phase3.numSeeds)
+	})
+
+
+	// group count
+	it('should get the Phase group count 1', function(){
+		expect(phase1.getGroupCount()).to.be.equal(testData.phase1.groupCount)
+	})
+	it('should get the Phase group count 2', function(){
+		expect(phase2.getGroupCount()).to.be.equal(testData.phase2.groupCount)
+	})
+	it('should get the Phase group count 3', function(){
+		expect(phase3.getGroupCount()).to.be.equal(testData.phase3.groupCount)
+	})
+
+
+	/*
 	it('should correctly get all phase groups', async function(){
 		this.timeout(45000)
 
@@ -227,4 +250,5 @@ describe('Smash GG Phase', function(){
 		clock.restore()
 		return true
 	})
+	*/
 })

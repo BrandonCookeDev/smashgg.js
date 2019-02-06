@@ -1,6 +1,6 @@
 /** aka User **/
 import NI from './util/NetworkInterface'
-import {GGSet, IGGSet} from './internal'
+import {GGSet, IGGSet} from './GGSet'
 import * as Common from './util/Common'
 import * as queries from './scripts/userQueries'
 import Log from './util/Logger'

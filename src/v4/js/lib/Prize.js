@@ -7,6 +7,9 @@ var Prize = /** @class */ (function () {
         this.payoutTotal = payoutTotal;
         this.prizing = prizing;
     }
+    Prize.parse = function (data) {
+        return null;
+    };
     return Prize;
 }());
 exports.Prize = Prize;

@@ -132,7 +132,7 @@ describe('Test Caching', function () {
                     case 4:
                         t1PlayersCached = _a.sent();
                         t1PlayersCached.forEach(function (element) {
-                            expect(element).to.be.instanceof(internal_1.Player);
+                            expect(element).to.be.instanceof(internal_1.Entrant);
                         });
                         /*
                         let t2 = await loadTournament(TOURNAMENT_NAME2)
@@ -502,10 +502,10 @@ describe('Test Caching', function () {
                     case 7:
                         pg2PlayersCached = _a.sent();
                         pg1PlayersCached.forEach(function (element) {
-                            expect(element).to.be.instanceof(internal_1.Player);
+                            expect(element).to.be.instanceof(internal_1.Entrant);
                         });
                         pg2PlayersCached.forEach(function (element) {
-                            expect(element).to.be.instanceof(internal_1.Player);
+                            expect(element).to.be.instanceof(internal_1.Entrant);
                         });
                         return [2 /*return*/, true];
                 }
@@ -579,7 +579,7 @@ function loadEvent(eventName, tournamentName) {
     });
 }
 function loadPhase(id, expands, isCached) {
-    if (expands === void 0) { expands = internal_2.IPhase.getDefaultExpands(); }
+    if (expands === void 0) { expands = IPhase.getDefaultExpands(); }
     if (isCached === void 0) { isCached = true; }
     return new Promise(function (resolve, reject) {
         var options = {
@@ -593,7 +593,7 @@ function loadPhase(id, expands, isCached) {
     });
 }
 function loadPhaseGroup(id, expands, isCached) {
-    if (expands === void 0) { expands = internal_2.IPhaseGroup.getDefaultExpands(); }
+    if (expands === void 0) { expands = IPhaseGroup.getDefaultExpands(); }
     if (isCached === void 0) { isCached = true; }
     return new Promise(function (resolve, reject) {
         var options = {

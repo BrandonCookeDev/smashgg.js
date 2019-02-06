@@ -293,7 +293,7 @@ describe('Smash GG Tournament', function () {
                         };
                         expect(hasDuplicates(players)).to.be.false;
                         players.forEach(function (player) {
-                            expect(player).to.be.an.instanceof(internal_1.Player);
+                            expect(player).to.be.an.instanceof(internal_1.Entrant);
                         });
                         return [2 /*return*/, true];
                 }
@@ -316,7 +316,7 @@ describe('Smash GG Tournament', function () {
                         };
                         expect(hasDuplicates(players)).to.be.false;
                         players.forEach(function (player) {
-                            expect(player).to.be.an.instanceof(internal_1.Player);
+                            expect(player).to.be.an.instanceof(internal_1.Entrant);
                         });
                         return [2 /*return*/, true];
                 }

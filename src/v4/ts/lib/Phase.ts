@@ -4,7 +4,8 @@ import _ from 'lodash'
 
 import NI from './util/NetworkInterface'
 import * as queries from './scripts/phaseQueries'
-import {PhaseGroup, GGSet, IGGSet} from './internal'
+import {PhaseGroup} from './PhaseGroup' //TODO change this to internal
+import {GGSet, IGGSet} from './GGSet'
 import {Entrant, IEntrant} from './Entrant'
 import {Seed, ISeed} from './Seed'
 import PaginatedQuery from './util/PaginatedQuery'
@@ -38,14 +39,20 @@ export class Phase implements IPhase.Phase{
 		this.groupCount = groupCount
 	}
 
-	static parse(data: IPhase.Data) : Phase{
+	static parse(data: IPhase.PhaseData, eventId: number) : Phase{
 		return new Phase(
-			data.phase.id,
 			data.id,
-			data.phase.name,
-			data.phase.numSeeds,
-			data.phase.groupCount
+			eventId || -1,
+			data.name,
+			data.numSeeds,
+			data.groupCount
 		)
+	}
+
+	static async get(id: number, eventId: number) : Promise<Phase> {
+		log.info('Getting Phase with id %s and event id %s', id, eventId)
+		let data: IPhase.Data = await NI.query(queries.phase, {id: id});
+		return Phase.parse(data.phase, eventId);
 	}
 	
 	getId(): number{
@@ -137,14 +144,13 @@ export namespace IPhase{
 
 	}
 
+
 	export interface Data{
-		id: number
 		phase: PhaseData
 	}
 
 	export interface PhaseData{
 		id: number,
-		eventId: number,
 		name: string,
 		numSeeds: number,
 		groupCount: number

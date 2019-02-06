@@ -19,6 +19,15 @@ var TOP_8_LABELS_STANDALONE = [
     'Losers Round 1'
 ];
 var losersRoundRegex = new RegExp(/Losers Round ([0-9])/);
+function merge(target, obj) {
+    var ret = lodash_1.default.clone(target);
+    for (var prop in obj) {
+        var regex = new RegExp("{" + prop + "}", 'g');
+        ret = ret.replace(regex, obj[prop]);
+    }
+    return ret;
+}
+exports.merge = merge;
 function sleep(ms) {
     return new Promise(function (resolve) {
         setTimeout(resolve, ms);

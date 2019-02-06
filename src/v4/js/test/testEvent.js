@@ -444,7 +444,7 @@ describe('Smash GG Event', function () {
                         players1 = _a.sent();
                         expect(players1.length).to.be.equal(156);
                         players1.forEach(function (set) {
-                            expect(set).to.be.instanceof(internal_1.Player);
+                            expect(set).to.be.instanceof(internal_1.Entrant);
                         });
                         return [2 /*return*/, true];
                 }
@@ -463,7 +463,7 @@ describe('Smash GG Event', function () {
                         players2 = _a.sent();
                         expect(players2.length).to.be.equal(678);
                         players2.forEach(function (set) {
-                            expect(set).to.be.instanceof(internal_1.Player);
+                            expect(set).to.be.instanceof(internal_1.Entrant);
                         });
                         return [2 /*return*/, true];
                 }

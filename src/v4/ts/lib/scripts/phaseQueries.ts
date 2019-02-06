@@ -1,6 +1,6 @@
 import * as Schema from './schema'
 export const phase = `
-query PhaseQuery($id: id){
+query PhaseQuery($id: Int){
 	phase(id: $id){
 		${Schema.phase}
 	}

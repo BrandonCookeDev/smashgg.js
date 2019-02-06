@@ -47,7 +47,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 /** aka User **/
 var NetworkInterface_1 = __importDefault(require("./util/NetworkInterface"));
-var internal_1 = require("./internal");
+var GGSet_1 = require("./GGSet");
 var Common = __importStar(require("./util/Common"));
 var queries = __importStar(require("./scripts/userQueries"));
 var Logger_1 = __importDefault(require("./util/Logger"));
@@ -129,7 +129,7 @@ var User = /** @class */ (function () {
                         return [4 /*yield*/, NetworkInterface_1.default.query(queries.userRecentGGSets, { id: this.id })];
                     case 1:
                         data = _a.sent();
-                        sets = data.player.recentSets.map(function (setData) { return internal_1.GGSet.parse(setData); });
+                        sets = data.player.recentSets.map(function (setData) { return GGSet_1.GGSet.parse(setData); });
                         return [2 /*return*/, sets];
                 }
             });

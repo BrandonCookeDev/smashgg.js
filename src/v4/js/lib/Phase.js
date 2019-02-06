@@ -1,17 +1,4 @@
 'use strict';
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -50,451 +37,172 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var lodash_1 = __importDefault(require("lodash"));
-var p_map_1 = __importDefault(require("p-map"));
-var util_1 = require("util");
-var request_promise_1 = __importDefault(require("request-promise"));
-var events_1 = require("events");
-var internal_1 = require("./internal");
-var Cache_1 = __importDefault(require("./util/Cache"));
-var Encoder_1 = __importDefault(require("./util/Encoder"));
+var NetworkInterface_1 = __importDefault(require("./util/NetworkInterface"));
+var queries = __importStar(require("./scripts/phaseQueries"));
+var PhaseGroup_1 = require("./PhaseGroup"); //TODO change this to internal
+var GGSet_1 = require("./GGSet");
+var Entrant_1 = require("./Entrant");
+var Seed_1 = require("./Seed");
+var PaginatedQuery_1 = __importDefault(require("./util/PaginatedQuery"));
 var Logger_1 = __importDefault(require("./util/Logger"));
-var PHASE_URL = 'https://api.smash.gg/phase/%s?%s';
-var LEGAL_ENCODINGS = ['json', 'utf8', 'base64'];
-var DEFAULT_ENCODING = 'json';
-var DEFAULT_CONCURRENCY = 4;
-var Common_1 = require("./util/Common");
-var Phase = /** @class */ (function (_super) {
-    __extends(Phase, _super);
-    function Phase(id, options) {
-        if (options === void 0) { options = IPhase.getDefaultOptions(); }
-        var _this = _super.call(this) || this;
-        _this.id = 0;
-        _this.url = '';
-        _this.data = IPhase.getDefaultData();
-        _this.isCached = true;
-        _this.rawEncoding = DEFAULT_ENCODING;
-        _this.expandsString = '';
-        _this.expands = IPhase.getDefaultExpands();
-        if (!id)
-            throw new Error('ID cannot be null for Phase Group');
-        _this.id = id;
-        // parse options
-        options = IPhase.parseOptions(options);
-        _this.isCached = options.isCached;
-        _this.rawEncoding = options.rawEncoding;
-        // CREATE THE EXPANDS STRING
-        _this.expandsString = '';
-        if (options.expands) {
-            _this.expands = Object.assign(_this.expands, options.expands);
-        }
-        for (var property in _this.expands) {
-            if (_this.expands.hasOwnProperty(property))
-                _this.expandsString += util_1.format('expand[]=%s&', property);
-        }
-        _this.url = util_1.format(PHASE_URL, _this.id, _this.expandsString);
-        var ThisPhase = _this;
-        _this.load()
-            .then(function () {
-            var cacheKey = util_1.format('phase::%s::%s', ThisPhase.id, ThisPhase.expandsString);
-            Cache_1.default.set(cacheKey, ThisPhase);
-        })
-            .then(function () {
-            ThisPhase.emitPhaseReady();
-        })
-            .catch(function (err) {
-            console.error('Error creating Tournament. For more info, implement Tournament.on(\'error\')');
-            Logger_1.default.error('Phase error: %s', err.message);
-            ThisPhase.emitPhaseError(err);
-        });
-        return _this;
+var Phase = /** @class */ (function () {
+    function Phase(id, eventId, name, numSeeds, groupCount) {
+        this.id = id;
+        this.eventId = eventId;
+        this.name = name;
+        this.numSeeds = numSeeds;
+        this.groupCount = groupCount;
     }
-    Phase.prototype.loadData = function (data) {
-        var encoded = this.rawEncoding === 'json' ? data : new Buffer(JSON.stringify(data)).toString(this.rawEncoding);
-        this.data = encoded;
-        return encoded;
+    Phase.parse = function (data, eventId) {
+        return new Phase(data.id, eventId || -1, data.name, data.numSeeds, data.groupCount);
     };
-    Phase.prototype.getData = function () {
-        var decoded = this.rawEncoding === 'json' ? this.data : JSON.parse(new Buffer(this.data.toString(), this.rawEncoding).toString('utf8'));
-        return decoded;
-    };
-    // TODO implement
-    Phase.parse = function () {
-        var P = new Phase(0, {});
-        return P;
-    };
-    // Convenience Methods
-    Phase.getPhase = function (id, options) {
-        if (options === void 0) { options = {}; }
-        return new Promise(function (resolve, reject) {
-            try {
-                var P_1 = new Phase(id, options);
-                P_1.on('ready', function () {
-                    resolve(P_1);
-                });
-                P_1.on('error', function (e) {
-                    Logger_1.default.error('getPhase error: %s', e);
-                    reject(e);
-                });
-            }
-            catch (e) {
-                Logger_1.default.error('getPhase error: %s', e);
-                reject(e);
-            }
-        });
-    };
-    Phase.prototype.load = function () {
+    Phase.get = function (id, eventId) {
         return __awaiter(this, void 0, void 0, function () {
-            var cacheKey, cached, response, encoded, e_1, s;
+            var data;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        Logger_1.default.debug('Phase.load called');
-                        Logger_1.default.verbose('Creating Phase from url: %s', this.url);
-                        _a.label = 1;
+                        Logger_1.default.info('Getting Phase with id %s and event id %s', id, eventId);
+                        return [4 /*yield*/, NetworkInterface_1.default.query(queries.phase, { id: id })];
                     case 1:
-                        _a.trys.push([1, 9, , 10]);
-                        if (!!this.isCached) return [3 /*break*/, 3];
-                        return [4 /*yield*/, request_promise_1.default(this.url)];
-                    case 2: return [2 /*return*/, _a.sent()];
-                    case 3:
-                        cacheKey = util_1.format('phase::%s::%s::%s::data', this.id, this.rawEncoding, this.expandsString);
-                        return [4 /*yield*/, Cache_1.default.get(cacheKey)];
-                    case 4:
-                        cached = _a.sent();
-                        if (!!cached) return [3 /*break*/, 7];
-                        return [4 /*yield*/, request_promise_1.default(this.url)];
-                    case 5:
-                        response = _a.sent();
-                        encoded = this.loadData(JSON.parse(response));
-                        return [4 /*yield*/, Cache_1.default.set(cacheKey, encoded)];
-                    case 6:
-                        _a.sent();
-                        return [2 /*return*/, encoded];
-                    case 7:
-                        this.data = cached;
-                        return [2 /*return*/, this.data];
-                    case 8: return [3 /*break*/, 10];
-                    case 9:
-                        e_1 = _a.sent();
-                        Logger_1.default.error('Phase.load error: %s', e_1.message);
-                        if (e_1.name === 'StatusCodeError' && e_1.message.indexOf('404') > -1) {
-                            s = util_1.format('No Phase with id [%s] ( %s )', this.id, this.url);
-                            Logger_1.default.error(s);
-                        }
-                        throw e_1;
-                    case 10: return [2 /*return*/];
+                        data = _a.sent();
+                        return [2 /*return*/, Phase.parse(data.phase, eventId)];
                 }
             });
         });
     };
-    /** PROMISES **/
-    Phase.prototype.getPhaseGroups = function (options) {
-        if (options === void 0) { options = {}; }
-        return __awaiter(this, void 0, void 0, function () {
-            var cacheKey, cached, groups, fn, allPhaseGroups, err_1;
-            var _this = this;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        Logger_1.default.debug('Phase.getGroups called');
-                        // parse options
-                        options = Common_1.ICommon.parseOptions(options);
-                        _a.label = 1;
-                    case 1:
-                        _a.trys.push([1, 5, , 6]);
-                        cacheKey = util_1.format('phase::%s::groups', this.id);
-                        if (!options.isCached) return [3 /*break*/, 3];
-                        return [4 /*yield*/, Cache_1.default.get(cacheKey)];
-                    case 2:
-                        cached = _a.sent();
-                        if (cached)
-                            return [2 /*return*/, cached];
-                        _a.label = 3;
-                    case 3:
-                        groups = this.getData().entities.groups;
-                        fn = function (group) { return __awaiter(_this, void 0, void 0, function () {
-                            return __generator(this, function (_a) {
-                                switch (_a.label) {
-                                    case 0: return [4 /*yield*/, internal_1.PhaseGroup.getPhaseGroup(group.id)];
-                                    case 1: return [2 /*return*/, _a.sent()];
-                                }
-                            });
-                        }); };
-                        return [4 /*yield*/, p_map_1.default(groups, fn, { concurrency: options.concurrency })];
-                    case 4:
-                        allPhaseGroups = _a.sent();
-                        allPhaseGroups = lodash_1.default.uniqBy(allPhaseGroups, 'id');
-                        Cache_1.default.set(cacheKey, allPhaseGroups);
-                        return [2 /*return*/, allPhaseGroups];
-                    case 5:
-                        err_1 = _a.sent();
-                        Logger_1.default.error('Phase.getGroups: ' + err_1);
-                        throw err_1;
-                    case 6: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    Phase.prototype.getSets = function (options) {
-        if (options === void 0) { options = {}; }
-        return __awaiter(this, void 0, void 0, function () {
-            var cacheKey, cached, phaseGroups, fn, sets, flattened, e_2;
-            var _this = this;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        Logger_1.default.debug('Phase.getSets called');
-                        _a.label = 1;
-                    case 1:
-                        _a.trys.push([1, 8, , 9]);
-                        // parse options
-                        options = Common_1.ICommon.parseOptions(options);
-                        cacheKey = util_1.format('phase::%s::sets', this.id);
-                        if (!options.isCached) return [3 /*break*/, 3];
-                        return [4 /*yield*/, Cache_1.default.get(cacheKey)];
-                    case 2:
-                        cached = _a.sent();
-                        if (cached)
-                            return [2 /*return*/, cached];
-                        _a.label = 3;
-                    case 3: return [4 /*yield*/, this.getPhaseGroups(options)];
-                    case 4:
-                        phaseGroups = _a.sent();
-                        fn = function (group) { return __awaiter(_this, void 0, void 0, function () {
-                            return __generator(this, function (_a) {
-                                switch (_a.label) {
-                                    case 0: return [4 /*yield*/, group.getSets(options)];
-                                    case 1: return [2 /*return*/, _a.sent()];
-                                }
-                            });
-                        }); };
-                        return [4 /*yield*/, p_map_1.default(phaseGroups, fn, { concurrency: options.concurrency })];
-                    case 5:
-                        sets = _a.sent();
-                        flattened = lodash_1.default.flatten(sets);
-                        if (!options.isCached) return [3 /*break*/, 7];
-                        return [4 /*yield*/, Cache_1.default.set(cacheKey, flattened)];
-                    case 6:
-                        _a.sent();
-                        _a.label = 7;
-                    case 7: return [2 /*return*/, flattened];
-                    case 8:
-                        e_2 = _a.sent();
-                        Logger_1.default.error('Phase.getSets error: %s', e_2);
-                        throw e_2;
-                    case 9: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    Phase.prototype.getPlayers = function (options) {
-        if (options === void 0) { options = {}; }
-        return __awaiter(this, void 0, void 0, function () {
-            var cacheKey, cached, phaseGroups, fn, players, flattened, e_3;
-            var _this = this;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        Logger_1.default.debug('Phase.getPlayers called');
-                        _a.label = 1;
-                    case 1:
-                        _a.trys.push([1, 8, , 9]);
-                        // parse options
-                        options = Common_1.ICommon.parseOptions(options);
-                        cacheKey = util_1.format('phase::%s::players', this.id);
-                        if (!options.isCached) return [3 /*break*/, 3];
-                        return [4 /*yield*/, Cache_1.default.get(cacheKey)];
-                    case 2:
-                        cached = _a.sent();
-                        if (cached)
-                            return [2 /*return*/, cached];
-                        _a.label = 3;
-                    case 3: return [4 /*yield*/, this.getPhaseGroups(options)];
-                    case 4:
-                        phaseGroups = _a.sent();
-                        fn = function (group) { return __awaiter(_this, void 0, void 0, function () {
-                            return __generator(this, function (_a) {
-                                switch (_a.label) {
-                                    case 0: return [4 /*yield*/, group.getPlayers(options)];
-                                    case 1: return [2 /*return*/, _a.sent()];
-                                }
-                            });
-                        }); };
-                        return [4 /*yield*/, p_map_1.default(phaseGroups, fn, { concurrency: options.concurrency })];
-                    case 5:
-                        players = _a.sent();
-                        flattened = lodash_1.default.flatten(players);
-                        flattened = lodash_1.default.uniqBy(flattened, 'id');
-                        if (!options.isCached) return [3 /*break*/, 7];
-                        return [4 /*yield*/, Cache_1.default.set(cacheKey, flattened)];
-                    case 6:
-                        _a.sent();
-                        _a.label = 7;
-                    case 7: return [2 /*return*/, flattened];
-                    case 8:
-                        e_3 = _a.sent();
-                        Logger_1.default.error('Phase.getPlayers error: %s', e_3);
-                        throw e_3;
-                    case 9: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    Phase.prototype.getIncompleteSets = function (options) {
-        if (options === void 0) { options = {}; }
-        return __awaiter(this, void 0, void 0, function () {
-            var sets, filtered, e_4;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        Logger_1.default.debug('Phase.getIncompleteSets called');
-                        _a.label = 1;
-                    case 1:
-                        _a.trys.push([1, 3, , 4]);
-                        //parse options
-                        options = Common_1.ICommon.parseOptions(options);
-                        return [4 /*yield*/, this.getSets(options)];
-                    case 2:
-                        sets = _a.sent();
-                        filtered = internal_1.GGSet.filterForIncompleteSets(sets);
-                        return [2 /*return*/, filtered];
-                    case 3:
-                        e_4 = _a.sent();
-                        Logger_1.default.error('Phase.getIncompleteSets error: %s', e_4);
-                        throw e_4;
-                    case 4: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    Phase.prototype.getCompleteSets = function (options) {
-        if (options === void 0) { options = {}; }
-        return __awaiter(this, void 0, void 0, function () {
-            var sets, filtered, e_5;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        Logger_1.default.debug('Phase.getIncompleteSets called');
-                        _a.label = 1;
-                    case 1:
-                        _a.trys.push([1, 3, , 4]);
-                        //parse options
-                        options = Common_1.ICommon.parseOptions(options);
-                        return [4 /*yield*/, this.getSets(options)];
-                    case 2:
-                        sets = _a.sent();
-                        filtered = internal_1.GGSet.filterForCompleteSets(sets);
-                        return [2 /*return*/, filtered];
-                    case 3:
-                        e_5 = _a.sent();
-                        Logger_1.default.error('Phase.getIncompleteSets error: %s', e_5);
-                        throw e_5;
-                    case 4: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    Phase.prototype.getSetsXMinutesBack = function (minutesBack, options) {
-        if (options === void 0) { options = {}; }
-        return __awaiter(this, void 0, void 0, function () {
-            var sets, filtered, e_6;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        Logger_1.default.debug('Phase.getSetsXMinutesBack called');
-                        _a.label = 1;
-                    case 1:
-                        _a.trys.push([1, 3, , 4]);
-                        // parse options
-                        options = Common_1.ICommon.parseOptions(options);
-                        options.isCached = false;
-                        return [4 /*yield*/, this.getSets()];
-                    case 2:
-                        sets = _a.sent();
-                        filtered = internal_1.GGSet.filterForXMinutesBack(sets, minutesBack);
-                        return [2 /*return*/, filtered];
-                    case 3:
-                        e_6 = _a.sent();
-                        Logger_1.default.error('Phase.getSetsXMinutesBack error: %s', e_6);
-                        throw e_6;
-                    case 4: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    /** SIMPLE GETTERS **/
-    Phase.prototype.getFromDataEntities = function (prop) {
-        var data = this.getData();
-        if (data && data.entities && data.entities.phase) {
-            if (!data.entities.phase[prop])
-                Logger_1.default.error(this.nullValueString(prop));
-            return data.entities.phase[prop];
-        }
-        else {
-            Logger_1.default.error('No data to get Tournament property Id');
-            return null;
-        }
-    };
-    Phase.prototype.getName = function () {
-        return this.getFromDataEntities('name');
+    Phase.prototype.getId = function () {
+        return this.id;
     };
     Phase.prototype.getEventId = function () {
-        return this.getFromDataEntities('eventId');
+        return this.eventId;
     };
-    /** NULL VALUES **/
-    Phase.prototype.nullValueString = function (prop) {
-        return prop + ' not available for Phase ' + this.getData().entities.phase.name;
+    Phase.prototype.getName = function () {
+        return this.name;
     };
-    /** EVENTS **/
-    Phase.prototype.emitPhaseReady = function () {
-        this.emit('ready');
+    Phase.prototype.getNumSeeds = function () {
+        return this.numSeeds;
     };
-    Phase.prototype.emitPhaseError = function (err) {
-        this.emit('error', err);
+    Phase.prototype.getGroupCount = function () {
+        return this.groupCount;
+    };
+    Phase.prototype.getPhaseGroups = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var data, phaseGroupData, phaseGroups;
+            var _this = this;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        Logger_1.default.info('Getting phase groups for phase %s', this.id);
+                        return [4 /*yield*/, NetworkInterface_1.default.query(queries.phasePhaseGroups, { eventId: this.eventId })];
+                    case 1:
+                        data = _a.sent();
+                        phaseGroupData = data.event.phaseGroups.filter(function (phaseGroupData) { return phaseGroupData.phaseId === _this.id; });
+                        phaseGroups = phaseGroupData.map(function (pg) { return PhaseGroup_1.PhaseGroup.parse(pg); });
+                        return [2 /*return*/, phaseGroups];
+                }
+            });
+        });
+    };
+    Phase.prototype.getSeeds = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var data, seedData, seeds;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        Logger_1.default.info('Getting seeds for phase %s', this.id);
+                        return [4 /*yield*/, PaginatedQuery_1.default.query(queries.phaseSeeds, { id: this.id })];
+                    case 1:
+                        data = _a.sent();
+                        seedData = lodash_1.default.flatten(data.map(function (results) { return results.seed; }));
+                        seeds = seedData.map(function (seedData) { return Seed_1.Seed.parse(seedData); });
+                        return [2 /*return*/, seeds];
+                }
+            });
+        });
+    };
+    Phase.prototype.getSets = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var data, setsData, sets;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        Logger_1.default.info('Getting sets for phase %s', this.id);
+                        return [4 /*yield*/, PaginatedQuery_1.default.query(queries.phaseSets, { eventId: this.eventId, phaseId: this.id })];
+                    case 1:
+                        data = _a.sent();
+                        setsData = lodash_1.default.flatten(data.map(function (setData) { return setData.set; }));
+                        sets = setsData.map(function (setData) { return GGSet_1.GGSet.parse(setData); });
+                        return [2 /*return*/, sets];
+                }
+            });
+        });
+    };
+    Phase.prototype.getEntrants = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var data, entrantData, entrants;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        Logger_1.default.info('Getting entrants for phase %s', this.id);
+                        return [4 /*yield*/, PaginatedQuery_1.default.query(queries.phaseEntrants, { id: this.id })];
+                    case 1:
+                        data = _a.sent();
+                        entrantData = lodash_1.default.flatten(data.map(function (entrantData) { return entrantData.phase.entrants; }));
+                        entrants = entrantData.map(function (e) { return Entrant_1.Entrant.parse(e); });
+                        return [2 /*return*/, entrants];
+                }
+            });
+        });
+    };
+    Phase.prototype.getIncompleteSets = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var _a, _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0:
+                        _b = (_a = GGSet_1.GGSet).filterForIncompleteSets;
+                        return [4 /*yield*/, this.getSets()];
+                    case 1: return [2 /*return*/, _b.apply(_a, [_c.sent()])];
+                }
+            });
+        });
+    };
+    Phase.prototype.getCompleteSets = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var _a, _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0:
+                        _b = (_a = GGSet_1.GGSet).filterForCompleteSets;
+                        return [4 /*yield*/, this.getSets()];
+                    case 1: return [2 /*return*/, _b.apply(_a, [_c.sent()])];
+                }
+            });
+        });
+    };
+    Phase.prototype.getSetsXMinutesBack = function (minutesBack) {
+        return __awaiter(this, void 0, void 0, function () {
+            var _a, _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0:
+                        _b = (_a = GGSet_1.GGSet).filterForXMinutesBack;
+                        return [4 /*yield*/, this.getSets()];
+                    case 1: return [2 /*return*/, _b.apply(_a, [_c.sent(), minutesBack])];
+                }
+            });
+        });
     };
     return Phase;
-}(events_1.EventEmitter));
+}());
 exports.Phase = Phase;
-Phase.prototype.toString = function () {
-    return 'Phase: ' +
-        '\nID: ' + this.id +
-        '\nName: ' + this.getName() +
-        '\nEvent ID: ' + this.getEventId();
-};
-var IPhase;
-(function (IPhase) {
-    function getDefaultData() {
-        return {
-            id: 0
-        };
-    }
-    IPhase.getDefaultData = getDefaultData;
-    function getDefaultExpands() {
-        return {
-            groups: true
-        };
-    }
-    IPhase.getDefaultExpands = getDefaultExpands;
-    function getDefaultOptions() {
-        return {
-            expands: {
-                groups: true
-            },
-            isCached: true,
-            rawEncoding: 'json'
-        };
-    }
-    IPhase.getDefaultOptions = getDefaultOptions;
-    function parseOptions(options) {
-        return {
-            expands: {
-                groups: (options.expands != undefined && options.expands.groups == false) ? false : true
-            },
-            isCached: options.isCached != undefined ? options.isCached === true : true,
-            rawEncoding: Encoder_1.default.determineEncoding(options.rawEncoding)
-        };
-    }
-    IPhase.parseOptions = parseOptions;
-})(IPhase = exports.IPhase || (exports.IPhase = {}));

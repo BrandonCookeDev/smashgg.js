@@ -1,6 +1,7 @@
 import _ from 'lodash'
 
-import {Entrant, GGSet} from './internal'
+import {Entrant} from './Entrant' // TODO change this to internal
+import {GGSet} from './GGSet'
 import Encoder from './util/Encoder'
 import log from './util/Logger'
 

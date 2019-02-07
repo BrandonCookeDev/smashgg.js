@@ -53,7 +53,7 @@ var PaginatedQuery = /** @class */ (function () {
     }
     PaginatedQuery.query = function (operationName, queryString, params, options, additionalParams) {
         return __awaiter(this, void 0, void 0, function () {
-            var page, perPage, filters, queryOptions, query, data, totalPagesExec, totalPages, complexity, i, _a, _b;
+            var page, perPage, filters, queryOptions, query, data, totalPages, isForcingPerPage, complexity, optimizedData, i, _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
@@ -68,25 +68,41 @@ var PaginatedQuery = /** @class */ (function () {
                             pageInfo: 'pageInfo{\ntotalPages\n}'
                         };
                         queryOptions = Object.assign(queryOptions, additionalParams);
-                        query = Common_1.merge(queryString, queryOptions);
+                        query = Common_1.mergeQuery(queryString, queryOptions);
                         return [4 /*yield*/, NetworkInterface_1.default.query(query, params)];
                     case 1:
                         data = [_c.sent()];
-                        totalPagesExec = TOTAL_PAGES_REGEX_STRING.exec(JSON.stringify(data));
-                        if (!totalPagesExec)
-                            throw new Error(operationName + ": Something wrong with paginated query. Did not match regex " + TOTAL_PAGES_REGEX_STRING.toString());
-                        else if (data.length <= 0)
+                        if (data.length <= 0)
                             throw new Error(operationName + ": No data returned from query for operation");
-                        totalPages = +totalPagesExec[1];
+                        totalPages = PaginatedQuery.parseTotalPages(operationName, data);
+                        isForcingPerPage = perPage > 1 && options != undefined && options.perPage != undefined // TODO this logic is probably superficial
+                        ;
+                        if (!!isForcingPerPage) return [3 /*break*/, 3];
                         complexity = PaginatedQuery.determineComplexity(data[0]) //Object.keys(data[0]).length
                         ;
-                        perPage =
-                            options != undefined && options.perPage != undefined ?
-                                options.perPage : PaginatedQuery.calculateOptimalPagecount(complexity);
-                        i = page;
-                        _c.label = 2;
+                        perPage = PaginatedQuery.calculateOptimalPagecount(complexity, totalPages);
+                        Logger_1.default.info('Total Pages using 1 perPage: %s, Object Complexity per Page: %s', totalPages, complexity);
+                        queryOptions = {
+                            page: page++,
+                            perPage: perPage,
+                            filters: filters,
+                            pageInfo: 'pageInfo{\ntotalPages\n}'
+                        };
+                        query = Common_1.mergeQuery(queryString, queryOptions);
+                        return [4 /*yield*/, NetworkInterface_1.default.query(query, queryOptions)];
                     case 2:
-                        if (!(i <= totalPages)) return [3 /*break*/, 5];
+                        optimizedData = _c.sent();
+                        data = data.concat([optimizedData]);
+                        totalPages = PaginatedQuery.parseTotalPages(operationName, optimizedData);
+                        return [3 /*break*/, 4];
+                    case 3:
+                        Logger_1.default.warn('Implementer has chosen to force perPage at %s per page', perPage);
+                        _c.label = 4;
+                    case 4:
+                        i = page;
+                        _c.label = 5;
+                    case 5:
+                        if (!(i <= totalPages)) return [3 /*break*/, 8];
                         Logger_1.default.info('%s: Collected %s/%s pages', operationName, i, totalPages);
                         queryOptions = Object.assign({
                             page: page + i,
@@ -94,22 +110,28 @@ var PaginatedQuery = /** @class */ (function () {
                             filters: filters,
                             pageInfo: ''
                         }, additionalParams);
-                        query = Common_1.merge(queryString, queryOptions);
+                        query = Common_1.mergeQuery(queryString, queryOptions);
                         _b = (_a = data).push;
                         return [4 /*yield*/, NetworkInterface_1.default.query(query, params)];
-                    case 3:
+                    case 6:
                         _b.apply(_a, [_c.sent()]);
-                        _c.label = 4;
-                    case 4:
+                        _c.label = 7;
+                    case 7:
                         i++;
-                        return [3 /*break*/, 2];
-                    case 5: return [2 /*return*/, data];
+                        return [3 /*break*/, 5];
+                    case 8: return [2 /*return*/, data];
                 }
             });
         });
     };
-    PaginatedQuery.calculateOptimalPagecount = function (objectComplexity) {
-        return MAX_COMPLEXITY / objectComplexity;
+    PaginatedQuery.parseTotalPages = function (operationName, results) {
+        var parsed = TOTAL_PAGES_REGEX_STRING.exec(JSON.stringify(results));
+        if (!parsed)
+            throw new Error(operationName + ": Something wrong with paginated query. Did not match regex " + TOTAL_PAGES_REGEX_STRING.toString());
+        return +parsed[1];
+    };
+    PaginatedQuery.calculateOptimalPagecount = function (objectComplexity, totalPages) {
+        return Math.ceil(MAX_COMPLEXITY / objectComplexity / totalPages);
     };
     PaginatedQuery.determineComplexity = function (objects) {
         var complexity = 0;

@@ -50,6 +50,7 @@ var ROOT = path_1.default.join(__dirname, '..', '..', '..', '..', '.env');
 var dotenv_1 = require("dotenv");
 dotenv_1.config({ path: ROOT });
 require("../lib/util/ErrorHandler");
+var log = __importStar(require("../lib/util/Logger"));
 var lodash_1 = __importDefault(require("lodash"));
 var chai_1 = __importDefault(require("chai"));
 var chai_as_promised_1 = __importDefault(require("chai-as-promised"));
@@ -75,7 +76,9 @@ describe('Smash GG Phase', function () {
     before(function () { return __awaiter(_this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, Initializer_1.default(process.env.API_TOKEN)];
+                case 0:
+                    log.setLogLevel('debug');
+                    return [4 /*yield*/, Initializer_1.default(process.env.API_TOKEN)];
                 case 1:
                     _a.sent();
                     return [4 /*yield*/, Phase_1.Phase.get(ID1, EVENT_ID_1)];

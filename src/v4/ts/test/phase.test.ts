@@ -4,6 +4,7 @@ import {config} from 'dotenv'
 config({path: ROOT})
 
 import '../lib/util/ErrorHandler'
+import * as log from '../lib/util/Logger'
 
 import _ from 'lodash'
 import moment from 'moment'
@@ -36,6 +37,7 @@ describe('Smash GG Phase', function(){
 	this.timeout(10000)
 
 	before(async () => {
+		log.setLogLevel('debug');
 		await Initializer(process.env.API_TOKEN!)
 		phase1 = await Phase.get(ID1, EVENT_ID_1)
 		phase2 = await Phase.get(ID2, EVENT_ID_2)

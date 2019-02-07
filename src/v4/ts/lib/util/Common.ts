@@ -2,6 +2,7 @@ import { format } from 'util'
 import { GGSet } from '../GGSet'
 import Encoder from './Encoder'
 import _ from 'lodash'
+import log from './Logger'
 
 const DEFAULT_CONCURRENCY = 4;
 
@@ -28,6 +29,23 @@ export function merge(target: string, obj: any): string{
 		let regex = new RegExp(`{${prop}}`, 'g')
 		ret = ret.replace(regex, obj[prop])
 	}
+	return ret
+}
+
+export function mergeQuery(target: string, obj: any): string{
+	let ret = _.clone(target)
+	for(let prop in obj){
+		let regex = new RegExp(`{${prop}}`, 'g')
+		ret = ret.replace(regex, obj[prop])
+	}
+	let orphanedVarsRegex = new RegExp(/\{[\S]*\}/g)
+	let orphanedVars = orphanedVarsRegex.exec(ret);
+	if(orphanedVars){
+		log.warn('Variables orphaned by this query: [%s]', orphanedVars.slice(1).join(','))
+		log.warn('Replacing orphans with null')
+		ret.replace(orphanedVarsRegex, 'null')
+	}
+	log.debug(ret)
 	return ret
 }
 

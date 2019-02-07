@@ -212,7 +212,7 @@ export namespace IPhase{
 			additionalParams?: {sortType?: string | null, hasPermissions?: boolean | null, filters?: any}} 
 	{
 		if(!options) 
-			return {params: {page: 1, perPage:1}, additionalParams: {sortType: null, hasPermissions: null, filters: null}}
+			return {params: {page: 1, perPage: undefined}, additionalParams: {sortType: null, hasPermissions: null, filters: null}}
 		let params, additionalParams
 		if(options){
 			params = {page: options.page, perPage: options.perPage}

@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var util_1 = require("util");
 var Encoder_1 = __importDefault(require("./Encoder"));
 var lodash_1 = __importDefault(require("lodash"));
+var Logger_1 = __importDefault(require("./Logger"));
 var DEFAULT_CONCURRENCY = 4;
 var TOP_8_LABELS = [
     'Losers Quarter-Final', 'Losers Semi-Final',
@@ -28,6 +29,23 @@ function merge(target, obj) {
     return ret;
 }
 exports.merge = merge;
+function mergeQuery(target, obj) {
+    var ret = lodash_1.default.clone(target);
+    for (var prop in obj) {
+        var regex = new RegExp("{" + prop + "}", 'g');
+        ret = ret.replace(regex, obj[prop]);
+    }
+    var orphanedVarsRegex = new RegExp(/\{[\S]*\}/g);
+    var orphanedVars = orphanedVarsRegex.exec(ret);
+    if (orphanedVars) {
+        Logger_1.default.warn('Variables orphaned by this query: [%s]', orphanedVars.slice(1).join(','));
+        Logger_1.default.warn('Replacing orphans with null');
+        ret.replace(orphanedVarsRegex, 'null');
+    }
+    Logger_1.default.debug(ret);
+    return ret;
+}
+exports.mergeQuery = mergeQuery;
 function determineComplexity() {
     var objects = [];
     for (var _i = 0; _i < arguments.length; _i++) {

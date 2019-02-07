@@ -212,7 +212,7 @@ var IPhase;
 (function (IPhase) {
     function parseSetOptions(options) {
         if (!options)
-            return { params: { page: 1, perPage: 1 }, additionalParams: { sortType: null, hasPermissions: null, filters: null } };
+            return { params: { page: 1, perPage: undefined }, additionalParams: { sortType: null, hasPermissions: null, filters: null } };
         var params, additionalParams;
         if (options) {
             params = { page: options.page, perPage: options.perPage };

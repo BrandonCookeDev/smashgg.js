@@ -85,23 +85,25 @@ export class Phase implements IPhase.Phase{
 
 	async getSeeds() : Promise<Seed[]> {
 		log.info('Getting seeds for phase %s', this.id)
-		let data: ISeed.Data[] = await PaginatedQuery.query(queries.phaseSeeds, {id: this.id})
+		let data: ISeed.Data[] = await PaginatedQuery.query(`Phase Seeds [${this.id}]`, queries.phaseSeeds, {id: this.id})
 		let seedData: ISeed.SeedData[] = _.flatten(data.map(results => results.seed))
 		let seeds = seedData.map( (seedData: ISeed.SeedData) => Seed.parse(seedData) )
 		return seeds
 	}
 
-	async getSets() : Promise<GGSet[]> {
+	async getSets(options?: IPhase.SetOptions) : Promise<GGSet[]> {
 		log.info('Getting sets for phase %s', this.id)
-		let data: IGGSet.Data[] = await PaginatedQuery.query(queries.phaseSets, {eventId: this.eventId, phaseId: this.id})
-		let setsData: IGGSet.SetData[] = _.flatten(data.map(setData => setData.set))
+		let optionSet = IPhase.parseSetOptions(options)
+		let data: IPhase.DataSets[] = await PaginatedQuery.query(`Phase Sets [${this.id}]`, queries.phaseSets, {eventId: this.eventId, phaseId: this.id}, optionSet.params, optionSet.additionalParams)
+		let phaseGroups = _.flatten(data.map(setData => setData.event.phaseGroups))
+		let setsData: IGGSet.SetData[] = _.flatten(phaseGroups.map(pg => pg.paginatedSets.nodes)).filter(set => set != null)
 		let sets = setsData.map( (setData: IGGSet.SetData) => GGSet.parse(setData) )
 		return sets
 	}
 
 	async getEntrants() : Promise<Entrant[]> {
 		log.info('Getting entrants for phase %s', this.id)
-		let data: IPhase.PhaseEntrantData[] = await PaginatedQuery.query(queries.phaseEntrants, {id: this.id})
+		let data: IPhase.PhaseEntrantData[] = await PaginatedQuery.query(`Phase Entrants [${this.id}]`, queries.phaseEntrants, {id: this.id})
 		let entrantData: IEntrant.EntrantData[] = _.flatten(data.map(entrantData => entrantData.phase.entrants ))
 		let entrants: Entrant[] = entrantData.map(e => Entrant.parse(e)) as Entrant[];
 		return entrants
@@ -136,7 +138,7 @@ export namespace IPhase{
 		getNumSeeds(): number
 		getGroupCount(): number	
 		getPhaseGroups() : Promise<PhaseGroup[]>
-		getSets() : Promise<GGSet[]>
+		getSets(options: SetOptions) : Promise<GGSet[]>
 		getEntrants() : Promise<Entrant[]>
 		getIncompleteSets() : Promise<GGSet[]>
 		getCompleteSets() : Promise<GGSet[]>
@@ -146,7 +148,19 @@ export namespace IPhase{
 
 
 	export interface Data{
-		phase: PhaseData
+		phase: PhaseData 
+	}
+
+	export interface DataSeeds{
+		event: PhaseSeedData
+	}
+
+	export interface DataSets{
+		event: PhaseSetData
+	}
+
+	export interface DataEntrants{
+		event: PhaseEntrantData
 	}
 
 	export interface PhaseData{
@@ -157,7 +171,6 @@ export namespace IPhase{
 	}
 
 	export interface PhaseSeedData{
-		id: number,
 		phase:{
 			seeds: ISeed.Data[]
 		}
@@ -165,15 +178,53 @@ export namespace IPhase{
 
 	export interface PhaseSetData{
 		id: number,
-		phase: {
-			sets: IGGSet.SetData[]
+		phaseGroups: {
+			paginatedSets: {
+				pageInfo?: { totalPages: number }
+				nodes: IGGSet.SetData[]
+			}
 		}
 	}
 
 	export interface PhaseEntrantData{
-		id: number,
 		phase: {
 			entrants: IEntrant.EntrantData
+		}
+	}
+
+	export interface SetOptions{
+		page?: number,
+		perPage?: number
+		sortType?: 'NONE' | 'STANDARD' | 'RACE_SPECTATOR' | 'ADMIN',
+		hasPermissions?: boolean,
+		filters?: {
+			entrantIds?: number,
+			state?: number,
+			stationIds?: number,
+			phaseIds?: number,
+			phaseGroupIds?: number,
+			roundNumber?: number
+		}
+	}
+
+	export function parseSetOptions(options?: SetOptions) : 
+			{params?: {page?: number | 1, perPage?: number | 1}, 
+			additionalParams?: {sortType?: string | null, hasPermissions?: boolean | null, filters?: any}} 
+	{
+		if(!options) 
+			return {params: {page: 1, perPage:1}, additionalParams: {sortType: null, hasPermissions: null, filters: null}}
+		let params, additionalParams
+		if(options){
+			params = {page: options.page, perPage: options.perPage}
+			additionalParams = {
+				sortType: options.sortType || null,
+				hasPermissions: options.hasPermissions || null,
+				filters: options.filters
+			}
+		}
+		return {
+			params: params,
+			additionalParams: additionalParams
 		}
 	}
 }

@@ -579,7 +579,7 @@ function loadEvent(eventName, tournamentName) {
     });
 }
 function loadPhase(id, expands, isCached) {
-    if (expands === void 0) { expands = IPhase.getDefaultExpands(); }
+    if (expands === void 0) { expands = internal_2.IPhase.getDefaultExpands(); }
     if (isCached === void 0) { isCached = true; }
     return new Promise(function (resolve, reject) {
         var options = {

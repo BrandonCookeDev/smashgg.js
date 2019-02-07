@@ -52,10 +52,11 @@ var Common = __importStar(require("./Common"));
 /* Interfaces */
 var internal_1 = require("../internal");
 var internal_2 = require("../internal");
+var internal_3 = require("../internal");
 var createExpandsString = Common.createExpandsString;
 var parseTournamentOptions = internal_1.ITournament.parseOptions;
 var parseEventOptions = internal_2.IEvent.parseOptions;
-var parsePhaseOptions = IPhase.parseOptions;
+var parsePhaseOptions = internal_3.IPhase.parseOptions;
 var parsePhaseGroupOptions = IPhaseGroup.parseOptions;
 var TOURNAMENT_URL = 'https://api.smash.gg/tournament/%s?%s';
 var EVENT_URL = 'https://api.smash.gg/event/%s?%s';

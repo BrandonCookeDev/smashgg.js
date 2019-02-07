@@ -50,11 +50,13 @@ var ROOT = path_1.default.join(__dirname, '..', '..', '..', '..', '.env');
 var dotenv_1 = require("dotenv");
 dotenv_1.config({ path: ROOT });
 require("../lib/util/ErrorHandler");
+var lodash_1 = __importDefault(require("lodash"));
 var chai_1 = __importDefault(require("chai"));
 var chai_as_promised_1 = __importDefault(require("chai-as-promised"));
 chai_1.default.use(chai_as_promised_1.default);
 var expect = chai_1.default.expect;
 var Phase_1 = require("../lib/Phase");
+var GGSet_1 = require("../lib/GGSet");
 var Initializer_1 = __importDefault(require("../lib/util/Initializer"));
 var testData = __importStar(require("./data/phase.testData"));
 var ID1 = 111483;
@@ -138,6 +140,28 @@ describe('Smash GG Phase', function () {
     });
     it('should get the Phase group count 3', function () {
         expect(phase3.getGroupCount()).to.be.equal(testData.phase3.groupCount);
+    });
+    it('should correctly get all sets 1', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var sets, hasDuplicates;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(30000);
+                        return [4 /*yield*/, phase1.getSets()];
+                    case 1:
+                        sets = _a.sent();
+                        hasDuplicates = function (a) {
+                            return lodash_1.default.uniq(a).length !== a.length;
+                        };
+                        expect(hasDuplicates(sets)).to.be.false;
+                        sets.forEach(function (set) {
+                            expect(set).to.be.an.instanceof(GGSet_1.GGSet);
+                        });
+                        return [2 /*return*/, true];
+                }
+            });
+        });
     });
     /*
     it('should correctly get all phase groups', async function(){

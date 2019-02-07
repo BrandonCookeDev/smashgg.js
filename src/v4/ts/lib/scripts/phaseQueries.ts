@@ -40,7 +40,7 @@ query PhaseSets($eventId:Int, $phaseId: Int){
 		paginatedSets(
 		  page: {page},
 		  perPage: {perPage},
-		  sortBy: {sortBy}
+		  sortType: {sortType},
 		  filters: {
 			phaseIds:[$phaseId]
 		  }

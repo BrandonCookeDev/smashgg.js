@@ -13,6 +13,8 @@ chai.use(cap)
 const {expect} = chai
 
 import {Phase, IPhase} from '../lib/Phase'
+import {PhaseGroup} from '../lib/PhaseGroup'
+import {GGSet} from '../lib/GGSet'
 import Initializer from '../lib/util/Initializer';
 import * as testData from './data/phase.testData'
 
@@ -100,6 +102,19 @@ describe('Smash GG Phase', function(){
 		expect(phase3.getGroupCount()).to.be.equal(testData.phase3.groupCount)
 	})
 
+	it('should correctly get all sets 1', async function(){
+		this.timeout(30000)
+
+		let sets: GGSet[] = await phase1.getSets();
+		var hasDuplicates = function(a: GGSet[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(sets)).to.be.false;
+		sets.forEach(set => {
+			expect(set).to.be.an.instanceof(GGSet);
+		});
+		return true;
+	})
 
 	/*
 	it('should correctly get all phase groups', async function(){

@@ -38,48 +38,58 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var Logger_1 = __importDefault(require("./Logger"));
 var NetworkInterface_1 = __importDefault(require("./NetworkInterface"));
 var Common_1 = require("./Common");
 var TOTAL_PAGES_REGEX_JSON = new RegExp(/"pageInfo":[\s]?{[\n\s]*?"totalPages": ([0-9]*)/);
 var TOTAL_PAGES_REGEX_STRING = new RegExp(/"pageInfo":{"totalPages":([0-9]*)}/);
+var MAX_COMPLEXITY = 1000;
 var PaginatedQuery = /** @class */ (function () {
     function PaginatedQuery() {
     }
-    PaginatedQuery.query = function (queryString, params, options) {
+    PaginatedQuery.query = function (operationName, queryString, params, options, additionalParams) {
         return __awaiter(this, void 0, void 0, function () {
-            var page, perPage, sortBy, filters, initialOptions, query, data, totalPagesExec, totalPages, i, _a, _b;
+            var page, perPage, filters, queryOptions, query, data, totalPagesExec, totalPages, complexity, i, _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
+                        Logger_1.default.info('%s: Calling Paginated Querys', operationName);
                         page = options != undefined && options.page ? options.page : 1;
                         perPage = options != undefined && options.perPage ? options.perPage : 1;
-                        sortBy = options != undefined && options.sortBy ? options.sortBy : null;
                         filters = options != undefined && options.filters ? options.filters : null;
-                        initialOptions = {
+                        queryOptions = {
                             page: page,
                             perPage: perPage,
-                            sortBy: sortBy,
                             filters: filters,
                             pageInfo: 'pageInfo{\ntotalPages\n}'
                         };
-                        query = Common_1.merge(queryString, initialOptions);
+                        queryOptions = Object.assign(queryOptions, additionalParams);
+                        query = Common_1.merge(queryString, queryOptions);
                         return [4 /*yield*/, NetworkInterface_1.default.query(query, params)];
                     case 1:
                         data = [_c.sent()];
                         totalPagesExec = TOTAL_PAGES_REGEX_STRING.exec(JSON.stringify(data));
                         if (!totalPagesExec)
-                            throw new Error('Something wrong with paginated query. Did not match regex ' + TOTAL_PAGES_REGEX_STRING.toString());
+                            throw new Error(operationName + ": Something wrong with paginated query. Did not match regex " + TOTAL_PAGES_REGEX_STRING.toString());
+                        else if (data.length <= 0)
+                            throw new Error(operationName + ": No data returned from query for operation");
                         totalPages = +totalPagesExec[1];
-                        i = 0;
+                        complexity = PaginatedQuery.determineComplexity(data[0]);
+                        perPage =
+                            options != undefined && options.perPage != undefined ?
+                                options.perPage : PaginatedQuery.calculateOptimalPagecount(complexity);
+                        i = page;
                         _c.label = 2;
                     case 2:
-                        if (!(i < totalPages)) return [3 /*break*/, 5];
-                        query = Common_1.merge(queryString, {
+                        if (!(i <= totalPages)) return [3 /*break*/, 5];
+                        Logger_1.default.info('%s: Collected %s/%s pages', operationName, i, totalPages);
+                        queryOptions = Object.assign({
                             page: page + i,
                             perPage: perPage,
-                            sortBy: sortBy,
-                            filters: filters
-                        });
+                            filters: filters,
+                            pageInfo: ''
+                        }, additionalParams);
+                        query = Common_1.merge(queryString, queryOptions);
                         _b = (_a = data).push;
                         return [4 /*yield*/, NetworkInterface_1.default.query(query, params)];
                     case 3:
@@ -92,6 +102,18 @@ var PaginatedQuery = /** @class */ (function () {
                 }
             });
         });
+    };
+    PaginatedQuery.determineComplexity = function (obj) {
+        var complexity = 1;
+        for (var key in obj) {
+            if (typeof obj[key] === 'object') {
+                complexity += 1 + PaginatedQuery.determineComplexity(obj[key]);
+            }
+        }
+        return complexity;
+    };
+    PaginatedQuery.calculateOptimalPagecount = function (objectComplexity) {
+        return MAX_COMPLEXITY / objectComplexity;
     };
     return PaginatedQuery;
 }());

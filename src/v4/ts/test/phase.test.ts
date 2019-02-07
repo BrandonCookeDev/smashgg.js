@@ -116,6 +116,34 @@ describe('Smash GG Phase', function(){
 		return true;
 	})
 
+	it('should correctly get all sets 2', async function(){
+		this.timeout(30000)
+
+		let sets: GGSet[] = await phase2.getSets({perPage: 5});
+		var hasDuplicates = function(a: GGSet[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(sets)).to.be.false;
+		sets.forEach(set => {
+			expect(set).to.be.an.instanceof(GGSet);
+		});
+		return true;
+	})
+
+	it('should correctly get all sets 3', async function(){
+		this.timeout(30000)
+
+		let sets: GGSet[] = await phase2.getSets({perPage: 5});
+		var hasDuplicates = function(a: GGSet[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(sets)).to.be.false;
+		sets.forEach(set => {
+			expect(set).to.be.an.instanceof(GGSet);
+		});
+		return true;
+	})
+
 	/*
 	it('should correctly get all phase groups', async function(){
 		this.timeout(45000)

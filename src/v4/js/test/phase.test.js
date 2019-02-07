@@ -163,6 +163,50 @@ describe('Smash GG Phase', function () {
             });
         });
     });
+    it('should correctly get all sets 2', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var sets, hasDuplicates;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(30000);
+                        return [4 /*yield*/, phase2.getSets({ perPage: 5 })];
+                    case 1:
+                        sets = _a.sent();
+                        hasDuplicates = function (a) {
+                            return lodash_1.default.uniq(a).length !== a.length;
+                        };
+                        expect(hasDuplicates(sets)).to.be.false;
+                        sets.forEach(function (set) {
+                            expect(set).to.be.an.instanceof(GGSet_1.GGSet);
+                        });
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    it('should correctly get all sets 3', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var sets, hasDuplicates;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(30000);
+                        return [4 /*yield*/, phase2.getSets({ perPage: 5 })];
+                    case 1:
+                        sets = _a.sent();
+                        hasDuplicates = function (a) {
+                            return lodash_1.default.uniq(a).length !== a.length;
+                        };
+                        expect(hasDuplicates(sets)).to.be.false;
+                        sets.forEach(function (set) {
+                            expect(set).to.be.an.instanceof(GGSet_1.GGSet);
+                        });
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
     /*
     it('should correctly get all phase groups', async function(){
         this.timeout(45000)

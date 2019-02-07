@@ -28,6 +28,28 @@ function merge(target, obj) {
     return ret;
 }
 exports.merge = merge;
+function determineComplexity() {
+    var objects = [];
+    for (var _i = 0; _i < arguments.length; _i++) {
+        objects[_i] = arguments[_i];
+    }
+    var complexity = 0;
+    var objs = [];
+    for (var i in objects) {
+        var obj = objects[i];
+        for (var key in obj) {
+            if (typeof obj[key] === 'object') {
+                complexity++;
+                objs.push(obj[key]);
+            }
+        }
+    }
+    if (complexity == 0)
+        return 0;
+    else
+        return complexity + determineComplexity(objs);
+}
+exports.determineComplexity = determineComplexity;
 function sleep(ms) {
     return new Promise(function (resolve) {
         setTimeout(resolve, ms);

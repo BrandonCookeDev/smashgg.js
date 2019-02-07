@@ -1,11 +1,17 @@
 import log from './Logger'
 import NI from './NetworkInterface'
+import * as Common from './Common'
 import {format} from 'util'
 import {merge} from './Common'
 
 const TOTAL_PAGES_REGEX_JSON = new RegExp(/"pageInfo":[\s]?{[\n\s]*?"totalPages": ([0-9]*)/);
 const TOTAL_PAGES_REGEX_STRING = new RegExp(/"pageInfo":{"totalPages":([0-9]*)}/);
 const MAX_COMPLEXITY = 1000
+
+//{ b: 1,
+//c: 2,
+//d: { d: 3, s: 1, e: 1, f: { o: 0 } },
+//g: { d: 3, g: 32, e: 1 } }
 
 export default class PaginatedQuery{
 
@@ -36,7 +42,7 @@ export default class PaginatedQuery{
 
 		// after, leave off the total page count to minimize complexity
 		let totalPages = +totalPagesExec[1]
-		let complexity = Object.keys(data[0]).length
+		let complexity = PaginatedQuery.determineComplexity(data[0]) //Object.keys(data[0]).length
 		perPage = 
 			options != undefined && options.perPage != undefined ? 
 			options.perPage : PaginatedQuery.calculateOptimalPagecount(complexity)
@@ -56,22 +62,39 @@ export default class PaginatedQuery{
 		return data
 	}
 
-	static determineComplexity(obj: any) : number{
-		let complexity = 1;
-		let objs = []
-		for(let key in obj) {
-			if(typeof obj[key] === 'object'){
-				objs.push(obj[key])
-			}
-		}
-		
-		if(objs.length == 0) return 0
-	}
-
 	static calculateOptimalPagecount(objectComplexity: number) : number{
 		return MAX_COMPLEXITY / objectComplexity
 	}
+
+	static determineComplexity(objects: any[]) : number{
+		let complexity = 0;
+		let nextArgs = []
+		for(let i in objects){
+			// add 1 for each object passed into the function arg array
+			complexity++
+
+			let cur = objects[i]
+			for(let key in cur) {
+				if(key === 'pageInfo') continue;
+				else if(typeof cur[key] === 'object' && cur[key] != null){
+					// if array, calculate the first object then multiple by how many perPage
+					// otherwise add object to nextArgs and dig
+					if(Array.isArray(cur[key])){
+						complexity *= cur[key].length
+						nextArgs.push(cur[key][0])
+					}
+					else{
+						nextArgs.push(cur[key])
+					}
+				}
+			}
+		}
+		if(nextArgs.length === 0) return complexity
+		else return complexity + PaginatedQuery.determineComplexity(nextArgs)
+	}
 }
+
+
 
 namespace IPaginatedQuery{
 	export interface Options{

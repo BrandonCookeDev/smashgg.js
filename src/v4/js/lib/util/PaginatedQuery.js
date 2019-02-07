@@ -44,6 +44,10 @@ var Common_1 = require("./Common");
 var TOTAL_PAGES_REGEX_JSON = new RegExp(/"pageInfo":[\s]?{[\n\s]*?"totalPages": ([0-9]*)/);
 var TOTAL_PAGES_REGEX_STRING = new RegExp(/"pageInfo":{"totalPages":([0-9]*)}/);
 var MAX_COMPLEXITY = 1000;
+//{ b: 1,
+//c: 2,
+//d: { d: 3, s: 1, e: 1, f: { o: 0 } },
+//g: { d: 3, g: 32, e: 1 } }
 var PaginatedQuery = /** @class */ (function () {
     function PaginatedQuery() {
     }
@@ -74,7 +78,8 @@ var PaginatedQuery = /** @class */ (function () {
                         else if (data.length <= 0)
                             throw new Error(operationName + ": No data returned from query for operation");
                         totalPages = +totalPagesExec[1];
-                        complexity = PaginatedQuery.determineComplexity(data[0]);
+                        complexity = PaginatedQuery.determineComplexity(data[0]) //Object.keys(data[0]).length
+                        ;
                         perPage =
                             options != undefined && options.perPage != undefined ?
                                 options.perPage : PaginatedQuery.calculateOptimalPagecount(complexity);
@@ -103,17 +108,36 @@ var PaginatedQuery = /** @class */ (function () {
             });
         });
     };
-    PaginatedQuery.determineComplexity = function (obj) {
-        var complexity = 1;
-        for (var key in obj) {
-            if (typeof obj[key] === 'object') {
-                complexity += 1 + PaginatedQuery.determineComplexity(obj[key]);
-            }
-        }
-        return complexity;
-    };
     PaginatedQuery.calculateOptimalPagecount = function (objectComplexity) {
         return MAX_COMPLEXITY / objectComplexity;
+    };
+    PaginatedQuery.determineComplexity = function (objects) {
+        var complexity = 0;
+        var nextArgs = [];
+        for (var i in objects) {
+            // add 1 for each object passed into the function arg array
+            complexity++;
+            var cur = objects[i];
+            for (var key in cur) {
+                if (key === 'pageInfo')
+                    continue;
+                else if (typeof cur[key] === 'object' && cur[key] != null) {
+                    // if array, calculate the first object then multiple by how many perPage
+                    // otherwise add object to nextArgs and dig
+                    if (Array.isArray(cur[key])) {
+                        complexity *= cur[key].length;
+                        nextArgs.push(cur[key][0]);
+                    }
+                    else {
+                        nextArgs.push(cur[key]);
+                    }
+                }
+            }
+        }
+        if (nextArgs.length === 0)
+            return complexity;
+        else
+            return complexity + PaginatedQuery.determineComplexity(nextArgs);
     };
     return PaginatedQuery;
 }());

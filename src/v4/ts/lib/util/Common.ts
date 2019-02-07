@@ -31,6 +31,22 @@ export function merge(target: string, obj: any): string{
 	return ret
 }
 
+export function determineComplexity(...objects: any[]) : number{
+	let complexity = 0;
+	let objs = []
+	for(let i in objects){
+		let obj = objects[i]
+		for(let key in obj) {
+			if(typeof obj[key] === 'object'){
+				complexity++
+				objs.push(obj[key])
+			}
+		}
+	}
+	if(complexity == 0) return 0
+	else return complexity + determineComplexity(objs)
+}
+
 export function sleep(ms: number) : Promise<null | undefined>{
 	return new Promise(function(resolve){
 		setTimeout(resolve, ms)

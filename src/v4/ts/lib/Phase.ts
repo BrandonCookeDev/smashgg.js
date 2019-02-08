@@ -207,6 +207,12 @@ export namespace IPhase{
 		}
 	}
 
+	export interface EntrantOptions{
+		page?: number,
+		perPage?: number,
+		sortType?: string
+	}
+
 	export function parseSetOptions(options?: SetOptions) : 
 			{params?: {page?: number | 1, perPage?: number | 1}, 
 			additionalParams?: {sortType?: string | null, hasPermissions?: boolean | null, filters?: any}} 

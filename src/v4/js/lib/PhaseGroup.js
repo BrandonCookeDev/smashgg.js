@@ -20,6 +20,39 @@ var PhaseGroup = /** @class */ (function () {
     PhaseGroup.parseFull = function (data) {
         return data.event.phaseGroups.map(function (pg) { return PhaseGroup.parse(pg); });
     };
+    PhaseGroup.prototype.getId = function () {
+        return this.id;
+    };
+    PhaseGroup.prototype.getPhaseId = function () {
+        return this.phaseId;
+    };
+    PhaseGroup.prototype.getDisplayIdentifier = function () {
+        return this.displayIdentifier;
+    };
+    PhaseGroup.prototype.getFirstRoundTime = function () {
+        return this.firstRoundTime;
+    };
+    PhaseGroup.prototype.getState = function () {
+        return this.state;
+    };
+    PhaseGroup.prototype.getWaveId = function () {
+        return this.waveId;
+    };
+    PhaseGroup.prototype.getTiebreakOrder = function () {
+        return this.tiebreakOrder;
+    };
+    PhaseGroup.prototype.getEntrants = function () {
+    };
+    PhaseGroup.prototype.getSets = function () {
+    };
+    PhaseGroup.prototype.getCompleteSets = function () {
+    };
+    PhaseGroup.prototype.getIncompleteSets = function () {
+    };
+    PhaseGroup.prototype.getSetsXMinutesBack = function (minutes) {
+    };
+    PhaseGroup.prototype.findPlayerByParticipantId = function (id) {
+    };
     return PhaseGroup;
 }());
 exports.PhaseGroup = PhaseGroup;

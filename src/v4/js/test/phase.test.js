@@ -58,8 +58,10 @@ chai_1.default.use(chai_as_promised_1.default);
 var expect = chai_1.default.expect;
 var Phase_1 = require("../lib/Phase");
 var GGSet_1 = require("../lib/GGSet");
+var Entrant_1 = require("../lib/Entrant");
 var Initializer_1 = __importDefault(require("../lib/util/Initializer"));
 var testData = __importStar(require("./data/phase.testData"));
+var LOG_LEVEL = 'verbose';
 var ID1 = 111483;
 var ID2 = 45262;
 var ID3 = 100046;
@@ -77,7 +79,7 @@ describe('Smash GG Phase', function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    log.setLogLevel('debug');
+                    log.setLogLevel(LOG_LEVEL);
                     return [4 /*yield*/, Initializer_1.default(process.env.API_TOKEN)];
                 case 1:
                     _a.sent();
@@ -161,6 +163,7 @@ describe('Smash GG Phase', function () {
                         sets.forEach(function (set) {
                             expect(set).to.be.an.instanceof(GGSet_1.GGSet);
                         });
+                        expect(sets.length).to.be.equal(152);
                         return [2 /*return*/, true];
                 }
             });
@@ -172,8 +175,8 @@ describe('Smash GG Phase', function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        this.timeout(30000);
-                        return [4 /*yield*/, phase2.getSets({ perPage: 5 })];
+                        this.timeout(120000);
+                        return [4 /*yield*/, phase2.getSets()];
                     case 1:
                         sets = _a.sent();
                         hasDuplicates = function (a) {
@@ -183,19 +186,20 @@ describe('Smash GG Phase', function () {
                         sets.forEach(function (set) {
                             expect(set).to.be.an.instanceof(GGSet_1.GGSet);
                         });
+                        expect(sets.length).to.be.equal(1164);
                         return [2 /*return*/, true];
                 }
             });
         });
     });
-    it('should correctly get all sets 3', function () {
+    xit('should correctly get all sets 3', function () {
         return __awaiter(this, void 0, void 0, function () {
             var sets, hasDuplicates;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         this.timeout(30000);
-                        return [4 /*yield*/, phase2.getSets({ perPage: 5 })];
+                        return [4 /*yield*/, phase2.getSets()];
                     case 1:
                         sets = _a.sent();
                         hasDuplicates = function (a) {
@@ -205,6 +209,31 @@ describe('Smash GG Phase', function () {
                         sets.forEach(function (set) {
                             expect(set).to.be.an.instanceof(GGSet_1.GGSet);
                         });
+                        expect(sets.length).to.be.equal(1164);
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    // entrants
+    it('should correctly get all entrants 1', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var entrants, hasDuplicates;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(30000);
+                        return [4 /*yield*/, phase1.getEntrants()];
+                    case 1:
+                        entrants = _a.sent();
+                        hasDuplicates = function (a) {
+                            return lodash_1.default.uniq(a).length !== a.length;
+                        };
+                        expect(hasDuplicates(entrants)).to.be.false;
+                        entrants.forEach(function (set) {
+                            expect(set).to.be.an.instanceof(Entrant_1.Entrant);
+                        });
+                        expect(entrants.length).to.be.equal(0);
                         return [2 /*return*/, true];
                 }
             });

@@ -53,7 +53,7 @@ var PaginatedQuery = /** @class */ (function () {
     }
     PaginatedQuery.query = function (operationName, queryString, params, options, additionalParams) {
         return __awaiter(this, void 0, void 0, function () {
-            var page, perPage, filters, queryOptions, query, data, totalPages, isForcingPerPage, complexity, optimizedData, i, _a, _b;
+            var page, perPage, filters, queryOptions, query, data, totalPages, complexity, isForcingPerPage, optimizedData, i, _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
@@ -75,25 +75,28 @@ var PaginatedQuery = /** @class */ (function () {
                         if (data.length <= 0)
                             throw new Error(operationName + ": No data returned from query for operation");
                         totalPages = PaginatedQuery.parseTotalPages(operationName, data);
+                        complexity = PaginatedQuery.determineComplexity(data[0]) //Object.keys(data[0]).length
+                        ;
+                        Logger_1.default.info('Total Pages using 1 perPage: %s, Object Complexity per Page: %s', totalPages, complexity);
                         isForcingPerPage = perPage > 1 && options != undefined && options.perPage != undefined // TODO this logic is probably superficial
                         ;
                         if (!!isForcingPerPage) return [3 /*break*/, 3];
-                        complexity = PaginatedQuery.determineComplexity(data[0]) //Object.keys(data[0]).length
-                        ;
                         perPage = PaginatedQuery.calculateOptimalPagecount(complexity, totalPages);
-                        Logger_1.default.info('Total Pages using 1 perPage: %s, Object Complexity per Page: %s', totalPages, complexity);
+                        Logger_1.default.info('Optimal Per Page Count: %s', perPage);
                         queryOptions = {
                             page: page++,
                             perPage: perPage,
                             filters: filters,
                             pageInfo: 'pageInfo{\ntotalPages\n}'
                         };
+                        //queryOptions = Object.assign(queryOptions, additionalParams)
                         query = Common_1.mergeQuery(queryString, queryOptions);
-                        return [4 /*yield*/, NetworkInterface_1.default.query(query, queryOptions)];
+                        return [4 /*yield*/, NetworkInterface_1.default.query(query, params)];
                     case 2:
                         optimizedData = _c.sent();
                         data = data.concat([optimizedData]);
                         totalPages = PaginatedQuery.parseTotalPages(operationName, optimizedData);
+                        Logger_1.default.info('Optimal Page Count: %s', totalPages);
                         return [3 /*break*/, 4];
                     case 3:
                         Logger_1.default.warn('Implementer has chosen to force perPage at %s per page', perPage);
@@ -131,7 +134,11 @@ var PaginatedQuery = /** @class */ (function () {
         return +parsed[1];
     };
     PaginatedQuery.calculateOptimalPagecount = function (objectComplexity, totalPages) {
-        return Math.ceil(MAX_COMPLEXITY / objectComplexity / totalPages);
+        var totalComplexity = objectComplexity * totalPages;
+        if (totalComplexity < MAX_COMPLEXITY)
+            return Math.ceil(MAX_COMPLEXITY / objectComplexity / totalPages);
+        else
+            return Math.ceil(totalPages * objectComplexity / MAX_COMPLEXITY);
     };
     PaginatedQuery.determineComplexity = function (objects) {
         var complexity = 0;

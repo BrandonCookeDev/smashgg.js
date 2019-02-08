@@ -35,12 +35,12 @@ function mergeQuery(target, obj) {
         var regex = new RegExp("{" + prop + "}", 'g');
         ret = ret.replace(regex, obj[prop]);
     }
-    var orphanedVarsRegex = new RegExp(/\{[\S]*\}/g);
+    var orphanedVarsRegex = new RegExp(/\{[\S]*\}/, 'g');
     var orphanedVars = orphanedVarsRegex.exec(ret);
     if (orphanedVars) {
-        Logger_1.default.warn('Variables orphaned by this query: [%s]', orphanedVars.slice(1).join(','));
+        Logger_1.default.warn('Variables orphaned by this query: [%s]', orphanedVars.join(','));
         Logger_1.default.warn('Replacing orphans with null');
-        ret.replace(orphanedVarsRegex, 'null');
+        ret = ret.replace(orphanedVarsRegex, 'null');
     }
     Logger_1.default.debug(ret);
     return ret;
@@ -78,11 +78,11 @@ function orderTop8(sets) {
     var ordered = [];
     var fn = function (roundName) {
         ordered = ordered.concat(lodash_1.default.find(sets, function (set) {
-            return set.getRound() === roundName;
+            return set.getFullRoundText() == roundName;
         }));
     };
     var hasReset = lodash_1.default.find(sets, function (set) {
-        return set.getRound() === 'Grand Final Reset';
+        return set.getFullRoundText() === 'Grand Final Reset';
     });
     if (hasReset)
         fn('Grand Final Reset');
@@ -92,7 +92,7 @@ function orderTop8(sets) {
     fn('Winners Final');
     fn('Losers Quarter-Final');
     fn('Winners Semi-Final');
-    var roundNames = sets.map(function (set) { return set.getRound(); });
+    var roundNames = sets.map(function (set) { return set.getFullRoundText(); });
     var losersRoundName = roundNames.filter(function (name) { return losersRoundRegex.test(name); })[0];
     fn(losersRoundName);
     return ordered;
@@ -107,8 +107,8 @@ function parseOptions(options) {
 }
 exports.parseOptions = parseOptions;
 function getHighestLevelLosersRound(sets) {
-    var loserRounds = sets.filter(function (set) { return losersRoundRegex.test(set.getRound()); });
-    var loserRoundNumbers = loserRounds.map(function (set) { return losersRoundRegex.exec(set.getRound())[1]; });
+    var loserRounds = sets.filter(function (set) { return losersRoundRegex.test(set.getFullRoundText()); });
+    var loserRoundNumbers = loserRounds.map(function (set) { return losersRoundRegex.exec(set.getFullRoundText())[1]; });
     var highestLoserRoundNumber = Math.max.apply(null, loserRoundNumbers);
     return "Losers Round " + highestLoserRoundNumber;
 }
@@ -116,7 +116,7 @@ exports.getHighestLevelLosersRound = getHighestLevelLosersRound;
 function filterForTop8Sets(sets) {
     var highestLoserRound = getHighestLevelLosersRound(sets);
     var targetLabels = TOP_8_LABELS.concat([highestLoserRound]);
-    var topSets = sets.filter(function (set) { return targetLabels.includes(set.getRound()); });
+    var topSets = sets.filter(function (set) { return targetLabels.includes(set.getFullRoundText()); });
     return orderTop8(topSets);
 }
 exports.filterForTop8Sets = filterForTop8Sets;

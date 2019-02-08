@@ -2,19 +2,12 @@ import _ from 'lodash'
 
 import {Entrant} from './Entrant' // TODO change this to internal
 import {GGSet} from './GGSet'
+import PaginatedQuery from './util/PaginatedQuery'
 import Encoder from './util/Encoder'
 import log from './util/Logger'
 
 import { ICommon } from './util/Common'
 import { IGGSet } from './GGSet'
-
-/* Convenience */
-import Data = IPhaseGroup.Data
-import Entity = ICommon.Entity
-import Options = ICommon.Options
-import Expands = IPhaseGroup.Expands
-import PhaseGroupOptions = IPhaseGroup.Options
-import parseOptions = ICommon.parseOptions
 
 /* Constants */
 const PHASE_GROUP_URL = 'https://api.smash.gg/phase_group/%s?%s';
@@ -65,6 +58,59 @@ export class PhaseGroup implements IPhaseGroup.PhaseGroup{
 	static parseFull(data: IPhaseGroup.Data) : PhaseGroup[]{
 		return data.event.phaseGroups.map(pg => PhaseGroup.parse(pg));
 	}
+
+	getId(): number {
+		return this.id
+	}
+
+	getPhaseId(): number{
+		return this.phaseId
+	}
+
+	getDisplayIdentifier(): string | null{
+		return this.displayIdentifier
+	}
+
+	getFirstRoundTime(): number | null{
+		return this.firstRoundTime
+	}
+
+	getState(): number | null{
+		return this.state
+	}
+
+	getWaveId(): number | null{
+		return this.waveId
+	}
+
+	getTiebreakOrder(): object | null{
+		return this.tiebreakOrder
+	}
+
+	getEntrants() : Promise<Entrant[]>{
+		
+	}
+
+	getSets() : Promise<GGSet[]>{
+
+	}
+
+	getCompleteSets() : Promise<GGSet[]>{
+
+	}
+
+	getIncompleteSets() : Promise<GGSet[]>{
+
+	}
+
+	getSetsXMinutesBack(minutes: number) : Promise<GGSet[]>{
+
+	}
+
+	findPlayerByParticipantId(id: number) : Promise<Entrant | undefined>{
+
+	}
+
 }
 
 export namespace IPhaseGroup{
@@ -86,14 +132,11 @@ export namespace IPhaseGroup{
 		getState(): number | null
 		getWaveId(): number | null
 		getTiebreakOrder(): object | null
-		getPlayers(options: Options) : Promise<Entrant[]>
-		getSets(options: Options) : Promise<GGSet[]>
-		getCompleteSets(options: Options) : Promise<GGSet[]>
-		getIncompleteSets(options: Options) : Promise<GGSet[]>
-		getSetsXMinutesBack(minutes: number, options: Options) : Promise<GGSet[]>
-		getFromDataEntities(prop: string) : any
-		getPhaseId() : number
-		getEntrants() : Entrant[] | [] 
+		getEntrants() : Promise<Entrant[]>
+		getSets() : Promise<GGSet[]>
+		getCompleteSets() : Promise<GGSet[]>
+		getIncompleteSets() : Promise<GGSet[]>
+		getSetsXMinutesBack(minutes: number) : Promise<GGSet[]>
 		findPlayerByParticipantId(id: number) : Promise<Entrant | undefined>
 	}
 

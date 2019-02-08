@@ -38,12 +38,12 @@ export function mergeQuery(target: string, obj: any): string{
 		let regex = new RegExp(`{${prop}}`, 'g')
 		ret = ret.replace(regex, obj[prop])
 	}
-	let orphanedVarsRegex = new RegExp(/\{[\S]*\}/g)
+	let orphanedVarsRegex = new RegExp(/\{[\S]*\}/, 'g')
 	let orphanedVars = orphanedVarsRegex.exec(ret);
 	if(orphanedVars){
-		log.warn('Variables orphaned by this query: [%s]', orphanedVars.slice(1).join(','))
+		log.warn('Variables orphaned by this query: [%s]', orphanedVars.join(','))
 		log.warn('Replacing orphans with null')
-		ret.replace(orphanedVarsRegex, 'null')
+		ret = ret.replace(orphanedVarsRegex, 'null')
 	}
 	log.debug(ret)
 	return ret
@@ -75,12 +75,12 @@ export function orderTop8(sets: GGSet[]) : GGSet[]{
 	let ordered: GGSet[] = [];
 	const fn = (roundName: string) => {
 		ordered = ordered.concat(_.find(sets, set => {
-			return set.getRound() === roundName;
+			return set.getFullRoundText() == roundName;
 		}) as GGSet)
 	}
 
 	let hasReset = _.find(sets, set => {
-		return set.getRound() === 'Grand Final Reset';
+		return set.getFullRoundText() === 'Grand Final Reset';
 	})
 	if(hasReset) fn('Grand Final Reset')
 
@@ -92,7 +92,7 @@ export function orderTop8(sets: GGSet[]) : GGSet[]{
 	fn('Winners Semi-Final')
 
 
-	let roundNames = sets.map(set => set.getRound())
+	let roundNames = sets.map(set => set.getFullRoundText())
 	let losersRoundName = roundNames.filter(name => losersRoundRegex.test(name))[0]
 	fn(losersRoundName)
 
@@ -108,8 +108,8 @@ export function parseOptions(options: Options) : Options {
 }
 
 export function getHighestLevelLosersRound(sets: GGSet[]) : string {
-	let loserRounds = sets.filter(set => losersRoundRegex.test(set.getRound()))
-	let loserRoundNumbers = loserRounds.map(set => (losersRoundRegex.exec(set.getRound()) as any[])[1])
+	let loserRounds = sets.filter(set => losersRoundRegex.test(set.getFullRoundText()))
+	let loserRoundNumbers = loserRounds.map(set => (losersRoundRegex.exec(set.getFullRoundText()) as any[])[1])
 	let highestLoserRoundNumber = Math.max.apply(null, loserRoundNumbers)
 	return `Losers Round ${highestLoserRoundNumber}`
 }
@@ -117,7 +117,7 @@ export function getHighestLevelLosersRound(sets: GGSet[]) : string {
 export function filterForTop8Sets(sets: GGSet[]) : GGSet[] {
 	let highestLoserRound = getHighestLevelLosersRound(sets)
 	let targetLabels = TOP_8_LABELS.concat([highestLoserRound])
-	let topSets = sets.filter(set => targetLabels.includes(set.getRound()))
+	let topSets = sets.filter(set => targetLabels.includes(set.getFullRoundText()))
 	return orderTop8(topSets);
 }
 

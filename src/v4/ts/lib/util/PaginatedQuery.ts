@@ -38,27 +38,28 @@ export default class PaginatedQuery{
 
 		// get total page count and verify we are getting things back from the api
 		let totalPages = PaginatedQuery.parseTotalPages(operationName, data)
+		let complexity = PaginatedQuery.determineComplexity(data[0]) //Object.keys(data[0]).length
+		log.info('Total Pages using 1 perPage: %s, Object Complexity per Page: %s', totalPages, complexity)
 
 		// check to see if the implementer is forcing perPage
 		// if they are not, calculate the optimal perPage count, 
 		// requery for new pageCount, and continue
 		let isForcingPerPage = perPage > 1 && options != undefined && options.perPage != undefined // TODO this logic is probably superficial
-
 		if(!isForcingPerPage){
-			let complexity = PaginatedQuery.determineComplexity(data[0]) //Object.keys(data[0]).length
 			perPage = PaginatedQuery.calculateOptimalPagecount(complexity, totalPages)
-			log.info('Total Pages using 1 perPage: %s, Object Complexity per Page: %s', totalPages, complexity)
-
+			log.info('Optimal Per Page Count: %s', perPage)
 			queryOptions = {
 				page: page++,
 				perPage: perPage,
 				filters: filters,
 				pageInfo: 'pageInfo{\ntotalPages\n}'
 			}
+			//queryOptions = Object.assign(queryOptions, additionalParams)
 			query = mergeQuery(queryString, queryOptions)
-			let optimizedData = await NI.query(query, queryOptions)
+			let optimizedData = await NI.query(query, params)
 			data = data.concat([optimizedData])
 			totalPages = PaginatedQuery.parseTotalPages(operationName, optimizedData)
+			log.info('Optimal Page Count: %s', totalPages)
 		}
 		else
 			log.warn('Implementer has chosen to force perPage at %s per page', perPage)
@@ -88,7 +89,11 @@ export default class PaginatedQuery{
 	}
 
 	static calculateOptimalPagecount(objectComplexity: number, totalPages: number) : number{
-		return Math.ceil(MAX_COMPLEXITY / objectComplexity / totalPages)
+		let totalComplexity = objectComplexity * totalPages
+		if(totalComplexity < MAX_COMPLEXITY)
+			return Math.ceil(MAX_COMPLEXITY / objectComplexity / totalPages)
+		else
+			return Math.ceil(totalPages * objectComplexity / MAX_COMPLEXITY)
 	}
 
 	static determineComplexity(objects: any[]) : number{
@@ -125,7 +130,6 @@ namespace IPaginatedQuery{
 	export interface Options{
 		page?: number | null,
 		perPage?: number | null,
-		filters?: Filters | null,
 		pageInfo?: PageInfoData | string,
 		[x: string]: any
 	}

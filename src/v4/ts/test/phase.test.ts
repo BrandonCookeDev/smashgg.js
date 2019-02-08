@@ -16,9 +16,11 @@ const {expect} = chai
 import {Phase, IPhase} from '../lib/Phase'
 import {PhaseGroup} from '../lib/PhaseGroup'
 import {GGSet} from '../lib/GGSet'
+import {Entrant} from '../lib/Entrant'
 import Initializer from '../lib/util/Initializer';
 import * as testData from './data/phase.testData'
 
+const LOG_LEVEL = 'verbose'
 
 const ID1 = 111483
 const ID2 = 45262
@@ -37,7 +39,7 @@ describe('Smash GG Phase', function(){
 	this.timeout(10000)
 
 	before(async () => {
-		log.setLogLevel('debug');
+		log.setLogLevel(LOG_LEVEL);
 		await Initializer(process.env.API_TOKEN!)
 		phase1 = await Phase.get(ID1, EVENT_ID_1)
 		phase2 = await Phase.get(ID2, EVENT_ID_2)
@@ -115,13 +117,14 @@ describe('Smash GG Phase', function(){
 		sets.forEach(set => {
 			expect(set).to.be.an.instanceof(GGSet);
 		});
+		expect(sets.length).to.be.equal(152);
 		return true;
 	})
 
 	it('should correctly get all sets 2', async function(){
-		this.timeout(30000)
+		this.timeout(120000)
 
-		let sets: GGSet[] = await phase2.getSets({perPage: 5});
+		let sets: GGSet[] = await phase2.getSets();
 		var hasDuplicates = function(a: GGSet[]) {
 			return _.uniq(a).length !== a.length;
 		};
@@ -129,13 +132,14 @@ describe('Smash GG Phase', function(){
 		sets.forEach(set => {
 			expect(set).to.be.an.instanceof(GGSet);
 		});
+		expect(sets.length).to.be.equal(1164);
 		return true;
 	})
 
-	it('should correctly get all sets 3', async function(){
+	xit('should correctly get all sets 3', async function(){
 		this.timeout(30000)
 
-		let sets: GGSet[] = await phase2.getSets({perPage: 5});
+		let sets: GGSet[] = await phase2.getSets();
 		var hasDuplicates = function(a: GGSet[]) {
 			return _.uniq(a).length !== a.length;
 		};
@@ -143,6 +147,24 @@ describe('Smash GG Phase', function(){
 		sets.forEach(set => {
 			expect(set).to.be.an.instanceof(GGSet);
 		});
+		expect(sets.length).to.be.equal(1164);
+		return true;
+	})
+
+
+	// entrants
+	it('should correctly get all entrants 1', async function(){
+		this.timeout(30000)
+
+		let entrants: Entrant[] = await phase1.getEntrants();
+		var hasDuplicates = function(a: Entrant[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(entrants)).to.be.false;
+		entrants.forEach(set => {
+			expect(set).to.be.an.instanceof(Entrant);
+		});
+		expect(entrants.length).to.be.equal(0);
 		return true;
 	})
 

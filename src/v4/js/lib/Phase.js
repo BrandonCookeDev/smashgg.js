@@ -123,7 +123,7 @@ var Phase = /** @class */ (function () {
                         return [4 /*yield*/, PaginatedQuery_1.default.query("Phase Seeds [" + this.id + "]", queries.phaseSeeds, { id: this.id })];
                     case 1:
                         data = _a.sent();
-                        seedData = lodash_1.default.flatten(data.map(function (results) { return results.seed; }));
+                        seedData = lodash_1.default.flatten(data.map(function (results) { return results.phase.paginatedSeeds.nodes; })).filter(function (seed) { return seed != null; });
                         seeds = seedData.map(function (seedData) { return Seed_1.Seed.parse(seedData); });
                         return [2 /*return*/, seeds];
                 }
@@ -138,7 +138,7 @@ var Phase = /** @class */ (function () {
                     case 0:
                         Logger_1.default.info('Getting sets for phase %s', this.id);
                         optionSet = IPhase.parseSetOptions(options);
-                        return [4 /*yield*/, PaginatedQuery_1.default.query("Phase Sets [" + this.id + "]", queries.phaseSets, { eventId: this.eventId, phaseId: this.id }, optionSet.params, optionSet.additionalParams)];
+                        return [4 /*yield*/, PaginatedQuery_1.default.query("Phase Sets [" + this.id + "]", queries.phaseSets, { eventId: this.eventId, phaseId: this.id }, optionSet.params, optionSet.additionalParams, 2)];
                     case 1:
                         data = _a.sent();
                         phaseGroups = lodash_1.default.flatten(data.map(function (setData) { return setData.event.phaseGroups; }));
@@ -159,8 +159,8 @@ var Phase = /** @class */ (function () {
                         return [4 /*yield*/, PaginatedQuery_1.default.query("Phase Entrants [" + this.id + "]", queries.phaseEntrants, { id: this.id })];
                     case 1:
                         data = _a.sent();
-                        entrantData = lodash_1.default.flatten(data.map(function (entrantData) { return entrantData.phase.entrants; }));
-                        entrants = entrantData.map(function (e) { return Entrant_1.Entrant.parse(e); });
+                        entrantData = lodash_1.default.flatten(data.map(function (entrantData) { return entrantData.phase.paginatedSeeds.nodes; })).filter(function (entrant) { return entrant != null; });
+                        entrants = entrantData.map(function (e) { return Entrant_1.Entrant.parseFull(e); });
                         return [2 /*return*/, entrants];
                 }
             });

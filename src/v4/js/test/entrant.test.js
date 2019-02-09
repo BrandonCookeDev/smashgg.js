@@ -112,14 +112,24 @@ describe('smashgg Player (Entrant) Singles', function () {
         chai_1.expect(player3.getSkill()).to.be.equal(testData.player3Data.skill);
     });
     // attendee data
+    it('should get the correct Player Attendee Data (smash.gg Participant) object 1', function () {
+        chai_1.expect(player1.getAttendeeData()).to.have.deep.members([Attendee_1.Attendee.parse(testData.player1Data.participants[0])]);
+    });
+    it('should get the correct Player Attendee Data (smash.gg Participant) object 2', function () {
+        chai_1.expect(player2.getAttendeeData()).to.have.deep.members([Attendee_1.Attendee.parse(testData.player2Data.participants[0])]);
+    });
+    it('should get the correct Player Attendee Data (smash.gg Participant) object 3', function () {
+        chai_1.expect(player3.getAttendeeData()).to.have.deep.members([Attendee_1.Attendee.parse(testData.player3Data.participants[0])]);
+    });
+    // attendee
     it('should get the correct Player Attendee (smash.gg Participant) object 1', function () {
-        chai_1.expect(player1.getAttendeeData()).to.deep.equal(Attendee_1.Attendee.parse(testData.player1Data.participants[0]));
+        chai_1.expect(player1.getAttendee()).to.deep.equal(Attendee_1.Attendee.parse(testData.player1Data.participants[0]));
     });
     it('should get the correct Player Attendee (smash.gg Participant) object 2', function () {
-        chai_1.expect(player2.getAttendeeData()).to.deep.equal(Attendee_1.Attendee.parse(testData.player2Data.participants[0]));
+        chai_1.expect(player2.getAttendee()).to.deep.equal(Attendee_1.Attendee.parse(testData.player2Data.participants[0]));
     });
     it('should get the correct Player Attendee (smash.gg Participant) object 3', function () {
-        chai_1.expect(player3.getAttendeeData()).to.deep.equal(Attendee_1.Attendee.parse(testData.player3Data.participants[0]));
+        chai_1.expect(player3.getAttendee()).to.deep.equal(Attendee_1.Attendee.parse(testData.player3Data.participants[0]));
     });
     // attendee id
     it('should get the correct Player Attendee (smash.gg Participant) id 1', function () {

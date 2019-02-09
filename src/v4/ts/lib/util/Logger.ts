@@ -40,3 +40,11 @@ export function enableLog(){
     transport.silent = false;
   })
 }
+
+export const levels = {
+  DEBUG: 'debug',
+  VERBOSE: 'verbose',
+  INFO: 'info',
+  WARN: 'warn',
+  ERROR: 'error'
+}

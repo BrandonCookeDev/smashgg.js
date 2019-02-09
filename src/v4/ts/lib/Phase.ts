@@ -85,8 +85,8 @@ export class Phase implements IPhase.Phase{
 
 	async getSeeds() : Promise<Seed[]> {
 		log.info('Getting seeds for phase %s', this.id)
-		let data: ISeed.Data[] = await PaginatedQuery.query(`Phase Seeds [${this.id}]`, queries.phaseSeeds, {id: this.id})
-		let seedData: ISeed.SeedData[] = _.flatten(data.map(results => results.seed))
+		let data: IPhase.PhaseSeedData[] = await PaginatedQuery.query(`Phase Seeds [${this.id}]`, queries.phaseSeeds, {id: this.id})
+		let seedData: ISeed.SeedData[] = _.flatten(data.map(results => results.phase.paginatedSeeds.nodes)).filter(seed => seed != null)
 		let seeds = seedData.map( (seedData: ISeed.SeedData) => Seed.parse(seedData) )
 		return seeds
 	}
@@ -94,7 +94,7 @@ export class Phase implements IPhase.Phase{
 	async getSets(options?: IPhase.SetOptions) : Promise<GGSet[]> {
 		log.info('Getting sets for phase %s', this.id)
 		let optionSet = IPhase.parseSetOptions(options)
-		let data: IPhase.DataSets[] = await PaginatedQuery.query(`Phase Sets [${this.id}]`, queries.phaseSets, {eventId: this.eventId, phaseId: this.id}, optionSet.params, optionSet.additionalParams)
+		let data: IPhase.DataSets[] = await PaginatedQuery.query(`Phase Sets [${this.id}]`, queries.phaseSets, {eventId: this.eventId, phaseId: this.id}, optionSet.params, optionSet.additionalParams, 2)
 		let phaseGroups = _.flatten(data.map(setData => setData.event.phaseGroups))
 		let setsData: IGGSet.SetData[] = _.flatten(phaseGroups.map(pg => pg.paginatedSets.nodes)).filter(set => set != null)
 		let sets = setsData.map( (setData: IGGSet.SetData) => GGSet.parse(setData) )
@@ -104,8 +104,8 @@ export class Phase implements IPhase.Phase{
 	async getEntrants() : Promise<Entrant[]> {
 		log.info('Getting entrants for phase %s', this.id)
 		let data: IPhase.PhaseEntrantData[] = await PaginatedQuery.query(`Phase Entrants [${this.id}]`, queries.phaseEntrants, {id: this.id})
-		let entrantData: IEntrant.EntrantData[] = _.flatten(data.map(entrantData => entrantData.phase.entrants ))
-		let entrants: Entrant[] = entrantData.map(e => Entrant.parse(e)) as Entrant[];
+		let entrantData: IEntrant.Data[] = _.flatten(data.map(entrantData => entrantData.phase.paginatedSeeds.nodes )).filter(entrant => entrant != null)
+		let entrants: Entrant[] = entrantData.map(e => Entrant.parseFull(e)) as Entrant[];
 		return entrants
 	}
 
@@ -172,7 +172,9 @@ export namespace IPhase{
 
 	export interface PhaseSeedData{
 		phase:{
-			seeds: ISeed.Data[]
+			paginatedSeeds: {
+				nodes: ISeed.SeedData[]
+			} 
 		}
 	}
 
@@ -188,7 +190,9 @@ export namespace IPhase{
 
 	export interface PhaseEntrantData{
 		phase: {
-			entrants: IEntrant.EntrantData
+			paginatedSeeds:{
+				nodes: IEntrant.Data[]
+			} 
 		}
 	}
 
@@ -210,7 +214,10 @@ export namespace IPhase{
 	export interface EntrantOptions{
 		page?: number,
 		perPage?: number,
-		sortType?: string
+		sortType?: string,
+		filter?: {
+
+		}
 	}
 
 	export function parseSetOptions(options?: SetOptions) : 

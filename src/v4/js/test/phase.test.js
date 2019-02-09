@@ -61,7 +61,7 @@ var GGSet_1 = require("../lib/GGSet");
 var Entrant_1 = require("../lib/Entrant");
 var Initializer_1 = __importDefault(require("../lib/util/Initializer"));
 var testData = __importStar(require("./data/phase.testData"));
-var LOG_LEVEL = 'verbose';
+var LOG_LEVEL = log.levels.VERBOSE;
 var ID1 = 111483;
 var ID2 = 45262;
 var ID3 = 100046;
@@ -233,7 +233,53 @@ describe('Smash GG Phase', function () {
                         entrants.forEach(function (set) {
                             expect(set).to.be.an.instanceof(Entrant_1.Entrant);
                         });
-                        expect(entrants.length).to.be.equal(0);
+                        expect(entrants.length).to.be.equal(126);
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    it('should correctly get all entrants 2', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var entrants, hasDuplicates;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(30000);
+                        return [4 /*yield*/, phase2.getEntrants()];
+                    case 1:
+                        entrants = _a.sent();
+                        hasDuplicates = function (a) {
+                            return lodash_1.default.uniq(a).length !== a.length;
+                        };
+                        expect(hasDuplicates(entrants)).to.be.false;
+                        entrants.forEach(function (set) {
+                            expect(set).to.be.an.instanceof(Entrant_1.Entrant);
+                        });
+                        expect(entrants.length).to.be.equal(429);
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    it('should correctly get all entrants 3', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var entrants, hasDuplicates;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(30000);
+                        return [4 /*yield*/, phase3.getEntrants()];
+                    case 1:
+                        entrants = _a.sent();
+                        hasDuplicates = function (a) {
+                            return lodash_1.default.uniq(a).length !== a.length;
+                        };
+                        expect(hasDuplicates(entrants)).to.be.false;
+                        entrants.forEach(function (set) {
+                            expect(set).to.be.an.instanceof(Entrant_1.Entrant);
+                        });
+                        expect(entrants.length).to.be.equal(91);
                         return [2 /*return*/, true];
                 }
             });

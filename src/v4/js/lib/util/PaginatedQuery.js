@@ -51,7 +51,8 @@ var MAX_COMPLEXITY = 1000;
 var PaginatedQuery = /** @class */ (function () {
     function PaginatedQuery() {
     }
-    PaginatedQuery.query = function (operationName, queryString, params, options, additionalParams) {
+    PaginatedQuery.query = function (operationName, queryString, params, options, additionalParams, complexitySubtraction) {
+        if (complexitySubtraction === void 0) { complexitySubtraction = 0; }
         return __awaiter(this, void 0, void 0, function () {
             var page, perPage, filters, queryOptions, query, data, totalPages, complexity, isForcingPerPage, optimizedData, i, _a, _b;
             return __generator(this, function (_c) {
@@ -75,7 +76,7 @@ var PaginatedQuery = /** @class */ (function () {
                         if (data.length <= 0)
                             throw new Error(operationName + ": No data returned from query for operation");
                         totalPages = PaginatedQuery.parseTotalPages(operationName, data);
-                        complexity = PaginatedQuery.determineComplexity(data[0]) //Object.keys(data[0]).length
+                        complexity = PaginatedQuery.determineComplexity(data[0]) - complexitySubtraction //Object.keys(data[0]).length
                         ;
                         Logger_1.default.info('Total Pages using 1 perPage: %s, Object Complexity per Page: %s', totalPages, complexity);
                         isForcingPerPage = perPage > 1 && options != undefined && options.perPage != undefined // TODO this logic is probably superficial
@@ -138,7 +139,7 @@ var PaginatedQuery = /** @class */ (function () {
         if (totalComplexity < MAX_COMPLEXITY)
             return Math.ceil(MAX_COMPLEXITY / objectComplexity / totalPages);
         else
-            return Math.ceil(totalPages * objectComplexity / MAX_COMPLEXITY);
+            return Math.floor((objectComplexity * totalPages) / MAX_COMPLEXITY);
     };
     PaginatedQuery.determineComplexity = function (objects) {
         var complexity = 0;

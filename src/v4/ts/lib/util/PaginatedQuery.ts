@@ -15,7 +15,7 @@ const MAX_COMPLEXITY = 1000
 
 export default class PaginatedQuery{
 
-	static async query(operationName: string, queryString: string, params: object, options?: IPaginatedQuery.Options, additionalParams?: {}) : Promise<any>{
+	static async query(operationName: string, queryString: string, params: object, options?: IPaginatedQuery.Options, additionalParams?: {}, complexitySubtraction: number = 0) : Promise<any>{
 		log.info('%s: Calling Paginated Querys', operationName);
 
 		let page = options != undefined && options.page ? options.page : 1
@@ -38,7 +38,7 @@ export default class PaginatedQuery{
 
 		// get total page count and verify we are getting things back from the api
 		let totalPages = PaginatedQuery.parseTotalPages(operationName, data)
-		let complexity = PaginatedQuery.determineComplexity(data[0]) //Object.keys(data[0]).length
+		let complexity = PaginatedQuery.determineComplexity(data[0]) - complexitySubtraction //Object.keys(data[0]).length
 		log.info('Total Pages using 1 perPage: %s, Object Complexity per Page: %s', totalPages, complexity)
 
 		// check to see if the implementer is forcing perPage
@@ -90,10 +90,11 @@ export default class PaginatedQuery{
 
 	static calculateOptimalPagecount(objectComplexity: number, totalPages: number) : number{
 		let totalComplexity = objectComplexity * totalPages
+		
 		if(totalComplexity < MAX_COMPLEXITY)
 			return Math.ceil(MAX_COMPLEXITY / objectComplexity / totalPages)
 		else
-			return Math.ceil(totalPages * objectComplexity / MAX_COMPLEXITY)
+			return Math.floor((objectComplexity * totalPages) / MAX_COMPLEXITY)
 	}
 
 	static determineComplexity(objects: any[]) : number{

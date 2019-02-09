@@ -6,14 +6,14 @@ export class Entrant implements IEntrant.Entrant{
 	name: string
 	eventId: number
 	skill: number
-	attendeeData: Attendee
+	attendeeData: Attendee[]
 
 	constructor(
 		id: number,
 		name: string, 
 		eventId: number,
 		skill: number,
-		attendeeData: Attendee
+		attendeeData: Attendee[]
 	){
 		this.id = id
 		this.name = name
@@ -22,28 +22,16 @@ export class Entrant implements IEntrant.Entrant{
 		this.attendeeData = attendeeData
 	}
 
-	static parse(data: IEntrant.EntrantData) : Entrant | Entrant[]{
+	static parse(data: IEntrant.EntrantData) : Entrant{
 		let attendeeData = data.participants.map(attendeeData => Attendee.parse(attendeeData))
 		
-		if(attendeeData.length == 1)
-			return new Entrant(
-				data.id,
-				data.name,
-				data.eventId,
-				data.skill,
-				attendeeData[0]
-			)
-		else if(attendeeData.length > 1)
-			return attendeeData.map(attendee => {
-				return new Entrant(
-					data.id,
-					data.name,
-					data.eventId,
-					data.skill,
-					attendee
-				) 
-			})
-		else throw new Error('No attendee data')
+		return new Entrant(
+			data.id,
+			data.name,
+			data.eventId,
+			data.skill,
+			attendeeData
+		)
 	}
 
 	static parseFull(data: IEntrant.Data) : Entrant | Entrant[]{
@@ -66,68 +54,72 @@ export class Entrant implements IEntrant.Entrant{
 		return this.skill
 	}
 
-	getAttendeeData(): Attendee{
+	getAttendeeData(): Attendee[]{
 		return this.attendeeData
 	}
 
-	getAttendeeId(): number{
-		return this.attendeeData.getId()
+	getAttendee(position: number = 0): Attendee{
+		return this.attendeeData[position]
 	}
 
-	getGamerTag(): string {
-		return this.attendeeData.getGamerTag()
+	getAttendeeId(position: number = 0): number{
+		return this.attendeeData[position].getId()
+	}
+
+	getGamerTag(position: number = 0): string {
+		return this.attendeeData[position].getGamerTag()
 	}
 	
-	getSponsor(): string | null{
-		return this.attendeeData.getSponsor()
+	getSponsor(position: number = 0): string | null{
+		return this.attendeeData[position].getSponsor()
 	}
 
-	getPhoneNumber(): number | null{
-		return this.attendeeData.getPhoneNumber()
+	getPhoneNumber(position: number = 0): number | null{
+		return this.attendeeData[position].getPhoneNumber()
 	}
 
-	getContactInfo(): IAttendee.ContactInfo | null{
-		return this.attendeeData.getContactInfo()
+	getContactInfo(position: number = 0): IAttendee.ContactInfo | null{
+		return this.attendeeData[position].getContactInfo()
 	}
 
-	getCity(): string | null{
-		return this.attendeeData.getCity()
+	getCity(position: number = 0): string | null{
+		return this.attendeeData[position].getCity()
 	}
 
-	getState(): string | null{
-		return this.attendeeData.getState()
+	getState(position: number = 0): string | null{
+		return this.attendeeData[position].getState()
 	}
 
-	getStateId(): number | null{
-		return this.attendeeData.getStateId()
+	getStateId(position: number = 0): number | null{
+		return this.attendeeData[position].getStateId()
 	}
 
-	getCountry(): string | null{
-		return this.attendeeData.getCountry()
+	getCountry(position: number = 0): string | null{
+		return this.attendeeData[position].getCountry()
 	}
 
-	getCountryId(): number | null{
-		return this.attendeeData.getCountryId()
+	getCountryId(position: number = 0): number | null{
+		return this.attendeeData[position].getCountryId()
 	}
 
-	getContactName(): string | null{
-		return this.attendeeData.getContactName()
+	getContactName(position: number = 0): string | null{
+		return this.attendeeData[position].getContactName()
 	}
 
-	getFirstName(): string | null{
-		return this.attendeeData.getFirstName()
+	getFirstName(position: number = 0): string | null{
+		return this.attendeeData[position].getFirstName()
 	}
 
-	getLastName(): string | null{
-		return this.attendeeData.getLastName()
+	getLastName(position: number = 0): string | null{
+		return this.attendeeData[position].getLastName()
 	}
 
-	getZipcode(): string | null	{
-		return this.attendeeData.getZipcode()
+	getZipcode(position: number = 0): string | null	{
+		return this.attendeeData[position].getZipcode()
 	}
 
-	getConnectedAccounts(): object | null{
-		return this.attendeeData.getConnectedAccounts()
+	getConnectedAccounts(position: number = 0): object | null{
+		return this.attendeeData[position].getConnectedAccounts()
 	}
 }
 
@@ -137,27 +129,27 @@ export namespace IEntrant{
 		name: string, 
 		eventId: number,
 		skill: number,
-		attendeeData: Attendee
+		attendeeData: Attendee[]
 
 		getId(): number
 		getName(): string 
 		getEventId(): number
 		getSkill(): number
-		getAttendeeData(): Attendee
-		getAttendeeId(): number
-		getGamerTag(): string
-		getSponsor(): string | null
-		getPhoneNumber(): number | null
-		getContactInfo(): IAttendee.ContactInfo | null
-		getCity(): string | null
-		getState(): string | null
-		getStateId(): number | null
-		getCountry(): string | null
-		getCountryId(): number | null
-		getName(): string | null
-		getFirstName(): string | null
-		getLastName(): string | null
-		getZipcode(): string | null		
+		getAttendeeData(position: number): Attendee | Attendee[]
+		getAttendeeId(position: number): number
+		getGamerTag(position: number): string
+		getSponsor(position: number): string | null
+		getPhoneNumber(position: number): number | null
+		getContactInfo(position: number): IAttendee.ContactInfo | null
+		getCity(position: number): string | null
+		getState(position: number): string | null
+		getStateId(position: number): number | null
+		getCountry(position: number): string | null
+		getCountryId(position: number): number | null
+		getName(position: number): string | null
+		getFirstName(position: number): string | null
+		getLastName(position: number): string | null
+		getZipcode(position: number): string | null		
 		getConnectedAccounts(): object | null
 	}	
 
@@ -166,10 +158,10 @@ export namespace IEntrant{
 	}
 
 	export interface EntrantData{
-		"id": number,
-		"name": string,
-		"eventId": number,
-		"skill": number,
-		"participants": IAttendee.AttendeeData[]
+		id: number,
+		name: string,
+		eventId: number,
+		skill: number,
+		participants: IAttendee.AttendeeData[]
 	}
 }

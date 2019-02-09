@@ -12,14 +12,7 @@ var Entrant = /** @class */ (function () {
     }
     Entrant.parse = function (data) {
         var attendeeData = data.participants.map(function (attendeeData) { return Attendee_1.Attendee.parse(attendeeData); });
-        if (attendeeData.length == 1)
-            return new Entrant(data.id, data.name, data.eventId, data.skill, attendeeData[0]);
-        else if (attendeeData.length > 1)
-            return attendeeData.map(function (attendee) {
-                return new Entrant(data.id, data.name, data.eventId, data.skill, attendee);
-            });
-        else
-            throw new Error('No attendee data');
+        return new Entrant(data.id, data.name, data.eventId, data.skill, attendeeData);
     };
     Entrant.parseFull = function (data) {
         return Entrant.parse(data.entrant);
@@ -39,50 +32,69 @@ var Entrant = /** @class */ (function () {
     Entrant.prototype.getAttendeeData = function () {
         return this.attendeeData;
     };
-    Entrant.prototype.getAttendeeId = function () {
-        return this.attendeeData.getId();
+    Entrant.prototype.getAttendee = function (position) {
+        if (position === void 0) { position = 0; }
+        return this.attendeeData[position];
     };
-    Entrant.prototype.getGamerTag = function () {
-        return this.attendeeData.getGamerTag();
+    Entrant.prototype.getAttendeeId = function (position) {
+        if (position === void 0) { position = 0; }
+        return this.attendeeData[position].getId();
     };
-    Entrant.prototype.getSponsor = function () {
-        return this.attendeeData.getSponsor();
+    Entrant.prototype.getGamerTag = function (position) {
+        if (position === void 0) { position = 0; }
+        return this.attendeeData[position].getGamerTag();
     };
-    Entrant.prototype.getPhoneNumber = function () {
-        return this.attendeeData.getPhoneNumber();
+    Entrant.prototype.getSponsor = function (position) {
+        if (position === void 0) { position = 0; }
+        return this.attendeeData[position].getSponsor();
     };
-    Entrant.prototype.getContactInfo = function () {
-        return this.attendeeData.getContactInfo();
+    Entrant.prototype.getPhoneNumber = function (position) {
+        if (position === void 0) { position = 0; }
+        return this.attendeeData[position].getPhoneNumber();
     };
-    Entrant.prototype.getCity = function () {
-        return this.attendeeData.getCity();
+    Entrant.prototype.getContactInfo = function (position) {
+        if (position === void 0) { position = 0; }
+        return this.attendeeData[position].getContactInfo();
     };
-    Entrant.prototype.getState = function () {
-        return this.attendeeData.getState();
+    Entrant.prototype.getCity = function (position) {
+        if (position === void 0) { position = 0; }
+        return this.attendeeData[position].getCity();
     };
-    Entrant.prototype.getStateId = function () {
-        return this.attendeeData.getStateId();
+    Entrant.prototype.getState = function (position) {
+        if (position === void 0) { position = 0; }
+        return this.attendeeData[position].getState();
     };
-    Entrant.prototype.getCountry = function () {
-        return this.attendeeData.getCountry();
+    Entrant.prototype.getStateId = function (position) {
+        if (position === void 0) { position = 0; }
+        return this.attendeeData[position].getStateId();
     };
-    Entrant.prototype.getCountryId = function () {
-        return this.attendeeData.getCountryId();
+    Entrant.prototype.getCountry = function (position) {
+        if (position === void 0) { position = 0; }
+        return this.attendeeData[position].getCountry();
     };
-    Entrant.prototype.getContactName = function () {
-        return this.attendeeData.getContactName();
+    Entrant.prototype.getCountryId = function (position) {
+        if (position === void 0) { position = 0; }
+        return this.attendeeData[position].getCountryId();
     };
-    Entrant.prototype.getFirstName = function () {
-        return this.attendeeData.getFirstName();
+    Entrant.prototype.getContactName = function (position) {
+        if (position === void 0) { position = 0; }
+        return this.attendeeData[position].getContactName();
     };
-    Entrant.prototype.getLastName = function () {
-        return this.attendeeData.getLastName();
+    Entrant.prototype.getFirstName = function (position) {
+        if (position === void 0) { position = 0; }
+        return this.attendeeData[position].getFirstName();
     };
-    Entrant.prototype.getZipcode = function () {
-        return this.attendeeData.getZipcode();
+    Entrant.prototype.getLastName = function (position) {
+        if (position === void 0) { position = 0; }
+        return this.attendeeData[position].getLastName();
     };
-    Entrant.prototype.getConnectedAccounts = function () {
-        return this.attendeeData.getConnectedAccounts();
+    Entrant.prototype.getZipcode = function (position) {
+        if (position === void 0) { position = 0; }
+        return this.attendeeData[position].getZipcode();
+    };
+    Entrant.prototype.getConnectedAccounts = function (position) {
+        if (position === void 0) { position = 0; }
+        return this.attendeeData[position].getConnectedAccounts();
     };
     return Entrant;
 }());

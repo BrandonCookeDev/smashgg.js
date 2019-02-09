@@ -42,3 +42,18 @@ export const phaseGroupSets = `query PhaseGroupSeedsQuery($id: Int, $page: Int, 
 		}
 	}
 }`
+
+export const phaseGroupEntrants = `query PhaseGroupEntrants($id: Int, $page: Int, $perPage: Int, $orderBy: String){
+	phaseGroup(id: $id){
+		paginatedSeeds(query: {
+			page: $page,
+			perPage: $perPage,
+			orderBy: $orderBy
+		}){
+			{pageInfo}
+			nodes: {
+				${Schema.entrant}
+			}
+		}
+	}	
+`

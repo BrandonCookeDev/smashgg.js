@@ -41,3 +41,10 @@ function enableLog() {
     });
 }
 exports.enableLog = enableLog;
+exports.levels = {
+    DEBUG: 'debug',
+    VERBOSE: 'verbose',
+    INFO: 'info',
+    WARN: 'warn',
+    ERROR: 'error'
+};

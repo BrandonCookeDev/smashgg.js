@@ -42,7 +42,7 @@ query PhaseSets($eventId:Int, $phaseId: Int){
 		  perPage: {perPage},
 		  sortType: {sortType},
 		  filters: {
-			phaseIds:[$phaseId]
+				phaseIds:[$phaseId]
 		  }
 		){
 		  {pageInfo}
@@ -61,7 +61,7 @@ query PhaseEntrants($id: Int){
 		  page: {page},
 		  perPage: {perPage},
 		  sortBy: {sortBy},
-		  filters: {filters}
+		  filter: {filter}
 		}){
 		  {pageInfo},
 		  nodes{

@@ -1,6 +1,6 @@
 import _ from 'lodash'
 
-import {Entrant} from './Entrant' // TODO change this to internal
+import {Entrant, IEntrant} from './Entrant' // TODO change this to internal
 import {GGSet} from './GGSet'
 import PaginatedQuery from './util/PaginatedQuery'
 import Encoder from './util/Encoder'
@@ -8,6 +8,9 @@ import log from './util/Logger'
 
 import { ICommon } from './util/Common'
 import { IGGSet } from './GGSet'
+
+import * as queries from './scripts/phaseGroupQueries'
+import { IPhase } from './Phase';
 
 /* Constants */
 const PHASE_GROUP_URL = 'https://api.smash.gg/phase_group/%s?%s';
@@ -87,8 +90,15 @@ export class PhaseGroup implements IPhaseGroup.PhaseGroup{
 		return this.tiebreakOrder
 	}
 
-	getEntrants() : Promise<Entrant[]>{
-		
+	async getEntrants(options: IPhaseGroup.EntrantOptions = {id: this.id}) : Promise<Entrant[]>{
+		let data: IPhaseGroup.PhaseGroupSeedData = await PaginatedQuery.query(
+			`Phase Group Entrants [${this.id}]`, 
+			queries.phaseGroupEntrants, 
+			{id: this.id, page: options.page, perPage: options.perPage, sortBy: options.sortBy},
+			{}, 2
+		)
+		let entrants: Entrant[] = data.phaseGroup.paginatedSeeds.nodes.map(e => Entrant.parse(e))
+		return entrants
 	}
 
 	getSets() : Promise<GGSet[]>{
@@ -132,7 +142,7 @@ export namespace IPhaseGroup{
 		getState(): number | null
 		getWaveId(): number | null
 		getTiebreakOrder(): object | null
-		getEntrants() : Promise<Entrant[]>
+		getEntrants(options: IPhaseGroup.EntrantOptions) : Promise<Entrant[]>
 		getSets() : Promise<GGSet[]>
 		getCompleteSets() : Promise<GGSet[]>
 		getIncompleteSets() : Promise<GGSet[]>
@@ -154,5 +164,35 @@ export namespace IPhaseGroup{
 		state: number | null
 		waveId: number | null
 		tiebreakOrder: object | null
+	}
+
+	export interface PhaseGroupSeedData{
+		phaseGroup:{
+			paginatedSeeds:{
+				pageInfo?: {
+					totalPages: number
+				},
+				nodes: IEntrant.EntrantData[]
+			}
+		}
+	}
+
+	export interface EntrantOptions{
+		id: number,
+		page?: number | null,
+		perPage?: number | null,
+		sortBy?: string,
+		filter?: {
+			id?: number,
+			entrantName?: string,
+			checkInState?: number,
+			phaseGroupId?: number[],
+			phaseId?: number[],
+			eventId?: number,
+			seach?:{
+				fieldsToSearch: string[],
+				searchString: string
+			}
+		}
 	}
 }

@@ -20,7 +20,7 @@ import {Entrant} from '../lib/Entrant'
 import Initializer from '../lib/util/Initializer';
 import * as testData from './data/phase.testData'
 
-const LOG_LEVEL = 'verbose'
+const LOG_LEVEL = log.levels.VERBOSE
 
 const ID1 = 111483
 const ID2 = 45262
@@ -164,9 +164,40 @@ describe('Smash GG Phase', function(){
 		entrants.forEach(set => {
 			expect(set).to.be.an.instanceof(Entrant);
 		});
-		expect(entrants.length).to.be.equal(0);
+		expect(entrants.length).to.be.equal(126);
 		return true;
 	})
+
+	it('should correctly get all entrants 2', async function(){
+		this.timeout(30000)
+
+		let entrants: Entrant[] = await phase2.getEntrants();
+		var hasDuplicates = function(a: Entrant[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(entrants)).to.be.false;
+		entrants.forEach(set => {
+			expect(set).to.be.an.instanceof(Entrant);
+		});
+		expect(entrants.length).to.be.equal(429);
+		return true;
+	})
+
+	it('should correctly get all entrants 3', async function(){
+		this.timeout(30000)
+
+		let entrants: Entrant[] = await phase3.getEntrants();
+		var hasDuplicates = function(a: Entrant[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(entrants)).to.be.false;
+		entrants.forEach(set => {
+			expect(set).to.be.an.instanceof(Entrant);
+		});
+		expect(entrants.length).to.be.equal(91);
+		return true;
+	})
+
 
 	/*
 	it('should correctly get all phase groups', async function(){

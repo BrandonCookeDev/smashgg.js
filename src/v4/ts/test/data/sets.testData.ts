@@ -155,27 +155,27 @@ export const set3Full: IGGSet.Data = {
 }
 
 export const p1: PlayerLite = new PlayerLite(
-	'MVG FOX | Mew2King', 1106474, 1148324
+	'MVG FOX | Mew2King', 1106474, [1148324]
 )
 
 export const p2: PlayerLite = new PlayerLite(
-	'Ginger', 784069, 863946
+	'Ginger', 784069, [863946]
 )
 
 export const p3: PlayerLite = new PlayerLite(
-	'SS | Colbol', 1171874, 1207468
+	'SS | Colbol', 1171874, [1207468]
 )
 
 export const p4: PlayerLite = new PlayerLite(
-	'Balance | Druggedfox', 757871, 840037
+	'Balance | Druggedfox', 757871, [840037]
 )
 
 export const p5: PlayerLite = new PlayerLite(
-	'Balance | Druggedfox',	789171, 868742
+	'Balance | Druggedfox',	789171, [868742]
 )
 
 export const p6: PlayerLite = new PlayerLite(
-	'RNG | Swedish Delight', 767565,849572
+	'RNG | Swedish Delight', 767565,[849572]
 )
 
 export const parsedDisplayScore1 = {

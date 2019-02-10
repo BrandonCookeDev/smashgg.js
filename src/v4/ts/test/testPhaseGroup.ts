@@ -11,14 +11,6 @@ const {expect} = chai
 import {GGSet, PhaseGroup, IPhaseGroup} from '../lib/internal'
 import Cache from '../lib/util/Cache'
 
-let phaseGroup1: PhaseGroup;
-let phaseGroup2: PhaseGroup;
-let phaseGroup3: PhaseGroup;
-let phaseGroup4: PhaseGroup;
-
-const ID1 = 0
-const ID2 = 44445
-const ID3 = 301994
 
 
 function loadPhaseGroup(id: number, options: IPhaseGroup.Options) : Promise<PhaseGroup>{

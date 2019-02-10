@@ -15,7 +15,7 @@ const MAX_COMPLEXITY = 1000
 
 export default class PaginatedQuery{
 
-	static async query(operationName: string, queryString: string, params: object, options?: IPaginatedQuery.Options, additionalParams?: {}, complexitySubtraction: number = 0) : Promise<any>{
+	static async query(operationName: string, queryString: string, params: object, options?: IPaginatedQuery.Options, additionalParams?: {}, complexitySubtraction: number = 0) : Promise<any[]>{
 		log.info('%s: Calling Paginated Querys', operationName);
 
 		let page = options != undefined && options.page ? options.page : 1

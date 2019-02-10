@@ -8,7 +8,8 @@ import log from './util/Logger'
 import NI from './util/NetworkInterface'
 import * as queries from './scripts/setQueries'
 
-import PlayerLite = IGGSet.PlayerLite
+import {Attendee, IAttendee} from './Attendee'
+import {Entrant, IEntrant} from './Entrant'
 
 const API_URL = 'https://api.smash.gg/set/%s';
 const DISPLAY_SCORE_REGEX = new RegExp(/^([\S\s]*) ([0-9]{1,3}) - ([\S\s]*) ([0-9]{1,3})$/);
@@ -93,8 +94,8 @@ export class GGSet extends EventEmitter implements IGGSet.GGSet{
 
 	static parse(data: IGGSet.SetData) : GGSet{
 		let displayScoreParsed = GGSet.parseDisplayScore(data.displayScore);
-		let p1 = new IGGSet.PlayerLite(displayScoreParsed.tag1, +data.slots[0].entrant.id, +data.slots[0].entrant.participants[0].id)
-		let p2 = new IGGSet.PlayerLite(displayScoreParsed.tag2, +data.slots[1].entrant.id, +data.slots[1].entrant.participants[0].id)
+		let p1 = IGGSet.PlayerLite.parse(displayScoreParsed.tag1, data.slots[0])
+		let p2 = IGGSet.PlayerLite.parse(displayScoreParsed.tag2, data.slots[1])
 		return new GGSet(
 			+data.id,
 			data.eventId,
@@ -153,12 +154,12 @@ export class GGSet extends EventEmitter implements IGGSet.GGSet{
 		return this.player1.tag
 	}
 
-	getPlayer1AttendeeId() : number | null {
-		return this.player1.attendeeId
+	getPlayer1AttendeeIds() : number[] | null {
+		return this.player1.attendeeIds
 	}
 
 	getPlayer1PlayerId() : number | null {
-		return this.player1.playerId
+		return this.player1.entrantId
 	}
 
 	getPlayer2() : IGGSet.PlayerLite {
@@ -169,12 +170,12 @@ export class GGSet extends EventEmitter implements IGGSet.GGSet{
 		return this.player2.tag
 	}
 
-	getPlayer2AttendeeId() : number | null {
-		return this.player2.attendeeId
+	getPlayer2AttendeeIds() : number[] | null {
+		return this.player2.attendeeIds
 	}
 
 	getPlayer2PlayerId() : number | null {
-		return this.player2.playerId
+		return this.player2.entrantId
 	}
 
 	getStartedAtTimestamp() : number | null {
@@ -205,10 +206,10 @@ export class GGSet extends EventEmitter implements IGGSet.GGSet{
 
 	getLoserId() : number | null{
 		switch(this.winnerId){
-		case this.player1.playerId:
-			return this.player2.playerId ? this.player2.playerId : null
-		case this.player2.playerId:
-			return this.player1.playerId ? this.player1.playerId : null
+		case this.player1.entrantId:
+			return this.player2.entrantId ? this.player2.entrantId : null
+		case this.player2.entrantId:
+			return this.player1.entrantId ? this.player1.entrantId : null
 		default:
 			return null
 		}
@@ -236,28 +237,28 @@ export class GGSet extends EventEmitter implements IGGSet.GGSet{
 		else return 0
 	}
 
-	getWinner() : PlayerLite | undefined {
-		if(this.winnerId && this.player2.playerId && this.player1.playerId)
+	getWinner() : IGGSet.PlayerLite | undefined {
+		if(this.winnerId && this.player2.entrantId && this.player1.entrantId)
 			switch(this.winnerId){
-			case this.player1.playerId:
+			case this.player1.entrantId:
 				return this.player1
-			case this.player2.playerId:
+			case this.player2.entrantId:
 				return this.player2
 			default:
-				throw new Error(`Winner ID ${this.winnerId} does not match either player ID: [${[this.player1.playerId, this.player2.playerId].join(',')}]`)
+				throw new Error(`Winner ID ${this.winnerId} does not match either player ID: [${[this.player1.entrantId, this.player2.entrantId].join(',')}]`)
 			}
 		else throw new Error(`Set (${this.id}) must be complete to get the Winning Player`);
 	}
 
-	getLoser() : PlayerLite | undefined {
-		if(this.winnerId && this.player1.playerId && this.player2.playerId)
+	getLoser() : IGGSet.PlayerLite | undefined {
+		if(this.winnerId && this.player1.entrantId && this.player2.entrantId)
 			switch(this.winnerId){
-			case this.player1.playerId:
+			case this.player1.entrantId:
 				return this.player2
-			case this.player2.playerId:
+			case this.player2.entrantId:
 				return this.player1
 			default:
-				throw new Error(`Loser ID does not match either player ID: [${[this.player1.playerId, this.player2.playerId].join(',')}]`)
+				throw new Error(`Loser ID does not match either player ID: [${[this.player1.entrantId, this.player2.entrantId].join(',')}]`)
 			}
 		else throw new Error(`Set (${this.id}) must be complete to get the Losing Player`);
 	}
@@ -324,6 +325,23 @@ export class GGSet extends EventEmitter implements IGGSet.GGSet{
 		let data: IGame.Data = await NI.query(queries.games, {id: this.id});
 		return Game.parseFull(data)
 	}
+
+	async getAttendees() : Promise<Attendee[]> {
+		log.info('Getting Attendees who participated in Set [%s]', this.id)
+		let data: IGGSet.SlotAttendeeEntrantData = await NI.query(queries.attendees, {id: this.id})
+		let entrants = data.set.slots.map(slot => slot.entrant).filter(entrant => entrant != null)
+		let participants = _.flatten(entrants.map(entrant => entrant!.participants)).filter(participant => participant != null)
+		let attendees: Attendee[] = participants.map(participant => Attendee.parse(participant!))
+		return attendees
+	}
+
+	async getEntrants() : Promise<Entrant[]> {
+		log.info('Getting Entrants who participated in Set [%s]', this.id)
+		let data: IGGSet.SlotEntrantData = await NI.query(queries.entrants, {id: this.id})
+		let entrantData = data.set.slots.map(slot => slot.entrant).filter(entrant => entrant != null)
+		let entrants = entrantData.map(entrant => Entrant.parse(entrant!))
+		return entrants
+	}
 	
 	// Statics
 
@@ -372,33 +390,30 @@ export class GGSet extends EventEmitter implements IGGSet.GGSet{
 	}
 }
 
-GGSet.prototype.toString = function(){
-	return 'Set: ' + 
-		'\nID: ' + this.id + 
-		'\nEvent ID: ' + this.eventId + 
-		'\nRound: ' + this.round + 
-		'\nPlayer1: ' + this.player1 + 
-		'\nPlayer2: ' + this.player2 + 
-		'\nIs Complete: ' + this.getIsComplete() + 
-		'\nPlayer1 Score: ' + this.score1 + 
-		'\nPlayer2 Score: ' + this.score2 + 
-		'\nWinner ID: ' + this.winnerId + 
-		'\nLoser ID: ' + this.getLoserId();
-};
-
 export namespace IGGSet{
 
 	export class PlayerLite{
 		tag: string | null
-		playerId: number | null
-		attendeeId: number | null
+		entrantId: number | null
+		attendeeIds: number[]
 
-		constructor(tag: string | null, playerId: number | null, attendeeId: number | null){
+		constructor(tag: string | null, entrantId: number | null, attendeeIds: number[] | []){
 			this.tag = tag;
-			this.playerId = playerId;
-			this.attendeeId = attendeeId;
+			this.entrantId = entrantId;
+			this.attendeeIds = attendeeIds;
 		}
 
+		static parse(tag: string | null, slot: Slots){
+
+			let entrantId = slot.entrant ? slot.entrant.id : null
+			let attendeeIds = slot.entrant ? slot.entrant.participants.map(p => p.id) : []
+
+			return new PlayerLite(
+				tag,
+				entrantId,
+				attendeeIds
+			)
+		}
 	}
 
 	export interface GGSet{
@@ -430,11 +445,11 @@ export namespace IGGSet{
 		getPlayer1() : PlayerLite | undefined | null
 		getPlayer1Tag() : string | undefined | null
 		getPlayer1PlayerId() : number | undefined | null
-		getPlayer1AttendeeId() : number | undefined | null
+		getPlayer1AttendeeIds() : number[] | undefined | null
 		getPlayer2() : PlayerLite | undefined | null
 		getPlayer2Tag() : string | undefined | null
 		getPlayer2PlayerId() : number | undefined | null
-		getPlayer2AttendeeId() : number | undefined | null
+		getPlayer2AttendeeIds() : number[] | undefined | null
 		getWinnerId() : number | null
 		getLoserId() : number | null
 		getIsComplete() : boolean | null
@@ -488,5 +503,25 @@ export namespace IGGSet{
 				id: number
 			}[]
 		}
+	}
+
+	export interface SlotEntrantData{
+		set:{
+			slots: ({
+				entrant: IEntrant.EntrantData | null
+			})[]
+		}
+	}
+
+	export interface SlotAttendeeEntrantData{
+		set:{
+			slots: ({
+				entrant: SlotAttendeeData | null
+			})[]
+		}
+	}
+
+	export interface SlotAttendeeData{
+		participants: (IAttendee.AttendeeData | null)[]
 	}
 }

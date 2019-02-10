@@ -14,6 +14,8 @@ const {expect} = chai
 
 import {GGSet, IGGSet} from '../lib/GGSet'
 import {Game, IGame} from '../lib/Game'
+import {Entrant} from '../lib/Entrant'
+import {Attendee} from '../lib/Attendee'
 import Cache from '../lib/util/Cache'
 import * as testData from './data/sets.testData'
 import * as gameData from './data/games.testData'
@@ -157,24 +159,24 @@ describe('Smash GG Set', function(){
 
 	// player 1 playerId
 	it('should return player1 1 playerId', function(){
-		expect(set1.getPlayer1PlayerId()).to.be.equal(testData.p1.playerId)
+		expect(set1.getPlayer1PlayerId()).to.be.equal(testData.p1.entrantId)
 	})
 	it('should return player1 2 playerId', function(){
-		expect(set2.getPlayer1PlayerId()).to.be.equal(testData.p3.playerId)
+		expect(set2.getPlayer1PlayerId()).to.be.equal(testData.p3.entrantId)
 	})
 	it('should return player1 3 playerId', function(){
-		expect(set3.getPlayer1PlayerId()).to.be.equal(testData.p5.playerId)
+		expect(set3.getPlayer1PlayerId()).to.be.equal(testData.p5.entrantId)
 	})
 
 	// player 1 attendee id
 	it('should return player1 1 attendeeId', function(){
-		expect(set1.getPlayer1AttendeeId()).to.be.equal(testData.p1.attendeeId)
+		expect(set1.getPlayer1AttendeeIds()).to.have.members(testData.p1.attendeeIds)
 	})
 	it('should return player1 2 attendeeId', function(){
-		expect(set2.getPlayer1AttendeeId()).to.be.equal(testData.p3.attendeeId)
+		expect(set2.getPlayer1AttendeeIds()).to.have.members(testData.p3.attendeeIds)
 	})
 	it('should return player1 3 attendeeId', function(){
-		expect(set3.getPlayer1AttendeeId()).to.be.equal(testData.p5.attendeeId)
+		expect(set3.getPlayer1AttendeeIds()).to.have.members(testData.p5.attendeeIds)
 	})
 
 	// player 2
@@ -190,24 +192,24 @@ describe('Smash GG Set', function(){
 
 	// player 2 playerId
 	it('should return player1 1 playerId', function(){
-		expect(set1.getPlayer2PlayerId()).to.be.equal(testData.p2.playerId)
+		expect(set1.getPlayer2PlayerId()).to.be.equal(testData.p2.entrantId)
 	})
 	it('should return player1 2 playerId', function(){
-		expect(set2.getPlayer2PlayerId()).to.be.equal(testData.p4.playerId)
+		expect(set2.getPlayer2PlayerId()).to.be.equal(testData.p4.entrantId)
 	})
 	it('should return player1 3 playerId', function(){
-		expect(set3.getPlayer2PlayerId()).to.be.equal(testData.p6.playerId)
+		expect(set3.getPlayer2PlayerId()).to.be.equal(testData.p6.entrantId)
 	})
 
 	// player 2 attendee id
 	it('should return player1 1 attendeeId', function(){
-		expect(set1.getPlayer2AttendeeId()).to.be.equal(testData.p2.attendeeId)
+		expect(set1.getPlayer2AttendeeIds()).to.have.members(testData.p2.attendeeIds)
 	})
 	it('should return player1 2 attendeeId', function(){
-		expect(set2.getPlayer2AttendeeId()).to.be.equal(testData.p4.attendeeId)
+		expect(set2.getPlayer2AttendeeIds()).to.have.members(testData.p4.attendeeIds)
 	})
 	it('should return player1 3 attendeeId', function(){
-		expect(set3.getPlayer2AttendeeId()).to.be.equal(testData.p6.attendeeId)
+		expect(set3.getPlayer2AttendeeIds()).to.have.members(testData.p6.attendeeIds)
 	})
 
 	// getting winner id
@@ -223,13 +225,13 @@ describe('Smash GG Set', function(){
 
 	// getting loser id
 	it('should give the correct Loser ID 1', function(){
-		expect(set1.getLoserId()).to.deep.equal(testData.p2.playerId)
+		expect(set1.getLoserId()).to.deep.equal(testData.p2.entrantId)
 	})
 	it('should give the correct Loser ID 2', function(){
-		expect(set2.getLoserId()).to.deep.equal(testData.p4.playerId)
+		expect(set2.getLoserId()).to.deep.equal(testData.p4.entrantId)
 	})
 	it('should give the correct Loser ID 3', function(){
-		expect(set3.getLoserId()).to.deep.equal(testData.p6.playerId)
+		expect(set3.getLoserId()).to.deep.equal(testData.p6.entrantId)
 	})
 
 	// getting winner
@@ -303,6 +305,90 @@ describe('Smash GG Set', function(){
 		let expected = gameData.games3.map(gameData => Game.parse(gameData))
 		expect(await set3.getGames()).to.have.deep.members(expected)
 		return true		
+	})
+
+
+	// entrants
+	it('should get the correct entrants who played in the set 1', async function(){
+		let entrants = await set1.getEntrants()
+
+		var hasDuplicates = function(a: Entrant[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(entrants)).to.be.false;
+		entrants.forEach(entrant => {
+			expect(entrant).to.be.an.instanceof(Entrant);
+		});
+		expect(entrants.length).to.be.equal(2);
+		return true;
+	})
+	it('should get the correct entrants who played in the set 2', async function(){
+		let entrants = await set2.getEntrants()
+
+		var hasDuplicates = function(a: Entrant[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(entrants)).to.be.false;
+		entrants.forEach(entrant => {
+			expect(entrant).to.be.an.instanceof(Entrant);
+		});
+		expect(entrants.length).to.be.equal(2);
+		return true;
+	})
+	it('should get the correct entrants who played in the set 3', async function(){
+		let entrants = await set3.getEntrants()
+
+		var hasDuplicates = function(a: Entrant[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(entrants)).to.be.false;
+		entrants.forEach(entrant => {
+			expect(entrant).to.be.an.instanceof(Entrant);
+		});
+		expect(entrants.length).to.be.equal(2);
+		return true;
+	})
+
+	
+	// participants
+	it('should get the correct attendees who played in the set 1', async function(){
+		let attendees = await set1.getAttendees()
+
+		var hasDuplicates = function(a: Attendee[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(attendees)).to.be.false;
+		attendees.forEach(attendee => {
+			expect(attendee).to.be.an.instanceof(Attendee);
+		});
+		expect(attendees.length).to.be.equal(2);
+		return true;
+	})
+	it('should get the correct attendees who played in the set 2', async function(){
+		let attendees = await set2.getAttendees()
+
+		var hasDuplicates = function(a: Attendee[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(attendees)).to.be.false;
+		attendees.forEach(attendee => {
+			expect(attendee).to.be.an.instanceof(Attendee);
+		});
+		expect(attendees.length).to.be.equal(2);
+		return true;
+	})
+	it('should get the correct participants who played in the set 3', async function(){
+		let attendees = await set3.getAttendees()
+
+		var hasDuplicates = function(a: Attendee[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(attendees)).to.be.false;
+		attendees.forEach(attendee => {
+			expect(attendee).to.be.an.instanceof(Attendee);
+		});
+		expect(attendees.length).to.be.equal(2);
+		return true;
 	})
 
 	xit('should give the correct Bracket ID', function(done){

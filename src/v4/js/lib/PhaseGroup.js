@@ -45,13 +45,13 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var lodash_1 = __importDefault(require("lodash"));
 var Entrant_1 = require("./Entrant"); // TODO change this to internal
+var GGSet_1 = require("./GGSet");
 var PaginatedQuery_1 = __importDefault(require("./util/PaginatedQuery"));
+var NetworkInterface_1 = __importDefault(require("./util/NetworkInterface"));
+var Logger_1 = __importDefault(require("./util/Logger"));
 var queries = __importStar(require("./scripts/phaseGroupQueries"));
-/* Constants */
-var PHASE_GROUP_URL = 'https://api.smash.gg/phase_group/%s?%s';
-var LEGAL_ENCODINGS = ['json', 'utf8', 'base64'];
-var DEFAULT_ENCODING = 'json';
 var PhaseGroup = /** @class */ (function () {
     function PhaseGroup(id, phaseId, displayIdentifier, firstRoundTime, state, waveId, tiebreakOrder) {
         this.id = id;
@@ -66,7 +66,25 @@ var PhaseGroup = /** @class */ (function () {
         return new PhaseGroup(data.id, data.phaseId, data.displayIdentifier, data.firstRoundTime, data.state, data.waveId, data.tiebreakOrder);
     };
     PhaseGroup.parseFull = function (data) {
+        return PhaseGroup.parse(data.phaseGroup);
+    };
+    PhaseGroup.parseEventData = function (data) {
         return data.event.phaseGroups.map(function (pg) { return PhaseGroup.parse(pg); });
+    };
+    PhaseGroup.get = function (id) {
+        return __awaiter(this, void 0, void 0, function () {
+            var data;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        Logger_1.default.info('Getting Phase Group with id %s', id);
+                        return [4 /*yield*/, NetworkInterface_1.default.query(queries.phaseGroup, { id: id })];
+                    case 1:
+                        data = _a.sent();
+                        return [2 /*return*/, PhaseGroup.parse(data.phaseGroup)];
+                }
+            });
+        });
     };
     PhaseGroup.prototype.getId = function () {
         return this.id;
@@ -90,21 +108,42 @@ var PhaseGroup = /** @class */ (function () {
         return this.tiebreakOrder;
     };
     PhaseGroup.prototype.getEntrants = function (options) {
-        if (options === void 0) { options = { id: this.id }; }
+        if (options === void 0) { options = IPhaseGroup.getDefaultEntrantOptions(); }
         return __awaiter(this, void 0, void 0, function () {
-            var data, entrants;
+            var data, phaseGroups, entrants;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, PaginatedQuery_1.default.query("Phase Group Entrants [" + this.id + "]", queries.phaseGroupEntrants, { id: this.id, page: options.page, perPage: options.perPage, sortBy: options.sortBy }, {}, 2)];
+                    case 0:
+                        Logger_1.default.info('Getting Entrants for Phase Group [%s]', this.id);
+                        Logger_1.default.verbose('Query variables: %s', JSON.stringify(options));
+                        return [4 /*yield*/, PaginatedQuery_1.default.query("Phase Group Entrants [" + this.id + "]", queries.phaseGroupEntrants, { id: this.id }, options, 2)];
                     case 1:
                         data = _a.sent();
-                        entrants = data.phaseGroup.paginatedSeeds.nodes.map(function (e) { return Entrant_1.Entrant.parse(e); });
+                        phaseGroups = data.map(function (pg) { return pg.phaseGroup; });
+                        entrants = lodash_1.default.flatten(phaseGroups.map(function (pg) { return pg.paginatedSeeds.nodes.map(function (e) { return Entrant_1.Entrant.parseFull(e); }).filter(function (seed) { return seed != null; }); }));
                         return [2 /*return*/, entrants];
                 }
             });
         });
     };
-    PhaseGroup.prototype.getSets = function () {
+    PhaseGroup.prototype.getSets = function (options) {
+        if (options === void 0) { options = IPhaseGroup.getDefaultSetOptions(); }
+        return __awaiter(this, void 0, void 0, function () {
+            var data, phaseGroups, sets;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        Logger_1.default.info('Getting Sets for Phase Group [%s]', this.id);
+                        Logger_1.default.verbose('Query variables: %s', JSON.stringify(options));
+                        return [4 /*yield*/, PaginatedQuery_1.default.query("Phase Group Sets [" + this.id + "]", queries.phaseGroupSets, { id: this.id }, options, 2)];
+                    case 1:
+                        data = _a.sent();
+                        phaseGroups = data.map(function (pg) { return pg.phaseGroup; });
+                        sets = lodash_1.default.flatten(phaseGroups.map(function (pg) { return pg.paginatedSets.nodes.map(function (set) { return GGSet_1.GGSet.parse(set); }).filter(function (set) { return set != null; }); }));
+                        return [2 /*return*/, sets];
+                }
+            });
+        });
     };
     PhaseGroup.prototype.getCompleteSets = function () {
     };
@@ -117,3 +156,24 @@ var PhaseGroup = /** @class */ (function () {
     return PhaseGroup;
 }());
 exports.PhaseGroup = PhaseGroup;
+var IPhaseGroup;
+(function (IPhaseGroup) {
+    function getDefaultEntrantOptions() {
+        return {
+            page: 1,
+            perPage: 1,
+            sortBy: null,
+            filter: null
+        };
+    }
+    IPhaseGroup.getDefaultEntrantOptions = getDefaultEntrantOptions;
+    function getDefaultSetOptions() {
+        return {
+            page: 1,
+            perPage: 1,
+            sortBy: null,
+            filters: null
+        };
+    }
+    IPhaseGroup.getDefaultSetOptions = getDefaultSetOptions;
+})(IPhaseGroup = exports.IPhaseGroup || (exports.IPhaseGroup = {}));

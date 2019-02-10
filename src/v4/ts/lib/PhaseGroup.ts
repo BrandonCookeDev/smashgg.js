@@ -1,21 +1,12 @@
 import _ from 'lodash'
 
 import {Entrant, IEntrant} from './Entrant' // TODO change this to internal
-import {GGSet} from './GGSet'
+import { GGSet, IGGSet } from './GGSet'
 import PaginatedQuery from './util/PaginatedQuery'
-import Encoder from './util/Encoder'
+import NI from './util/NetworkInterface'
 import log from './util/Logger'
 
-import { ICommon } from './util/Common'
-import { IGGSet } from './GGSet'
-
 import * as queries from './scripts/phaseGroupQueries'
-import { IPhase } from './Phase';
-
-/* Constants */
-const PHASE_GROUP_URL = 'https://api.smash.gg/phase_group/%s?%s';
-const LEGAL_ENCODINGS = ['json', 'utf8', 'base64'];
-const DEFAULT_ENCODING = 'json';
 
 export class PhaseGroup implements IPhaseGroup.PhaseGroup{
 
@@ -26,7 +17,6 @@ export class PhaseGroup implements IPhaseGroup.PhaseGroup{
 	state: number | null
 	waveId: number | null
 	tiebreakOrder: object | null
-
 
 	constructor(
 		id: number,
@@ -58,8 +48,18 @@ export class PhaseGroup implements IPhaseGroup.PhaseGroup{
 		)
 	}
 
-	static parseFull(data: IPhaseGroup.Data) : PhaseGroup[]{
-		return data.event.phaseGroups.map(pg => PhaseGroup.parse(pg));
+	static parseFull(data: IPhaseGroup.Data) : PhaseGroup {
+		return PhaseGroup.parse(data.phaseGroup)
+	}
+
+	static parseEventData(data: IPhaseGroup.DataEventPhaseGroups) : PhaseGroup[]{
+		return data.event.phaseGroups.map(pg => PhaseGroup.parse(pg))
+	}
+
+	static async get(id: number) : Promise<PhaseGroup> {
+		log.info('Getting Phase Group with id %s', id)
+		let data: IPhaseGroup.Data = await NI.query(queries.phaseGroup, {id: id})
+		return PhaseGroup.parse(data.phaseGroup)
 	}
 
 	getId(): number {
@@ -86,23 +86,34 @@ export class PhaseGroup implements IPhaseGroup.PhaseGroup{
 		return this.waveId
 	}
 
-	getTiebreakOrder(): object | null{
+	getTiebreakOrder(): object | [] | null{
 		return this.tiebreakOrder
 	}
 
-	async getEntrants(options: IPhaseGroup.EntrantOptions = {id: this.id}) : Promise<Entrant[]>{
-		let data: IPhaseGroup.PhaseGroupSeedData = await PaginatedQuery.query(
+	async getEntrants(options: IPhaseGroup.EntrantOptions = IPhaseGroup.getDefaultEntrantOptions()) : Promise<Entrant[]>{
+		log.info('Getting Entrants for Phase Group [%s]', this.id)
+		log.verbose('Query variables: %s', JSON.stringify(options))
+		let data: IPhaseGroup.PhaseGroupEntrantData[] = await PaginatedQuery.query(
 			`Phase Group Entrants [${this.id}]`, 
-			queries.phaseGroupEntrants, 
-			{id: this.id, page: options.page, perPage: options.perPage, sortBy: options.sortBy},
-			{}, 2
-		)
-		let entrants: Entrant[] = data.phaseGroup.paginatedSeeds.nodes.map(e => Entrant.parse(e))
+			queries.phaseGroupEntrants, {id: this.id},
+			options, 2
+		) 
+		let phaseGroups = data.map(pg => pg.phaseGroup);
+		let entrants: Entrant[] = _.flatten(phaseGroups.map(pg => pg.paginatedSeeds.nodes.map(e => Entrant.parseFull(e)).filter(seed => seed != null)))
 		return entrants
 	}
 
-	getSets() : Promise<GGSet[]>{
-
+	async getSets(options: IPhaseGroup.SetOptions = IPhaseGroup.getDefaultSetOptions()) : Promise<GGSet[]>{
+		log.info('Getting Sets for Phase Group [%s]', this.id)
+		log.verbose('Query variables: %s', JSON.stringify(options))
+		let data: IPhaseGroup.PhaseGroupSetData[] = await PaginatedQuery.query(
+			`Phase Group Sets [${this.id}]`,
+			queries.phaseGroupSets, {id: this.id},
+			options, 2
+		)
+		let phaseGroups = data.map(pg => pg.phaseGroup);
+		let sets: GGSet[] = _.flatten(phaseGroups.map(pg => pg.paginatedSets.nodes.map(set => GGSet.parse(set)).filter(set => set != null)))
+		return sets
 	}
 
 	getCompleteSets() : Promise<GGSet[]>{
@@ -142,8 +153,8 @@ export namespace IPhaseGroup{
 		getState(): number | null
 		getWaveId(): number | null
 		getTiebreakOrder(): object | null
-		getEntrants(options: IPhaseGroup.EntrantOptions) : Promise<Entrant[]>
-		getSets() : Promise<GGSet[]>
+		getEntrants(options: EntrantOptions) : Promise<Entrant[]>
+		getSets(options: SetOptions) : Promise<GGSet[]>
 		getCompleteSets() : Promise<GGSet[]>
 		getIncompleteSets() : Promise<GGSet[]>
 		getSetsXMinutesBack(minutes: number) : Promise<GGSet[]>
@@ -151,6 +162,10 @@ export namespace IPhaseGroup{
 	}
 
 	export interface Data{
+		phaseGroup: PhaseGroupData
+	}
+
+	export interface DataEventPhaseGroups{
 		event:{
 			phaseGroups: PhaseGroupData[]
 		}
@@ -166,23 +181,34 @@ export namespace IPhaseGroup{
 		tiebreakOrder: object | null
 	}
 
-	export interface PhaseGroupSeedData{
+	export interface PhaseGroupEntrantData{
 		phaseGroup:{
 			paginatedSeeds:{
 				pageInfo?: {
 					totalPages: number
 				},
-				nodes: IEntrant.EntrantData[]
+				nodes: IEntrant.Data[]
 			}
 		}
 	}
 
+	export interface PhaseGroupSetData{
+		phaseGroup:{
+			paginatedSets:{
+				pageInfo?: {
+					totalPages: number
+				},
+				nodes: IGGSet.SetData[]
+			}
+		}
+	}
+	
+
 	export interface EntrantOptions{
-		id: number,
 		page?: number | null,
 		perPage?: number | null,
-		sortBy?: string,
-		filter?: {
+		sortBy?: string | null,
+		filter?: null | {
 			id?: number,
 			entrantName?: string,
 			checkInState?: number,
@@ -193,6 +219,38 @@ export namespace IPhaseGroup{
 				fieldsToSearch: string[],
 				searchString: string
 			}
+		}
+	}
+
+	export function getDefaultEntrantOptions() : EntrantOptions{
+		return {
+			page: 1,
+			perPage: 1,
+			sortBy: null,
+			filter: null
+		}
+	}
+
+	export interface SetOptions{
+		page?: number | null,
+		perPage?: number | null,
+		sortBy?: null | 'NONE' | 'STANDARD' | 'RACE_SPECTATOR' | 'ADMIN',
+		filters?: null | {
+			entrantIds?: number[],
+			state?: number[],
+			stationIds?: number[],
+			phaseIds?: number[],
+			phaseGroupIds?: number[],
+			roundNumber?: number
+		}
+	}
+
+	export function getDefaultSetOptions() : SetOptions{
+		return {
+			page: 1,
+			perPage: 1,
+			sortBy: null,
+			filters: null
 		}
 	}
 }

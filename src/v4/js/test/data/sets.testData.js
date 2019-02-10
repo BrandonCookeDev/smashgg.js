@@ -152,12 +152,12 @@ exports.set2Full = {
 exports.set3Full = {
     "set": exports.set3
 };
-exports.p1 = new PlayerLite('MVG FOX | Mew2King', 1106474, 1148324);
-exports.p2 = new PlayerLite('Ginger', 784069, 863946);
-exports.p3 = new PlayerLite('SS | Colbol', 1171874, 1207468);
-exports.p4 = new PlayerLite('Balance | Druggedfox', 757871, 840037);
-exports.p5 = new PlayerLite('Balance | Druggedfox', 789171, 868742);
-exports.p6 = new PlayerLite('RNG | Swedish Delight', 767565, 849572);
+exports.p1 = new PlayerLite('MVG FOX | Mew2King', 1106474, [1148324]);
+exports.p2 = new PlayerLite('Ginger', 784069, [863946]);
+exports.p3 = new PlayerLite('SS | Colbol', 1171874, [1207468]);
+exports.p4 = new PlayerLite('Balance | Druggedfox', 757871, [840037]);
+exports.p5 = new PlayerLite('Balance | Druggedfox', 789171, [868742]);
+exports.p6 = new PlayerLite('RNG | Swedish Delight', 767565, [849572]);
 exports.parsedDisplayScore1 = {
     tag1: 'MVG FOX | Mew2King',
     tag2: 'Ginger',

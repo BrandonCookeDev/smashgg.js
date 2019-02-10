@@ -58,12 +58,15 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var lodash_1 = __importDefault(require("lodash"));
 var moment_timezone_1 = __importDefault(require("moment-timezone"));
 var events_1 = require("events");
 var Game_1 = require("./Game"); // TODO change to internal later 
 var Logger_1 = __importDefault(require("./util/Logger"));
 var NetworkInterface_1 = __importDefault(require("./util/NetworkInterface"));
 var queries = __importStar(require("./scripts/setQueries"));
+var Attendee_1 = require("./Attendee");
+var Entrant_1 = require("./Entrant");
 var API_URL = 'https://api.smash.gg/set/%s';
 var DISPLAY_SCORE_REGEX = new RegExp(/^([\S\s]*) ([0-9]{1,3}) - ([\S\s]*) ([0-9]{1,3})$/);
 var GGSet = /** @class */ (function (_super) {
@@ -121,8 +124,8 @@ var GGSet = /** @class */ (function (_super) {
     };
     GGSet.parse = function (data) {
         var displayScoreParsed = GGSet.parseDisplayScore(data.displayScore);
-        var p1 = new IGGSet.PlayerLite(displayScoreParsed.tag1, +data.slots[0].entrant.id, +data.slots[0].entrant.participants[0].id);
-        var p2 = new IGGSet.PlayerLite(displayScoreParsed.tag2, +data.slots[1].entrant.id, +data.slots[1].entrant.participants[0].id);
+        var p1 = IGGSet.PlayerLite.parse(displayScoreParsed.tag1, data.slots[0]);
+        var p2 = IGGSet.PlayerLite.parse(displayScoreParsed.tag2, data.slots[1]);
         return new GGSet(+data.id, data.eventId, data.phaseGroupId, data.displayScore, data.fullRoundText, data.round, data.startedAt, data.completedAt, data.winnerId, data.totalGames, data.state, p1, p2, displayScoreParsed.score1, displayScoreParsed.score2);
     };
     GGSet.parseFull = function (data) {
@@ -154,11 +157,11 @@ var GGSet = /** @class */ (function (_super) {
     GGSet.prototype.getPlayer1Tag = function () {
         return this.player1.tag;
     };
-    GGSet.prototype.getPlayer1AttendeeId = function () {
-        return this.player1.attendeeId;
+    GGSet.prototype.getPlayer1AttendeeIds = function () {
+        return this.player1.attendeeIds;
     };
     GGSet.prototype.getPlayer1PlayerId = function () {
-        return this.player1.playerId;
+        return this.player1.entrantId;
     };
     GGSet.prototype.getPlayer2 = function () {
         return this.player2;
@@ -166,11 +169,11 @@ var GGSet = /** @class */ (function (_super) {
     GGSet.prototype.getPlayer2Tag = function () {
         return this.player2.tag;
     };
-    GGSet.prototype.getPlayer2AttendeeId = function () {
-        return this.player2.attendeeId;
+    GGSet.prototype.getPlayer2AttendeeIds = function () {
+        return this.player2.attendeeIds;
     };
     GGSet.prototype.getPlayer2PlayerId = function () {
-        return this.player2.playerId;
+        return this.player2.entrantId;
     };
     GGSet.prototype.getStartedAtTimestamp = function () {
         return this.startedAt;
@@ -197,10 +200,10 @@ var GGSet = /** @class */ (function (_super) {
     };
     GGSet.prototype.getLoserId = function () {
         switch (this.winnerId) {
-            case this.player1.playerId:
-                return this.player2.playerId ? this.player2.playerId : null;
-            case this.player2.playerId:
-                return this.player1.playerId ? this.player1.playerId : null;
+            case this.player1.entrantId:
+                return this.player2.entrantId ? this.player2.entrantId : null;
+            case this.player2.entrantId:
+                return this.player1.entrantId ? this.player1.entrantId : null;
             default:
                 return null;
         }
@@ -227,27 +230,27 @@ var GGSet = /** @class */ (function (_super) {
             return 0;
     };
     GGSet.prototype.getWinner = function () {
-        if (this.winnerId && this.player2.playerId && this.player1.playerId)
+        if (this.winnerId && this.player2.entrantId && this.player1.entrantId)
             switch (this.winnerId) {
-                case this.player1.playerId:
+                case this.player1.entrantId:
                     return this.player1;
-                case this.player2.playerId:
+                case this.player2.entrantId:
                     return this.player2;
                 default:
-                    throw new Error("Winner ID " + this.winnerId + " does not match either player ID: [" + [this.player1.playerId, this.player2.playerId].join(',') + "]");
+                    throw new Error("Winner ID " + this.winnerId + " does not match either player ID: [" + [this.player1.entrantId, this.player2.entrantId].join(',') + "]");
             }
         else
             throw new Error("Set (" + this.id + ") must be complete to get the Winning Player");
     };
     GGSet.prototype.getLoser = function () {
-        if (this.winnerId && this.player1.playerId && this.player2.playerId)
+        if (this.winnerId && this.player1.entrantId && this.player2.entrantId)
             switch (this.winnerId) {
-                case this.player1.playerId:
+                case this.player1.entrantId:
                     return this.player2;
-                case this.player2.playerId:
+                case this.player2.entrantId:
                     return this.player1;
                 default:
-                    throw new Error("Loser ID does not match either player ID: [" + [this.player1.playerId, this.player2.playerId].join(',') + "]");
+                    throw new Error("Loser ID does not match either player ID: [" + [this.player1.entrantId, this.player2.entrantId].join(',') + "]");
             }
         else
             throw new Error("Set (" + this.id + ") must be complete to get the Losing Player");
@@ -322,6 +325,41 @@ var GGSet = /** @class */ (function (_super) {
             });
         });
     };
+    GGSet.prototype.getAttendees = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var data, entrants, participants, attendees;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        Logger_1.default.info('Getting Attendees who participated in Set [%s]', this.id);
+                        return [4 /*yield*/, NetworkInterface_1.default.query(queries.attendees, { id: this.id })];
+                    case 1:
+                        data = _a.sent();
+                        entrants = data.set.slots.map(function (slot) { return slot.entrant; }).filter(function (entrant) { return entrant != null; });
+                        participants = lodash_1.default.flatten(entrants.map(function (entrant) { return entrant.participants; })).filter(function (participant) { return participant != null; });
+                        attendees = participants.map(function (participant) { return Attendee_1.Attendee.parse(participant); });
+                        return [2 /*return*/, attendees];
+                }
+            });
+        });
+    };
+    GGSet.prototype.getEntrants = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var data, entrantData, entrants;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        Logger_1.default.info('Getting Entrants who participated in Set [%s]', this.id);
+                        return [4 /*yield*/, NetworkInterface_1.default.query(queries.entrants, { id: this.id })];
+                    case 1:
+                        data = _a.sent();
+                        entrantData = data.set.slots.map(function (slot) { return slot.entrant; }).filter(function (entrant) { return entrant != null; });
+                        entrants = entrantData.map(function (entrant) { return Entrant_1.Entrant.parse(entrant); });
+                        return [2 /*return*/, entrants];
+                }
+            });
+        });
+    };
     // Statics
     GGSet.filterForCompleteSets = function (sets) {
         Logger_1.default.debug('GGSet.filterForCompleteSets called');
@@ -366,27 +404,19 @@ var GGSet = /** @class */ (function (_super) {
     return GGSet;
 }(events_1.EventEmitter));
 exports.GGSet = GGSet;
-GGSet.prototype.toString = function () {
-    return 'Set: ' +
-        '\nID: ' + this.id +
-        '\nEvent ID: ' + this.eventId +
-        '\nRound: ' + this.round +
-        '\nPlayer1: ' + this.player1 +
-        '\nPlayer2: ' + this.player2 +
-        '\nIs Complete: ' + this.getIsComplete() +
-        '\nPlayer1 Score: ' + this.score1 +
-        '\nPlayer2 Score: ' + this.score2 +
-        '\nWinner ID: ' + this.winnerId +
-        '\nLoser ID: ' + this.getLoserId();
-};
 var IGGSet;
 (function (IGGSet) {
     var PlayerLite = /** @class */ (function () {
-        function PlayerLite(tag, playerId, attendeeId) {
+        function PlayerLite(tag, entrantId, attendeeIds) {
             this.tag = tag;
-            this.playerId = playerId;
-            this.attendeeId = attendeeId;
+            this.entrantId = entrantId;
+            this.attendeeIds = attendeeIds;
         }
+        PlayerLite.parse = function (tag, slot) {
+            var entrantId = slot.entrant ? slot.entrant.id : null;
+            var attendeeIds = slot.entrant ? slot.entrant.participants.map(function (p) { return p.id; }) : [];
+            return new PlayerLite(tag, entrantId, attendeeIds);
+        };
         return PlayerLite;
     }());
     IGGSet.PlayerLite = PlayerLite;

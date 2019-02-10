@@ -47,13 +47,6 @@ chai_1.default.use(chai_as_promised_1.default);
 var expect = chai_1.default.expect;
 var internal_1 = require("../lib/internal");
 var Cache_1 = __importDefault(require("../lib/util/Cache"));
-var phaseGroup1;
-var phaseGroup2;
-var phaseGroup3;
-var phaseGroup4;
-var ID1 = 0;
-var ID2 = 44445;
-var ID3 = 301994;
 function loadPhaseGroup(id, options) {
     return new Promise(function (resolve, reject) {
         var PG = new internal_1.PhaseGroup(id, options);

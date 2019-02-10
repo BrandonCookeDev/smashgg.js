@@ -23,7 +23,7 @@ export const phaseGroupSeedStandings = `query PhaseGroupSeedsQuery($id: Int, $pa
 			page: $page, $perPage: perPage, orderBy: $orderBy
 		}){
 			nodes{
-				standings: {
+				standings{
 					${Schema.standings}
 				}
 			}
@@ -31,29 +31,53 @@ export const phaseGroupSeedStandings = `query PhaseGroupSeedsQuery($id: Int, $pa
 	}
 }`
 
-export const phaseGroupSets = `query PhaseGroupSeedsQuery($id: Int, $page: Int, $perPage: Int, $orderBy: String){
+export const phaseGroupSets = `query PhaseGroupEntrants($id: Int, $page: Int, $perPage: Int, $sortType: SetSortType, $filters: SetFilters){
 	phaseGroup(id: $id){
-		paginatedSets(query: {
-			page: $page, $perPage: perPage, orderBy: $orderBy
-		}){
-			nodes{
-				${Schema.set}
-			}
+	  paginatedSets(page:$page, perPage:$perPage, sortType:$sortType, filters:$filters){
+		pageInfo{
+		  totalPages
 		}
+		nodes{
+			${Schema.set}
+		}
+	  }
 	}
-}`
+  }`
 
-export const phaseGroupEntrants = `query PhaseGroupEntrants($id: Int, $page: Int, $perPage: Int, $orderBy: String){
+export const phaseGroupEntrants = `query PhaseGroupEntrants($id: Int, $page: Int, $perPage: Int, $sortBy: String, $filter: SeedPageFilter){
 	phaseGroup(id: $id){
 		paginatedSeeds(query: {
 			page: $page,
 			perPage: $perPage,
-			orderBy: $orderBy
+			sortBy: $sortBy,
+			filter: $filter
 		}){
 			{pageInfo}
-			nodes: {
-				${Schema.entrant}
+			nodes{
+				entrant{
+					${Schema.entrant}
+				}
 			}
 		}
 	}	
-`
+}`
+
+export const phaseGroupAttendees = `query PhaseGroupEntrants($id: Int, $page: Int, $perPage: Int, $sortBy: String, $filter: SeedPageFilter){
+	phaseGroup(id: $id){
+		paginatedSeeds(query: {
+			page: $page,
+			perPage: $perPage,
+			sortBy: $sortBy,
+			filter: $filter
+		}){
+			{pageInfo}
+			nodes{
+				entrant{
+					participants{
+						${Schema.attendee}
+					}
+				}
+			}
+		}
+	}	
+}`

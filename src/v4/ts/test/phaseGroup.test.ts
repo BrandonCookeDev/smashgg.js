@@ -7,6 +7,7 @@ import '../lib/util/ErrorHandler'
 
 import _ from 'lodash'
 import moment from 'moment'
+import sinon from 'sinon'
 import chai from 'chai'
 import cap from 'chai-as-promised'
 chai.use(cap)
@@ -14,7 +15,9 @@ const {expect} = chai
 
 import {PhaseGroup, IPhaseGroup} from '../lib/PhaseGroup'
 import {Entrant} from '../lib/Entrant'
+import {Attendee} from '../lib/Attendee'
 import {GGSet} from '../lib/GGSet'
+import {Seed} from '../lib/Seed'
 import Initializer from '../lib/util/Initializer'
 import * as testData from './data/phaseGroup.testData'
 import * as log from '../lib/util/Logger'
@@ -29,6 +32,16 @@ const ID1 = 301994
 const ID2 = 887918 // g6 melee doubles top 6
 const ID3 = 44445
 const ID4 = 618443 // cameron's 21st, unfinished
+
+const PG_1_START_AT = 1510401600 
+const PG_1_DATE = moment.unix(PG_1_START_AT)
+//Saturday, November 11, 2017 12:00:00 PM
+//Saturday, November 11, 2017 7:00:00 AM GMT-05:00
+
+const PG_4_START_AT = 1532210400 
+const PG_4_DATE = moment.unix(PG_4_START_AT)
+//Saturday, July 21, 2018 10:00:00 PM
+//Saturday, July 21, 2018 6:00:00 PM GMT-04:00 DST
 
 const LOG_LEVEL = log.levels.VERBOSE
 
@@ -134,6 +147,65 @@ describe('smash.gg PhaseGroup', function(){
 		expect(phaseGroup4.getTiebreakOrder()).to.deep.equal(testData.pg4.tiebreakOrder)
 	})
 
+
+	// seeds
+	it('should return the correct seeds 1', async function(){
+		this.timeout(30000)
+
+		let seeds: Seed[] = await phaseGroup1.getSeeds();
+		var hasDuplicates = function(a: Seed[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(seeds)).to.be.false;
+		seeds.forEach(seed => {
+			expect(seed).to.be.an.instanceof(Seed);
+		});
+		expect(seeds.length).to.be.equal(26);
+		return true;
+	})
+	it('should return the correct seeds 2', async function(){
+		this.timeout(30000)
+
+		let seeds: Seed[] = await phaseGroup2.getSeeds();
+		var hasDuplicates = function(a: Seed[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(seeds)).to.be.false;
+		seeds.forEach(seed => {
+			expect(seed).to.be.an.instanceof(Seed);
+		});
+		expect(seeds.length).to.be.equal(12);
+		return true;
+	})
+	it('should return the correct seeds 3', async function(){
+		this.timeout(30000)
+
+		let seeds: Seed[] = await phaseGroup3.getSeeds();
+		var hasDuplicates = function(a: Seed[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(seeds)).to.be.false;
+		seeds.forEach(seed => {
+			expect(seed).to.be.an.instanceof(Seed);
+		});
+		expect(seeds.length).to.be.equal(46);
+		return true;
+	})
+	it('should return the correct seeds 4', async function(){
+		this.timeout(30000)
+
+		let seeds: Seed[] = await phaseGroup4.getSeeds();
+		var hasDuplicates = function(a: Seed[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(seeds)).to.be.false;
+		seeds.forEach(seed => {
+			expect(seed).to.be.an.instanceof(Seed);
+		});
+		expect(seeds.length).to.be.equal(75);
+		return true;
+	})
+
 	
 	// entrants
 	it('should return the correct entrants 1', async function(){
@@ -194,6 +266,65 @@ describe('smash.gg PhaseGroup', function(){
 	})
 	
 
+	// participants
+	it('should return the correct attendees 1', async function(){
+		this.timeout(30000)
+
+		let attendees: Attendee[] = await phaseGroup1.getAttendees();
+		var hasDuplicates = function(a: Attendee[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(attendees)).to.be.false;
+		attendees.forEach(attendee => {
+			expect(attendee).to.be.an.instanceof(Attendee);
+		});
+		expect(attendees.length).to.be.equal(26);
+		return true;
+	})
+	it('should return the correct attendees 2', async function(){
+		this.timeout(30000)
+
+		let attendees: Attendee[] = await phaseGroup2.getAttendees();
+		var hasDuplicates = function(a: Attendee[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(attendees)).to.be.false;
+		attendees.forEach(attendee => {
+			expect(attendee).to.be.an.instanceof(Attendee);
+		});
+		expect(attendees.length).to.be.equal(24);
+		return true;
+	})
+	it('should return the correct attendees 3', async function(){
+		this.timeout(30000)
+
+		let attendees: Attendee[] = await phaseGroup3.getAttendees();
+		var hasDuplicates = function(a: Attendee[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(attendees)).to.be.false;
+		attendees.forEach(attendee => {
+			expect(attendee).to.be.an.instanceof(Attendee);
+		});
+		expect(attendees.length).to.be.equal(92);
+		return true;
+	})
+	it('should return the correct attendees 4', async function(){
+		this.timeout(30000)
+
+		let attendees: Attendee[] = await phaseGroup4.getAttendees();
+		var hasDuplicates = function(a: Attendee[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(attendees)).to.be.false;
+		attendees.forEach(attendee => {
+			expect(attendee).to.be.an.instanceof(Attendee);
+		});
+		expect(attendees.length).to.be.equal(75);
+		return true;
+	})
+
+
 	// set
 	it('should return the correct Sets 1', async function(){
 		this.timeout(30000)
@@ -248,54 +379,170 @@ describe('smash.gg PhaseGroup', function(){
 		sets.forEach(set => {
 			expect(set).to.be.an.instanceof(GGSet);
 		});
-		expect(sets.length).to.be.equal(42);
+		expect(sets.length).to.be.equal(98);
 		return true;
 	})
 
-	/*
-	id: number
-	phaseId: number
-	displayIdentifier: string | null
-	firstRoundTime: number | null
-	state: number | null
-	waveId: number | null
-	tiebreakOrder: object | null
+	
+	// sets filter dq
+	it('should return the correct DQ filtered Sets 1', async function(){
+		this.timeout(30000)
 
-	/*
-	it('should correctly return the phase id', function(){
-		let phaseId1 = phaseGroup3.getPhaseId()
-		expect(phaseId1).to.be.equal(100046)
-	})
-
-	it('should get all entrants', async function(){
-		this.timeout(5000)
-
-		let players = await phaseGroup3.getPlayers()
-		expect(players.length).to.be.equal(15)
-		return true
-	})
-
-	it('should get all sets', async function(){
-		this.timeout(5000)
-
-		let sets = await phaseGroup3.getSets()
-		expect(sets.length).to.be.equal(27)
-		return true
-	})
-
-	it('should get sets completed within x minutes ago', async function(){
-		this.timeout(5000)
-
-		let clock = sinon.useFakeTimers(new Date('Sat Nov 11 2017 11:50:47 GMT-0500 (EST)'))
-		let sets = await phaseGroup3.getSetsXMinutesBack(5)
-
-		expect(sets.length).to.be.equal(4)
+		let sets: GGSet[] = await phaseGroup1.getSets({filterDQs: true})
+		var hasDuplicates = function(a: GGSet[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(sets)).to.be.false;
 		sets.forEach(set => {
-			expect(set).to.be.instanceof(GGSet);
-		})
+			expect(set).to.be.an.instanceof(GGSet);
+		});
+		expect(sets.length).to.be.equal(42);
+		return true;
+	})
+	it('should return the correct DQ filtered Sets 2', async function(){
+		this.timeout(30000)
+
+		let sets: GGSet[] = await phaseGroup2.getSets({filterDQs: true})
+		var hasDuplicates = function(a: GGSet[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(sets)).to.be.false;
+		sets.forEach(set => {
+			expect(set).to.be.an.instanceof(GGSet);
+		});
+		expect(sets.length).to.be.equal(14);
+		return true;
+	})
+
+
+	// sets filter reset
+	it('should return the correct Reset filtered Sets 1', async function(){
+		this.timeout(30000)
+
+		let sets: GGSet[] = await phaseGroup1.getSets({filterResets: true})
+		var hasDuplicates = function(a: GGSet[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(sets)).to.be.false;
+		sets.forEach(set => {
+			expect(set).to.be.an.instanceof(GGSet);
+		});
+		expect(sets.length).to.be.equal(42);
+		return true;
+	})
+	it('should return the correct Reset filtered Sets 4', async function(){
+		this.timeout(30000)
+
+		let sets: GGSet[] = await phaseGroup4.getSets({filterResets: true})
+		var hasDuplicates = function(a: GGSet[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(sets)).to.be.false;
+		sets.forEach(set => {
+			expect(set).to.be.an.instanceof(GGSet);
+		});
+		expect(sets.length).to.be.equal(91);
+		return true;
+	})
+
+	
+	// completed sets
+	it('should get the correct number of completed sets 1', async function(){
+		this.timeout(30000)
+
+		let sets: GGSet[] = await phaseGroup1.getCompleteSets()
+		var hasDuplicates = function(a: GGSet[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(sets)).to.be.false;
+		sets.forEach(set => {
+			expect(set).to.be.an.instanceof(GGSet);
+		});
+		expect(sets.length).to.be.equal(42);
+		return true;
+	})
+	it('should get the correct number of completed sets 4', async function(){
+		this.timeout(30000)
+
+		let sets: GGSet[] = await phaseGroup4.getCompleteSets()
+		var hasDuplicates = function(a: GGSet[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(sets)).to.be.false;
+		sets.forEach(set => {
+			expect(set).to.be.an.instanceof(GGSet);
+		});
+		expect(sets.length).to.be.equal(63);
+		return true;
+	})
+
+
+	// incompleted sets
+	it('should get the correct number of incomplete sets 1', async function(){
+		this.timeout(30000)
+
+		let sets: GGSet[] = await phaseGroup1.getIncompleteSets()
+		var hasDuplicates = function(a: GGSet[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(sets)).to.be.false;
+		sets.forEach(set => {
+			expect(set).to.be.an.instanceof(GGSet);
+		});
+		expect(sets.length).to.be.equal(0);
+		return true;
+	})
+	it('should get the correct number of incomplete sets 4', async function(){
+		this.timeout(30000)
+
+		let sets: GGSet[] = await phaseGroup4.getIncompleteSets()
+		var hasDuplicates = function(a: GGSet[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(sets)).to.be.false;
+		sets.forEach(set => {
+			expect(set).to.be.an.instanceof(GGSet);
+		});
+		expect(sets.length).to.be.equal(35); // really should be 2
+		return true;
+	})
+
+
+	// finished x minutes ago
+	xit('should get the correct number of sets completed x minutes ago 1', async function(){
+		this.timeout(30000)
+		let fakeTime = PG_4_DATE.add(3, 'hours').toDate()
+		let clock = sinon.useFakeTimers(fakeTime)
+
+		let sets: GGSet[] = await phaseGroup1.getSetsXMinutesBack(5)
+		var hasDuplicates = function(a: GGSet[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(sets)).to.be.false;
+		sets.forEach(set => {
+			expect(set).to.be.an.instanceof(GGSet);
+		});
+		expect(sets.length).to.be.equal(0);
 
 		clock.restore()
-		return true
+		return true;
 	})
-	*/
+	xit('should get the correct number of sets completed x minutes ago 4', async function(){
+		this.timeout(30000)
+		let fakeTime = PG_4_DATE.add(3, 'hours').toDate()
+		let clock = sinon.useFakeTimers(fakeTime)
+
+		let sets: GGSet[] = await phaseGroup4.getSetsXMinutesBack(5)
+		var hasDuplicates = function(a: GGSet[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(sets)).to.be.false;
+		sets.forEach(set => {
+			expect(set).to.be.an.instanceof(GGSet);
+		});
+		expect(sets.length).to.be.equal(2);
+
+		clock.restore()
+		return true;
+	})
 })

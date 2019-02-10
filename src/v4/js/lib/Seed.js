@@ -18,3 +18,15 @@ var Seed = /** @class */ (function () {
     return Seed;
 }());
 exports.Seed = Seed;
+var ISeed;
+(function (ISeed) {
+    function getDefaultSeedOptions() {
+        return {
+            page: 1,
+            perPage: 1,
+            sortBy: null,
+            filter: null
+        };
+    }
+    ISeed.getDefaultSeedOptions = getDefaultSeedOptions;
+})(ISeed = exports.ISeed || (exports.ISeed = {}));

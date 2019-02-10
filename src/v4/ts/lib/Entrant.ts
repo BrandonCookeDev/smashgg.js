@@ -164,4 +164,31 @@ export namespace IEntrant{
 		skill: number,
 		participants: IAttendee.AttendeeData[]
 	}
+
+	export interface EntrantOptions{
+		page?: number | null,
+		perPage?: number | null,
+		sortBy?: string | null,
+		filter?: null | {
+			id?: number,
+			entrantName?: string,
+			checkInState?: number,
+			phaseGroupId?: number[],
+			phaseId?: number[],
+			eventId?: number,
+			seach?:{
+				fieldsToSearch: string[],
+				searchString: string
+			}
+		}
+	}
+
+	export function getDefaultEntrantOptions() : EntrantOptions{
+		return {
+			page: 1,
+			perPage: 1,
+			sortBy: null,
+			filter: null
+		}
+	}
 }

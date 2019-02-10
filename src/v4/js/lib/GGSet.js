@@ -361,45 +361,42 @@ var GGSet = /** @class */ (function (_super) {
         });
     };
     // Statics
+    GGSet.filterOutDQs = function (sets) {
+        Logger_1.default.debug('GGSet.filterOutDQs called');
+        var displayScores = sets.map(function (set) { return set.displayScore; });
+        return displayScores.includes('DQ') ? sets.filter(function (set) { return set.displayScore != 'DQ'; }) : sets;
+    };
+    GGSet.filterOutByes = function (sets) {
+        Logger_1.default.debug('GGSet.filterOutByes called');
+        var displayScores = sets.map(function (set) { return set.displayScore; });
+        return displayScores.includes('BYE') ? sets.filter(function (set) { return set.displayScore != 'BYE'; }) : sets;
+    };
+    GGSet.filterOutResets = function (sets) {
+        Logger_1.default.debug('GGSet.filterOutResets called');
+        var fullRoundTexts = sets.map(function (set) { return set.fullRoundText; });
+        return fullRoundTexts.includes('Grand Final Reset') ? sets.filter(function (set) { return set.fullRoundText !== 'Grand Final Reset'; }) : sets;
+    };
     GGSet.filterForCompleteSets = function (sets) {
         Logger_1.default.debug('GGSet.filterForCompleteSets called');
-        try {
-            return sets.filter(function (set) { return set.getIsComplete(); });
-        }
-        catch (e) {
-            Logger_1.default.error('GGSet.filterForCompleteSets error: %s', e);
-            throw e;
-        }
+        return sets.filter(function (set) { return set.getIsComplete(); });
     };
     GGSet.filterForIncompleteSets = function (sets) {
         Logger_1.default.debug('GGSet.filterForCompleteSets called');
-        try {
-            return sets.filter(function (set) { return !set.getIsComplete(); });
-        }
-        catch (e) {
-            Logger_1.default.error('GGSet.filterForCompleteSets error: %s', e);
-            throw e;
-        }
+        return sets.filter(function (set) { return !set.getIsComplete(); });
     };
     GGSet.filterForXMinutesBack = function (sets, minutesBack) {
         Logger_1.default.debug('GGSet.filterForCompleteSets called');
-        try {
-            var now_1 = moment_timezone_1.default();
-            var filtered = sets.filter(function (set) {
-                var then = moment_timezone_1.default(set.getCompletedAt());
-                var diff = moment_timezone_1.default.duration(now_1.diff(then));
-                var diffMinutes = diff.minutes();
-                if (diff.hours() > 0 || diff.days() > 0 || diff.months() > 0 || diff.years() > 0)
-                    return false;
-                else
-                    return diffMinutes <= minutesBack && diffMinutes >= 0 && set.getIsComplete();
-            });
-            return filtered;
-        }
-        catch (e) {
-            Logger_1.default.error('GGSet.filterForCompleteSets error: %s', e);
-            throw e;
-        }
+        var now = moment_timezone_1.default();
+        var filtered = sets.filter(function (set) {
+            var then = moment_timezone_1.default(set.getCompletedAt());
+            var diff = moment_timezone_1.default.duration(now.diff(then));
+            var diffMinutes = diff.minutes();
+            if (diff.hours() > 0 || diff.days() > 0 || diff.months() > 0 || diff.years() > 0)
+                return false;
+            else
+                return diffMinutes <= minutesBack && diffMinutes >= 0 && set.getIsComplete();
+        });
+        return filtered;
     };
     return GGSet;
 }(events_1.EventEmitter));
@@ -420,4 +417,13 @@ var IGGSet;
         return PlayerLite;
     }());
     IGGSet.PlayerLite = PlayerLite;
+    function getDefaultSetOptions() {
+        return {
+            page: 1,
+            perPage: 1,
+            sortBy: null,
+            filters: null
+        };
+    }
+    IGGSet.getDefaultSetOptions = getDefaultSetOptions;
 })(IGGSet = exports.IGGSet || (exports.IGGSet = {}));

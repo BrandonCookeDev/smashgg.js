@@ -579,7 +579,7 @@ function loadEvent(eventName, tournamentName) {
     });
 }
 function loadPhase(id, expands, isCached) {
-    if (expands === void 0) { expands = internal_2.IPhase.getDefaultExpands(); }
+    if (expands === void 0) { expands = IPhase.getDefaultExpands(); }
     if (isCached === void 0) { isCached = true; }
     return new Promise(function (resolve, reject) {
         var options = {
@@ -593,7 +593,7 @@ function loadPhase(id, expands, isCached) {
     });
 }
 function loadPhaseGroup(id, expands, isCached) {
-    if (expands === void 0) { expands = internal_2.IPhaseGroup.getDefaultExpands(); }
+    if (expands === void 0) { expands = IPhaseGroup.getDefaultExpands(); }
     if (isCached === void 0) { isCached = true; }
     return new Promise(function (resolve, reject) {
         var options = {

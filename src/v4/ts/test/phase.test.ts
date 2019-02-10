@@ -17,6 +17,7 @@ import {Phase, IPhase} from '../lib/Phase'
 import {PhaseGroup} from '../lib/PhaseGroup'
 import {GGSet} from '../lib/GGSet'
 import {Entrant} from '../lib/Entrant'
+import {Attendee} from '../lib/Attendee'
 import Initializer from '../lib/util/Initializer';
 import * as testData from './data/phase.testData'
 
@@ -106,6 +107,8 @@ describe('Smash GG Phase', function(){
 		expect(phase3.getGroupCount()).to.be.equal(testData.phase3.groupCount)
 	})
 
+
+	// sets
 	it('should correctly get all sets 1', async function(){
 		this.timeout(30000)
 
@@ -164,11 +167,10 @@ describe('Smash GG Phase', function(){
 		entrants.forEach(set => {
 			expect(set).to.be.an.instanceof(Entrant);
 		});
-		expect(entrants.length).to.be.equal(126);
+		expect(entrants.length).to.be.equal(200);
 		return true;
 	})
-
-	it('should correctly get all entrants 2', async function(){
+	xit('should correctly get all entrants 2', async function(){
 		this.timeout(30000)
 
 		let entrants: Entrant[] = await phase2.getEntrants();
@@ -182,7 +184,6 @@ describe('Smash GG Phase', function(){
 		expect(entrants.length).to.be.equal(429);
 		return true;
 	})
-
 	it('should correctly get all entrants 3', async function(){
 		this.timeout(30000)
 
@@ -194,7 +195,97 @@ describe('Smash GG Phase', function(){
 		entrants.forEach(set => {
 			expect(set).to.be.an.instanceof(Entrant);
 		});
-		expect(entrants.length).to.be.equal(91);
+		expect(entrants.length).to.be.equal(275);
+		return true;
+	})
+
+	
+	// attendee
+	it('should correctly get all attendees 1', async function(){
+		this.timeout(30000)
+
+		let attendee: Attendee[] = await phase1.getAttendees();
+		var hasDuplicates = function(a: Attendee[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(attendee)).to.be.false;
+		attendee.forEach(set => {
+			expect(set).to.be.an.instanceof(Attendee);
+		});
+		expect(attendee.length).to.be.equal(200);
+		return true;
+	})
+	xit('should correctly get all attendees 2', async function(){
+		this.timeout(30000)
+
+		let attendee: Attendee[] = await phase2.getAttendees();
+		var hasDuplicates = function(a: Attendee[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(attendee)).to.be.false;
+		attendee.forEach(set => {
+			expect(set).to.be.an.instanceof(Attendee);
+		});
+		expect(attendee.length).to.be.equal(200);
+		return true;
+	})
+	it('should correctly get all attendees 3', async function(){
+		this.timeout(30000)
+
+		let attendee: Attendee[] = await phase3.getAttendees();
+		var hasDuplicates = function(a: Attendee[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(attendee)).to.be.false;
+		attendee.forEach(set => {
+			expect(set).to.be.an.instanceof(Attendee);
+		});
+		expect(attendee.length).to.be.equal(275);
+		return true;
+	})
+
+
+	// phase groups
+	it('should correctly get all phase groups 1', async function(){
+		this.timeout(30000)
+
+		let groups: PhaseGroup[] = await phase1.getPhaseGroups();
+		var hasDuplicates = function(a: PhaseGroup[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(groups)).to.be.false;
+		groups.forEach(set => {
+			expect(set).to.be.an.instanceof(PhaseGroup);
+		});
+		expect(groups.length).to.be.equal(16);
+		return true;
+	})
+	it('should correctly get all phase groups 2', async function(){
+		this.timeout(30000)
+
+		let groups: PhaseGroup[] = await phase2.getPhaseGroups();
+		var hasDuplicates = function(a: PhaseGroup[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(groups)).to.be.false;
+		groups.forEach(set => {
+			expect(set).to.be.an.instanceof(PhaseGroup);
+		});
+		expect(groups.length).to.be.equal(32);
+		return true;
+	})
+	it('should correctly get all phase groups 3', async function(){
+		this.timeout(30000)
+
+		let groups: PhaseGroup[] = await phase3.getPhaseGroups();
+		var hasDuplicates = function(a: PhaseGroup[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(groups)).to.be.false;
+		groups.forEach(set => {
+			expect(set).to.be.an.instanceof(PhaseGroup);
+		});
+		expect(groups.length).to.be.equal(16);
 		return true;
 	})
 

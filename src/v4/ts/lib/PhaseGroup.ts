@@ -1,7 +1,9 @@
 import _ from 'lodash'
 
-import {Entrant, IEntrant} from './Entrant' // TODO change this to internal
+import { Attendee, IAttendee } from './Attendee'
+import { Entrant, IEntrant } from './Entrant' // TODO change this to internal
 import { GGSet, IGGSet } from './GGSet'
+import { Seed, ISeed } from './Seed'
 import PaginatedQuery from './util/PaginatedQuery'
 import NI from './util/NetworkInterface'
 import log from './util/Logger'
@@ -90,48 +92,84 @@ export class PhaseGroup implements IPhaseGroup.PhaseGroup{
 		return this.tiebreakOrder
 	}
 
-	async getEntrants(options: IPhaseGroup.EntrantOptions = IPhaseGroup.getDefaultEntrantOptions()) : Promise<Entrant[]>{
+	async getSeeds(options: ISeed.SeedOptions = ISeed.getDefaultSeedOptions()) : Promise<Seed[]> {
+		log.info('Getting Seeds for Phase Group [%s]', this.id)
+		log.verbose('Query variables: %s', JSON.stringify(options))
+		let data: IPhaseGroup.PhaseGroupSeedData[] = await PaginatedQuery.query(
+			`Phase Group Seeds [${this.id}]`,
+			queries.phaseGroupSeeds, {id: this.id},
+			options, {}, 2
+		)
+		let phaseGroups = _.flatten(data.map(pg => pg.phaseGroup))
+		let seedData: ISeed.SeedData[] = _.flatten(phaseGroups.map(pg => pg.paginatedSeeds.nodes))
+		let seeds = seedData.map(seed => Seed.parse(seed))
+		return seeds
+	}
+
+	async getEntrants(options: IEntrant.EntrantOptions = IEntrant.getDefaultEntrantOptions()) : Promise<Entrant[]>{
 		log.info('Getting Entrants for Phase Group [%s]', this.id)
 		log.verbose('Query variables: %s', JSON.stringify(options))
 		let data: IPhaseGroup.PhaseGroupEntrantData[] = await PaginatedQuery.query(
 			`Phase Group Entrants [${this.id}]`, 
 			queries.phaseGroupEntrants, {id: this.id},
-			options, 2
+			options, {}, 2
 		) 
 		let phaseGroups = data.map(pg => pg.phaseGroup);
 		let entrants: Entrant[] = _.flatten(phaseGroups.map(pg => pg.paginatedSeeds.nodes.map(e => Entrant.parseFull(e)).filter(seed => seed != null)))
 		return entrants
 	}
 
-	async getSets(options: IPhaseGroup.SetOptions = IPhaseGroup.getDefaultSetOptions()) : Promise<GGSet[]>{
+	async getAttendees(options: IAttendee.AttendeeOptions = IAttendee.getDefaultAttendeeOptions()) : Promise<Attendee[]>{
+		log.info('Getting Attendees for Phase Group [%s]', this.id)
+		log.verbose('Query variables: %s', JSON.stringify(options))
+		let data: IPhaseGroup.PhaseGroupAttendeeData[] = await PaginatedQuery.query(
+			`Phase Group Attendees [${this.id}]`,
+			queries.phaseGroupAttendees, {id: this.id},
+			options, {}, 2
+		)
+		let seeds = _.flatten(data.map(entrant => entrant.phaseGroup.paginatedSeeds.nodes))
+		let entrants = seeds.map(seed => seed.entrant).filter(entrant => entrant != null)
+		let attendeeData: IAttendee.AttendeeData[] = _.flatten(entrants.map(entrant => entrant.participants))
+		let attendees: Attendee[] = attendeeData.map(a => Attendee.parse(a))
+		return attendees
+	}
+
+	async getSets(options: IGGSet.SetOptions = IGGSet.getDefaultSetOptions()) : Promise<GGSet[]>{
 		log.info('Getting Sets for Phase Group [%s]', this.id)
 		log.verbose('Query variables: %s', JSON.stringify(options))
 		let data: IPhaseGroup.PhaseGroupSetData[] = await PaginatedQuery.query(
 			`Phase Group Sets [${this.id}]`,
 			queries.phaseGroupSets, {id: this.id},
-			options, 2
+			options, {}, 2
 		)
 		let phaseGroups = data.map(pg => pg.phaseGroup);
 		let sets: GGSet[] = _.flatten(phaseGroups.map(pg => pg.paginatedSets.nodes.map(set => GGSet.parse(set)).filter(set => set != null)))
+		
+		// optional filters
+		if(options.filterByes) sets = GGSet.filterOutDQs(sets)
+		if(options.filterResets) sets = GGSet.filterOutResets(sets)
+		if(options.filterByes) sets = GGSet.filterOutByes(sets)
+
 		return sets
 	}
 
-	getCompleteSets() : Promise<GGSet[]>{
-
+	async getCompleteSets(options: IGGSet.SetOptions = IGGSet.getDefaultSetOptions()) : Promise<GGSet[]>{
+		log.info('Getting Completed sets for Phase Group [%s]', this.id)
+		let sets = await this.getSets(options)
+		return GGSet.filterForCompleteSets(sets)
 	}
 
-	getIncompleteSets() : Promise<GGSet[]>{
-
+	async getIncompleteSets(options: IGGSet.SetOptions = IGGSet.getDefaultSetOptions()) : Promise<GGSet[]>{
+		log.info('Getting Incompleted sets for Phase Group [%s]', this.id)
+		let sets = await this.getSets(options)
+		return GGSet.filterForIncompleteSets(sets)
 	}
 
-	getSetsXMinutesBack(minutes: number) : Promise<GGSet[]>{
-
+	async getSetsXMinutesBack(minutes: number, options: IGGSet.SetOptions = IGGSet.getDefaultSetOptions()) : Promise<GGSet[]>{
+		log.info('Getting sets completed %s minutes ago for Phase Group [%s]', minutes, this.id)
+		let sets = await this.getSets(options)
+		return GGSet.filterForXMinutesBack(sets, minutes)
 	}
-
-	findPlayerByParticipantId(id: number) : Promise<Entrant | undefined>{
-
-	}
-
 }
 
 export namespace IPhaseGroup{
@@ -153,12 +191,13 @@ export namespace IPhaseGroup{
 		getState(): number | null
 		getWaveId(): number | null
 		getTiebreakOrder(): object | null
-		getEntrants(options: EntrantOptions) : Promise<Entrant[]>
-		getSets(options: SetOptions) : Promise<GGSet[]>
-		getCompleteSets() : Promise<GGSet[]>
-		getIncompleteSets() : Promise<GGSet[]>
-		getSetsXMinutesBack(minutes: number) : Promise<GGSet[]>
-		findPlayerByParticipantId(id: number) : Promise<Entrant | undefined>
+		getSeeds(options: ISeed.SeedOptions) : Promise<Seed[]>
+		getEntrants(options: IEntrant.EntrantOptions) : Promise<Entrant[]>
+		getAttendees(options: IAttendee.AttendeeOptions) : Promise<Attendee[]>
+		getSets(options: IGGSet.SetOptions) : Promise<GGSet[]>
+		getCompleteSets(options: IGGSet.SetOptions) : Promise<GGSet[]>
+		getIncompleteSets(options: IGGSet.SetOptions) : Promise<GGSet[]>
+		getSetsXMinutesBack(minutes: number, options: IGGSet.SetOptions) : Promise<GGSet[]>
 	}
 
 	export interface Data{
@@ -192,6 +231,21 @@ export namespace IPhaseGroup{
 		}
 	}
 
+	export interface PhaseGroupAttendeeData{
+		phaseGroup:{
+			paginatedSeeds:{
+				pageInfo?: {
+					totalPages: number
+				},
+				nodes: {
+					entrant: {
+						participants: IAttendee.AttendeeData[]
+					}
+				}
+			}
+		}
+	}
+
 	export interface PhaseGroupSetData{
 		phaseGroup:{
 			paginatedSets:{
@@ -203,54 +257,15 @@ export namespace IPhaseGroup{
 		}
 	}
 	
-
-	export interface EntrantOptions{
-		page?: number | null,
-		perPage?: number | null,
-		sortBy?: string | null,
-		filter?: null | {
-			id?: number,
-			entrantName?: string,
-			checkInState?: number,
-			phaseGroupId?: number[],
-			phaseId?: number[],
-			eventId?: number,
-			seach?:{
-				fieldsToSearch: string[],
-				searchString: string
+	export interface PhaseGroupSeedData{
+		phaseGroup:{
+			paginatedSeeds:{
+				pageInfo?:{
+					totalPages: number
+				},
+				nodes: ISeed.SeedData[]
 			}
 		}
 	}
 
-	export function getDefaultEntrantOptions() : EntrantOptions{
-		return {
-			page: 1,
-			perPage: 1,
-			sortBy: null,
-			filter: null
-		}
-	}
-
-	export interface SetOptions{
-		page?: number | null,
-		perPage?: number | null,
-		sortBy?: null | 'NONE' | 'STANDARD' | 'RACE_SPECTATOR' | 'ADMIN',
-		filters?: null | {
-			entrantIds?: number[],
-			state?: number[],
-			stationIds?: number[],
-			phaseIds?: number[],
-			phaseGroupIds?: number[],
-			roundNumber?: number
-		}
-	}
-
-	export function getDefaultSetOptions() : SetOptions{
-		return {
-			page: 1,
-			perPage: 1,
-			sortBy: null,
-			filters: null
-		}
-	}
 }

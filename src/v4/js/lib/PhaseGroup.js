@@ -46,8 +46,10 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var lodash_1 = __importDefault(require("lodash"));
+var Attendee_1 = require("./Attendee");
 var Entrant_1 = require("./Entrant"); // TODO change this to internal
 var GGSet_1 = require("./GGSet");
+var Seed_1 = require("./Seed");
 var PaginatedQuery_1 = __importDefault(require("./util/PaginatedQuery"));
 var NetworkInterface_1 = __importDefault(require("./util/NetworkInterface"));
 var Logger_1 = __importDefault(require("./util/Logger"));
@@ -107,8 +109,28 @@ var PhaseGroup = /** @class */ (function () {
     PhaseGroup.prototype.getTiebreakOrder = function () {
         return this.tiebreakOrder;
     };
+    PhaseGroup.prototype.getSeeds = function (options) {
+        if (options === void 0) { options = Seed_1.ISeed.getDefaultSeedOptions(); }
+        return __awaiter(this, void 0, void 0, function () {
+            var data, phaseGroups, seedData, seeds;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        Logger_1.default.info('Getting Seeds for Phase Group [%s]', this.id);
+                        Logger_1.default.verbose('Query variables: %s', JSON.stringify(options));
+                        return [4 /*yield*/, PaginatedQuery_1.default.query("Phase Group Seeds [" + this.id + "]", queries.phaseGroupSeeds, { id: this.id }, options, {}, 2)];
+                    case 1:
+                        data = _a.sent();
+                        phaseGroups = lodash_1.default.flatten(data.map(function (pg) { return pg.phaseGroup; }));
+                        seedData = lodash_1.default.flatten(phaseGroups.map(function (pg) { return pg.paginatedSeeds.nodes; }));
+                        seeds = seedData.map(function (seed) { return Seed_1.Seed.parse(seed); });
+                        return [2 /*return*/, seeds];
+                }
+            });
+        });
+    };
     PhaseGroup.prototype.getEntrants = function (options) {
-        if (options === void 0) { options = IPhaseGroup.getDefaultEntrantOptions(); }
+        if (options === void 0) { options = Entrant_1.IEntrant.getDefaultEntrantOptions(); }
         return __awaiter(this, void 0, void 0, function () {
             var data, phaseGroups, entrants;
             return __generator(this, function (_a) {
@@ -116,7 +138,7 @@ var PhaseGroup = /** @class */ (function () {
                     case 0:
                         Logger_1.default.info('Getting Entrants for Phase Group [%s]', this.id);
                         Logger_1.default.verbose('Query variables: %s', JSON.stringify(options));
-                        return [4 /*yield*/, PaginatedQuery_1.default.query("Phase Group Entrants [" + this.id + "]", queries.phaseGroupEntrants, { id: this.id }, options, 2)];
+                        return [4 /*yield*/, PaginatedQuery_1.default.query("Phase Group Entrants [" + this.id + "]", queries.phaseGroupEntrants, { id: this.id }, options, {}, 2)];
                     case 1:
                         data = _a.sent();
                         phaseGroups = data.map(function (pg) { return pg.phaseGroup; });
@@ -126,8 +148,29 @@ var PhaseGroup = /** @class */ (function () {
             });
         });
     };
+    PhaseGroup.prototype.getAttendees = function (options) {
+        if (options === void 0) { options = Attendee_1.IAttendee.getDefaultAttendeeOptions(); }
+        return __awaiter(this, void 0, void 0, function () {
+            var data, seeds, entrants, attendeeData, attendees;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        Logger_1.default.info('Getting Attendees for Phase Group [%s]', this.id);
+                        Logger_1.default.verbose('Query variables: %s', JSON.stringify(options));
+                        return [4 /*yield*/, PaginatedQuery_1.default.query("Phase Group Attendees [" + this.id + "]", queries.phaseGroupAttendees, { id: this.id }, options, {}, 2)];
+                    case 1:
+                        data = _a.sent();
+                        seeds = lodash_1.default.flatten(data.map(function (entrant) { return entrant.phaseGroup.paginatedSeeds.nodes; }));
+                        entrants = seeds.map(function (seed) { return seed.entrant; }).filter(function (entrant) { return entrant != null; });
+                        attendeeData = lodash_1.default.flatten(entrants.map(function (entrant) { return entrant.participants; }));
+                        attendees = attendeeData.map(function (a) { return Attendee_1.Attendee.parse(a); });
+                        return [2 /*return*/, attendees];
+                }
+            });
+        });
+    };
     PhaseGroup.prototype.getSets = function (options) {
-        if (options === void 0) { options = IPhaseGroup.getDefaultSetOptions(); }
+        if (options === void 0) { options = GGSet_1.IGGSet.getDefaultSetOptions(); }
         return __awaiter(this, void 0, void 0, function () {
             var data, phaseGroups, sets;
             return __generator(this, function (_a) {
@@ -135,45 +178,71 @@ var PhaseGroup = /** @class */ (function () {
                     case 0:
                         Logger_1.default.info('Getting Sets for Phase Group [%s]', this.id);
                         Logger_1.default.verbose('Query variables: %s', JSON.stringify(options));
-                        return [4 /*yield*/, PaginatedQuery_1.default.query("Phase Group Sets [" + this.id + "]", queries.phaseGroupSets, { id: this.id }, options, 2)];
+                        return [4 /*yield*/, PaginatedQuery_1.default.query("Phase Group Sets [" + this.id + "]", queries.phaseGroupSets, { id: this.id }, options, {}, 2)];
                     case 1:
                         data = _a.sent();
                         phaseGroups = data.map(function (pg) { return pg.phaseGroup; });
                         sets = lodash_1.default.flatten(phaseGroups.map(function (pg) { return pg.paginatedSets.nodes.map(function (set) { return GGSet_1.GGSet.parse(set); }).filter(function (set) { return set != null; }); }));
+                        // optional filters
+                        if (options.filterByes)
+                            sets = GGSet_1.GGSet.filterOutDQs(sets);
+                        if (options.filterResets)
+                            sets = GGSet_1.GGSet.filterOutResets(sets);
+                        if (options.filterByes)
+                            sets = GGSet_1.GGSet.filterOutByes(sets);
                         return [2 /*return*/, sets];
                 }
             });
         });
     };
-    PhaseGroup.prototype.getCompleteSets = function () {
+    PhaseGroup.prototype.getCompleteSets = function (options) {
+        if (options === void 0) { options = GGSet_1.IGGSet.getDefaultSetOptions(); }
+        return __awaiter(this, void 0, void 0, function () {
+            var sets;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        Logger_1.default.info('Getting Completed sets for Phase Group [%s]', this.id);
+                        return [4 /*yield*/, this.getSets(options)];
+                    case 1:
+                        sets = _a.sent();
+                        return [2 /*return*/, GGSet_1.GGSet.filterForCompleteSets(sets)];
+                }
+            });
+        });
     };
-    PhaseGroup.prototype.getIncompleteSets = function () {
+    PhaseGroup.prototype.getIncompleteSets = function (options) {
+        if (options === void 0) { options = GGSet_1.IGGSet.getDefaultSetOptions(); }
+        return __awaiter(this, void 0, void 0, function () {
+            var sets;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        Logger_1.default.info('Getting Incompleted sets for Phase Group [%s]', this.id);
+                        return [4 /*yield*/, this.getSets(options)];
+                    case 1:
+                        sets = _a.sent();
+                        return [2 /*return*/, GGSet_1.GGSet.filterForIncompleteSets(sets)];
+                }
+            });
+        });
     };
-    PhaseGroup.prototype.getSetsXMinutesBack = function (minutes) {
-    };
-    PhaseGroup.prototype.findPlayerByParticipantId = function (id) {
+    PhaseGroup.prototype.getSetsXMinutesBack = function (minutes, options) {
+        if (options === void 0) { options = GGSet_1.IGGSet.getDefaultSetOptions(); }
+        return __awaiter(this, void 0, void 0, function () {
+            var sets;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        Logger_1.default.info('Getting sets completed %s minutes ago for Phase Group [%s]', minutes, this.id);
+                        return [4 /*yield*/, this.getSets(options)];
+                    case 1:
+                        sets = _a.sent();
+                        return [2 /*return*/, GGSet_1.GGSet.filterForXMinutesBack(sets, minutes)];
+                }
+            });
+        });
     };
     return PhaseGroup;
 }());
 exports.PhaseGroup = PhaseGroup;
-var IPhaseGroup;
-(function (IPhaseGroup) {
-    function getDefaultEntrantOptions() {
-        return {
-            page: 1,
-            perPage: 1,
-            sortBy: null,
-            filter: null
-        };
-    }
-    IPhaseGroup.getDefaultEntrantOptions = getDefaultEntrantOptions;
-    function getDefaultSetOptions() {
-        return {
-            page: 1,
-            perPage: 1,
-            sortBy: null,
-            filters: null
-        };
-    }
-    IPhaseGroup.getDefaultSetOptions = getDefaultSetOptions;
-})(IPhaseGroup = exports.IPhaseGroup || (exports.IPhaseGroup = {}));

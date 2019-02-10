@@ -52,6 +52,7 @@ var PhaseGroup_1 = require("./PhaseGroup"); //TODO change this to internal
 var GGSet_1 = require("./GGSet");
 var Entrant_1 = require("./Entrant");
 var Seed_1 = require("./Seed");
+var Attendee_1 = require("./Attendee");
 var PaginatedQuery_1 = __importDefault(require("./util/PaginatedQuery"));
 var Logger_1 = __importDefault(require("./util/Logger"));
 var Phase = /** @class */ (function () {
@@ -113,14 +114,15 @@ var Phase = /** @class */ (function () {
             });
         });
     };
-    Phase.prototype.getSeeds = function () {
+    Phase.prototype.getSeeds = function (options) {
         return __awaiter(this, void 0, void 0, function () {
             var data, seedData, seeds;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         Logger_1.default.info('Getting seeds for phase %s', this.id);
-                        return [4 /*yield*/, PaginatedQuery_1.default.query("Phase Seeds [" + this.id + "]", queries.phaseSeeds, { id: this.id })];
+                        Logger_1.default.verbose('Query variables: %s', JSON.stringify(options));
+                        return [4 /*yield*/, PaginatedQuery_1.default.query("Phase Seeds [" + this.id + "]", queries.phaseSeeds, { id: this.id }, options, {}, 2)];
                     case 1:
                         data = _a.sent();
                         seedData = lodash_1.default.flatten(data.map(function (results) { return results.phase.paginatedSeeds.nodes; })).filter(function (seed) { return seed != null; });
@@ -130,15 +132,115 @@ var Phase = /** @class */ (function () {
             });
         });
     };
-    Phase.prototype.getSets = function (options) {
+    Phase.prototype.getEntrants = function (options) {
+        if (options === void 0) { options = Entrant_1.IEntrant.getDefaultEntrantOptions(); }
         return __awaiter(this, void 0, void 0, function () {
-            var optionSet, data, phaseGroups, setsData, sets;
+            var data, entrantData, entrants;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        Logger_1.default.info('Getting entrants for phase %s', this.id);
+                        Logger_1.default.verbose('Query variables: %s', JSON.stringify(options));
+                        return [4 /*yield*/, PaginatedQuery_1.default.query("Phase Entrants [" + this.id + "]", queries.phaseEntrants, { id: this.id }, options, {}, 2)];
+                    case 1:
+                        data = _a.sent();
+                        entrantData = lodash_1.default.flatten(data.map(function (entrantData) { return entrantData.phase.paginatedSeeds.nodes; })).filter(function (entrant) { return entrant != null; });
+                        entrants = entrantData.map(function (e) { return Entrant_1.Entrant.parseFull(e); });
+                        return [2 /*return*/, entrants];
+                }
+            });
+        });
+    };
+    Phase.prototype.getAttendees = function (options) {
+        if (options === void 0) { options = Attendee_1.IAttendee.getDefaultAttendeeOptions(); }
+        return __awaiter(this, void 0, void 0, function () {
+            var data, seeds, nodes, entrants, participants, attendees;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        Logger_1.default.info('Getting attendees for phase %s', this.id);
+                        Logger_1.default.verbose('Query variables: %s', JSON.stringify(options));
+                        return [4 /*yield*/, PaginatedQuery_1.default.query("Phase Attendees [" + this.id + "]", queries.phaseAttendees, { id: this.id }, options, {}, 3)];
+                    case 1:
+                        data = _a.sent();
+                        seeds = lodash_1.default.flatten(data.map(function (seed) { return seed.phase.paginatedSeeds; }));
+                        nodes = lodash_1.default.flatten(seeds.map(function (seed) { return seed.nodes; }));
+                        entrants = nodes.map(function (node) { return node.entrant; });
+                        participants = lodash_1.default.flatten(entrants.map(function (entrant) { return entrant.participants; })).filter(function (participant) { return participant != null; });
+                        attendees = participants.map(function (participant) { return Attendee_1.Attendee.parse(participant); });
+                        return [2 /*return*/, attendees];
+                }
+            });
+        });
+    };
+    Phase.prototype.getSets3 = function (options) {
+        if (options === void 0) { options = GGSet_1.IGGSet.getDefaultSetOptions(); }
+        return __awaiter(this, void 0, void 0, function () {
+            var pg, ids, filters, data, phaseGroups, setsData, sets;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         Logger_1.default.info('Getting sets for phase %s', this.id);
-                        optionSet = IPhase.parseSetOptions(options);
-                        return [4 /*yield*/, PaginatedQuery_1.default.query("Phase Sets [" + this.id + "]", queries.phaseSets, { eventId: this.eventId, phaseId: this.id }, optionSet.params, optionSet.additionalParams, 2)];
+                        return [4 /*yield*/, this.getPhaseGroups()];
+                    case 1:
+                        pg = _a.sent();
+                        ids = lodash_1.default.flatten(pg.map(function (group) { return group.getId(); }));
+                        filters = { phaseGroupIds: ids.slice(0, 2) };
+                        // add this phase's id to the filters for sets
+                        Logger_1.default.verbose('Query variables: %s', JSON.stringify(options));
+                        return [4 /*yield*/, PaginatedQuery_1.default.query("Phase Sets [" + this.id + "]", queries.phaseSets, { eventId: this.eventId, phaseId: this.id, filters: filters }, options, {}, 3)];
+                    case 2:
+                        data = _a.sent();
+                        phaseGroups = lodash_1.default.flatten(data.map(function (setData) { return setData.event.phaseGroups; }));
+                        setsData = lodash_1.default.flatten(phaseGroups.map(function (pg) { return pg.paginatedSets.nodes; })).filter(function (set) { return set != null; });
+                        sets = setsData.map(function (setData) { return GGSet_1.GGSet.parse(setData); });
+                        return [2 /*return*/, sets];
+                }
+            });
+        });
+    };
+    Phase.prototype.getSets3 = function (options) {
+        if (options === void 0) { options = GGSet_1.IGGSet.getDefaultSetOptions(); }
+        return __awaiter(this, void 0, void 0, function () {
+            var phaseGroups, sets, _a, _b;
+            var _this = this;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0:
+                        Logger_1.default.info('Getting sets for phase %s', this.id);
+                        Logger_1.default.verbose('Query variables: %s', JSON.stringify(options));
+                        return [4 /*yield*/, this.getPhaseGroups()];
+                    case 1:
+                        phaseGroups = _c.sent();
+                        _b = (_a = lodash_1.default).flatten;
+                        return [4 /*yield*/, Promise.all(phaseGroups.map(function (pg) { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
+                                switch (_a.label) {
+                                    case 0: return [4 /*yield*/, pg.getSets(options)];
+                                    case 1: return [2 /*return*/, _a.sent()];
+                                }
+                            }); }); }))];
+                    case 2:
+                        sets = _b.apply(_a, [_c.sent()]);
+                        return [2 /*return*/, sets];
+                }
+            });
+        });
+    };
+    Phase.prototype.getSets = function (options) {
+        if (options === void 0) { options = GGSet_1.IGGSet.getDefaultSetOptions(); }
+        return __awaiter(this, void 0, void 0, function () {
+            var data, phaseGroups, setsData, sets;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        Logger_1.default.info('Getting sets for phase %s', this.id);
+                        // add this phase's id to the filters for sets
+                        if (options.filters)
+                            lodash_1.default.assign(options.filters, { phaseIds: [this.id] });
+                        else
+                            options.filters = { phaseIds: [this.id] };
+                        Logger_1.default.verbose('Query variables: %s', JSON.stringify(options));
+                        return [4 /*yield*/, PaginatedQuery_1.default.query("Phase Sets [" + this.id + "]", queries.phaseSets, { eventId: this.eventId, phaseId: this.id }, options, {}, 4)];
                     case 1:
                         data = _a.sent();
                         phaseGroups = lodash_1.default.flatten(data.map(function (setData) { return setData.event.phaseGroups; }));
@@ -149,57 +251,43 @@ var Phase = /** @class */ (function () {
             });
         });
     };
-    Phase.prototype.getEntrants = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var data, entrantData, entrants;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        Logger_1.default.info('Getting entrants for phase %s', this.id);
-                        return [4 /*yield*/, PaginatedQuery_1.default.query("Phase Entrants [" + this.id + "]", queries.phaseEntrants, { id: this.id })];
-                    case 1:
-                        data = _a.sent();
-                        entrantData = lodash_1.default.flatten(data.map(function (entrantData) { return entrantData.phase.paginatedSeeds.nodes; })).filter(function (entrant) { return entrant != null; });
-                        entrants = entrantData.map(function (e) { return Entrant_1.Entrant.parseFull(e); });
-                        return [2 /*return*/, entrants];
-                }
-            });
-        });
-    };
-    Phase.prototype.getIncompleteSets = function () {
+    Phase.prototype.getIncompleteSets = function (options) {
+        if (options === void 0) { options = GGSet_1.IGGSet.getDefaultSetOptions(); }
         return __awaiter(this, void 0, void 0, function () {
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
                         _b = (_a = GGSet_1.GGSet).filterForIncompleteSets;
-                        return [4 /*yield*/, this.getSets()];
+                        return [4 /*yield*/, this.getSets(options)];
                     case 1: return [2 /*return*/, _b.apply(_a, [_c.sent()])];
                 }
             });
         });
     };
-    Phase.prototype.getCompleteSets = function () {
+    Phase.prototype.getCompleteSets = function (options) {
+        if (options === void 0) { options = GGSet_1.IGGSet.getDefaultSetOptions(); }
         return __awaiter(this, void 0, void 0, function () {
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
                         _b = (_a = GGSet_1.GGSet).filterForCompleteSets;
-                        return [4 /*yield*/, this.getSets()];
+                        return [4 /*yield*/, this.getSets(options)];
                     case 1: return [2 /*return*/, _b.apply(_a, [_c.sent()])];
                 }
             });
         });
     };
-    Phase.prototype.getSetsXMinutesBack = function (minutesBack) {
+    Phase.prototype.getSetsXMinutesBack = function (minutesBack, options) {
+        if (options === void 0) { options = GGSet_1.IGGSet.getDefaultSetOptions(); }
         return __awaiter(this, void 0, void 0, function () {
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
                         _b = (_a = GGSet_1.GGSet).filterForXMinutesBack;
-                        return [4 /*yield*/, this.getSets()];
+                        return [4 /*yield*/, this.getSets(options)];
                     case 1: return [2 /*return*/, _b.apply(_a, [_c.sent(), minutesBack])];
                 }
             });
@@ -208,24 +296,3 @@ var Phase = /** @class */ (function () {
     return Phase;
 }());
 exports.Phase = Phase;
-var IPhase;
-(function (IPhase) {
-    function parseSetOptions(options) {
-        if (!options)
-            return { params: { page: 1, perPage: undefined }, additionalParams: { sortType: null, hasPermissions: null, filters: null } };
-        var params, additionalParams;
-        if (options) {
-            params = { page: options.page, perPage: options.perPage };
-            additionalParams = {
-                sortType: options.sortType || null,
-                hasPermissions: options.hasPermissions || null,
-                filters: options.filters
-            };
-        }
-        return {
-            params: params,
-            additionalParams: additionalParams
-        };
-    }
-    IPhase.parseSetOptions = parseSetOptions;
-})(IPhase = exports.IPhase || (exports.IPhase = {}));

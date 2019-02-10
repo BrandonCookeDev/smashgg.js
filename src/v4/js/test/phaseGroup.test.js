@@ -51,13 +51,17 @@ var dotenv_1 = require("dotenv");
 dotenv_1.config({ path: ROOT });
 require("../lib/util/ErrorHandler");
 var lodash_1 = __importDefault(require("lodash"));
+var moment_1 = __importDefault(require("moment"));
+var sinon_1 = __importDefault(require("sinon"));
 var chai_1 = __importDefault(require("chai"));
 var chai_as_promised_1 = __importDefault(require("chai-as-promised"));
 chai_1.default.use(chai_as_promised_1.default);
 var expect = chai_1.default.expect;
 var PhaseGroup_1 = require("../lib/PhaseGroup");
 var Entrant_1 = require("../lib/Entrant");
+var Attendee_1 = require("../lib/Attendee");
 var GGSet_1 = require("../lib/GGSet");
+var Seed_1 = require("../lib/Seed");
 var Initializer_1 = __importDefault(require("../lib/util/Initializer"));
 var testData = __importStar(require("./data/phaseGroup.testData"));
 var log = __importStar(require("../lib/util/Logger"));
@@ -69,6 +73,14 @@ var ID1 = 301994;
 var ID2 = 887918; // g6 melee doubles top 6
 var ID3 = 44445;
 var ID4 = 618443; // cameron's 21st, unfinished
+var PG_1_START_AT = 1510401600;
+var PG_1_DATE = moment_1.default.unix(PG_1_START_AT);
+//Saturday, November 11, 2017 12:00:00 PM
+//Saturday, November 11, 2017 7:00:00 AM GMT-05:00
+var PG_4_START_AT = 1532210400;
+var PG_4_DATE = moment_1.default.unix(PG_4_START_AT);
+//Saturday, July 21, 2018 10:00:00 PM
+//Saturday, July 21, 2018 6:00:00 PM GMT-04:00 DST
 var LOG_LEVEL = log.levels.VERBOSE;
 describe('smash.gg PhaseGroup', function () {
     this.timeout(15000);
@@ -176,6 +188,99 @@ describe('smash.gg PhaseGroup', function () {
     it('should return the correct tiebreaker order 4', function () {
         expect(phaseGroup4.getTiebreakOrder()).to.deep.equal(testData.pg4.tiebreakOrder);
     });
+    // seeds
+    it('should return the correct seeds 1', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var seeds, hasDuplicates;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(30000);
+                        return [4 /*yield*/, phaseGroup1.getSeeds()];
+                    case 1:
+                        seeds = _a.sent();
+                        hasDuplicates = function (a) {
+                            return lodash_1.default.uniq(a).length !== a.length;
+                        };
+                        expect(hasDuplicates(seeds)).to.be.false;
+                        seeds.forEach(function (seed) {
+                            expect(seed).to.be.an.instanceof(Seed_1.Seed);
+                        });
+                        expect(seeds.length).to.be.equal(26);
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    it('should return the correct seeds 2', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var seeds, hasDuplicates;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(30000);
+                        return [4 /*yield*/, phaseGroup2.getSeeds()];
+                    case 1:
+                        seeds = _a.sent();
+                        hasDuplicates = function (a) {
+                            return lodash_1.default.uniq(a).length !== a.length;
+                        };
+                        expect(hasDuplicates(seeds)).to.be.false;
+                        seeds.forEach(function (seed) {
+                            expect(seed).to.be.an.instanceof(Seed_1.Seed);
+                        });
+                        expect(seeds.length).to.be.equal(12);
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    it('should return the correct seeds 3', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var seeds, hasDuplicates;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(30000);
+                        return [4 /*yield*/, phaseGroup3.getSeeds()];
+                    case 1:
+                        seeds = _a.sent();
+                        hasDuplicates = function (a) {
+                            return lodash_1.default.uniq(a).length !== a.length;
+                        };
+                        expect(hasDuplicates(seeds)).to.be.false;
+                        seeds.forEach(function (seed) {
+                            expect(seed).to.be.an.instanceof(Seed_1.Seed);
+                        });
+                        expect(seeds.length).to.be.equal(46);
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    it('should return the correct seeds 4', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var seeds, hasDuplicates;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(30000);
+                        return [4 /*yield*/, phaseGroup4.getSeeds()];
+                    case 1:
+                        seeds = _a.sent();
+                        hasDuplicates = function (a) {
+                            return lodash_1.default.uniq(a).length !== a.length;
+                        };
+                        expect(hasDuplicates(seeds)).to.be.false;
+                        seeds.forEach(function (seed) {
+                            expect(seed).to.be.an.instanceof(Seed_1.Seed);
+                        });
+                        expect(seeds.length).to.be.equal(75);
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
     // entrants
     it('should return the correct entrants 1', function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -269,6 +374,99 @@ describe('smash.gg PhaseGroup', function () {
             });
         });
     });
+    // participants
+    it('should return the correct attendees 1', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var attendees, hasDuplicates;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(30000);
+                        return [4 /*yield*/, phaseGroup1.getAttendees()];
+                    case 1:
+                        attendees = _a.sent();
+                        hasDuplicates = function (a) {
+                            return lodash_1.default.uniq(a).length !== a.length;
+                        };
+                        expect(hasDuplicates(attendees)).to.be.false;
+                        attendees.forEach(function (attendee) {
+                            expect(attendee).to.be.an.instanceof(Attendee_1.Attendee);
+                        });
+                        expect(attendees.length).to.be.equal(26);
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    it('should return the correct attendees 2', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var attendees, hasDuplicates;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(30000);
+                        return [4 /*yield*/, phaseGroup2.getAttendees()];
+                    case 1:
+                        attendees = _a.sent();
+                        hasDuplicates = function (a) {
+                            return lodash_1.default.uniq(a).length !== a.length;
+                        };
+                        expect(hasDuplicates(attendees)).to.be.false;
+                        attendees.forEach(function (attendee) {
+                            expect(attendee).to.be.an.instanceof(Attendee_1.Attendee);
+                        });
+                        expect(attendees.length).to.be.equal(24);
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    it('should return the correct attendees 3', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var attendees, hasDuplicates;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(30000);
+                        return [4 /*yield*/, phaseGroup3.getAttendees()];
+                    case 1:
+                        attendees = _a.sent();
+                        hasDuplicates = function (a) {
+                            return lodash_1.default.uniq(a).length !== a.length;
+                        };
+                        expect(hasDuplicates(attendees)).to.be.false;
+                        attendees.forEach(function (attendee) {
+                            expect(attendee).to.be.an.instanceof(Attendee_1.Attendee);
+                        });
+                        expect(attendees.length).to.be.equal(92);
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    it('should return the correct attendees 4', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var attendees, hasDuplicates;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(30000);
+                        return [4 /*yield*/, phaseGroup4.getAttendees()];
+                    case 1:
+                        attendees = _a.sent();
+                        hasDuplicates = function (a) {
+                            return lodash_1.default.uniq(a).length !== a.length;
+                        };
+                        expect(hasDuplicates(attendees)).to.be.false;
+                        attendees.forEach(function (attendee) {
+                            expect(attendee).to.be.an.instanceof(Attendee_1.Attendee);
+                        });
+                        expect(attendees.length).to.be.equal(75);
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
     // set
     it('should return the correct Sets 1', function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -356,56 +554,251 @@ describe('smash.gg PhaseGroup', function () {
                         sets.forEach(function (set) {
                             expect(set).to.be.an.instanceof(GGSet_1.GGSet);
                         });
+                        expect(sets.length).to.be.equal(98);
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    // sets filter dq
+    it('should return the correct DQ filtered Sets 1', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var sets, hasDuplicates;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(30000);
+                        return [4 /*yield*/, phaseGroup1.getSets({ filterDQs: true })];
+                    case 1:
+                        sets = _a.sent();
+                        hasDuplicates = function (a) {
+                            return lodash_1.default.uniq(a).length !== a.length;
+                        };
+                        expect(hasDuplicates(sets)).to.be.false;
+                        sets.forEach(function (set) {
+                            expect(set).to.be.an.instanceof(GGSet_1.GGSet);
+                        });
                         expect(sets.length).to.be.equal(42);
                         return [2 /*return*/, true];
                 }
             });
         });
     });
-    /*
-    id: number
-    phaseId: number
-    displayIdentifier: string | null
-    firstRoundTime: number | null
-    state: number | null
-    waveId: number | null
-    tiebreakOrder: object | null
-
-    /*
-    it('should correctly return the phase id', function(){
-        let phaseId1 = phaseGroup3.getPhaseId()
-        expect(phaseId1).to.be.equal(100046)
-    })
-
-    it('should get all entrants', async function(){
-        this.timeout(5000)
-
-        let players = await phaseGroup3.getPlayers()
-        expect(players.length).to.be.equal(15)
-        return true
-    })
-
-    it('should get all sets', async function(){
-        this.timeout(5000)
-
-        let sets = await phaseGroup3.getSets()
-        expect(sets.length).to.be.equal(27)
-        return true
-    })
-
-    it('should get sets completed within x minutes ago', async function(){
-        this.timeout(5000)
-
-        let clock = sinon.useFakeTimers(new Date('Sat Nov 11 2017 11:50:47 GMT-0500 (EST)'))
-        let sets = await phaseGroup3.getSetsXMinutesBack(5)
-
-        expect(sets.length).to.be.equal(4)
-        sets.forEach(set => {
-            expect(set).to.be.instanceof(GGSet);
-        })
-
-        clock.restore()
-        return true
-    })
-    */
+    it('should return the correct DQ filtered Sets 2', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var sets, hasDuplicates;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(30000);
+                        return [4 /*yield*/, phaseGroup2.getSets({ filterDQs: true })];
+                    case 1:
+                        sets = _a.sent();
+                        hasDuplicates = function (a) {
+                            return lodash_1.default.uniq(a).length !== a.length;
+                        };
+                        expect(hasDuplicates(sets)).to.be.false;
+                        sets.forEach(function (set) {
+                            expect(set).to.be.an.instanceof(GGSet_1.GGSet);
+                        });
+                        expect(sets.length).to.be.equal(14);
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    // sets filter reset
+    it('should return the correct Reset filtered Sets 1', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var sets, hasDuplicates;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(30000);
+                        return [4 /*yield*/, phaseGroup1.getSets({ filterResets: true })];
+                    case 1:
+                        sets = _a.sent();
+                        hasDuplicates = function (a) {
+                            return lodash_1.default.uniq(a).length !== a.length;
+                        };
+                        expect(hasDuplicates(sets)).to.be.false;
+                        sets.forEach(function (set) {
+                            expect(set).to.be.an.instanceof(GGSet_1.GGSet);
+                        });
+                        expect(sets.length).to.be.equal(42);
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    it('should return the correct Reset filtered Sets 4', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var sets, hasDuplicates;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(30000);
+                        return [4 /*yield*/, phaseGroup4.getSets({ filterResets: true })];
+                    case 1:
+                        sets = _a.sent();
+                        hasDuplicates = function (a) {
+                            return lodash_1.default.uniq(a).length !== a.length;
+                        };
+                        expect(hasDuplicates(sets)).to.be.false;
+                        sets.forEach(function (set) {
+                            expect(set).to.be.an.instanceof(GGSet_1.GGSet);
+                        });
+                        expect(sets.length).to.be.equal(91);
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    // completed sets
+    it('should get the correct number of completed sets 1', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var sets, hasDuplicates;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(30000);
+                        return [4 /*yield*/, phaseGroup1.getCompleteSets()];
+                    case 1:
+                        sets = _a.sent();
+                        hasDuplicates = function (a) {
+                            return lodash_1.default.uniq(a).length !== a.length;
+                        };
+                        expect(hasDuplicates(sets)).to.be.false;
+                        sets.forEach(function (set) {
+                            expect(set).to.be.an.instanceof(GGSet_1.GGSet);
+                        });
+                        expect(sets.length).to.be.equal(42);
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    it('should get the correct number of completed sets 4', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var sets, hasDuplicates;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(30000);
+                        return [4 /*yield*/, phaseGroup4.getCompleteSets()];
+                    case 1:
+                        sets = _a.sent();
+                        hasDuplicates = function (a) {
+                            return lodash_1.default.uniq(a).length !== a.length;
+                        };
+                        expect(hasDuplicates(sets)).to.be.false;
+                        sets.forEach(function (set) {
+                            expect(set).to.be.an.instanceof(GGSet_1.GGSet);
+                        });
+                        expect(sets.length).to.be.equal(63);
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    // incompleted sets
+    it('should get the correct number of incomplete sets 1', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var sets, hasDuplicates;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(30000);
+                        return [4 /*yield*/, phaseGroup1.getIncompleteSets()];
+                    case 1:
+                        sets = _a.sent();
+                        hasDuplicates = function (a) {
+                            return lodash_1.default.uniq(a).length !== a.length;
+                        };
+                        expect(hasDuplicates(sets)).to.be.false;
+                        sets.forEach(function (set) {
+                            expect(set).to.be.an.instanceof(GGSet_1.GGSet);
+                        });
+                        expect(sets.length).to.be.equal(0);
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    it('should get the correct number of incomplete sets 4', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var sets, hasDuplicates;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(30000);
+                        return [4 /*yield*/, phaseGroup4.getIncompleteSets()];
+                    case 1:
+                        sets = _a.sent();
+                        hasDuplicates = function (a) {
+                            return lodash_1.default.uniq(a).length !== a.length;
+                        };
+                        expect(hasDuplicates(sets)).to.be.false;
+                        sets.forEach(function (set) {
+                            expect(set).to.be.an.instanceof(GGSet_1.GGSet);
+                        });
+                        expect(sets.length).to.be.equal(35); // really should be 2
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    // finished x minutes ago
+    xit('should get the correct number of sets completed x minutes ago 1', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var fakeTime, clock, sets, hasDuplicates;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(30000);
+                        fakeTime = PG_4_DATE.add(3, 'hours').toDate();
+                        clock = sinon_1.default.useFakeTimers(fakeTime);
+                        return [4 /*yield*/, phaseGroup1.getSetsXMinutesBack(5)];
+                    case 1:
+                        sets = _a.sent();
+                        hasDuplicates = function (a) {
+                            return lodash_1.default.uniq(a).length !== a.length;
+                        };
+                        expect(hasDuplicates(sets)).to.be.false;
+                        sets.forEach(function (set) {
+                            expect(set).to.be.an.instanceof(GGSet_1.GGSet);
+                        });
+                        expect(sets.length).to.be.equal(0);
+                        clock.restore();
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    xit('should get the correct number of sets completed x minutes ago 4', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var fakeTime, clock, sets, hasDuplicates;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(30000);
+                        fakeTime = PG_4_DATE.add(3, 'hours').toDate();
+                        clock = sinon_1.default.useFakeTimers(fakeTime);
+                        return [4 /*yield*/, phaseGroup4.getSetsXMinutesBack(5)];
+                    case 1:
+                        sets = _a.sent();
+                        hasDuplicates = function (a) {
+                            return lodash_1.default.uniq(a).length !== a.length;
+                        };
+                        expect(hasDuplicates(sets)).to.be.false;
+                        sets.forEach(function (set) {
+                            expect(set).to.be.an.instanceof(GGSet_1.GGSet);
+                        });
+                        expect(sets.length).to.be.equal(2);
+                        clock.restore();
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
 });

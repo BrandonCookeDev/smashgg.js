@@ -136,6 +136,7 @@ var PaginatedQuery = /** @class */ (function () {
     };
     PaginatedQuery.calculateOptimalPagecount = function (objectComplexity, totalPages) {
         var totalComplexity = objectComplexity * totalPages;
+        Logger_1.default.verbose('Calculating Optimal Pagecount: Complexity [%s], Total Pages [%s], Total Complexity [%s]', objectComplexity, totalPages, totalComplexity);
         if (totalComplexity < MAX_COMPLEXITY)
             return Math.ceil(MAX_COMPLEXITY / objectComplexity / totalPages);
         else

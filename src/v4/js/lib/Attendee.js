@@ -167,3 +167,15 @@ var Attendee = /** @class */ (function () {
     return Attendee;
 }());
 exports.Attendee = Attendee;
+var IAttendee;
+(function (IAttendee) {
+    function getDefaultAttendeeOptions() {
+        return {
+            page: 1,
+            perPage: 1,
+            sortBy: null,
+            filter: null
+        };
+    }
+    IAttendee.getDefaultAttendeeOptions = getDefaultAttendeeOptions;
+})(IAttendee = exports.IAttendee || (exports.IAttendee = {}));

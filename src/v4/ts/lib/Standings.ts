@@ -43,4 +43,22 @@ export namespace IStandings{
         label: string,
         value: number
     }
+
+    export interface StandingsOptions{
+        page?: number | null,
+        perPage?: number | null,
+        sortBy?: string | null,
+        filter?: null | {
+			id?: number
+			entrantName?: string
+			checkInState?: number
+			phaseGroupId?: number[]
+			phaseId?: number[]
+			eventId?: number
+			search?: {
+				fieldsToSearch: string[]
+				searchString: string
+			}
+		}
+    }
 }

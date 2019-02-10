@@ -236,4 +236,31 @@ export namespace IAttendee{
 		nameLast: string | null,
 		zipcode: string | null
 	}
+
+	export interface AttendeeOptions{
+		page?: number | null,
+		perPage?: number | null,
+		sortBy?: string | null,
+		filter?: null | {
+			id?: number,
+			entrantName?: string,
+			checkInState?: number,
+			phaseGroupId?: number[],
+			phaseId?: number[],
+			eventId?: number,
+			seach?:{
+				fieldsToSearch: string[],
+				searchString: string
+			}
+		}
+	}
+
+	export function getDefaultAttendeeOptions() : AttendeeOptions{
+		return {
+			page: 1,
+			perPage: 1,
+			sortBy: null,
+			filter: null
+		}
+	}
 }

@@ -91,6 +91,10 @@ export default class PaginatedQuery{
 	static calculateOptimalPagecount(objectComplexity: number, totalPages: number) : number{
 		let totalComplexity = objectComplexity * totalPages
 		
+		log.verbose('Calculating Optimal Pagecount: Complexity [%s], Total Pages [%s], Total Complexity [%s]', 
+			objectComplexity, totalPages, totalComplexity
+		)
+		
 		if(totalComplexity < MAX_COMPLEXITY)
 			return Math.ceil(MAX_COMPLEXITY / objectComplexity / totalPages)
 		else

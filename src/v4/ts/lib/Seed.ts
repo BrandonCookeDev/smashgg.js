@@ -67,4 +67,31 @@ export namespace ISeed{
 		placement: number,
 		isBye: boolean
 	}
+
+	export interface SeedOptions{
+		page?: number | null,
+		perPage?: number | null,
+		sortBy?: string | null,
+		filter?: null | {
+			id?: number
+			entrantName?: string
+			checkInState?: number
+			phaseGroupId?: number[]
+			phaseId?: number[]
+			eventId?: number
+			search?: {
+				fieldsToSearch: string[]
+				searchString: string
+			}
+		}
+	}
+
+	export function getDefaultSeedOptions() : SeedOptions{
+		return {
+			page: 1,
+			perPage: 1,
+			sortBy: null,
+			filter: null
+		}
+	}
 }

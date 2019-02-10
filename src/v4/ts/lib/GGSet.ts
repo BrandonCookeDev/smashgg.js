@@ -344,49 +344,49 @@ export class GGSet extends EventEmitter implements IGGSet.GGSet{
 	}
 	
 	// Statics
+	static filterOutDQs(sets: GGSet[]) : GGSet[]{
+		log.debug('GGSet.filterOutDQs called')
+		let displayScores = sets.map(set => set.displayScore)
+		return displayScores.includes('DQ') ? sets.filter(set => set.displayScore != 'DQ') : sets
+	}
+
+	static filterOutByes(sets: GGSet[]) : GGSet[]{
+		log.debug('GGSet.filterOutByes called')
+		let displayScores = sets.map(set => set.displayScore)
+		return displayScores.includes('BYE') ? sets.filter(set => set.displayScore != 'BYE') : sets
+	}
+
+	static filterOutResets(sets: GGSet[]) : GGSet[]{
+		log.debug('GGSet.filterOutResets called')
+		let fullRoundTexts = sets.map(set => set.fullRoundText)
+		return fullRoundTexts.includes('Grand Final Reset') ? sets.filter(set => set.fullRoundText !== 'Grand Final Reset') : sets
+	}
 
 	static filterForCompleteSets(sets: GGSet[]) : GGSet[]{
 		log.debug('GGSet.filterForCompleteSets called');
-
-		try{
-			return sets.filter(set => set.getIsComplete());
-		} catch(e){
-			log.error('GGSet.filterForCompleteSets error: %s', e);
-			throw e;
-		}
+		return sets.filter(set => set.getIsComplete());
 	}
 
 	static filterForIncompleteSets(sets: GGSet[]) : GGSet[]{
 		log.debug('GGSet.filterForCompleteSets called');
-
-		try{
-			return sets.filter(set => !set.getIsComplete());
-		} catch(e){
-			log.error('GGSet.filterForCompleteSets error: %s', e);
-			throw e;
-		}
+		return sets.filter(set => !set.getIsComplete());
 	}
 
 	static filterForXMinutesBack(sets: GGSet[], minutesBack: number) : GGSet[]{
 		log.debug('GGSet.filterForCompleteSets called');
 
-		try{
-			let now = moment();
-			let filtered: GGSet[] = sets.filter(set => {
-				let then = moment(set.getCompletedAt() as Date);
-				let diff = moment.duration(now.diff(then));
+		let now = moment();
+		let filtered: GGSet[] = sets.filter(set => {
+			let then = moment(set.getCompletedAt() as Date);
+			let diff = moment.duration(now.diff(then));
 
-				let diffMinutes = diff.minutes();
-				if(diff.hours() > 0 || diff.days() > 0 || diff.months() > 0 || diff.years() > 0) 
-					return false;
-				else 
-					return diffMinutes <= minutesBack && diffMinutes >= 0 && set.getIsComplete();
-			});
-			return filtered;
-		} catch(e){
-			log.error('GGSet.filterForCompleteSets error: %s', e);
-			throw e;
-		}
+			let diffMinutes = diff.minutes();
+			if(diff.hours() > 0 || diff.days() > 0 || diff.months() > 0 || diff.years() > 0) 
+				return false;
+			else 
+				return diffMinutes <= minutesBack && diffMinutes >= 0 && set.getIsComplete();
+		});
+		return filtered;
 	}
 }
 
@@ -523,5 +523,31 @@ export namespace IGGSet{
 
 	export interface SlotAttendeeData{
 		participants: (IAttendee.AttendeeData | null)[]
+	}
+
+	export interface SetOptions{
+		filterDQs?: boolean,
+		filterByes?: boolean,
+		filterResets?: boolean,
+		page?: number | null,
+		perPage?: number | null,
+		sortBy?: null | 'NONE' | 'STANDARD' | 'RACE_SPECTATOR' | 'ADMIN',
+		filters?: null | {
+			entrantIds?: number[],
+			state?: number[],
+			stationIds?: number[],
+			phaseIds?: number[],
+			phaseGroupIds?: number[],
+			roundNumber?: number
+		}
+	}
+
+	export function getDefaultSetOptions() : SetOptions{
+		return {
+			page: 1,
+			perPage: 1,
+			sortBy: null,
+			filters: null
+		}
 	}
 }

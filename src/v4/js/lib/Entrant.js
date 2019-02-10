@@ -99,3 +99,15 @@ var Entrant = /** @class */ (function () {
     return Entrant;
 }());
 exports.Entrant = Entrant;
+var IEntrant;
+(function (IEntrant) {
+    function getDefaultEntrantOptions() {
+        return {
+            page: 1,
+            perPage: 1,
+            sortBy: null,
+            filter: null
+        };
+    }
+    IEntrant.getDefaultEntrantOptions = getDefaultEntrantOptions;
+})(IEntrant = exports.IEntrant || (exports.IEntrant = {}));

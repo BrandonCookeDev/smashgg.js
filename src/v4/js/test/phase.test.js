@@ -57,8 +57,10 @@ var chai_as_promised_1 = __importDefault(require("chai-as-promised"));
 chai_1.default.use(chai_as_promised_1.default);
 var expect = chai_1.default.expect;
 var Phase_1 = require("../lib/Phase");
+var PhaseGroup_1 = require("../lib/PhaseGroup");
 var GGSet_1 = require("../lib/GGSet");
 var Entrant_1 = require("../lib/Entrant");
+var Attendee_1 = require("../lib/Attendee");
 var Initializer_1 = __importDefault(require("../lib/util/Initializer"));
 var testData = __importStar(require("./data/phase.testData"));
 var LOG_LEVEL = log.levels.VERBOSE;
@@ -146,6 +148,7 @@ describe('Smash GG Phase', function () {
     it('should get the Phase group count 3', function () {
         expect(phase3.getGroupCount()).to.be.equal(testData.phase3.groupCount);
     });
+    // sets
     it('should correctly get all sets 1', function () {
         return __awaiter(this, void 0, void 0, function () {
             var sets, hasDuplicates;
@@ -233,13 +236,13 @@ describe('Smash GG Phase', function () {
                         entrants.forEach(function (set) {
                             expect(set).to.be.an.instanceof(Entrant_1.Entrant);
                         });
-                        expect(entrants.length).to.be.equal(126);
+                        expect(entrants.length).to.be.equal(200);
                         return [2 /*return*/, true];
                 }
             });
         });
     });
-    it('should correctly get all entrants 2', function () {
+    xit('should correctly get all entrants 2', function () {
         return __awaiter(this, void 0, void 0, function () {
             var entrants, hasDuplicates;
             return __generator(this, function (_a) {
@@ -279,7 +282,147 @@ describe('Smash GG Phase', function () {
                         entrants.forEach(function (set) {
                             expect(set).to.be.an.instanceof(Entrant_1.Entrant);
                         });
-                        expect(entrants.length).to.be.equal(91);
+                        expect(entrants.length).to.be.equal(275);
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    // attendee
+    it('should correctly get all attendees 1', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var attendee, hasDuplicates;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(30000);
+                        return [4 /*yield*/, phase1.getAttendees()];
+                    case 1:
+                        attendee = _a.sent();
+                        hasDuplicates = function (a) {
+                            return lodash_1.default.uniq(a).length !== a.length;
+                        };
+                        expect(hasDuplicates(attendee)).to.be.false;
+                        attendee.forEach(function (set) {
+                            expect(set).to.be.an.instanceof(Attendee_1.Attendee);
+                        });
+                        expect(attendee.length).to.be.equal(200);
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    xit('should correctly get all attendees 2', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var attendee, hasDuplicates;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(30000);
+                        return [4 /*yield*/, phase2.getAttendees()];
+                    case 1:
+                        attendee = _a.sent();
+                        hasDuplicates = function (a) {
+                            return lodash_1.default.uniq(a).length !== a.length;
+                        };
+                        expect(hasDuplicates(attendee)).to.be.false;
+                        attendee.forEach(function (set) {
+                            expect(set).to.be.an.instanceof(Attendee_1.Attendee);
+                        });
+                        expect(attendee.length).to.be.equal(200);
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    it('should correctly get all attendees 3', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var attendee, hasDuplicates;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(30000);
+                        return [4 /*yield*/, phase3.getAttendees()];
+                    case 1:
+                        attendee = _a.sent();
+                        hasDuplicates = function (a) {
+                            return lodash_1.default.uniq(a).length !== a.length;
+                        };
+                        expect(hasDuplicates(attendee)).to.be.false;
+                        attendee.forEach(function (set) {
+                            expect(set).to.be.an.instanceof(Attendee_1.Attendee);
+                        });
+                        expect(attendee.length).to.be.equal(275);
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    // phase groups
+    it('should correctly get all phase groups 1', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var groups, hasDuplicates;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(30000);
+                        return [4 /*yield*/, phase1.getPhaseGroups()];
+                    case 1:
+                        groups = _a.sent();
+                        hasDuplicates = function (a) {
+                            return lodash_1.default.uniq(a).length !== a.length;
+                        };
+                        expect(hasDuplicates(groups)).to.be.false;
+                        groups.forEach(function (set) {
+                            expect(set).to.be.an.instanceof(PhaseGroup_1.PhaseGroup);
+                        });
+                        expect(groups.length).to.be.equal(16);
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    it('should correctly get all phase groups 2', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var groups, hasDuplicates;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(30000);
+                        return [4 /*yield*/, phase2.getPhaseGroups()];
+                    case 1:
+                        groups = _a.sent();
+                        hasDuplicates = function (a) {
+                            return lodash_1.default.uniq(a).length !== a.length;
+                        };
+                        expect(hasDuplicates(groups)).to.be.false;
+                        groups.forEach(function (set) {
+                            expect(set).to.be.an.instanceof(PhaseGroup_1.PhaseGroup);
+                        });
+                        expect(groups.length).to.be.equal(32);
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    it('should correctly get all phase groups 3', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var groups, hasDuplicates;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(30000);
+                        return [4 /*yield*/, phase3.getPhaseGroups()];
+                    case 1:
+                        groups = _a.sent();
+                        hasDuplicates = function (a) {
+                            return lodash_1.default.uniq(a).length !== a.length;
+                        };
+                        expect(hasDuplicates(groups)).to.be.false;
+                        groups.forEach(function (set) {
+                            expect(set).to.be.an.instanceof(PhaseGroup_1.PhaseGroup);
+                        });
+                        expect(groups.length).to.be.equal(16);
                         return [2 /*return*/, true];
                 }
             });

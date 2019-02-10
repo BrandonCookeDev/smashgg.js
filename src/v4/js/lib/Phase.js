@@ -173,7 +173,7 @@ var Phase = /** @class */ (function () {
             });
         });
     };
-    Phase.prototype.getSets3 = function (options) {
+    Phase.prototype.getSets2 = function (options) {
         if (options === void 0) { options = GGSet_1.IGGSet.getDefaultSetOptions(); }
         return __awaiter(this, void 0, void 0, function () {
             var pg, ids, filters, data, phaseGroups, setsData, sets;

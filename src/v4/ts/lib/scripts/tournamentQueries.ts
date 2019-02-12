@@ -1,5 +1,10 @@
 import * as Schema from './schema'
-export const tournament = `query TournamentQuery($slug: String) {
+export const tournament = `query TournamentQuery($id:Int){
+    tournament(id: $id){
+        ${Schema.tournament}
+    }
+}`
+export const tournamentBySlug = `query TournamentQuery($slug: String) {
     tournament(slug: $slug){
         ${Schema.tournament}
     }

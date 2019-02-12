@@ -8,7 +8,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var Schema = __importStar(require("./schema"));
-exports.tournament = "query TournamentQuery($slug: String) {\n    tournament(slug: $slug){\n        " + Schema.tournament + "\n    }\n}";
+exports.tournament = "query TournamentQuery($id:Int){\n    tournament(id: $id){\n        " + Schema.tournament + "\n    }\n}";
+exports.tournamentBySlug = "query TournamentQuery($slug: String) {\n    tournament(slug: $slug){\n        " + Schema.tournament + "\n    }\n}";
 exports.tournamentOrganizer = "query tournamentOrganizer($slug: String){\n    tournament(slug: $slug){\n        ownerId\n        contactEmail\n        contactTwitter\n        contactPhone\n        contactInfo\n    }   \n}";
 exports.tournamentVenue = "query tournamentVenue($slug: String) {\n\ttournament(slug: $slug){\n\t\tvenueName\n\t\tvenueAddress\n\t\tcity\n\t\taddrState\n\t\tcountryCode\n\t}\t\n}";
 exports.tournamentPlayers = "query TournamentParticipantQuery($slug: String) {\n    tournament(slug: $slug){\n        id\n        name\n        slug\n        participants(query: {\n            page: 0,\n            perPage: 10000,\n            sortBy: \"asc\",\n        },\n        isAdmin: false){\n            nodes{\n                id\n                playerId\n                gamerTag\n                prefix\n            }\n        }\n    }  \n}";

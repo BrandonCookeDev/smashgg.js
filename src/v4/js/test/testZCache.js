@@ -47,7 +47,6 @@ var chai_as_promised_1 = __importDefault(require("chai-as-promised"));
 chai_1.default.use(chai_as_promised_1.default);
 var expect = chai_1.default.expect;
 var internal_1 = require("../lib/internal");
-var internal_2 = require("../lib/internal");
 var Cache_1 = __importDefault(require("../lib/util/Cache"));
 var testSets_1 = __importDefault(require("./data/testSets"));
 var testPlayers_1 = __importDefault(require("./data/testPlayers"));
@@ -557,7 +556,7 @@ describe('Test Caching', function () {
     });
 });
 function loadTournament(name, expands, isCached) {
-    if (expands === void 0) { expands = internal_2.ITournament.getDefaultExpands(); }
+    if (expands === void 0) { expands = ITournament.getDefaultExpands(); }
     if (isCached === void 0) { isCached = true; }
     return new Promise(function (resolve, reject) {
         var options = {

@@ -49,12 +49,9 @@ var Logger_1 = __importDefault(require("./Logger"));
 var request_promise_1 = __importDefault(require("request-promise"));
 var util_1 = require("util");
 var Common = __importStar(require("./Common"));
-/* Interfaces */
-var internal_1 = require("../internal");
-var internal_2 = require("../internal");
 var createExpandsString = Common.createExpandsString;
-var parseTournamentOptions = internal_1.ITournament.parseOptions;
-var parseEventOptions = internal_2.IEvent.parseOptions;
+var parseTournamentOptions = ITournament.parseOptions;
+var parseEventOptions = IEvent.parseOptions;
 var parsePhaseOptions = IPhase.parseOptions;
 var parsePhaseGroupOptions = IPhaseGroup.parseOptions;
 var TOURNAMENT_URL = 'https://api.smash.gg/tournament/%s?%s';

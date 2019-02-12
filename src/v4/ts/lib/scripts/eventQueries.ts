@@ -1,83 +1,65 @@
 import * as Schema from './schema'
-export const event = `query EventByTournamentSlugQuery($slug:String){
-    tournament(slug:$slug){
-        id
-        name
-        slug
-        events{
-            ${Schema.event}
-        }
+
+export const event = `query EventQuery($id: Int){
+    event(id:$id){   
+        ${Schema.event}
+    }
+}`
+
+export const eventSlug = `query EventQuery($slug:String){
+    event(slug:$slug){
+        ${Schema.event}
   	}
 }`
 
-export const eventPlayers = `query EventParticipantQuery($slug: String, $eventIds: [Int]) {
-    tournament(slug: $slug){
-        id
-        name
-        slug
-        participants(query: {
-            page: 0,
-            perPage: 10000,
-            sortBy: "asc",
-            filter: {
-                eventIds: $eventIds
-            }
-        },
-        isAdmin: false){
-            nodes{
-                ${Schema.attendee}
+export const eventSets = `query EventSets($id: Int, $page: Int, $perPage: Int, $hasPermissions: boolean, $sortType: String, $filters: SetFilters){
+    event(id: $id){
+        phaseGroups{
+            paginatedSets(
+                page: $page,
+                perPage: $perPage,
+                sortType: $sortType,
+                hasPermissions: $hasPermissions,
+                filters: $filters
+            ){
+                {pageInfo}
+                nodes{
+                    ${Schema.set}
+                }
             }
         }
-    }  
+    }   
 }`
 
-export const eventVideoGame = `query EventVideoGame($slug: String){
-    
+export const eventEntrants = `query EventSets($id: Int, $page: Int, $perPage: Int, $hasPermissions: boolean, $sortBy: String, $filter: EventEntrantPageQueryFilter){
+    event(id: $id){
+        entrants(query: {
+            page: $page,
+            perPage: $perPage,
+            sortBy: $sortBy,
+            filter: $filter
+        }){
+            {pageInfo}
+            nodes{
+                ${Schema.entrant}
+            }
+        }
+    }
 }`
 
-export const eventWithEverything = `query EventByTournamentSlugQuery($slug:String){
-    tournament(slug:$slug){
-        id
-        events{
-            id
-            name
-            slug
-            startAt
-          	numEntrants
-          	checkInBuffer
-          	checkInDuration
-          	checkInEnabled
-          	teamNameAllowed
-          	teamManagementDeadline
-          	prizingInfo
-          	videogame {
-          	  id
-              name
-              slug
-              displayName
-          	}
-            tournament{
-			  id
-              name
-              slug
-              city
-              postalCode
-              addrState
-              countryCode
-              region
-              venueAddress
-              venueName
-              gettingThere
-              lat
-              lng
-              timezone
-              startAt
-              endAt
-              contactInfo
-              contactEmail
-              contactTwitter
-              contactPhone
-              ownerId
+export const eventAttendees = `query EventSets($id: Int, $page: Int, $perPage: Int, $hasPermissions: boolean, $sortBy: String, $filter: EventEntrantPageQueryFilter){
+    event(id: $id){
+        entrants(query: {
+            page: $page,
+            perPage: $perPage,
+            sortBy: $sortBy,
+            filter: $filter
+        }){
+            {pageInfo}
+            nodes{
+                participants{
+                    ${Schema.attendee}
+                }
             }
         }
     }

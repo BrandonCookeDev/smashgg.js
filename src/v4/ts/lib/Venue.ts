@@ -7,8 +7,8 @@ export namespace IVenue{
 		address: string | null
 		city: string | null
 		state: string | null
-		postalCode: number | null
-		countryCode: number | null
+		postalCode: string | null
+		countryCode: string | null
 		region: string | null
 		latitude: number | null
 		longitude: number | null
@@ -17,8 +17,8 @@ export namespace IVenue{
 		getAddress(): string | null
 		getCity(): string | null
 		getState(): string | null
-		getPostalCode(): number | null
-		getCountryCode(): number | null
+		getPostalCode(): string | null
+		getCountryCode(): string | null
 		getRegion(): string | null
 		getLatitude(): number | null
 		getLongitude(): number | null
@@ -31,9 +31,9 @@ export namespace IVenue{
 				venueAddress: string | null
 				city: string | null
 				addrState: string | null
-				countryCode: number | null
+				countryCode: string | null
 				region: string | null
-				postalCode: number | null
+				postalCode: string | null
 				lat: number | null
 				lng: number | null
 			}
@@ -47,14 +47,14 @@ export class Venue implements IVenue.Venue{
 	address: string | null
 	city: string | null
 	state: string | null
-	postalCode: number | null
-	countryCode: number | null
+	postalCode: string | null
+	countryCode: string | null
 	region: string | null
 	latitude: number | null
 	longitude: number | null
 
 	constructor(name: string | null, address: string | null, city: string | null, state: string | null, 
-				countryCode: number | null, region: string | null, postalCode: number | null, 
+				countryCode: string | null, region: string | null, postalCode: string | null, 
 				latitude: number | null, longitude: number | null){
 					
 		this.name = name

@@ -188,7 +188,7 @@ export namespace IUser{
 	export interface DataUserSets{
 		"player": {
 			"id": number,
-			"recentSets": IGGSet.Data[]
+			"recentSets": IGGSet.SetData[]
 		}
 	}
 

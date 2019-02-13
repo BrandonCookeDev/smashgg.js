@@ -58,9 +58,16 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var lodash_1 = __importDefault(require("lodash"));
 var events_1 = require("events");
 var Logger_1 = __importDefault(require("./util/Logger"));
+var Phase_1 = require("./Phase");
+var PhaseGroup_1 = require("./PhaseGroup");
+var GGSet_1 = require("./GGSet");
+var Entrant_1 = require("./Entrant");
+var Attendee_1 = require("./Attendee");
 var NetworkInterface_1 = __importDefault(require("./util/NetworkInterface"));
+var PaginatedQuery_1 = __importDefault(require("./util/PaginatedQuery"));
 var queries = __importStar(require("./scripts/eventQueries"));
 var Event = /** @class */ (function (_super) {
     __extends(Event, _super);
@@ -148,6 +155,94 @@ var Event = /** @class */ (function (_super) {
     };
     Event.prototype.getTeamManagementDeadline = function () {
         return this.teamManagementDeadline;
+    };
+    // aggregation
+    Event.prototype.getPhases = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var data;
+            var _this = this;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        Logger_1.default.info('Getting Phases for Event [%s :: %s]', this.id, this.name);
+                        return [4 /*yield*/, NetworkInterface_1.default.query(queries.eventPhases, { id: this.id })];
+                    case 1:
+                        data = _a.sent();
+                        return [2 /*return*/, data.event.phases.map(function (phaseData) { return Phase_1.Phase.parse(phaseData, _this.id); })];
+                }
+            });
+        });
+    };
+    Event.prototype.getPhaseGroups = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var data;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        Logger_1.default.info('Getting Phase Groups for Event [%s :: %s]', this.id, this.name);
+                        return [4 /*yield*/, NetworkInterface_1.default.query(queries.eventPhaseGroups, { id: this.id })];
+                    case 1:
+                        data = _a.sent();
+                        return [2 /*return*/, data.event.phaseGroups.map(function (phaseGroupData) { return PhaseGroup_1.PhaseGroup.parse(phaseGroupData); })];
+                }
+            });
+        });
+    };
+    Event.prototype.getEntrants = function (options) {
+        if (options === void 0) { options = Entrant_1.IEntrant.getDefaultEntrantOptions(); }
+        return __awaiter(this, void 0, void 0, function () {
+            var data, entrantData, entrants;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        Logger_1.default.info('Getting Entrants for Event [%s :: %s]', this.id, this.name);
+                        return [4 /*yield*/, PaginatedQuery_1.default.query("Event Entrants [" + this.id + " :: " + this.name + "]", queries.eventEntrants, { id: this.id }, options, {}, 2)];
+                    case 1:
+                        data = _a.sent();
+                        entrantData = lodash_1.default.flatten(data.map(function (d) { return d.event.entrants.nodes; }));
+                        entrants = entrantData.map(function (entrant) { return Entrant_1.Entrant.parse(entrant); });
+                        return [2 /*return*/, entrants];
+                }
+            });
+        });
+    };
+    Event.prototype.getAttendees = function (options) {
+        if (options === void 0) { options = Attendee_1.IAttendee.getDefaultAttendeeOptions(); }
+        return __awaiter(this, void 0, void 0, function () {
+            var data, entrantData, attendeeData, attendees;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        Logger_1.default.info('Getting Attendees for Event [%s :: %s]', this.id, this.name);
+                        return [4 /*yield*/, PaginatedQuery_1.default.query("Event Attendees [" + this.id + " :: " + this.name + "]", queries.eventAttendees, { id: this.id }, options, {}, 3)];
+                    case 1:
+                        data = _a.sent();
+                        entrantData = lodash_1.default.flatten(data.map(function (d) { return d.event.entrants.nodes; }));
+                        attendeeData = lodash_1.default.flatten(entrantData.map(function (entrant) { return entrant.participants; }));
+                        attendees = attendeeData.map(function (attendee) { return Attendee_1.Attendee.parse(attendee); });
+                        return [2 /*return*/, attendees];
+                }
+            });
+        });
+    };
+    Event.prototype.getSets = function (options) {
+        if (options === void 0) { options = GGSet_1.IGGSet.getDefaultSetOptions(); }
+        return __awaiter(this, void 0, void 0, function () {
+            var data, phaseGroups, setData, sets;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        Logger_1.default.info('Getting Sets for Event [%s :: %s]', this.id, this.name);
+                        return [4 /*yield*/, PaginatedQuery_1.default.query("Event Sets [" + this.id + " :: " + this.name + "]", queries.eventSets, { id: this.id }, options, {}, 3)];
+                    case 1:
+                        data = _a.sent();
+                        phaseGroups = lodash_1.default.flatten(data.map(function (d) { return d.event.phaseGroups; }));
+                        setData = lodash_1.default.flatten(phaseGroups.map(function (pg) { return pg.paginatedSets.nodes; }));
+                        sets = setData.map(function (set) { return GGSet_1.GGSet.parse(set); });
+                        return [2 /*return*/, sets];
+                }
+            });
+        });
     };
     return Event;
 }(events_1.EventEmitter));

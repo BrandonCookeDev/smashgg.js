@@ -12,7 +12,23 @@ export const eventSlug = `query EventQuery($slug:String){
   	}
 }`
 
-export const eventSets = `query EventSets($id: Int, $page: Int, $perPage: Int, $hasPermissions: boolean, $sortType: String, $filters: SetFilters){
+export const eventPhases = `query EventPhases($id: Int){
+    event(id: $id){
+        phases{
+            ${Schema.phase}
+        }   
+    }
+}`
+
+export const eventPhaseGroups = `query EventPhaseGroups($id: Int){
+    event(id: $id){
+        phaseGroups{
+            ${Schema.phaseGroup}
+        }
+    }   
+}`
+
+export const eventSets = `query EventSets($id: Int, $page: Int, $perPage: Int, $hasPermissions: Boolean, $sortType: SetSortType, $filters: SetFilters){
     event(id: $id){
         phaseGroups{
             paginatedSets(
@@ -31,7 +47,7 @@ export const eventSets = `query EventSets($id: Int, $page: Int, $perPage: Int, $
     }   
 }`
 
-export const eventEntrants = `query EventSets($id: Int, $page: Int, $perPage: Int, $hasPermissions: boolean, $sortBy: String, $filter: EventEntrantPageQueryFilter){
+export const eventEntrants = `query EventSets($id: Int, $page: Int, $perPage: Int, $sortBy: String, $filter: EventEntrantPageQueryFilter){
     event(id: $id){
         entrants(query: {
             page: $page,
@@ -47,7 +63,7 @@ export const eventEntrants = `query EventSets($id: Int, $page: Int, $perPage: In
     }
 }`
 
-export const eventAttendees = `query EventSets($id: Int, $page: Int, $perPage: Int, $hasPermissions: boolean, $sortBy: String, $filter: EventEntrantPageQueryFilter){
+export const eventAttendees = `query EventSets($id: Int, $page: Int, $perPage: Int, $sortBy: String, $filter: EventEntrantPageQueryFilter){
     event(id: $id){
         entrants(query: {
             page: $page,

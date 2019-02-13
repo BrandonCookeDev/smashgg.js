@@ -50,11 +50,17 @@ var ROOT = path_1.default.join(__dirname, '..', '..', '..', '..', '.env');
 var dotenv_1 = require("dotenv");
 dotenv_1.config({ path: ROOT });
 require("../lib/util/ErrorHandler");
+var lodash_1 = __importDefault(require("lodash"));
 var chai_1 = __importDefault(require("chai"));
 var chai_as_promised_1 = __importDefault(require("chai-as-promised"));
 chai_1.default.use(chai_as_promised_1.default);
 var expect = chai_1.default.expect;
 var Event_1 = require("../lib/Event");
+var Phase_1 = require("../lib/Phase");
+var PhaseGroup_1 = require("../lib/PhaseGroup");
+var Entrant_1 = require("../lib/Entrant");
+var Attendee_1 = require("../lib/Attendee");
+var GGSet_1 = require("../lib/GGSet");
 var Initializer_1 = __importDefault(require("../lib/util/Initializer"));
 var testData = __importStar(require("./data/event.testData"));
 var event1, event2, event3;
@@ -214,5 +220,355 @@ describe('smashgg Event', function () {
     });
     it('should return the correct event team management deadline 3', function () {
         expect(event3.getTeamManagementDeadline()).to.be.equal(testData.event3.teamManagementDeadline);
+    });
+    // phases
+    it('should return the correct list of Phases in the Event 1', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var phases, hasDuplicates;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(30000);
+                        return [4 /*yield*/, event1.getPhases()];
+                    case 1:
+                        phases = _a.sent();
+                        hasDuplicates = function (a) {
+                            return lodash_1.default.uniq(a).length !== a.length;
+                        };
+                        expect(hasDuplicates(phases)).to.be.false;
+                        phases.forEach(function (phase) {
+                            expect(phase).to.be.an.instanceof(Phase_1.Phase);
+                        });
+                        expect(phases.length).to.be.equal(1);
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    it('should return the correct list of Phases in the Event 2', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var phases, hasDuplicates;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(30000);
+                        return [4 /*yield*/, event2.getPhases()];
+                    case 1:
+                        phases = _a.sent();
+                        hasDuplicates = function (a) {
+                            return lodash_1.default.uniq(a).length !== a.length;
+                        };
+                        expect(hasDuplicates(phases)).to.be.false;
+                        phases.forEach(function (phase) {
+                            expect(phase).to.be.an.instanceof(Phase_1.Phase);
+                        });
+                        expect(phases.length).to.be.equal(2);
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    it('should return the correct list of Phases in the Event 3', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var phases, hasDuplicates;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(30000);
+                        return [4 /*yield*/, event3.getPhases()];
+                    case 1:
+                        phases = _a.sent();
+                        hasDuplicates = function (a) {
+                            return lodash_1.default.uniq(a).length !== a.length;
+                        };
+                        expect(hasDuplicates(phases)).to.be.false;
+                        phases.forEach(function (phase) {
+                            expect(phase).to.be.an.instanceof(Phase_1.Phase);
+                        });
+                        expect(phases.length).to.be.equal(2);
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    // phase groups
+    it('should return the correct list of Phase Groups in the Event 1', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var groups, hasDuplicates;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(30000);
+                        return [4 /*yield*/, event1.getPhaseGroups()];
+                    case 1:
+                        groups = _a.sent();
+                        hasDuplicates = function (a) {
+                            return lodash_1.default.uniq(a).length !== a.length;
+                        };
+                        expect(hasDuplicates(groups)).to.be.false;
+                        groups.forEach(function (group) {
+                            expect(group).to.be.an.instanceof(PhaseGroup_1.PhaseGroup);
+                        });
+                        expect(groups.length).to.be.equal(1);
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    it('should return the correct list of Phase Groups in the Event 2', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var groups, hasDuplicates;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(30000);
+                        return [4 /*yield*/, event2.getPhaseGroups()];
+                    case 1:
+                        groups = _a.sent();
+                        hasDuplicates = function (a) {
+                            return lodash_1.default.uniq(a).length !== a.length;
+                        };
+                        expect(hasDuplicates(groups)).to.be.false;
+                        groups.forEach(function (group) {
+                            expect(group).to.be.an.instanceof(PhaseGroup_1.PhaseGroup);
+                        });
+                        expect(groups.length).to.be.equal(9);
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    it('should return the correct list of Phase Groups in the Event 3', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var groups, hasDuplicates;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(30000);
+                        return [4 /*yield*/, event3.getPhaseGroups()];
+                    case 1:
+                        groups = _a.sent();
+                        hasDuplicates = function (a) {
+                            return lodash_1.default.uniq(a).length !== a.length;
+                        };
+                        expect(hasDuplicates(groups)).to.be.false;
+                        groups.forEach(function (group) {
+                            expect(group).to.be.an.instanceof(PhaseGroup_1.PhaseGroup);
+                        });
+                        expect(groups.length).to.be.equal(33);
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    // entrants
+    it('should return the correct list of Entrants in the Event 1', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var entrants, hasDuplicates;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(30000);
+                        return [4 /*yield*/, event1.getEntrants()];
+                    case 1:
+                        entrants = _a.sent();
+                        hasDuplicates = function (a) {
+                            return lodash_1.default.uniq(a).length !== a.length;
+                        };
+                        expect(hasDuplicates(entrants)).to.be.false;
+                        entrants.forEach(function (entrant) {
+                            expect(entrant).to.be.an.instanceof(Entrant_1.Entrant);
+                        });
+                        expect(entrants.length).to.be.equal(75);
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    xit('should return the correct list of Entrants in the Event 2', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var entrants, hasDuplicates;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(30000);
+                        return [4 /*yield*/, event2.getEntrants()];
+                    case 1:
+                        entrants = _a.sent();
+                        hasDuplicates = function (a) {
+                            return lodash_1.default.uniq(a).length !== a.length;
+                        };
+                        expect(hasDuplicates(entrants)).to.be.false;
+                        entrants.forEach(function (entrant) {
+                            expect(entrant).to.be.an.instanceof(Entrant_1.Entrant);
+                        });
+                        expect(entrants.length).to.be.equal(100);
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    xit('should return the correct list of Entrants in the Event 3', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var entrants, hasDuplicates;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(60000);
+                        return [4 /*yield*/, event3.getEntrants()];
+                    case 1:
+                        entrants = _a.sent();
+                        hasDuplicates = function (a) {
+                            return lodash_1.default.uniq(a).length !== a.length;
+                        };
+                        expect(hasDuplicates(entrants)).to.be.false;
+                        entrants.forEach(function (entrant) {
+                            expect(entrant).to.be.an.instanceof(Entrant_1.Entrant);
+                        });
+                        expect(entrants.length).to.be.equal(725);
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    // attendee
+    it('should return the correct list of Attendees in the Event 1', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var attendees, hasDuplicates;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(30000);
+                        return [4 /*yield*/, event1.getAttendees()];
+                    case 1:
+                        attendees = _a.sent();
+                        hasDuplicates = function (a) {
+                            return lodash_1.default.uniq(a).length !== a.length;
+                        };
+                        expect(hasDuplicates(attendees)).to.be.false;
+                        attendees.forEach(function (attendee) {
+                            expect(attendee).to.be.an.instanceof(Attendee_1.Attendee);
+                        });
+                        expect(attendees.length).to.be.equal(75);
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    xit('should return the correct list of Attendees in the Event 2', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var attendees, hasDuplicates;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(30000);
+                        return [4 /*yield*/, event2.getAttendees()];
+                    case 1:
+                        attendees = _a.sent();
+                        hasDuplicates = function (a) {
+                            return lodash_1.default.uniq(a).length !== a.length;
+                        };
+                        expect(hasDuplicates(attendees)).to.be.false;
+                        attendees.forEach(function (attendee) {
+                            expect(attendee).to.be.an.instanceof(Attendee_1.Attendee);
+                        });
+                        expect(attendees.length).to.be.equal(200);
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    xit('should return the correct list of Attendees in the Event 3', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var attendees, hasDuplicates;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(60000);
+                        return [4 /*yield*/, event3.getAttendees()];
+                    case 1:
+                        attendees = _a.sent();
+                        hasDuplicates = function (a) {
+                            return lodash_1.default.uniq(a).length !== a.length;
+                        };
+                        expect(hasDuplicates(attendees)).to.be.false;
+                        attendees.forEach(function (attendee) {
+                            expect(attendee).to.be.an.instanceof(Attendee_1.Attendee);
+                        });
+                        expect(attendees.length).to.be.equal(725);
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    // sets
+    it('should return the correct list of Sets in the Event 1', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var sets, hasDuplicates;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(30000);
+                        return [4 /*yield*/, event1.getSets()];
+                    case 1:
+                        sets = _a.sent();
+                        hasDuplicates = function (a) {
+                            return lodash_1.default.uniq(a).length !== a.length;
+                        };
+                        expect(hasDuplicates(sets)).to.be.false;
+                        sets.forEach(function (set) {
+                            expect(set).to.be.an.instanceof(GGSet_1.GGSet);
+                        });
+                        expect(sets.length).to.be.equal(75);
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    it('should return the correct list of Sets in the Event 2', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var sets, hasDuplicates;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(30000);
+                        return [4 /*yield*/, event2.getSets()];
+                    case 1:
+                        sets = _a.sent();
+                        hasDuplicates = function (a) {
+                            return lodash_1.default.uniq(a).length !== a.length;
+                        };
+                        expect(hasDuplicates(sets)).to.be.false;
+                        sets.forEach(function (set) {
+                            expect(set).to.be.an.instanceof(GGSet_1.GGSet);
+                        });
+                        expect(sets.length).to.be.equal(75);
+                        return [2 /*return*/, true];
+                }
+            });
+        });
+    });
+    it('should return the correct list of Sets in the Event 3', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var sets, hasDuplicates;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this.timeout(30000);
+                        return [4 /*yield*/, event3.getSets()];
+                    case 1:
+                        sets = _a.sent();
+                        hasDuplicates = function (a) {
+                            return lodash_1.default.uniq(a).length !== a.length;
+                        };
+                        expect(hasDuplicates(sets)).to.be.false;
+                        sets.forEach(function (set) {
+                            expect(set).to.be.an.instanceof(GGSet_1.GGSet);
+                        });
+                        expect(sets.length).to.be.equal(75);
+                        return [2 /*return*/, true];
+                }
+            });
+        });
     });
 });

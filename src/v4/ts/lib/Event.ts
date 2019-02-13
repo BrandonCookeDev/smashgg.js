@@ -4,7 +4,7 @@ import { EventEmitter } from 'events'
 import log from './util/Logger'
 
 import {Phase, IPhase} from './Phase'
-import {PhaseGroup, IPhaseGorup} from './PhaseGroup'
+import {PhaseGroup, IPhaseGroup} from './PhaseGroup'
 import {GGSet, IGGSet} from './GGSet'
 import {Entrant, IEntrant} from './Entrant'
 import {Attendee, IAttendee} from './Attendee';
@@ -135,6 +135,74 @@ export class Event extends EventEmitter implements IEvent.Event{
 		return this.teamManagementDeadline
 	}
 
+	// aggregation
+	async getPhases() : Promise<Phase[]> {
+		log.info('Getting Phases for Event [%s :: %s]', this.id, this.name);
+		let data: IEvent.EventPhaseData = await NI.query(queries.eventPhases, {id: this.id});
+		return data.event.phases.map(phaseData => Phase.parse(phaseData, this.id));
+	}
+
+	async getPhaseGroups() : Promise<PhaseGroup[]> {
+		log.info('Getting Phase Groups for Event [%s :: %s]', this.id, this.name)
+		let data: IEvent.EventPhaseGroupData = await NI.query(queries.eventPhaseGroups, {id: this.id})
+		return data.event.phaseGroups.map(phaseGroupData => PhaseGroup.parse(phaseGroupData))
+	}
+
+	async getEntrants(options: IEntrant.EntrantOptions = IEntrant.getDefaultEntrantOptions()) : Promise<Entrant[]> {
+		log.info('Getting Entrants for Event [%s :: %s]', this.id, this.name)
+		let data: IEvent.EventEntrantData[] = await PaginatedQuery.query(
+			`Event Entrants [${this.id} :: ${this.name}]`,
+			queries.eventEntrants, {id: this.id},
+			options, {}, 2
+		)
+		let entrantData = _.flatten(data.map(d => d.event.entrants.nodes))
+		let entrants = entrantData.map(entrant => Entrant.parse(entrant))
+		return entrants
+	}
+
+	async getAttendees(options: IAttendee.AttendeeOptions = IAttendee.getDefaultAttendeeOptions()) : Promise<Attendee[]> {
+		log.info('Getting Attendees for Event [%s :: %s]', this.id, this.name)
+		let data: IEvent.EventEntrantData[] = await PaginatedQuery.query(
+			`Event Attendees [${this.id} :: ${this.name}]`,
+			queries.eventAttendees, {id: this.id},
+			options, {}, 3
+		)
+		let entrantData = _.flatten(data.map(d => d.event.entrants.nodes))
+		let attendeeData = _.flatten(entrantData.map(entrant => entrant.participants))
+		let attendees = attendeeData.map(attendee => Attendee.parse(attendee))
+		return attendees
+	}
+
+	async getSets(options: IGGSet.SetOptions = IGGSet.getDefaultSetOptions()) : Promise<GGSet[]> {
+		log.info('Getting Sets for Event [%s :: %s]', this.id, this.name)
+		let data: IEvent.EventSetData[] = await PaginatedQuery.query(
+			`Event Sets [${this.id} :: ${this.name}]`,
+			queries.eventSets, {id: this.id},
+			options, {}, 3
+		)
+		let phaseGroups = _.flatten(data.map(d => d.event.phaseGroups))
+		let setData = _.flatten(phaseGroups.map(pg => pg.paginatedSets.nodes))
+		let sets = setData.map(set => GGSet.parse(set))
+		return sets
+	}
+
+	async getIncompleteSets(options: IGGSet.SetOptions = IGGSet.getDefaultSetOptions()) : Promise<GGSet[]> {
+		log.info('Getting Incomplete Sets for Event [%s :: %s]', this.id, this.name)
+		let sets = await this.getSets(options)
+		return GGSet.filterForIncompleteSets(sets)
+	}
+
+	async getCompleteSets(options: IGGSet.SetOptions = IGGSet.getDefaultSetOptions()) : Promise<GGSet[]> {
+		log.info('Getting Completed Sets for Event [%s :: %s]', this.id, this.name)
+		let sets = await this.getSets(options)		
+		return GGSet.filterForCompleteSets(sets)
+	}
+
+	async getSetsXMinutesBack(minutes: number, options: IGGSet.SetOptions = IGGSet.getDefaultSetOptions()) : Promise<GGSet[]> {
+		log.info('Getting sets completed %s minutes ago for Event [%s :: %s]', minutes, this.id, this.name)
+		let sets = await this.getSets(options)
+		return GGSet.filterForXMinutesBack(sets, minutes);
+	}
 }
 
 
@@ -168,11 +236,11 @@ export namespace IEvent{
 		getPhases() : Promise<Phase[]>
 		getPhaseGroups() : Promise<PhaseGroup[]>
 		getEntrants(options: IEntrant.EntrantOptions) : Promise<Entrant[]>
+		getAttendees(options: IAttendee.AttendeeOptions) : Promise<Attendee[]>
+		getSets(options: IGGSet.SetOptions) : Promise<GGSet[]>
 		getIncompleteSets(options: IGGSet.SetOptions) : Promise<GGSet[]>
 		getCompleteSets(options: IGGSet.SetOptions) : Promise<GGSet[]>
 		getSetsXMinutesBack(minutesBack: number, options: IGGSet.SetOptions) : Promise<GGSet[]> 
-		getSets(options: IGGSet.SetOptions) : Promise<GGSet[]>
-		getAttendees(options: IAttendee.AttendeeOptions) : Promise<Attendee[]>
 	}
 
 	export interface Data{
@@ -192,5 +260,52 @@ export namespace IEvent{
 		isOnline: boolean | null
 		teamNameAllowed: boolean | null
 		teamManagementDeadline: number | null
+	}
+
+	export interface EventPhaseData{
+		event:{
+			phases: IPhase.PhaseData[]
+		}
+	}
+
+	export interface EventPhaseGroupData{
+		event:{
+			phaseGroups: IPhaseGroup.PhaseGroupData[]
+		}
+	}
+
+	export interface EventEntrantData{
+		event:{
+			entrants:{
+				pageInfo?: {
+					totalPages: number
+				},
+				nodes: IEntrant.EntrantData[]
+			}
+		}
+	}
+
+	export interface EventAttendeeData{
+		event:{
+			entrants:{
+				pageInfo?: {
+					totalPages: number
+				},
+				nodes: IAttendee.AttendeeData[]
+			}
+		}
+	}
+
+	export interface EventSetData{
+		event:{
+			phaseGroups:{
+				paginatedSets:{
+					pageInfo?:{
+						totalPages: number
+					},
+					nodes: IGGSet.SetData[]
+				}
+			}
+		}
 	}
 }

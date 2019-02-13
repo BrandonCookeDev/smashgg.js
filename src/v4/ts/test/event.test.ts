@@ -13,7 +13,12 @@ import cap from 'chai-as-promised'
 chai.use(cap)
 const {expect} = chai
 
-import {Event, IEvent} from '../lib/Event'
+import {Event} from '../lib/Event'
+import {Phase} from '../lib/Phase'
+import {PhaseGroup} from '../lib/PhaseGroup'
+import {Entrant} from '../lib/Entrant'
+import {Attendee} from '../lib/Attendee'
+import {GGSet} from '../lib/GGSet'
 import Initializer from '../lib/util/Initializer'
 import * as testData from './data/event.testData'
 
@@ -175,4 +180,228 @@ describe('smashgg Event', function(){
 		expect(event3.getTeamManagementDeadline()).to.be.equal(testData.event3.teamManagementDeadline)
 	})
 
+
+	// phases
+	it('should return the correct list of Phases in the Event 1', async function(){
+		this.timeout(30000)
+
+		let phases: Phase[] = await event1.getPhases();
+		var hasDuplicates = function(a: Phase[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(phases)).to.be.false;
+		phases.forEach(phase => {
+			expect(phase).to.be.an.instanceof(Phase);
+		});
+		expect(phases.length).to.be.equal(1);
+		return true;
+	})
+	it('should return the correct list of Phases in the Event 2', async function(){
+		this.timeout(30000)
+
+		let phases: Phase[] = await event2.getPhases();
+		var hasDuplicates = function(a: Phase[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(phases)).to.be.false;
+		phases.forEach(phase => {
+			expect(phase).to.be.an.instanceof(Phase);
+		});
+		expect(phases.length).to.be.equal(2);
+		return true;
+	})
+	it('should return the correct list of Phases in the Event 3', async function(){
+		this.timeout(30000)
+
+		let phases: Phase[] = await event3.getPhases();
+		var hasDuplicates = function(a: Phase[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(phases)).to.be.false;
+		phases.forEach(phase => {
+			expect(phase).to.be.an.instanceof(Phase);
+		});
+		expect(phases.length).to.be.equal(2);
+		return true;
+	})
+
+
+	// phase groups
+	it('should return the correct list of Phase Groups in the Event 1', async function(){
+		this.timeout(30000)
+
+		let groups: PhaseGroup[] = await event1.getPhaseGroups();
+		var hasDuplicates = function(a: PhaseGroup[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(groups)).to.be.false;
+		groups.forEach(group => {
+			expect(group).to.be.an.instanceof(PhaseGroup);
+		});
+		expect(groups.length).to.be.equal(1);
+		return true;
+	})
+	it('should return the correct list of Phase Groups in the Event 2', async function(){
+		this.timeout(30000)
+
+		let groups: PhaseGroup[] = await event2.getPhaseGroups();
+		var hasDuplicates = function(a: PhaseGroup[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(groups)).to.be.false;
+		groups.forEach(group => {
+			expect(group).to.be.an.instanceof(PhaseGroup);
+		});
+		expect(groups.length).to.be.equal(9);
+		return true;
+	})
+	it('should return the correct list of Phase Groups in the Event 3', async function(){
+		this.timeout(30000)
+
+		let groups: PhaseGroup[] = await event3.getPhaseGroups();
+		var hasDuplicates = function(a: PhaseGroup[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(groups)).to.be.false;
+		groups.forEach(group => {
+			expect(group).to.be.an.instanceof(PhaseGroup);
+		});
+		expect(groups.length).to.be.equal(33);
+		return true;
+	})
+
+
+	// entrants
+	it('should return the correct list of Entrants in the Event 1', async function(){
+		this.timeout(30000)
+
+		let entrants: Entrant[] = await event1.getEntrants();
+		var hasDuplicates = function(a: Entrant[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(entrants)).to.be.false;
+		entrants.forEach(entrant => {
+			expect(entrant).to.be.an.instanceof(Entrant);
+		});
+		expect(entrants.length).to.be.equal(75);
+		return true;
+	})
+	xit('should return the correct list of Entrants in the Event 2', async function(){
+		this.timeout(30000)
+
+		let entrants: Entrant[] = await event2.getEntrants();
+		var hasDuplicates = function(a: Entrant[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(entrants)).to.be.false;
+		entrants.forEach(entrant => {
+			expect(entrant).to.be.an.instanceof(Entrant);
+		});
+		expect(entrants.length).to.be.equal(100);
+		return true;
+	})
+	xit('should return the correct list of Entrants in the Event 3', async function(){
+		this.timeout(60000)
+
+		let entrants: Entrant[] = await event3.getEntrants();
+		var hasDuplicates = function(a: Entrant[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(entrants)).to.be.false;
+		entrants.forEach(entrant => {
+			expect(entrant).to.be.an.instanceof(Entrant);
+		});
+		expect(entrants.length).to.be.equal(725);
+		return true;
+	})
+
+
+	// attendee
+	it('should return the correct list of Attendees in the Event 1', async function(){
+		this.timeout(30000)
+
+		let attendees: Attendee[] = await event1.getAttendees();
+		var hasDuplicates = function(a: Attendee[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(attendees)).to.be.false;
+		attendees.forEach(attendee => {
+			expect(attendee).to.be.an.instanceof(Attendee);
+		});
+		expect(attendees.length).to.be.equal(75);
+		return true;
+	})
+	xit('should return the correct list of Attendees in the Event 2', async function(){
+		this.timeout(30000)
+
+		let attendees: Attendee[] = await event2.getAttendees();
+		var hasDuplicates = function(a: Attendee[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(attendees)).to.be.false;
+		attendees.forEach(attendee => {
+			expect(attendee).to.be.an.instanceof(Attendee);
+		});
+		expect(attendees.length).to.be.equal(200);
+		return true;
+	})
+	xit('should return the correct list of Attendees in the Event 3', async function(){
+		this.timeout(60000)
+
+		let attendees: Attendee[] = await event3.getAttendees();
+		var hasDuplicates = function(a: Attendee[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(attendees)).to.be.false;
+		attendees.forEach(attendee => {
+			expect(attendee).to.be.an.instanceof(Attendee);
+		});
+		expect(attendees.length).to.be.equal(725);
+		return true;
+	})
+
+
+	// sets
+	it('should return the correct list of Sets in the Event 1', async function(){
+		this.timeout(30000)
+
+		let sets: GGSet[] = await event1.getSets();
+		var hasDuplicates = function(a: GGSet[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(sets)).to.be.false;
+		sets.forEach(set => {
+			expect(set).to.be.an.instanceof(GGSet);
+		});
+		expect(sets.length).to.be.equal(98);
+		return true;
+	})
+	xit('should return the correct list of Sets in the Event 2', async function(){
+		this.timeout(30000)
+
+		let sets: GGSet[] = await event2.getSets();
+		var hasDuplicates = function(a: GGSet[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(sets)).to.be.false;
+		sets.forEach(set => {
+			expect(set).to.be.an.instanceof(GGSet);
+		});
+		expect(sets.length).to.be.equal(75);
+		return true;
+	})
+	xit('should return the correct list of Sets in the Event 3', async function(){
+		this.timeout(30000)
+
+		let sets: GGSet[] = await event3.getSets();
+		var hasDuplicates = function(a: GGSet[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(sets)).to.be.false;
+		sets.forEach(set => {
+			expect(set).to.be.an.instanceof(GGSet);
+		});
+		expect(sets.length).to.be.equal(75);
+		return true;
+	})
 })

@@ -40,7 +40,7 @@ export class Phase implements IPhase.Phase{
 		this.groupCount = groupCount
 	}
 
-	static parse(data: IPhase.PhaseData, eventId: number) : Phase{
+	static parse(data: IPhase.PhaseData, eventId: number) : Phase {
 		return new Phase(
 			data.id,
 			eventId || -1,

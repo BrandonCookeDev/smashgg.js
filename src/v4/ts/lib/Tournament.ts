@@ -195,10 +195,10 @@ export namespace ITournament{
 		getContactTwitter() : string | null
 		getOwnerId() : number | null
 
-		getSets(options: IGGSet.SetOptions) : Promise<GGSet[]>
 		getEvents() : Promise<Event[]>
 		getPhases() : Promise<Phase[]>
 		getPhaseGroups() : Promise<PhaseGroup[]>
+		getSets(options: IGGSet.SetOptions) : Promise<GGSet[]>
 		getIncompleteSets(options: IGGSet.SetOptions) : Promise<GGSet[]>
 		getCompleteSets(options: IGGSet.SetOptions) : Promise<GGSet[]>
 		getSetsXMinutesBack(minutesBack: number, options: IGGSet.SetOptions) : Promise<GGSet[]>

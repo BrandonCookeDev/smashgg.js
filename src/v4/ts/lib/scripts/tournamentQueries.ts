@@ -10,90 +10,85 @@ export const tournamentBySlug = `query TournamentQuery($slug: String) {
     }
 }`
 
-export const tournamentOrganizer = `query tournamentOrganizer($slug: String){
-    tournament(slug: $slug){
-        ownerId
-        contactEmail
-        contactTwitter
-        contactPhone
-        contactInfo
+export const tournamentOrganizer = `query tournamentOrganizer($id: Int){
+    tournament(id: $id){
+        ${Schema.organizer}
     }   
 }`
 
-export const tournamentVenue = `query tournamentVenue($slug: String) {
-	tournament(slug: $slug){
-		venueName
-		venueAddress
-		city
-		addrState
-		countryCode
+export const tournamentVenue = `query tournamentVenue($id: Int){
+    tournament(id: $id){
+		${Schema.venue}
 	}	
 }`
 
-export const tournamentPlayers = `query TournamentParticipantQuery($slug: String) {
-    tournament(slug: $slug){
-        id
-        name
-        slug
+export const tournamentEntrants = `query TournamentEntrants($id: Int, $page: Int, $perPage: Int, $sortBy: String, $filter: EventEntrantPageQueryFilter){
+    tournament(id: $id){
+        events{
+            entrants(query: {
+                page: $page,
+                perPage: $perPage,
+                sortBy: $sortBy,
+                filter: $filter
+            }){
+                {pageInfo}
+                nodes{
+                    ${Schema.entrant}
+                }
+            }
+        }
+    }
+}`
+
+export const tournamentAttendees = `query TournamentAttendees($id: Int, $page: Int, $perPage: Int, $sortBy: String, $filter: ParticipantPageFilter){
+    tournament(id: $id){
         participants(query: {
-            page: 0,
-            perPage: 10000,
-            sortBy: "asc",
+            page: $page,
+            perPage: $perPage,
+            sortBy: $sortBy,
+            filter: $filter
         },
         isAdmin: false){
+            {pageInfo}
             nodes{
-                id
-                playerId
-                gamerTag
-                prefix
+                ${Schema.attendee}
             }
         }
     }  
 }`
 
-export const tournamentPhases = `query TournamentPhases($slug: String){
-    tournament(slug: $slug){
-        id
-        name
-        slug
+export const tournamentEvents = `query TournamentEvents($id: Int){
+    tournament(id: $id){
+        events:{
+            ${Schema.event}
+        }
+    }
+}`
+
+export const tournamentPhases = `query TournamentPhases($id: Int){
+    tournament(id: $id){
         events{
             id
-            name
-            slug
             phases{
-                id
-                name
-                numSeeds
-                groupCount
+                ${Schema.phase}
             }
         }
     }   
 }`
 
-export const tournamentPhaseGroups = `query TournamentPhaseGroups($slug: String){
-    tournament(slug: $slug){
-        id
-        name
-        slug
+export const tournamentPhaseGroups = `query TournamentPhaseGroups($id: Int){
+    tournament(id: $id){
         events{
-            id
-            name
-            slug
             phaseGroups{
-                id
-                phaseId
-                waveId
-                state
-                firstRoundTime
-                displayIdentifier
+                ${Schema.phaseGroup}
             }
         }
     }   
 }`
 
 /** WARNING THIS DOES NOT WORK CURRENTLY DUE TO RECURSIVE LIMITATIONS, Use tournamentPhaseGroupIds instead **/
-export const tournamentSets = `query TournamentSets($slug: String){ 
-    tournament(slug: $slug){
+export const tournamentSets = `query TournamentSets($id: Int){
+    tournament(id: $id){
         events{
             phaseGroups{
                 sets{
@@ -104,8 +99,8 @@ export const tournamentSets = `query TournamentSets($slug: String){
     }   
 }`
 
-export const tournamentPhaseGroupIds = `query PhaseGroupIdQuery($slug: String) {
-    tournament(slug: $slug){
+export const tournamentPhaseGroupIds = `query PhaseGroupIdQuery($id: Int){
+    tournament(id: $id){
         events{
             id
             phaseGroups{

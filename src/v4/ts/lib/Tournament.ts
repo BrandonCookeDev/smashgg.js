@@ -1,4 +1,4 @@
-
+import _ from 'lodash'
 import moment from 'moment'
 import log from './util/Logger'
 
@@ -161,6 +161,87 @@ export class Tournament implements ITournament.Tournament{
 		return this.organizer.getId()
 	}
 
+	async getEvents() : Promise<Event[]> {
+		log.info('Getting Events for Tournament [%s :: %s]', this.id, this.name)
+		let data: ITournament.TournamentEventData = await NI.query(queries.tournamentEvents, {id: this.id})
+		let events = data.tournament.events.map(event => Event.parse(event))
+		return events;
+	}
+
+	async getPhases() : Promise<Phase[]> {
+		log.info('Getting Phases for Tournament [%s :: %s]', this.id, this.name)
+		let data: ITournament.TournamentPhaseData = await NI.query(queries.tournamentPhases, {id: this.id})
+		let events = data.tournament.events
+		let phases: Phase[] = _.flatten(events.map(event => event.phases.map(phase => Phase.parse(phase, event.id))))
+		return phases;		
+	}
+
+	async getPhaseGroups() : Promise<PhaseGroup[]> {
+		log.info('Getting Phase Groups for Tournament [%s :: %s]', this.id, this.name)
+		let data: ITournament.TournamentPhaseGroupData = await NI.query(queries.tournamentPhaseGroups, {id: this.id})
+		let events = data.tournament.events
+		let phaseGroups: PhaseGroup[] = _.flatten(events.map(event => event.phaseGroups.map(group => PhaseGroup.parse(group))))
+		return phaseGroups
+	}
+
+	async getSets(options: IGGSet.SetOptions = IGGSet.getDefaultSetOptions()) : Promise<GGSet[]> {
+		log.info('Getting Sets for Tournament [%s :: %s]', this.id, this.name)
+		let data: ITournament.TournamentSetData[] = await PaginatedQuery.query(
+			`Tournament Sets [${this.id} :: ${this.name}]`,
+			queries.tournamentSets, {id: this.id},
+			options, {}, 4
+		)
+		let events = _.flatten(data.map(d => d.tournament.events))
+		let phaseGroups = _.flatten(events.map(event => event.phaseGroups))
+		let setData: IGGSet.SetData[] = _.flatten(phaseGroups.map(pg => pg.paginatedSets.nodes)) 
+		let sets: GGSet[] = setData.map(set => GGSet.parse(set))
+		return sets	
+	}
+
+	async getIncompleteSets(options: IGGSet.SetOptions = IGGSet.getDefaultSetOptions()) : Promise<GGSet[]> {
+		log.info('Getting Incomplete Sets for Tournament [%s :: %s]', this.id, this.name)
+		let sets: GGSet[] = await this.getSets()
+		return GGSet.filterForIncompleteSets(sets)
+	}
+
+	async getCompletedSets(options: IGGSet.SetOptions = IGGSet.getDefaultSetOptions()) : Promise<GGSet[]> {
+		log.info('Getting Completed Sets for Tournament [%s :: %s]', this.id, this.name)
+		let sets: GGSet[] = await this.getSets()
+		return GGSet.filterForCompleteSets(sets)
+	}
+
+	async getSetsXMinutesBack(minutes: number, options: IGGSet.SetOptions = IGGSet.getDefaultSetOptions()) : Promise<GGSet[]> {
+		log.info('Getting Sets Completed %s minutes ago for Tournament [%s :: %s]', minutes, this.id, this.name)
+		let sets: GGSet[] = await this.getSets()
+		return GGSet.filterForXMinutesBack(sets, minutes)
+	}
+
+	async getEntrants(options: IEntrant.EntrantOptions = IEntrant.getDefaultEntrantOptions()) : Promise<Entrant[]> {
+		log.info('Getting Entrants for Tournament [%s :: %s]', this.id, this.name)
+		let data: ITournament.TournamentEntrantData[] = await PaginatedQuery.query(
+			`Tournament Entrants [${this.id} :: ${this.name}]`,
+			queries.tournamentEntrants, {id: this.id},
+			options, {}, 3
+		)
+		let tournaments = _.flatten(data.map(d => d.tournament))
+		let events = _.flatten(tournaments.map(tournament => tournament.events))
+		let entrantData: IEntrant.EntrantData[] = _.flatten(events.map(event => event.entrant))
+		let entrants: Entrant[] = entrantData.map(entrant => Entrant.parse(entrant))
+		return entrants
+	}
+
+	async getAttendees(options: IAttendee.AttendeeOptions = IAttendee.getDefaultAttendeeOptions()) : Promise<Attendee[]> {
+		log.info('Getting Attendees for Tournament [%s :: %s]', this.id, this.name)
+		let data: ITournament.TournamentAttendeeData[] = await PaginatedQuery.query(
+			`Tournament Attendee [${this.id} :: ${this.name}]`,
+			queries.tournamentAttendees, {id: this.id},
+			options, {}, 3
+		)
+		let tournaments = _.flatten(data.map(d => d.tournament))
+		let attendeeData: IAttendee.AttendeeData[] = _.flatten(tournaments.map(tournament => tournament.participants))
+		let attendees: Attendee[] = attendeeData.map(attendee => Attendee.parse(attendee))
+		return attendees;
+	}
 	
 }
 
@@ -200,7 +281,7 @@ export namespace ITournament{
 		getPhaseGroups() : Promise<PhaseGroup[]>
 		getSets(options: IGGSet.SetOptions) : Promise<GGSet[]>
 		getIncompleteSets(options: IGGSet.SetOptions) : Promise<GGSet[]>
-		getCompleteSets(options: IGGSet.SetOptions) : Promise<GGSet[]>
+		getCompletedSets(options: IGGSet.SetOptions) : Promise<GGSet[]>
 		getSetsXMinutesBack(minutesBack: number, options: IGGSet.SetOptions) : Promise<GGSet[]>
 		getEntrants(options: IEntrant.EntrantOptions) : Promise<Entrant[]>
 		getAttendees(options: IAttendee.AttendeeOptions) : Promise<Attendee[]> 
@@ -234,4 +315,56 @@ export namespace ITournament{
 		ownerId: number | null
 	}
 
+	export interface TournamentEventData{
+		tournament: {
+			events: IEvent.EventData[]
+		}
+	}
+
+	export interface TournamentPhaseData{
+		tournament: {
+			events: {
+				id: number,
+				phases: IPhase.PhaseData[]
+			}[]
+		}
+	}
+
+	export interface TournamentPhaseGroupData{
+		tournament: {
+			events: {
+				id: number,
+				phaseGroups: IPhaseGroup.PhaseGroup[]
+			}[]
+		}
+	}
+
+	export interface TournamentAttendeeData{
+		tournament: {
+			participants: IAttendee.AttendeeData[]
+		}
+	}
+
+	export interface TournamentEntrantData{
+		tournament: {
+			events: {
+				entrant: IEntrant.EntrantData[]
+			}[]
+		}
+	}
+
+	export interface TournamentSetData{
+		tournament: {
+			events:{
+				phaseGroups:{
+					paginatedSets: {
+						pageInfo?:{
+							totalPages: number 
+						},
+						nodes: IGGSet.SetData[]
+					}
+				}[]
+			}[]
+		}
+	}
 }

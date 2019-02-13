@@ -186,18 +186,21 @@ export class Event extends EventEmitter implements IEvent.Event{
 		return sets
 	}
 
+	// need coverage
 	async getIncompleteSets(options: IGGSet.SetOptions = IGGSet.getDefaultSetOptions()) : Promise<GGSet[]> {
 		log.info('Getting Incomplete Sets for Event [%s :: %s]', this.id, this.name)
 		let sets = await this.getSets(options)
 		return GGSet.filterForIncompleteSets(sets)
 	}
 
+	// need coverage
 	async getCompleteSets(options: IGGSet.SetOptions = IGGSet.getDefaultSetOptions()) : Promise<GGSet[]> {
 		log.info('Getting Completed Sets for Event [%s :: %s]', this.id, this.name)
 		let sets = await this.getSets(options)		
 		return GGSet.filterForCompleteSets(sets)
 	}
 
+	// need coverage
 	async getSetsXMinutesBack(minutes: number, options: IGGSet.SetOptions = IGGSet.getDefaultSetOptions()) : Promise<GGSet[]> {
 		log.info('Getting sets completed %s minutes ago for Event [%s :: %s]', minutes, this.id, this.name)
 		let sets = await this.getSets(options)

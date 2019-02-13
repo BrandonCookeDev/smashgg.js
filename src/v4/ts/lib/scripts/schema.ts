@@ -169,3 +169,17 @@ standings{
 		}
 	}
 }`
+
+export const venue = `
+venueName
+venueAddress
+city
+addrState
+countryCode`
+
+export const organizer = `
+ownerId
+contactEmail
+contactTwitter
+contactPhone
+contactInfo`

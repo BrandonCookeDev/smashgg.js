@@ -14,3 +14,6 @@ exports.set = "\nid\neventId\nphaseGroupId\ndisplayScore  \nfullRoundText\nround
 exports.game = "\nid\nstate\nwinnerId\norderNum\nselections{\n\tselectionType\n\tselectionValue\n\tentrantId\n\tparticipantId\n}";
 exports.seeds = "\nid\nentrantId\nplaceholderName\nseedNum\nplacement\nisBye\nplayers{\n\tid\n}";
 exports.standings = "\nid\nentrantId\nplaceholderName\nseedNum\nplacement\nisBye\nplayers{\n\tid\n}\nstandings{\n\tstats{\n\t\tscore{\n\t\t\tlabel\n\t\t\tvalue\n\t\t}\n\t}\n}";
+exports.venue = "\nvenueName\nvenueAddress\ncity\naddrState\ncountryCode";
+exports.organizer = "\nownerId\ncontactEmail\ncontactTwitter\ncontactPhone\ncontactInfo";
+exports.stream = "\nid\neventId\ntournamentId\nstreamName\nnumSetups\nstreamSource\nstreamType\nstreamTypeId\nisOnline\nenabled\nfollowerCount\nremovesTasks\nstreamStatus\nstreamGame\nstreamLogo";

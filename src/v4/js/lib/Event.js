@@ -244,6 +244,57 @@ var Event = /** @class */ (function (_super) {
             });
         });
     };
+    // need coverage
+    Event.prototype.getIncompleteSets = function (options) {
+        if (options === void 0) { options = GGSet_1.IGGSet.getDefaultSetOptions(); }
+        return __awaiter(this, void 0, void 0, function () {
+            var sets;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        Logger_1.default.info('Getting Incomplete Sets for Event [%s :: %s]', this.id, this.name);
+                        return [4 /*yield*/, this.getSets(options)];
+                    case 1:
+                        sets = _a.sent();
+                        return [2 /*return*/, GGSet_1.GGSet.filterForIncompleteSets(sets)];
+                }
+            });
+        });
+    };
+    // need coverage
+    Event.prototype.getCompleteSets = function (options) {
+        if (options === void 0) { options = GGSet_1.IGGSet.getDefaultSetOptions(); }
+        return __awaiter(this, void 0, void 0, function () {
+            var sets;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        Logger_1.default.info('Getting Completed Sets for Event [%s :: %s]', this.id, this.name);
+                        return [4 /*yield*/, this.getSets(options)];
+                    case 1:
+                        sets = _a.sent();
+                        return [2 /*return*/, GGSet_1.GGSet.filterForCompleteSets(sets)];
+                }
+            });
+        });
+    };
+    // need coverage
+    Event.prototype.getSetsXMinutesBack = function (minutes, options) {
+        if (options === void 0) { options = GGSet_1.IGGSet.getDefaultSetOptions(); }
+        return __awaiter(this, void 0, void 0, function () {
+            var sets;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        Logger_1.default.info('Getting sets completed %s minutes ago for Event [%s :: %s]', minutes, this.id, this.name);
+                        return [4 /*yield*/, this.getSets(options)];
+                    case 1:
+                        sets = _a.sent();
+                        return [2 /*return*/, GGSet_1.GGSet.filterForXMinutesBack(sets, minutes)];
+                }
+            });
+        });
+    };
     return Event;
 }(events_1.EventEmitter));
 exports.Event = Event;

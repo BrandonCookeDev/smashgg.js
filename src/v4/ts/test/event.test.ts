@@ -33,6 +33,14 @@ const EVENT_SLUG_2 = 'tournament/tipped-off-12-presented-by-the-lab-gaming-cente
 const EVENT_ID_3 = 11787
 const EVENT_SLUG_3 = 'tournament/ceo-2016/event/melee-singles'
 
+const TOP_8_LABELS = [
+	'Losers Quarter-Final', 'Losers Quarter-Final', 
+	'Losers Semi-Final', 'Losers Semi-Final', 
+	'Winners Semi-Final', 'Winners Semi-Final',
+	'Winners Final', 'Grand Final', 'Losers Final'
+]
+const GRAND_FINAL_RESET_TOKEN = 'Grand Final Reset'
+
 describe('smashgg Event', function(){
 	this.timeout(10000)
 

@@ -45,11 +45,19 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var lodash_1 = __importDefault(require("lodash"));
 var moment_1 = __importDefault(require("moment"));
 var Logger_1 = __importDefault(require("./util/Logger"));
 var Venue_1 = require("./Venue");
 var Oraganizer_1 = require("./Oraganizer");
+var Event_1 = require("./Event");
+var Phase_1 = require("./Phase");
+var PhaseGroup_1 = require("./PhaseGroup");
+var Entrant_1 = require("./Entrant");
+var Attendee_1 = require("./Attendee");
+var GGSet_1 = require("./GGSet");
 var NetworkInterface_1 = __importDefault(require("./util/NetworkInterface"));
+var PaginatedQuery_1 = __importDefault(require("./util/PaginatedQuery"));
 var queries = __importStar(require("./scripts/tournamentQueries"));
 var Tournament = /** @class */ (function () {
     function Tournament(id, name, slug, startTime, endTime, timezone, venue, organizer) {
@@ -158,6 +166,163 @@ var Tournament = /** @class */ (function () {
     };
     Tournament.prototype.getOwnerId = function () {
         return this.organizer.getId();
+    };
+    Tournament.prototype.getEvents = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var data, events;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        Logger_1.default.info('Getting Events for Tournament [%s :: %s]', this.id, this.name);
+                        return [4 /*yield*/, NetworkInterface_1.default.query(queries.tournamentEvents, { id: this.id })];
+                    case 1:
+                        data = _a.sent();
+                        events = data.tournament.events.map(function (event) { return Event_1.Event.parse(event); });
+                        return [2 /*return*/, events];
+                }
+            });
+        });
+    };
+    Tournament.prototype.getPhases = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var data, events, phases;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        Logger_1.default.info('Getting Phases for Tournament [%s :: %s]', this.id, this.name);
+                        return [4 /*yield*/, NetworkInterface_1.default.query(queries.tournamentPhases, { id: this.id })];
+                    case 1:
+                        data = _a.sent();
+                        events = data.tournament.events;
+                        phases = lodash_1.default.flatten(events.map(function (event) { return event.phases.map(function (phase) { return Phase_1.Phase.parse(phase, event.id); }); }));
+                        return [2 /*return*/, phases];
+                }
+            });
+        });
+    };
+    Tournament.prototype.getPhaseGroups = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var data, events, phaseGroups;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        Logger_1.default.info('Getting Phase Groups for Tournament [%s :: %s]', this.id, this.name);
+                        return [4 /*yield*/, NetworkInterface_1.default.query(queries.tournamentPhaseGroups, { id: this.id })];
+                    case 1:
+                        data = _a.sent();
+                        events = data.tournament.events;
+                        phaseGroups = lodash_1.default.flatten(events.map(function (event) { return event.phaseGroups.map(function (group) { return PhaseGroup_1.PhaseGroup.parse(group); }); }));
+                        return [2 /*return*/, phaseGroups];
+                }
+            });
+        });
+    };
+    Tournament.prototype.getSets = function (options) {
+        if (options === void 0) { options = GGSet_1.IGGSet.getDefaultSetOptions(); }
+        return __awaiter(this, void 0, void 0, function () {
+            var data, events, phaseGroups, setData, sets;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        Logger_1.default.info('Getting Sets for Tournament [%s :: %s]', this.id, this.name);
+                        return [4 /*yield*/, PaginatedQuery_1.default.query("Tournament Sets [" + this.id + " :: " + this.name + "]", queries.tournamentSets, { id: this.id }, options, {}, 4)];
+                    case 1:
+                        data = _a.sent();
+                        events = lodash_1.default.flatten(data.map(function (d) { return d.tournament.events; }));
+                        phaseGroups = lodash_1.default.flatten(events.map(function (event) { return event.phaseGroups; }));
+                        setData = lodash_1.default.flatten(phaseGroups.map(function (pg) { return pg.paginatedSets.nodes; }));
+                        sets = setData.map(function (set) { return GGSet_1.GGSet.parse(set); });
+                        return [2 /*return*/, sets];
+                }
+            });
+        });
+    };
+    Tournament.prototype.getIncompleteSets = function (options) {
+        if (options === void 0) { options = GGSet_1.IGGSet.getDefaultSetOptions(); }
+        return __awaiter(this, void 0, void 0, function () {
+            var sets;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        Logger_1.default.info('Getting Incomplete Sets for Tournament [%s :: %s]', this.id, this.name);
+                        return [4 /*yield*/, this.getSets()];
+                    case 1:
+                        sets = _a.sent();
+                        return [2 /*return*/, GGSet_1.GGSet.filterForIncompleteSets(sets)];
+                }
+            });
+        });
+    };
+    Tournament.prototype.getCompletedSets = function (options) {
+        if (options === void 0) { options = GGSet_1.IGGSet.getDefaultSetOptions(); }
+        return __awaiter(this, void 0, void 0, function () {
+            var sets;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        Logger_1.default.info('Getting Completed Sets for Tournament [%s :: %s]', this.id, this.name);
+                        return [4 /*yield*/, this.getSets()];
+                    case 1:
+                        sets = _a.sent();
+                        return [2 /*return*/, GGSet_1.GGSet.filterForCompleteSets(sets)];
+                }
+            });
+        });
+    };
+    Tournament.prototype.getSetsXMinutesBack = function (minutes, options) {
+        if (options === void 0) { options = GGSet_1.IGGSet.getDefaultSetOptions(); }
+        return __awaiter(this, void 0, void 0, function () {
+            var sets;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        Logger_1.default.info('Getting Sets Completed %s minutes ago for Tournament [%s :: %s]', minutes, this.id, this.name);
+                        return [4 /*yield*/, this.getSets()];
+                    case 1:
+                        sets = _a.sent();
+                        return [2 /*return*/, GGSet_1.GGSet.filterForXMinutesBack(sets, minutes)];
+                }
+            });
+        });
+    };
+    Tournament.prototype.getEntrants = function (options) {
+        if (options === void 0) { options = Entrant_1.IEntrant.getDefaultEntrantOptions(); }
+        return __awaiter(this, void 0, void 0, function () {
+            var data, tournaments, events, entrantData, entrants;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        Logger_1.default.info('Getting Entrants for Tournament [%s :: %s]', this.id, this.name);
+                        return [4 /*yield*/, PaginatedQuery_1.default.query("Tournament Entrants [" + this.id + " :: " + this.name + "]", queries.tournamentEntrants, { id: this.id }, options, {}, 3)];
+                    case 1:
+                        data = _a.sent();
+                        tournaments = lodash_1.default.flatten(data.map(function (d) { return d.tournament; }));
+                        events = lodash_1.default.flatten(tournaments.map(function (tournament) { return tournament.events; }));
+                        entrantData = lodash_1.default.flatten(events.map(function (event) { return event.entrant; }));
+                        entrants = entrantData.map(function (entrant) { return Entrant_1.Entrant.parse(entrant); });
+                        return [2 /*return*/, entrants];
+                }
+            });
+        });
+    };
+    Tournament.prototype.getAttendees = function (options) {
+        if (options === void 0) { options = Attendee_1.IAttendee.getDefaultAttendeeOptions(); }
+        return __awaiter(this, void 0, void 0, function () {
+            var data, tournaments, attendeeData, attendees;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        Logger_1.default.info('Getting Attendees for Tournament [%s :: %s]', this.id, this.name);
+                        return [4 /*yield*/, PaginatedQuery_1.default.query("Tournament Attendee [" + this.id + " :: " + this.name + "]", queries.tournamentAttendees, { id: this.id }, options, {}, 3)];
+                    case 1:
+                        data = _a.sent();
+                        tournaments = lodash_1.default.flatten(data.map(function (d) { return d.tournament; }));
+                        attendeeData = lodash_1.default.flatten(tournaments.map(function (tournament) { return tournament.participants; }));
+                        attendees = attendeeData.map(function (attendee) { return Attendee_1.Attendee.parse(attendee); });
+                        return [2 /*return*/, attendees];
+                }
+            });
+        });
     };
     return Tournament;
 }());

@@ -16,7 +16,7 @@ export class Stream implements IStream.Stream{
 	isOnline: boolean | null
 	enabled: boolean | null
 	followerCount: number | null
-	removesTask: boolean | null
+	removesTasks: boolean | null
 	streamStatus: string | null
 	streamGame: string | null
 	streamLogo: string | null
@@ -49,7 +49,7 @@ export class Stream implements IStream.Stream{
 		this.isOnline = isOnline
 		this.enabled = enabled
 		this.followerCount = followerCount
-		this.removesTask = removesTask
+		this.removesTasks = removesTask
 		this.streamStatus = streamStatus
 		this.streamGame = streamGame
 		this.streamLogo = streamLogo
@@ -129,8 +129,8 @@ export class Stream implements IStream.Stream{
 		return this.followerCount
 	}
 
-	getRemovesTask(): boolean | null{
-		return this.removesTask
+	getRemovesTasks(): boolean | null{
+		return this.removesTasks
 	}
 
 	getStreamStatus(): string | null{
@@ -160,7 +160,7 @@ export namespace IStream{
 		isOnline: boolean | null,
 		enabled: boolean | null,
 		followerCount: number | null,
-		removesTask: boolean | null,
+		removesTasks: boolean | null,
 		streamStatus: string | null,
 		streamGame: string | null,
 		streamLogo: string | null
@@ -176,7 +176,7 @@ export namespace IStream{
 		getIsOnline(): boolean | null,
 		getEnabled(): boolean | null,
 		getFollowerCount(): number | null,
-		getRemovesTask(): boolean | null,
+		getRemovesTasks(): boolean | null,
 		getStreamStatus(): string | null,
 		getStreamGame(): string | null,
 		getStreamLogo(): string | null

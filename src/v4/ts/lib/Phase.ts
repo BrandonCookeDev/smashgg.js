@@ -9,7 +9,6 @@ import {GGSet, IGGSet} from './GGSet'
 import {Entrant, IEntrant} from './Entrant'
 import {Seed, ISeed} from './Seed'
 import {Attendee, IAttendee} from './Attendee'
-import PaginatedQuery from './util/PaginatedQuery'
 import Encoder from './util/Encoder'
 import Cache from './util/Cache'
 import log from './util/Logger'
@@ -88,7 +87,7 @@ export class Phase implements IPhase.Phase{
 		log.info('Getting seeds for phase %s', this.id)
 		log.verbose('Query variables: %s', JSON.stringify(options))
 
-		let data: IPhase.PhaseSeedData[] = await PaginatedQuery.query(
+		let data: IPhase.PhaseSeedData[] = await NI.paginatedQuery(
 			`Phase Seeds [${this.id}]`, 
 			queries.phaseSeeds, {id: this.id},
 			options, {}, 2
@@ -102,7 +101,7 @@ export class Phase implements IPhase.Phase{
 		log.info('Getting entrants for phase %s', this.id)
 		log.verbose('Query variables: %s', JSON.stringify(options))
 
-		let data: IPhase.PhaseEntrantData[] = await PaginatedQuery.query(
+		let data: IPhase.PhaseEntrantData[] = await NI.paginatedQuery(
 			`Phase Entrants [${this.id}]`, 
 			queries.phaseEntrants, {id: this.id}, 
 			options, {}, 2
@@ -116,7 +115,7 @@ export class Phase implements IPhase.Phase{
 		log.info('Getting attendees for phase %s', this.id)
 		log.verbose('Query variables: %s', JSON.stringify(options))
 
-		let data: IPhase.PhaseAttendeeData[] = await PaginatedQuery.query(
+		let data: IPhase.PhaseAttendeeData[] = await NI.paginatedQuery(
 			`Phase Attendees [${this.id}]`,
 			queries.phaseAttendees, {id: this.id},
 			options, {}, 3
@@ -139,7 +138,7 @@ export class Phase implements IPhase.Phase{
 		// add this phase's id to the filters for sets
 		log.verbose('Query variables: %s', JSON.stringify(options))
 
-		let data: IPhase.DataSets[] = await PaginatedQuery.query(
+		let data: IPhase.DataSets[] = await NI.paginatedQuery(
 			`Phase Sets [${this.id}]`, queries.phaseSets, 
 			{eventId: this.eventId, phaseId: this.id, filters: filters}, 
 			options, {}, 3
@@ -167,7 +166,7 @@ export class Phase implements IPhase.Phase{
 		else options.filters = {phaseIds: [this.id]}
 		log.verbose('Query variables: %s', JSON.stringify(options))
 
-		let data: IPhase.DataSets[] = await PaginatedQuery.query(
+		let data: IPhase.DataSets[] = await NI.paginatedQuery(
 			`Phase Sets [${this.id}]`, queries.phaseSets, 
 			{eventId: this.eventId, phaseId: this.id}, 
 			options, {}, 4

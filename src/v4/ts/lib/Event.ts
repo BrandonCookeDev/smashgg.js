@@ -10,7 +10,6 @@ import {Entrant, IEntrant} from './Entrant'
 import {Attendee, IAttendee} from './Attendee';
 
 import NI from './util/NetworkInterface'
-import PaginatedQuery from './util/PaginatedQuery'
 import * as queries from './scripts/eventQueries'
 
 export class Event extends EventEmitter implements IEvent.Event{
@@ -150,7 +149,7 @@ export class Event extends EventEmitter implements IEvent.Event{
 
 	async getEntrants(options: IEntrant.EntrantOptions = IEntrant.getDefaultEntrantOptions()) : Promise<Entrant[]> {
 		log.info('Getting Entrants for Event [%s :: %s]', this.id, this.name)
-		let data: IEvent.EventEntrantData[] = await PaginatedQuery.query(
+		let data: IEvent.EventEntrantData[] = await NI.paginatedQuery(
 			`Event Entrants [${this.id} :: ${this.name}]`,
 			queries.eventEntrants, {id: this.id},
 			options, {}, 2
@@ -162,7 +161,7 @@ export class Event extends EventEmitter implements IEvent.Event{
 
 	async getAttendees(options: IAttendee.AttendeeOptions = IAttendee.getDefaultAttendeeOptions()) : Promise<Attendee[]> {
 		log.info('Getting Attendees for Event [%s :: %s]', this.id, this.name)
-		let data: IEvent.EventEntrantData[] = await PaginatedQuery.query(
+		let data: IEvent.EventEntrantData[] = await NI.paginatedQuery(
 			`Event Attendees [${this.id} :: ${this.name}]`,
 			queries.eventAttendees, {id: this.id},
 			options, {}, 3
@@ -175,7 +174,7 @@ export class Event extends EventEmitter implements IEvent.Event{
 
 	async getSets(options: IGGSet.SetOptions = IGGSet.getDefaultSetOptions()) : Promise<GGSet[]> {
 		log.info('Getting Sets for Event [%s :: %s]', this.id, this.name)
-		let data: IEvent.EventSetData[] = await PaginatedQuery.query(
+		let data: IEvent.EventSetData[] = await NI.paginatedQuery(
 			`Event Sets [${this.id} :: ${this.name}]`,
 			queries.eventSets, {id: this.id},
 			options, {}, 3

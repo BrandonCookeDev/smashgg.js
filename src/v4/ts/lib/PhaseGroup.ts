@@ -4,7 +4,6 @@ import { Attendee, IAttendee } from './Attendee'
 import { Entrant, IEntrant } from './Entrant' // TODO change this to internal
 import { GGSet, IGGSet } from './GGSet'
 import { Seed, ISeed } from './Seed'
-import PaginatedQuery from './util/PaginatedQuery'
 import NI from './util/NetworkInterface'
 import log from './util/Logger'
 
@@ -95,7 +94,7 @@ export class PhaseGroup implements IPhaseGroup.PhaseGroup{
 	async getSeeds(options: ISeed.SeedOptions = ISeed.getDefaultSeedOptions()) : Promise<Seed[]> {
 		log.info('Getting Seeds for Phase Group [%s]', this.id)
 		log.verbose('Query variables: %s', JSON.stringify(options))
-		let data: IPhaseGroup.PhaseGroupSeedData[] = await PaginatedQuery.query(
+		let data: IPhaseGroup.PhaseGroupSeedData[] = await NI.paginatedQuery(
 			`Phase Group Seeds [${this.id}]`,
 			queries.phaseGroupSeeds, {id: this.id},
 			options, {}, 2
@@ -109,7 +108,7 @@ export class PhaseGroup implements IPhaseGroup.PhaseGroup{
 	async getEntrants(options: IEntrant.EntrantOptions = IEntrant.getDefaultEntrantOptions()) : Promise<Entrant[]>{
 		log.info('Getting Entrants for Phase Group [%s]', this.id)
 		log.verbose('Query variables: %s', JSON.stringify(options))
-		let data: IPhaseGroup.PhaseGroupEntrantData[] = await PaginatedQuery.query(
+		let data: IPhaseGroup.PhaseGroupEntrantData[] = await NI.paginatedQuery(
 			`Phase Group Entrants [${this.id}]`, 
 			queries.phaseGroupEntrants, {id: this.id},
 			options, {}, 2
@@ -122,7 +121,7 @@ export class PhaseGroup implements IPhaseGroup.PhaseGroup{
 	async getAttendees(options: IAttendee.AttendeeOptions = IAttendee.getDefaultAttendeeOptions()) : Promise<Attendee[]>{
 		log.info('Getting Attendees for Phase Group [%s]', this.id)
 		log.verbose('Query variables: %s', JSON.stringify(options))
-		let data: IPhaseGroup.PhaseGroupAttendeeData[] = await PaginatedQuery.query(
+		let data: IPhaseGroup.PhaseGroupAttendeeData[] = await NI.paginatedQuery(
 			`Phase Group Attendees [${this.id}]`,
 			queries.phaseGroupAttendees, {id: this.id},
 			options, {}, 2
@@ -137,7 +136,7 @@ export class PhaseGroup implements IPhaseGroup.PhaseGroup{
 	async getSets(options: IGGSet.SetOptions = IGGSet.getDefaultSetOptions()) : Promise<GGSet[]>{
 		log.info('Getting Sets for Phase Group [%s]', this.id)
 		log.verbose('Query variables: %s', JSON.stringify(options))
-		let data: IPhaseGroup.PhaseGroupSetData[] = await PaginatedQuery.query(
+		let data: IPhaseGroup.PhaseGroupSetData[] = await NI.paginatedQuery(
 			`Phase Group Sets [${this.id}]`,
 			queries.phaseGroupSets, {id: this.id},
 			options, {}, 2

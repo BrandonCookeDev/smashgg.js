@@ -53,7 +53,6 @@ var GGSet_1 = require("./GGSet");
 var Entrant_1 = require("./Entrant");
 var Seed_1 = require("./Seed");
 var Attendee_1 = require("./Attendee");
-var PaginatedQuery_1 = __importDefault(require("./util/PaginatedQuery"));
 var Logger_1 = __importDefault(require("./util/Logger"));
 var Phase = /** @class */ (function () {
     function Phase(id, eventId, name, numSeeds, groupCount) {
@@ -122,7 +121,7 @@ var Phase = /** @class */ (function () {
                     case 0:
                         Logger_1.default.info('Getting seeds for phase %s', this.id);
                         Logger_1.default.verbose('Query variables: %s', JSON.stringify(options));
-                        return [4 /*yield*/, PaginatedQuery_1.default.query("Phase Seeds [" + this.id + "]", queries.phaseSeeds, { id: this.id }, options, {}, 2)];
+                        return [4 /*yield*/, NetworkInterface_1.default.paginatedQuery("Phase Seeds [" + this.id + "]", queries.phaseSeeds, { id: this.id }, options, {}, 2)];
                     case 1:
                         data = _a.sent();
                         seedData = lodash_1.default.flatten(data.map(function (results) { return results.phase.paginatedSeeds.nodes; })).filter(function (seed) { return seed != null; });
@@ -141,7 +140,7 @@ var Phase = /** @class */ (function () {
                     case 0:
                         Logger_1.default.info('Getting entrants for phase %s', this.id);
                         Logger_1.default.verbose('Query variables: %s', JSON.stringify(options));
-                        return [4 /*yield*/, PaginatedQuery_1.default.query("Phase Entrants [" + this.id + "]", queries.phaseEntrants, { id: this.id }, options, {}, 2)];
+                        return [4 /*yield*/, NetworkInterface_1.default.paginatedQuery("Phase Entrants [" + this.id + "]", queries.phaseEntrants, { id: this.id }, options, {}, 2)];
                     case 1:
                         data = _a.sent();
                         entrantData = lodash_1.default.flatten(data.map(function (entrantData) { return entrantData.phase.paginatedSeeds.nodes; })).filter(function (entrant) { return entrant != null; });
@@ -160,7 +159,7 @@ var Phase = /** @class */ (function () {
                     case 0:
                         Logger_1.default.info('Getting attendees for phase %s', this.id);
                         Logger_1.default.verbose('Query variables: %s', JSON.stringify(options));
-                        return [4 /*yield*/, PaginatedQuery_1.default.query("Phase Attendees [" + this.id + "]", queries.phaseAttendees, { id: this.id }, options, {}, 3)];
+                        return [4 /*yield*/, NetworkInterface_1.default.paginatedQuery("Phase Attendees [" + this.id + "]", queries.phaseAttendees, { id: this.id }, options, {}, 3)];
                     case 1:
                         data = _a.sent();
                         seeds = lodash_1.default.flatten(data.map(function (seed) { return seed.phase.paginatedSeeds; }));
@@ -188,7 +187,7 @@ var Phase = /** @class */ (function () {
                         filters = { phaseGroupIds: ids.slice(0, 2) };
                         // add this phase's id to the filters for sets
                         Logger_1.default.verbose('Query variables: %s', JSON.stringify(options));
-                        return [4 /*yield*/, PaginatedQuery_1.default.query("Phase Sets [" + this.id + "]", queries.phaseSets, { eventId: this.eventId, phaseId: this.id, filters: filters }, options, {}, 3)];
+                        return [4 /*yield*/, NetworkInterface_1.default.paginatedQuery("Phase Sets [" + this.id + "]", queries.phaseSets, { eventId: this.eventId, phaseId: this.id, filters: filters }, options, {}, 3)];
                     case 2:
                         data = _a.sent();
                         phaseGroups = lodash_1.default.flatten(data.map(function (setData) { return setData.event.phaseGroups; }));
@@ -240,7 +239,7 @@ var Phase = /** @class */ (function () {
                         else
                             options.filters = { phaseIds: [this.id] };
                         Logger_1.default.verbose('Query variables: %s', JSON.stringify(options));
-                        return [4 /*yield*/, PaginatedQuery_1.default.query("Phase Sets [" + this.id + "]", queries.phaseSets, { eventId: this.eventId, phaseId: this.id }, options, {}, 4)];
+                        return [4 /*yield*/, NetworkInterface_1.default.paginatedQuery("Phase Sets [" + this.id + "]", queries.phaseSets, { eventId: this.eventId, phaseId: this.id }, options, {}, 4)];
                     case 1:
                         data = _a.sent();
                         phaseGroups = lodash_1.default.flatten(data.map(function (setData) { return setData.event.phaseGroups; }));

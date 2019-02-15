@@ -37,62 +37,50 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-/* eslint-disable */
+var path_1 = __importDefault(require("path"));
+var ROOT = path_1.default.join(__dirname, '..', '..', '..', '..', '.env');
+var dotenv_1 = require("dotenv");
+dotenv_1.config({ path: ROOT });
 require("../lib/util/ErrorHandler");
 var chai_1 = __importDefault(require("chai"));
 var chai_as_promised_1 = __importDefault(require("chai-as-promised"));
 chai_1.default.use(chai_as_promised_1.default);
 var expect = chai_1.default.expect;
-var internal_1 = require("../lib/internal");
-var Cache_1 = __importDefault(require("../lib/util/Cache"));
-var testPlayers_1 = __importDefault(require("./data/testPlayers"));
-var p1, p2, p3;
-describe('Smash GG Player', function () {
-    before(Cache_1.default.flush);
-    it('should correctly load a player from raw data', function (done) {
-        p1 = internal_1.Player.resolve(testPlayers_1.default.players[0]);
-        p2 = internal_1.Player.resolve(testPlayers_1.default.players[1]);
-        p3 = internal_1.Player.resolve(testPlayers_1.default.players[2]);
-        expect(p1.id).to.be.equal(21568);
-        expect(p2.id).to.be.equal(244170);
-        expect(p3.id).to.be.equal(36490);
-        expect(p1.tag).to.be.equal('Gas$');
-        expect(p2.tag).to.be.equal('T');
-        expect(p3.tag).to.be.equal('Kiwiwizard');
-        expect(p1.name).to.be.equal('Grayson Garrett');
-        expect(p2.name).to.be.equal('Trevor Greiff');
-        expect(p3.name).to.be.equal('Davis Balser');
-        expect(p1.country).to.be.equal('United States');
-        expect(p2.country).to.be.equal('United States');
-        expect(p3.country).to.be.equal('US');
-        expect(p1.state).to.be.equal('GA');
-        expect(p2.state).to.be.equal('TN');
-        expect(p3.state).to.be.equal('GA');
-        expect(p1.sponsor).to.be.equal('Test1');
-        expect(p2.sponsor).to.be.equal('Test2');
-        expect(p3.sponsor).to.be.equal('Test3');
-        expect(p1.data).to.be.equal(testPlayers_1.default.players[0]);
-        expect(p2.data).to.be.equal(testPlayers_1.default.players[1]);
-        expect(p3.data).to.be.equal(testPlayers_1.default.players[2]);
-        done();
-    });
-    it('should get player by id correctly', function () {
+var Initializer_1 = __importDefault(require("../lib/util/Initializer"));
+var StreamQueue_1 = require("../lib/StreamQueue");
+var Stream_1 = require("../lib/Stream");
+var GGSet_1 = require("../lib/GGSet");
+var testData = __importStar(require("./data/streamQueue.testData"));
+var streamQueue1;
+var STREAM_QUEUE_TOURNAMENT_ID_1 = 6620;
+describe('smashgg Stream Queue', function () {
+    before(function () {
         return __awaiter(this, void 0, void 0, function () {
-            var player1, player2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        this.timeout(5000);
-                        return [4 /*yield*/, internal_1.Player.getPlayer(61838)];
+                    case 0: return [4 /*yield*/, Initializer_1.default(process.env.API_TOKEN)];
                     case 1:
-                        player1 = _a.sent();
-                        return [4 /*yield*/, internal_1.Player.getPlayer(61839)];
+                        _a.sent();
+                        return [4 /*yield*/, StreamQueue_1.StreamQueue.get(STREAM_QUEUE_TOURNAMENT_ID_1)];
                     case 2:
-                        player2 = _a.sent();
+                        streamQueue1 = _a.sent();
                         return [2 /*return*/, true];
                 }
             });
         });
+    });
+    it('should get the correct Stream 1', function () {
+        expect(streamQueue1[0].getStream()).to.deep.equal(Stream_1.Stream.parse(testData.streamQueue1[0].stream));
+    });
+    it('should get the correct Sets 1', function () {
+        expect(streamQueue1[0].getSets()).to.have.deep.members(testData.streamQueue1[0].sets.map(function (set) { return GGSet_1.GGSet.parse(set); }));
     });
 });

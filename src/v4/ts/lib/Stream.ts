@@ -6,8 +6,8 @@ import * as queries from './scripts/streamQueries'
 export class Stream implements IStream.Stream{
 
 	id: number
-	eventId: number
-	tournamentId: number
+	eventId: number | null
+	tournamentId: number | null
 	streamName: string
 	numSetups: number | null
 	streamSource: 'TWITCH' | 'HITBOX' | 'STREAMME' | 'MIXER' | null
@@ -23,8 +23,8 @@ export class Stream implements IStream.Stream{
 
 	constructor(
 		id: number,
-		eventId: number,
-		tournamentId: number,
+		eventId: number | null,
+		tournamentId: number | null,
 		streamName: string,
 		numSetups: number | null,
 		streamSource: 'TWITCH' | 'HITBOX' | 'STREAMME' | 'MIXER' | null,
@@ -33,7 +33,7 @@ export class Stream implements IStream.Stream{
 		isOnline: boolean | null,
 		enabled: boolean | null,
 		followerCount: number | null,
-		removesTask: boolean | null,
+		removesTasks: boolean | null,
 		streamStatus: string | null,
 		streamGame: string | null,
 		streamLogo: string | null
@@ -49,7 +49,7 @@ export class Stream implements IStream.Stream{
 		this.isOnline = isOnline
 		this.enabled = enabled
 		this.followerCount = followerCount
-		this.removesTasks = removesTask
+		this.removesTasks = removesTasks
 		this.streamStatus = streamStatus
 		this.streamGame = streamGame
 		this.streamLogo = streamLogo
@@ -68,7 +68,7 @@ export class Stream implements IStream.Stream{
 			data.isOnline,
 			data.enabled,
 			data.followerCount,
-			data.removesTask,
+			data.removesTasks,
 			data.streamStatus,
 			data.streamGame,
 			data.streamLogo
@@ -89,11 +89,11 @@ export class Stream implements IStream.Stream{
 		return this.id
 	}
 	
-	getEventId(): number{
+	getEventId(): number | null{
 		return this.eventId
 	}
 
-	getTournamentId(): number{
+	getTournamentId(): number | null{
 		return this.tournamentId
 	}
 
@@ -150,8 +150,8 @@ export namespace IStream{
 
 	export interface Stream{
 		id: number,
-		eventId: number,
-		tournamentId: number,
+		eventId: number | null,
+		tournamentId: number | null,
 		streamName: string,
 		numSetups: number | null,
 		streamSource: 'TWITCH' | 'HITBOX' | 'STREAMME' | 'MIXER' | null,
@@ -166,8 +166,8 @@ export namespace IStream{
 		streamLogo: string | null
 
 		getId(): number,
-		getEventId(): number,
-		getTournamentId(): number,
+		getEventId(): number | null,
+		getTournamentId(): number | null,
 		getStreamName(): string,
 		getNumSetups(): number | null,
 		getStreamSource(): 'TWITCH' | 'HITBOX' | 'STREAMME' | 'MIXER' | null,
@@ -188,8 +188,8 @@ export namespace IStream{
 
 	export interface StreamData{
 		id: number,
-		eventId: number,
-		tournamentId: number,
+		eventId: number | null,
+		tournamentId: number | null,
 		streamName: string,
 		numSetups: number | null,
 		streamSource: 'TWITCH' | 'HITBOX' | 'STREAMME' | 'MIXER' | null,
@@ -198,7 +198,7 @@ export namespace IStream{
 		isOnline: boolean | null,
 		enabled: boolean | null,
 		followerCount: number | null,
-		removesTask: boolean | null,
+		removesTasks: boolean | null,
 		streamStatus: string | null,
 		streamGame: string | null,
 		streamLogo: string | null

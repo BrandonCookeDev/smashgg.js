@@ -47,91 +47,43 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var Logger_1 = __importDefault(require("./util/Logger"));
 var NetworkInterface_1 = __importDefault(require("./util/NetworkInterface"));
-var queries = __importStar(require("./scripts/streamQueries"));
-var Stream = /** @class */ (function () {
-    function Stream(id, eventId, tournamentId, streamName, numSetups, streamSource, streamType, streamTypeId, isOnline, enabled, followerCount, removesTasks, streamStatus, streamGame, streamLogo) {
-        this.id = id;
-        this.eventId = eventId;
-        this.tournamentId = tournamentId;
-        this.streamName = streamName;
-        this.numSetups = numSetups;
-        this.streamSource = streamSource;
-        this.streamType = streamType;
-        this.streamTypeId = streamTypeId;
-        this.isOnline = isOnline;
-        this.enabled = enabled;
-        this.followerCount = followerCount;
-        this.removesTasks = removesTasks;
-        this.streamStatus = streamStatus;
-        this.streamGame = streamGame;
-        this.streamLogo = streamLogo;
+var queries = __importStar(require("./scripts/streamQueueQueries"));
+var Stream_1 = require("./Stream");
+var GGSet_1 = require("./GGSet");
+var StreamQueue = /** @class */ (function () {
+    function StreamQueue(stream, sets) {
+        this.stream = stream;
+        this.sets = sets;
     }
-    Stream.parse = function (data) {
-        return new Stream(data.id, data.eventId, data.tournamentId, data.streamName, data.numSetups, data.streamSource, data.streamType, data.streamTypeId, data.isOnline, data.enabled, data.followerCount, data.removesTasks, data.streamStatus, data.streamGame, data.streamLogo);
+    StreamQueue.parse = function (data) {
+        var stream = Stream_1.Stream.parse(data.stream);
+        var sets = data.sets.map(function (set) { return GGSet_1.GGSet.parse(set); });
+        return new StreamQueue(stream, sets);
     };
-    Stream.parseFull = function (data) {
-        return Stream.parse(data.stream);
+    StreamQueue.parseFull = function (data) {
+        return data.tournament.streamQueue.map(function (sq) { return StreamQueue.parse(sq); });
     };
-    Stream.get = function (id) {
+    StreamQueue.get = function (tournamentId) {
         return __awaiter(this, void 0, void 0, function () {
             var data;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        Logger_1.default.info('Getting Stream with Id %s', id);
-                        return [4 /*yield*/, NetworkInterface_1.default.query(queries.stream, { id: id })];
+                        Logger_1.default.info('Getting Stream Queues for Tournament with Id %s', tournamentId);
+                        return [4 /*yield*/, NetworkInterface_1.default.query(queries.streamQueue, { tournamentId: tournamentId })];
                     case 1:
                         data = _a.sent();
-                        return [2 /*return*/, Stream.parseFull(data)];
+                        return [2 /*return*/, StreamQueue.parseFull(data)];
                 }
             });
         });
     };
-    Stream.prototype.getId = function () {
-        return this.id;
+    StreamQueue.prototype.getStream = function () {
+        return this.stream;
     };
-    Stream.prototype.getEventId = function () {
-        return this.eventId;
+    StreamQueue.prototype.getSets = function () {
+        return this.sets;
     };
-    Stream.prototype.getTournamentId = function () {
-        return this.tournamentId;
-    };
-    Stream.prototype.getStreamName = function () {
-        return this.streamName;
-    };
-    Stream.prototype.getNumSetups = function () {
-        return this.numSetups;
-    };
-    Stream.prototype.getStreamSource = function () {
-        return this.streamSource;
-    };
-    Stream.prototype.getStreamType = function () {
-        return this.streamType;
-    };
-    Stream.prototype.getStreamTypeId = function () {
-        return this.streamTypeId;
-    };
-    Stream.prototype.getIsOnline = function () {
-        return this.isOnline;
-    };
-    Stream.prototype.getEnabled = function () {
-        return this.enabled;
-    };
-    Stream.prototype.getFollowerCount = function () {
-        return this.followerCount;
-    };
-    Stream.prototype.getRemovesTasks = function () {
-        return this.removesTasks;
-    };
-    Stream.prototype.getStreamStatus = function () {
-        return this.streamStatus;
-    };
-    Stream.prototype.getStreamGame = function () {
-        return this.streamGame;
-    };
-    Stream.prototype.getStreamLogo = function () {
-        return this.streamLogo;
-    };
-    return Stream;
+    return StreamQueue;
 }());
-exports.Stream = Stream;
+exports.StreamQueue = StreamQueue;

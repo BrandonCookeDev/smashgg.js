@@ -50,7 +50,6 @@ var Attendee_1 = require("./Attendee");
 var Entrant_1 = require("./Entrant"); // TODO change this to internal
 var GGSet_1 = require("./GGSet");
 var Seed_1 = require("./Seed");
-var PaginatedQuery_1 = __importDefault(require("./util/PaginatedQuery"));
 var NetworkInterface_1 = __importDefault(require("./util/NetworkInterface"));
 var Logger_1 = __importDefault(require("./util/Logger"));
 var queries = __importStar(require("./scripts/phaseGroupQueries"));
@@ -118,7 +117,7 @@ var PhaseGroup = /** @class */ (function () {
                     case 0:
                         Logger_1.default.info('Getting Seeds for Phase Group [%s]', this.id);
                         Logger_1.default.verbose('Query variables: %s', JSON.stringify(options));
-                        return [4 /*yield*/, PaginatedQuery_1.default.query("Phase Group Seeds [" + this.id + "]", queries.phaseGroupSeeds, { id: this.id }, options, {}, 2)];
+                        return [4 /*yield*/, NetworkInterface_1.default.paginatedQuery("Phase Group Seeds [" + this.id + "]", queries.phaseGroupSeeds, { id: this.id }, options, {}, 2)];
                     case 1:
                         data = _a.sent();
                         phaseGroups = lodash_1.default.flatten(data.map(function (pg) { return pg.phaseGroup; }));
@@ -138,7 +137,7 @@ var PhaseGroup = /** @class */ (function () {
                     case 0:
                         Logger_1.default.info('Getting Entrants for Phase Group [%s]', this.id);
                         Logger_1.default.verbose('Query variables: %s', JSON.stringify(options));
-                        return [4 /*yield*/, PaginatedQuery_1.default.query("Phase Group Entrants [" + this.id + "]", queries.phaseGroupEntrants, { id: this.id }, options, {}, 2)];
+                        return [4 /*yield*/, NetworkInterface_1.default.paginatedQuery("Phase Group Entrants [" + this.id + "]", queries.phaseGroupEntrants, { id: this.id }, options, {}, 2)];
                     case 1:
                         data = _a.sent();
                         phaseGroups = data.map(function (pg) { return pg.phaseGroup; });
@@ -157,7 +156,7 @@ var PhaseGroup = /** @class */ (function () {
                     case 0:
                         Logger_1.default.info('Getting Attendees for Phase Group [%s]', this.id);
                         Logger_1.default.verbose('Query variables: %s', JSON.stringify(options));
-                        return [4 /*yield*/, PaginatedQuery_1.default.query("Phase Group Attendees [" + this.id + "]", queries.phaseGroupAttendees, { id: this.id }, options, {}, 2)];
+                        return [4 /*yield*/, NetworkInterface_1.default.paginatedQuery("Phase Group Attendees [" + this.id + "]", queries.phaseGroupAttendees, { id: this.id }, options, {}, 2)];
                     case 1:
                         data = _a.sent();
                         seeds = lodash_1.default.flatten(data.map(function (entrant) { return entrant.phaseGroup.paginatedSeeds.nodes; }));
@@ -178,7 +177,7 @@ var PhaseGroup = /** @class */ (function () {
                     case 0:
                         Logger_1.default.info('Getting Sets for Phase Group [%s]', this.id);
                         Logger_1.default.verbose('Query variables: %s', JSON.stringify(options));
-                        return [4 /*yield*/, PaginatedQuery_1.default.query("Phase Group Sets [" + this.id + "]", queries.phaseGroupSets, { id: this.id }, options, {}, 2)];
+                        return [4 /*yield*/, NetworkInterface_1.default.paginatedQuery("Phase Group Sets [" + this.id + "]", queries.phaseGroupSets, { id: this.id }, options, {}, 2)];
                     case 1:
                         data = _a.sent();
                         phaseGroups = data.map(function (pg) { return pg.phaseGroup; });

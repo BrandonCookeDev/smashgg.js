@@ -106,6 +106,7 @@ function parseOptions(options) {
     };
 }
 exports.parseOptions = parseOptions;
+// todo remove theabove and below non-null expectations
 function getHighestLevelLosersRound(sets) {
     var loserRounds = sets.filter(function (set) { return losersRoundRegex.test(set.getFullRoundText()); });
     var loserRoundNumbers = loserRounds.map(function (set) { return losersRoundRegex.exec(set.getFullRoundText())[1]; });

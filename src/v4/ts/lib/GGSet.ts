@@ -11,17 +11,16 @@ import * as queries from './scripts/setQueries'
 import {Attendee, IAttendee} from './Attendee'
 import {Entrant, IEntrant} from './Entrant'
 
-const API_URL = 'https://api.smash.gg/set/%s';
 const DISPLAY_SCORE_REGEX = new RegExp(/^([\S\s]*) ([0-9]{1,3}) - ([\S\s]*) ([0-9]{1,3})$/);
 
 export class GGSet extends EventEmitter implements IGGSet.GGSet{
 
-	id: number
-	eventId: number
-	phaseGroupId: number
-	displayScore: string 
-	fullRoundText: string
-	round: number
+	id: number 
+	eventId: number | null
+	phaseGroupId: number | null
+	displayScore: string | null 
+	fullRoundText: string | null
+	round: number | null
 	startedAt: number | null
 	completedAt: number | null
 	winnerId: number | null
@@ -34,11 +33,11 @@ export class GGSet extends EventEmitter implements IGGSet.GGSet{
 
 	constructor(
 		id: number,
-		eventId: number,
-		phaseGroupId: number,
-		displayScore: string ,
-		fullRoundText: string,
-		round: number,
+		eventId: number | null,
+		phaseGroupId: number | null,
+		displayScore: string | null,
+		fullRoundText: string | null,
+		round: number | null,
 		startedAt: number | null,
 		completedAt: number | null,
 		winnerId: number | null,
@@ -69,7 +68,6 @@ export class GGSet extends EventEmitter implements IGGSet.GGSet{
 	}
 
 	static parseDisplayScore(displayScore: string){
-		const DISPLAY_SCORE_REGEX = new RegExp(/^([\S\s]*) ([0-9]{1,3}) - ([\S\s]*) ([0-9]{1,3})$/);
 		let parsed = DISPLAY_SCORE_REGEX.exec(displayScore);
 		let tag1, score1, tag2, score2;
 		if(parsed){
@@ -93,7 +91,7 @@ export class GGSet extends EventEmitter implements IGGSet.GGSet{
 	}
 
 	static parse(data: IGGSet.SetData) : GGSet{
-		let displayScoreParsed = GGSet.parseDisplayScore(data.displayScore);
+		let displayScoreParsed = GGSet.parseDisplayScore(data.displayScore!);
 		let p1 = IGGSet.PlayerLite.parse(displayScoreParsed.tag1, data.slots[0])
 		let p2 = IGGSet.PlayerLite.parse(displayScoreParsed.tag2, data.slots[1])
 		return new GGSet(
@@ -122,23 +120,23 @@ export class GGSet extends EventEmitter implements IGGSet.GGSet{
 	/** Instance Based **/
 
 	// simple
-	getEventId() : number { 
+	getEventId() : number | null { 
 		return this.eventId
 	}
 
-	getPhaseGroupId() : number {
+	getPhaseGroupId() : number | null {
 		return this.phaseGroupId
 	}
 
-	getDisplayScore() : string{
+	getDisplayScore() : string | null{
 		return this.displayScore
 	}
 
-	getFullRoundText() : string{
+	getFullRoundText() : string | null{
 		return this.fullRoundText
 	}
 
-	getRound() : number{
+	getRound() : number | null{
 		return this.round
 	}
 
@@ -419,11 +417,11 @@ export namespace IGGSet{
 	export interface GGSet{
 		
 		id: number
-		eventId: number
-		phaseGroupId: number
-		displayScore: string 
-		fullRoundText: string
-		round: number
+		eventId: number | null
+		phaseGroupId: number | null
+		displayScore: string  | null
+		fullRoundText: string  | null
+		round: number | null
 		startedAt: number | null
 		completedAt: number | null
 		winnerId: number | null
@@ -434,13 +432,13 @@ export namespace IGGSet{
 		score1: number | null
 		score2: number | null
 		
-		getEventId() : number
-		getPhaseGroupId() : number
+		getEventId() : number | null
+		getPhaseGroupId() : number | null
 		getStartedAt() : Date | null 
 		getCompletedAt() : Date | null 
-		getDisplayScore() : string
-		getFullRoundText() : string
-		getRound() : number
+		getDisplayScore() : string | null
+		getFullRoundText() : string | null
+		getRound() : number | null
 		getState() : number | null
 		getPlayer1() : PlayerLite | undefined | null
 		getPlayer1Tag() : string | undefined | null
@@ -481,11 +479,11 @@ export namespace IGGSet{
 
 	export interface SetData{
 		id: string
-		eventId: number
-		phaseGroupId: number
-		displayScore: string
-	  	fullRoundText: string
-		round: number
+		eventId: number | null
+		phaseGroupId: number | null
+		displayScore: string | null
+	  	fullRoundText: string | null
+		round: number | null
 		startedAt: number | null
 		completedAt: number | null
 		winnerId: number | null
@@ -496,7 +494,7 @@ export namespace IGGSet{
 
 	export interface Slots{
 		id: string
-		entrant: {
+		entrant:  null | {
 			id: number
 			name: string
 			participants: {

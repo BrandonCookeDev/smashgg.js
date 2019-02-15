@@ -67,7 +67,6 @@ var GGSet_1 = require("./GGSet");
 var Entrant_1 = require("./Entrant");
 var Attendee_1 = require("./Attendee");
 var NetworkInterface_1 = __importDefault(require("./util/NetworkInterface"));
-var PaginatedQuery_1 = __importDefault(require("./util/PaginatedQuery"));
 var queries = __importStar(require("./scripts/eventQueries"));
 var Event = /** @class */ (function (_super) {
     __extends(Event, _super);
@@ -196,7 +195,7 @@ var Event = /** @class */ (function (_super) {
                 switch (_a.label) {
                     case 0:
                         Logger_1.default.info('Getting Entrants for Event [%s :: %s]', this.id, this.name);
-                        return [4 /*yield*/, PaginatedQuery_1.default.query("Event Entrants [" + this.id + " :: " + this.name + "]", queries.eventEntrants, { id: this.id }, options, {}, 2)];
+                        return [4 /*yield*/, NetworkInterface_1.default.paginatedQuery("Event Entrants [" + this.id + " :: " + this.name + "]", queries.eventEntrants, { id: this.id }, options, {}, 2)];
                     case 1:
                         data = _a.sent();
                         entrantData = lodash_1.default.flatten(data.map(function (d) { return d.event.entrants.nodes; }));
@@ -214,7 +213,7 @@ var Event = /** @class */ (function (_super) {
                 switch (_a.label) {
                     case 0:
                         Logger_1.default.info('Getting Attendees for Event [%s :: %s]', this.id, this.name);
-                        return [4 /*yield*/, PaginatedQuery_1.default.query("Event Attendees [" + this.id + " :: " + this.name + "]", queries.eventAttendees, { id: this.id }, options, {}, 3)];
+                        return [4 /*yield*/, NetworkInterface_1.default.paginatedQuery("Event Attendees [" + this.id + " :: " + this.name + "]", queries.eventAttendees, { id: this.id }, options, {}, 3)];
                     case 1:
                         data = _a.sent();
                         entrantData = lodash_1.default.flatten(data.map(function (d) { return d.event.entrants.nodes; }));
@@ -233,7 +232,7 @@ var Event = /** @class */ (function (_super) {
                 switch (_a.label) {
                     case 0:
                         Logger_1.default.info('Getting Sets for Event [%s :: %s]', this.id, this.name);
-                        return [4 /*yield*/, PaginatedQuery_1.default.query("Event Sets [" + this.id + " :: " + this.name + "]", queries.eventSets, { id: this.id }, options, {}, 3)];
+                        return [4 /*yield*/, NetworkInterface_1.default.paginatedQuery("Event Sets [" + this.id + " :: " + this.name + "]", queries.eventSets, { id: this.id }, options, {}, 3)];
                     case 1:
                         data = _a.sent();
                         phaseGroups = lodash_1.default.flatten(data.map(function (d) { return d.event.phaseGroups; }));

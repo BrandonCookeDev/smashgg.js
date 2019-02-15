@@ -33,9 +33,9 @@ describe('Smash GG Set', function(){
 		await Initializer(process.env.API_TOKEN!)
 
 		console.log('Testing displayScore parsing first...')
-		expect(GGSet.parseDisplayScore(testData.set1.displayScore)).to.deep.equal(testData.parsedDisplayScore1)
-		expect(GGSet.parseDisplayScore(testData.set2.displayScore)).to.deep.equal(testData.parsedDisplayScore2)
-		expect(GGSet.parseDisplayScore(testData.set3.displayScore)).to.deep.equal(testData.parsedDisplayScore3)
+		expect(GGSet.parseDisplayScore(testData.set1.displayScore!)).to.deep.equal(testData.parsedDisplayScore1)
+		expect(GGSet.parseDisplayScore(testData.set2.displayScore!)).to.deep.equal(testData.parsedDisplayScore2)
+		expect(GGSet.parseDisplayScore(testData.set3.displayScore!)).to.deep.equal(testData.parsedDisplayScore3)
 		console.log('Success!')
 
 		set1 = await GGSet.get(SET_ID_1)

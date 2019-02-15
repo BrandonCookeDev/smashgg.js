@@ -1,6 +1,6 @@
 import {IStream} from '../../lib/Stream'
 
-export const stream1 = {
+export const stream1: IStream.StreamData = {
 	"id": 10493,
 	"eventId": null,
 	"tournamentId": 6620,
@@ -18,7 +18,7 @@ export const stream1 = {
 	"streamLogo": "https://static-cdn.jtvnw.net/jtv_user_pictures/recursiongg-profile_image-30c27f4bc6a59cc8-300x300.png"
 }
 
-export const stream2 = {
+export const stream2: IStream.StreamData = {
 	"id": 574,
 	"eventId": null,
 	"tournamentId": 1609,
@@ -36,7 +36,7 @@ export const stream2 = {
 	"streamLogo": null
 }
 
-export const stream3 = {
+export const stream3: IStream.StreamData = {
 	"id": 40210,
 	"eventId": null,
 	"tournamentId": 36179,
@@ -54,14 +54,14 @@ export const stream3 = {
 	"streamLogo": "https://static-cdn.jtvnw.net/jtv_user_pictures/daebf3b9-203e-4c1c-9ac5-0e8bf445be86-profile_image-300x300.png"
 }
 
-export const streamData1 = {
+export const streamData1: IStream.Data = {
 	stream: stream1
 }
 
-export const streamData2 = {
+export const streamData2: IStream.Data = {
 	stream: stream2
 }
 
-export const streamData3 = {
+export const streamData3: IStream.Data = {
 	stream: stream3
 }

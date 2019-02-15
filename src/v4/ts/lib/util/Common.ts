@@ -93,8 +93,8 @@ export function orderTop8(sets: GGSet[]) : GGSet[]{
 
 
 	let roundNames = sets.map(set => set.getFullRoundText())
-	let losersRoundName = roundNames.filter(name => losersRoundRegex.test(name))[0]
-	fn(losersRoundName)
+	let losersRoundName = roundNames.filter(name => losersRoundRegex.test(name!))[0]
+	fn(losersRoundName!)
 
 	return ordered
 }
@@ -107,9 +107,11 @@ export function parseOptions(options: Options) : Options {
 	}
 }
 
+// todo remove theabove and below non-null expectations
+
 export function getHighestLevelLosersRound(sets: GGSet[]) : string {
-	let loserRounds = sets.filter(set => losersRoundRegex.test(set.getFullRoundText()))
-	let loserRoundNumbers = loserRounds.map(set => (losersRoundRegex.exec(set.getFullRoundText()) as any[])[1])
+	let loserRounds = sets.filter(set => losersRoundRegex.test(set.getFullRoundText()!))
+	let loserRoundNumbers = loserRounds.map(set => (losersRoundRegex.exec(set.getFullRoundText()!) as any[])[1])
 	let highestLoserRoundNumber = Math.max.apply(null, loserRoundNumbers)
 	return `Losers Round ${highestLoserRoundNumber}`
 }
@@ -117,7 +119,7 @@ export function getHighestLevelLosersRound(sets: GGSet[]) : string {
 export function filterForTop8Sets(sets: GGSet[]) : GGSet[] {
 	let highestLoserRound = getHighestLevelLosersRound(sets)
 	let targetLabels = TOP_8_LABELS.concat([highestLoserRound])
-	let topSets = sets.filter(set => targetLabels.includes(set.getFullRoundText()))
+	let topSets = sets.filter(set => targetLabels.includes(set.getFullRoundText()!))
 	return orderTop8(topSets);
 }
 

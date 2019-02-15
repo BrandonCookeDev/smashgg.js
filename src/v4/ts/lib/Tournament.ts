@@ -13,7 +13,6 @@ import {Attendee, IAttendee} from './Attendee'
 import {GGSet, IGGSet} from './GGSet'
 
 import NI from './util/NetworkInterface'
-import PaginatedQuery from './util/PaginatedQuery'
 import * as queries from './scripts/tournamentQueries'
 
 export class Tournament implements ITournament.Tournament{
@@ -186,7 +185,7 @@ export class Tournament implements ITournament.Tournament{
 
 	async getSets(options: IGGSet.SetOptions = IGGSet.getDefaultSetOptions()) : Promise<GGSet[]> {
 		log.info('Getting Sets for Tournament [%s :: %s]', this.id, this.name)
-		let data: ITournament.TournamentSetData[] = await PaginatedQuery.query(
+		let data: ITournament.TournamentSetData[] = await NI.paginatedQuery(
 			`Tournament Sets [${this.id} :: ${this.name}]`,
 			queries.tournamentSets, {id: this.id},
 			options, {}, 4
@@ -218,7 +217,7 @@ export class Tournament implements ITournament.Tournament{
 
 	async getEntrants(options: IEntrant.EntrantOptions = IEntrant.getDefaultEntrantOptions()) : Promise<Entrant[]> {
 		log.info('Getting Entrants for Tournament [%s :: %s]', this.id, this.name)
-		let data: ITournament.TournamentEntrantData[] = await PaginatedQuery.query(
+		let data: ITournament.TournamentEntrantData[] = await NI.paginatedQuery(
 			`Tournament Entrants [${this.id} :: ${this.name}]`,
 			queries.tournamentEntrants, {id: this.id},
 			options, {}, 3
@@ -232,7 +231,7 @@ export class Tournament implements ITournament.Tournament{
 
 	async getAttendees(options: IAttendee.AttendeeOptions = IAttendee.getDefaultAttendeeOptions()) : Promise<Attendee[]> {
 		log.info('Getting Attendees for Tournament [%s :: %s]', this.id, this.name)
-		let data: ITournament.TournamentAttendeeData[] = await PaginatedQuery.query(
+		let data: ITournament.TournamentAttendeeData[] = await NI.paginatedQuery(
 			`Tournament Attendee [${this.id} :: ${this.name}]`,
 			queries.tournamentAttendees, {id: this.id},
 			options, {}, 3

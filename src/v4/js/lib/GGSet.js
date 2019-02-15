@@ -67,7 +67,6 @@ var NetworkInterface_1 = __importDefault(require("./util/NetworkInterface"));
 var queries = __importStar(require("./scripts/setQueries"));
 var Attendee_1 = require("./Attendee");
 var Entrant_1 = require("./Entrant");
-var API_URL = 'https://api.smash.gg/set/%s';
 var DISPLAY_SCORE_REGEX = new RegExp(/^([\S\s]*) ([0-9]{1,3}) - ([\S\s]*) ([0-9]{1,3})$/);
 var GGSet = /** @class */ (function (_super) {
     __extends(GGSet, _super);
@@ -91,7 +90,6 @@ var GGSet = /** @class */ (function (_super) {
         return _this;
     }
     GGSet.parseDisplayScore = function (displayScore) {
-        var DISPLAY_SCORE_REGEX = new RegExp(/^([\S\s]*) ([0-9]{1,3}) - ([\S\s]*) ([0-9]{1,3})$/);
         var parsed = DISPLAY_SCORE_REGEX.exec(displayScore);
         var tag1, score1, tag2, score2;
         if (parsed) {

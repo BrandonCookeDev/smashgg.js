@@ -57,7 +57,6 @@ var Entrant_1 = require("./Entrant");
 var Attendee_1 = require("./Attendee");
 var GGSet_1 = require("./GGSet");
 var NetworkInterface_1 = __importDefault(require("./util/NetworkInterface"));
-var PaginatedQuery_1 = __importDefault(require("./util/PaginatedQuery"));
 var queries = __importStar(require("./scripts/tournamentQueries"));
 var Tournament = /** @class */ (function () {
     function Tournament(id, name, slug, startTime, endTime, timezone, venue, organizer) {
@@ -225,7 +224,7 @@ var Tournament = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         Logger_1.default.info('Getting Sets for Tournament [%s :: %s]', this.id, this.name);
-                        return [4 /*yield*/, PaginatedQuery_1.default.query("Tournament Sets [" + this.id + " :: " + this.name + "]", queries.tournamentSets, { id: this.id }, options, {}, 4)];
+                        return [4 /*yield*/, NetworkInterface_1.default.paginatedQuery("Tournament Sets [" + this.id + " :: " + this.name + "]", queries.tournamentSets, { id: this.id }, options, {}, 4)];
                     case 1:
                         data = _a.sent();
                         events = lodash_1.default.flatten(data.map(function (d) { return d.tournament.events; }));
@@ -293,7 +292,7 @@ var Tournament = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         Logger_1.default.info('Getting Entrants for Tournament [%s :: %s]', this.id, this.name);
-                        return [4 /*yield*/, PaginatedQuery_1.default.query("Tournament Entrants [" + this.id + " :: " + this.name + "]", queries.tournamentEntrants, { id: this.id }, options, {}, 3)];
+                        return [4 /*yield*/, NetworkInterface_1.default.paginatedQuery("Tournament Entrants [" + this.id + " :: " + this.name + "]", queries.tournamentEntrants, { id: this.id }, options, {}, 3)];
                     case 1:
                         data = _a.sent();
                         tournaments = lodash_1.default.flatten(data.map(function (d) { return d.tournament; }));
@@ -313,7 +312,7 @@ var Tournament = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         Logger_1.default.info('Getting Attendees for Tournament [%s :: %s]', this.id, this.name);
-                        return [4 /*yield*/, PaginatedQuery_1.default.query("Tournament Attendee [" + this.id + " :: " + this.name + "]", queries.tournamentAttendees, { id: this.id }, options, {}, 3)];
+                        return [4 /*yield*/, NetworkInterface_1.default.paginatedQuery("Tournament Attendee [" + this.id + " :: " + this.name + "]", queries.tournamentAttendees, { id: this.id }, options, {}, 3)];
                     case 1:
                         data = _a.sent();
                         tournaments = lodash_1.default.flatten(data.map(function (d) { return d.tournament; }));

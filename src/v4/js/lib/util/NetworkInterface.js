@@ -72,36 +72,57 @@ var RATE_LIMIT_MS_TIME = process.env.RateLimitMsTime || 1000;
 var TOTAL_PAGES_REGEX_JSON = new RegExp(/"pageInfo":[\s]?{[\n\s]*?"totalPages": ([0-9]*)/);
 var TOTAL_PAGES_REGEX_STRING = new RegExp(/"pageInfo":{"totalPages":([0-9]*)}/);
 var DELINQUENCY_TIMER = 60000;
+var DELINQUENCY_RATE = 60;
 var MAX_COMPLEXITY = 1000;
-var NetworkInterface = /** @class */ (function (_super) {
-    __extends(NetworkInterface, _super);
+var NetworkInterface = /** @class */ (function () {
     function NetworkInterface() {
-        return _super !== null && _super.apply(this, arguments) || this;
     }
     NetworkInterface.init = function () {
         if (!NetworkInterface.initialized) {
             NetworkInterface.client = new graphql_request_1.GraphQLClient(API_URL, NetworkInterface.getHeaders());
             NetworkInterface.isClientDelinquent = false;
+            NetworkInterface.queryCount = 0;
             NetworkInterface.delinquencyQueue = [];
             NetworkInterface.delinquencyPaginatedQueue = [];
-            NetworkInterface.queryCount = 0;
-            NetworkInterface.resetDelinquency = setInterval(function () {
-                Logger_1.default.warn('Delinquency Timer Reset!');
-                NetworkInterface.queryCount = 0;
-                NetworkInterface.isClientDelinquent = false;
-                if (NetworkInterface.delinquencyQueue.length > 0) {
-                    NetworkInterface.delinquencyQueue.forEach(function (fcn) {
-                        fcn();
-                    });
-                }
-                if (NetworkInterface.delinquencyPaginatedQueue.length > 0) {
-                    NetworkInterface.delinquencyPaginatedQueue.forEach(function (fcn) {
-                        fcn();
-                    });
-                }
-            }, DELINQUENCY_TIMER);
+            NetworkInterface.delinquencyTimer;
             NetworkInterface.initialized = true;
         }
+    };
+    NetworkInterface.determineDelinquency = function () {
+        // determine if delinquency time should be started, or if 
+        // we are above rate limit threshold and should begin queuing
+        NetworkInterface.queryCount++;
+        Logger_1.default.verbose('Query Count: %s', NetworkInterface.queryCount);
+        if (NetworkInterface.queryCount == 1)
+            NetworkInterface.activateDelinquencyTimer();
+        else if (NetworkInterface.queryCount === DELINQUENCY_RATE)
+            NetworkInterface.isClientDelinquent = true;
+        return NetworkInterface.isClientDelinquent;
+    };
+    NetworkInterface.activateDelinquencyTimer = function () {
+        /*
+            let logTimeInterval : any;
+            let time = 0;
+            logTimeInterval = setInterval(() => {
+                setTimeout(() => log.verbose('Time: %s seconds', time++), 1000);
+            }, 1000);
+        */
+        NetworkInterface.delinquencyTimer = setTimeout(function () {
+            Logger_1.default.warn('Activating Delinquency Timer!');
+            NetworkInterface.queryCount--;
+            NetworkInterface.isClientDelinquent = false;
+            if (NetworkInterface.delinquencyQueue.length > 0) {
+                NetworkInterface.delinquencyQueue.forEach(function (fcn) {
+                    fcn();
+                });
+            }
+            //if(logTimeInterval)
+            //	clearInterval(logTimeInterval);
+        }, DELINQUENCY_TIMER);
+    };
+    NetworkInterface.deactivateDelinquencyTimer = function () {
+        if (NetworkInterface.delinquencyTimer)
+            clearInterval(NetworkInterface.delinquencyTimer);
     };
     NetworkInterface.getHeaders = function () {
         var token = TokenHandler_1.default.getToken();
@@ -118,17 +139,12 @@ var NetworkInterface = /** @class */ (function (_super) {
     NetworkInterface.addToDelinquencyQueue = function (query, variables) {
         return new Promise(function (resolve, reject) {
             NetworkInterface.delinquencyQueue.push(function () {
+                Logger_1.default.warn('Running delinquency queued query');
                 NetworkInterface.query(query, variables)
-                    .then(resolve)
-                    .catch(reject);
-            });
-        });
-    };
-    NetworkInterface.addToDelinquencyPaginatedQueue = function (operationName, queryString, params, options, additionalParams, complexitySubtraction) {
-        if (complexitySubtraction === void 0) { complexitySubtraction = 0; }
-        return new Promise(function (resolve, reject) {
-            NetworkInterface.delinquencyQueue.push(function () {
-                NetworkInterface.paginatedQuery(operationName, queryString, params, options, additionalParams, complexitySubtraction)
+                    .then(function (data) {
+                    console.log('ran queued query');
+                    return data;
+                })
                     .then(resolve)
                     .catch(reject);
             });
@@ -150,21 +166,44 @@ var NetworkInterface = /** @class */ (function (_super) {
      * @param  {object} variables
      * @returns {promise} resolving the results of the query after being staggered in the request queue
      */
-    NetworkInterface.query = function (query, variables) {
+    NetworkInterface.query2 = function (query, variables) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        NetworkInterface.determineDelinquency();
                         if (!!NetworkInterface.isClientDelinquent) return [3 /*break*/, 2];
-                        Logger_1.default.verbose('Query Count: %s', NetworkInterface.queryCount);
-                        NetworkInterface.queryCount++;
                         return [4 /*yield*/, NetworkInterface.client.request(query, variables)];
                     case 1: return [2 /*return*/, _a.sent()];
                     case 2:
                         Logger_1.default.warn('Request per minute threshold exceeded. Queuing your request for the next pass...');
-                        return [2 /*return*/, NetworkInterface.addToDelinquencyQueue(query, variables)];
+                        return [2 /*return*/, NetworkInterface.delinquentQuery(query, variables)];
                 }
             });
+        });
+    };
+    NetworkInterface.query = function (query, variables) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, QueryQueue.getInstance().add(query, variables)];
+                    case 1: return [2 /*return*/, _a.sent()];
+                }
+            });
+        });
+    };
+    NetworkInterface.delinquentQuery = function (query, variables) {
+        return new Promise(function (resolve, reject) {
+            setTimeout(function () {
+                Logger_1.default.warn('Running delinquency queued query');
+                NetworkInterface.query(query, variables)
+                    .then(function (data) {
+                    console.log('ran queued query');
+                    return data;
+                })
+                    .then(resolve)
+                    .catch(reject);
+            }, DELINQUENCY_TIMER);
         });
     };
     NetworkInterface.staggeredQuery = function (query, variables) {
@@ -337,6 +376,107 @@ var NetworkInterface = /** @class */ (function (_super) {
     NetworkInterface.isClientDelinquent = false;
     NetworkInterface.queryCount = 0;
     return NetworkInterface;
-}(events_1.EventEmitter));
+}());
 exports.default = NetworkInterface;
+var QueryQueue = /** @class */ (function (_super) {
+    __extends(QueryQueue, _super);
+    function QueryQueue(count) {
+        var _this_1 = _super.call(this) || this;
+        _this_1.count = 0;
+        _this_1.count = count;
+        return _this_1;
+    }
+    QueryQueue.getInstance = function () {
+        if (!QueryQueue.instance) {
+            QueryQueue.instance = new QueryQueue(0);
+            QueryQueue.inspector = null;
+            // listen and fire if an addition puts the queue at capacity
+            QueryQueue.instance.on('add', function () {
+                if (QueryQueue.instance.count >= DELINQUENCY_RATE) {
+                    QueryQueue.instance.queueIsFull();
+                }
+                QueryQueue.instance.startInspector();
+            });
+            QueryQueue.instance.startLogTimer(); //debug
+        }
+        return QueryQueue.instance;
+    };
+    QueryQueue.prototype.startLogTimer = function () {
+        var logTimeInterval;
+        var time = 0;
+        logTimeInterval = setInterval(function () {
+            setTimeout(function () { return Logger_1.default.verbose('Time: %s seconds', time++); }, 1000);
+        }, 1000);
+    };
+    QueryQueue.prototype.isEmpty = function () {
+        return this.count === 0;
+    };
+    QueryQueue.prototype.startInspector = function () {
+        var _this_1 = this;
+        if (!QueryQueue.inspector) {
+            Logger_1.default.verbose('Beginning Query Queue Inspector');
+            QueryQueue.inspector = setInterval(function () {
+                if (_this_1.count == 0) {
+                    _this_1.stopInspector();
+                    _this_1.queueIsEmpty();
+                }
+            }, QueryQueue.groomRate);
+        }
+    };
+    QueryQueue.prototype.stopInspector = function () {
+        if (QueryQueue.inspector)
+            clearInterval(QueryQueue.inspector);
+    };
+    QueryQueue.prototype.add = function (query, variables) {
+        var _this = this;
+        return new Promise(function (resolve, reject) {
+            if (!QueryQueue.isFull) {
+                // fire event and increment counter
+                _this.addedToQueue();
+                // set a timer to remove count after delinquency timer
+                setTimeout(function () {
+                    _this.removedFromQueue();
+                }, DELINQUENCY_TIMER);
+                // execute and return the query results
+                NetworkInterface.client.request(query, variables)
+                    .then(resolve)
+                    .catch(reject);
+            }
+            else {
+                Logger_1.default.warn('Query waiting on delinquency queue to free up');
+                _this.on('remove', function () {
+                    //return new Promise(function(resolve, reject){
+                    Logger_1.default.verbose('Running delinquency queue query');
+                    NetworkInterface.client.request(query, variables)
+                        .then(resolve)
+                        .catch(reject);
+                    //}).then(resolve).catch(reject)
+                });
+            }
+        });
+    };
+    QueryQueue.prototype.addedToQueue = function () {
+        this.count++;
+        this.emit('add');
+        Logger_1.default.verbose('Adding query to queue. Count: %s', this.count);
+    };
+    QueryQueue.prototype.removedFromQueue = function () {
+        this.count--;
+        this.emit('remove');
+        QueryQueue.isFull = false;
+        Logger_1.default.verbose('element removed from queue. Count: %s', this.count);
+    };
+    QueryQueue.prototype.queueIsEmpty = function () {
+        this.emit('empty');
+        Logger_1.default.info('query queue is now empty');
+    };
+    QueryQueue.prototype.queueIsFull = function () {
+        this.emit('full');
+        QueryQueue.isFull = true;
+        Logger_1.default.warn('Query Queue capacity of %s hit. Further queries are being queued for execution', DELINQUENCY_RATE);
+    };
+    QueryQueue.isFull = false;
+    QueryQueue.groomRate = 1000;
+    return QueryQueue;
+}(events_1.EventEmitter));
 module.exports = NetworkInterface;

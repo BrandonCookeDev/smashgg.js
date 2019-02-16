@@ -49,6 +49,7 @@ var path_1 = __importDefault(require("path"));
 var ROOT = path_1.default.join(__dirname, '..', '..', '..', '..', '.env');
 var dotenv_1 = require("dotenv");
 dotenv_1.config({ path: ROOT });
+require("../lib/util/ErrorHandler");
 var chai_1 = require("chai");
 var User_1 = require("../lib/User");
 var Initializer_1 = __importDefault(require("../lib/util/Initializer"));

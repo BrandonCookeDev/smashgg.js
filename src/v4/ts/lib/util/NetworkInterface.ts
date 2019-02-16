@@ -14,17 +14,18 @@ const RATE_LIMIT_MS_TIME = process.env.RateLimitMsTime || 1000
 const TOTAL_PAGES_REGEX_JSON = new RegExp(/"pageInfo":[\s]?{[\n\s]*?"totalPages": ([0-9]*)/);
 const TOTAL_PAGES_REGEX_STRING = new RegExp(/"pageInfo":{"totalPages":([0-9]*)}/);
 const DELINQUENCY_TIMER = 60000
+const DELINQUENCY_RATE = 60
 const MAX_COMPLEXITY = 1000
 
 import Variables = INetworkInterface.Variables
 
-export default class NetworkInterface extends EventEmitter{
+export default class NetworkInterface{
 
 	static client: GraphQLClient
 	static initialized: boolean = false
 	static isClientDelinquent: boolean = false
-	static queryCount: number = 0;
-	static resetDelinquency: any
+	static queryCount: number = 0
+	static delinquencyTimer: any
 	static delinquencyQueue: any[]
 	static delinquencyPaginatedQueue: any[]
 
@@ -32,27 +33,55 @@ export default class NetworkInterface extends EventEmitter{
 		if(!NetworkInterface.initialized){
 			NetworkInterface.client = new GraphQLClient(API_URL, NetworkInterface.getHeaders())
 			NetworkInterface.isClientDelinquent = false
+			NetworkInterface.queryCount = 0;
 
 			NetworkInterface.delinquencyQueue = [];
 			NetworkInterface.delinquencyPaginatedQueue = [];
-			NetworkInterface.queryCount = 0;
-			NetworkInterface.resetDelinquency = setInterval(() =>{
-				log.warn('Delinquency Timer Reset!')
-				NetworkInterface.queryCount = 0
-				NetworkInterface.isClientDelinquent = false
-				if(NetworkInterface.delinquencyQueue.length > 0){
-					NetworkInterface.delinquencyQueue.forEach( fcn => {
-						fcn()
-					})
-				}
-				if(NetworkInterface.delinquencyPaginatedQueue.length > 0){
-					NetworkInterface.delinquencyPaginatedQueue.forEach(fcn => {
-						fcn()
-					})
-				}
-			}, DELINQUENCY_TIMER)
+			NetworkInterface.delinquencyTimer;
 			NetworkInterface.initialized = true
 		}
+	}
+
+	static determineDelinquency() : boolean{
+		// determine if delinquency time should be started, or if 
+		// we are above rate limit threshold and should begin queuing
+		NetworkInterface.queryCount++
+		log.verbose('Query Count: %s', NetworkInterface.queryCount)
+		if(NetworkInterface.queryCount == 1)
+			NetworkInterface.activateDelinquencyTimer()
+		else if(NetworkInterface.queryCount === DELINQUENCY_RATE)
+			NetworkInterface.isClientDelinquent = true
+		
+		return NetworkInterface.isClientDelinquent;
+	}
+
+	static activateDelinquencyTimer(){
+		/*
+			let logTimeInterval : any;
+			let time = 0;
+			logTimeInterval = setInterval(() => {
+				setTimeout(() => log.verbose('Time: %s seconds', time++), 1000);
+			}, 1000);
+		*/
+
+		NetworkInterface.delinquencyTimer = setTimeout(() =>{
+			log.warn('Activating Delinquency Timer!')
+			NetworkInterface.queryCount--
+			NetworkInterface.isClientDelinquent = false
+			if(NetworkInterface.delinquencyQueue.length > 0){
+				NetworkInterface.delinquencyQueue.forEach( fcn => {
+					fcn()
+				})
+			}
+
+			//if(logTimeInterval)
+			//	clearInterval(logTimeInterval);
+		}, DELINQUENCY_TIMER)
+	}
+
+	static deactivateDelinquencyTimer(){
+		if(NetworkInterface.delinquencyTimer)
+			clearInterval(NetworkInterface.delinquencyTimer);
 	}
 
 	static getHeaders(){
@@ -72,24 +101,12 @@ export default class NetworkInterface extends EventEmitter{
 	static addToDelinquencyQueue(query: string, variables: Variables){
 		return new Promise(function(resolve, reject){
 			NetworkInterface.delinquencyQueue.push( () => {
+				log.warn('Running delinquency queued query');
 				NetworkInterface.query(query, variables)
-					.then(resolve)
-					.catch(reject)
-			}
-		)})
-	}
-
-	static addToDelinquencyPaginatedQueue(operationName: string, queryString: string, params: object, options?: IPaginatedQuery.Options, additionalParams?: {}, complexitySubtraction: number = 0) : Promise<any> {
-		return new Promise(function(resolve, reject){
-			NetworkInterface.delinquencyQueue.push( () => {
-				NetworkInterface.paginatedQuery(
-					operationName,
-					queryString,
-					params,
-					options,
-					additionalParams,
-					complexitySubtraction
-				)
+					.then(data => {
+						console.log('ran queued query')
+						return data
+					})
 					.then(resolve)
 					.catch(reject)
 			}
@@ -112,16 +129,33 @@ export default class NetworkInterface extends EventEmitter{
 	 * @param  {object} variables 
 	 * @returns {promise} resolving the results of the query after being staggered in the request queue
 	 */
-	static async query(query: string, variables: Variables) : Promise<any>{
-		if(!NetworkInterface.isClientDelinquent){
-			log.verbose('Query Count: %s', NetworkInterface.queryCount)
-			NetworkInterface.queryCount++
+	static async query2(query: string, variables: Variables) : Promise<any>{
+		NetworkInterface.determineDelinquency()
+		if(!NetworkInterface.isClientDelinquent)
 			return await NetworkInterface.client.request(query, variables)
-		}
 		else {
 			log.warn('Request per minute threshold exceeded. Queuing your request for the next pass...')
-			return NetworkInterface.addToDelinquencyQueue(query, variables)
+			return NetworkInterface.delinquentQuery(query, variables)
 		}
+	}
+
+	static async query(query: string, variables: Variables) : Promise<any>{
+		return await QueryQueue.getInstance().add(query, variables)
+	}
+
+	static delinquentQuery(query: string, variables: Variables) : Promise<any>{
+		return new Promise(function(resolve, reject){
+			setTimeout(() => {
+				log.warn('Running delinquency queued query');
+				NetworkInterface.query(query, variables)
+					.then(data => {
+						console.log('ran queued query')
+						return data
+					})
+					.then(resolve)
+					.catch(reject)
+			}, DELINQUENCY_TIMER)
+		})
 	}
 
 	static staggeredQuery(query: string, variables: Variables) : Promise<any>{
@@ -157,6 +191,7 @@ export default class NetworkInterface extends EventEmitter{
 	static async paginatedQuery(operationName: string, queryString: string, params: object, options?: IPaginatedQuery.Options, additionalParams?: {}, complexitySubtraction: number = 0) : Promise<any[]>{
 		log.info('%s: Calling Paginated Querys', operationName);
 
+		// parse options
 		let page = options != undefined && options.page ? options.page : 1
 		let perPage = options != undefined && options.perPage ? options.perPage : 1
 		let filters = options != undefined && options.filters  ? options.filters : null
@@ -265,6 +300,130 @@ export default class NetworkInterface extends EventEmitter{
 		}
 		if(nextArgs.length === 0) return complexity
 		else return complexity + NetworkInterface.determineComplexity(nextArgs)
+	}
+}
+
+class QueryQueue extends EventEmitter{
+
+	count: number = 0
+	delinquencyQueue: any[] = []
+
+	static instance: QueryQueue
+	static isFull: boolean = false;
+	static inspector: any
+	static groomRate: number = 1000
+
+	constructor(count: number, delinquencyQueue: any[]){
+		super();
+		this.count = count;
+		this.delinquencyQueue = delinquencyQueue
+
+	}
+
+	static getInstance(){
+		if(!QueryQueue.instance){
+			QueryQueue.instance = new QueryQueue(0, [])
+			QueryQueue.inspector = null
+
+			// listen and fire if an addition puts the queue at capacity
+			QueryQueue.instance.on('add', function(){
+				if(QueryQueue.instance.count >= DELINQUENCY_RATE){
+					QueryQueue.instance.queueIsFull()
+				}
+
+				QueryQueue.instance.startInspector()
+			})
+
+			QueryQueue.instance.startLogTimer(); //debug
+		}
+		return QueryQueue.instance
+	}
+
+	startLogTimer(){
+		let logTimeInterval : any;
+		let time = 0;
+		logTimeInterval = setInterval(() => {
+			setTimeout(() => log.verbose('Time: %s seconds', time++), 1000);
+		}, 1000);
+	}
+
+	isEmpty(){
+		return this.count === 0
+	}
+
+	startInspector(){
+		if(!QueryQueue.inspector){
+			log.verbose('Beginning Query Queue Inspector')
+			QueryQueue.inspector = setInterval(() => {
+				if(this.count == 0){
+					this.stopInspector()
+					this.queueIsEmpty()
+				}
+			}, QueryQueue.groomRate)
+		}
+	}
+
+	stopInspector(){
+		if(QueryQueue.inspector)
+			clearInterval(QueryQueue.inspector)
+	}
+
+	add(query: any, variables: Variables){
+		let _this = this
+		return new Promise(function(resolve, reject){
+			if(!QueryQueue.isFull){
+
+				// fire event and increment counter
+				_this.addedToQueue()
+				
+				// set a timer to remove count after delinquency timer
+				setTimeout(() => {
+					_this.removedFromQueue()
+				}, DELINQUENCY_TIMER)
+
+				// execute and return the query results
+				NetworkInterface.client.request(query, variables)
+					.then(resolve)
+					.catch(reject)
+			}
+			else {
+
+				log.warn('Query waiting on delinquency queue to free up')
+				_this.on('remove', () => {
+					//return new Promise(function(resolve, reject){
+					log.verbose('Running delinquency queue query')
+					NetworkInterface.client.request(query, variables)
+						.then(resolve)
+						.catch(reject)
+					//}).then(resolve).catch(reject)
+				})
+			}
+
+		})
+	}
+
+	addedToQueue(){
+		this.count++
+		this.emit('add')
+		log.verbose('Adding query to queue. Count: %s', this.count)
+	}
+
+	removedFromQueue(){
+		this.count--
+		this.emit('remove')
+		QueryQueue.isFull = false;
+		log.verbose('element removed from queue. Count: %s', this.count)
+	}
+
+	queueIsEmpty(){
+		this.emit('empty')
+		log.info('query queue is now empty')
+	}
+
+	queueIsFull(){
+		this.emit('full')
+		QueryQueue.isFull = true
+		log.warn('Query Queue capacity of %s hit. Further queries are being queued for execution', DELINQUENCY_RATE)
 	}
 }
 

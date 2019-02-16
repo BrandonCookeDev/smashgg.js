@@ -3,6 +3,8 @@ const ROOT = path.join(__dirname, '..', '..', '..', '..', '.env');
 import {config} from 'dotenv'
 config({path: ROOT})
 
+import '../lib/util/ErrorHandler'
+
 import sinon from 'sinon'
 import {expect, assert} from 'chai'
 import {Entrant} from '../lib/Entrant'

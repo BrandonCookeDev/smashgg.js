@@ -79,26 +79,29 @@ var NetworkInterface = /** @class */ (function (_super) {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     NetworkInterface.init = function () {
-        NetworkInterface.client = new graphql_request_1.GraphQLClient(API_URL, NetworkInterface.getHeaders());
-        NetworkInterface.isClientDelinquent = false;
-        NetworkInterface.initialized = true;
-        NetworkInterface.delinquencyQueue = [];
-        NetworkInterface.delinquencyPaginatedQueue = [];
-        NetworkInterface.queryCount = 0;
-        NetworkInterface.resetDelinquency = setInterval(function () {
-            NetworkInterface.queryCount = 0;
+        if (!NetworkInterface.initialized) {
+            NetworkInterface.client = new graphql_request_1.GraphQLClient(API_URL, NetworkInterface.getHeaders());
             NetworkInterface.isClientDelinquent = false;
-            if (NetworkInterface.delinquencyQueue.length > 0) {
-                NetworkInterface.delinquencyQueue.forEach(function (fcn) {
-                    fcn();
-                });
-            }
-            if (NetworkInterface.delinquencyPaginatedQueue.length > 0) {
-                NetworkInterface.delinquencyPaginatedQueue.forEach(function (fcn) {
-                    fcn();
-                });
-            }
-        }, DELINQUENCY_TIMER);
+            NetworkInterface.delinquencyQueue = [];
+            NetworkInterface.delinquencyPaginatedQueue = [];
+            NetworkInterface.queryCount = 0;
+            NetworkInterface.resetDelinquency = setInterval(function () {
+                Logger_1.default.warn('Delinquency Timer Reset!');
+                NetworkInterface.queryCount = 0;
+                NetworkInterface.isClientDelinquent = false;
+                if (NetworkInterface.delinquencyQueue.length > 0) {
+                    NetworkInterface.delinquencyQueue.forEach(function (fcn) {
+                        fcn();
+                    });
+                }
+                if (NetworkInterface.delinquencyPaginatedQueue.length > 0) {
+                    NetworkInterface.delinquencyPaginatedQueue.forEach(function (fcn) {
+                        fcn();
+                    });
+                }
+            }, DELINQUENCY_TIMER);
+            NetworkInterface.initialized = true;
+        }
     };
     NetworkInterface.getHeaders = function () {
         var token = TokenHandler_1.default.getToken();
@@ -111,35 +114,6 @@ var NetworkInterface = /** @class */ (function (_super) {
                 'Authorization': "Bearer " + token
             }
         };
-    };
-    /**
-     * query
-     *
-     * takes a graphql query string and corresponding variable object
-     * and puts the execution of this query into a queue which is staggered
-     * by the standard rate limit imposed by smashgg.
-     *
-     * Useful for when many queries need to be run consecutively
-     *
-     * @param  {string} query
-     * @param  {object} variables
-     * @returns {promise} resolving the results of the query after being staggered in the request queue
-     */
-    NetworkInterface.query = function (query, variables) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        if (!!NetworkInterface.isClientDelinquent) return [3 /*break*/, 2];
-                        NetworkInterface.queryCount++;
-                        return [4 /*yield*/, NetworkInterface.client.request(query, variables)];
-                    case 1: return [2 /*return*/, _a.sent()];
-                    case 2:
-                        Logger_1.default.warn('Request per minute threshold exceeded. Queuing your request for the next pass...');
-                        return [2 /*return*/, NetworkInterface.addToDelinquencyQueue(query, variables)];
-                }
-            });
-        });
     };
     NetworkInterface.addToDelinquencyQueue = function (query, variables) {
         return new Promise(function (resolve, reject) {
@@ -157,6 +131,39 @@ var NetworkInterface = /** @class */ (function (_super) {
                 NetworkInterface.paginatedQuery(operationName, queryString, params, options, additionalParams, complexitySubtraction)
                     .then(resolve)
                     .catch(reject);
+            });
+        });
+    };
+    /**
+     * query
+     *
+     * takes a graphql query string and corresponding variable object
+     * if the client has not exceeded the threshold of 80 requests per 60
+     * seconds, it is considered Not Delinquent.
+     * otherwise, a Delinquent client will be halted from executing their
+     * queries. In this case, the query is wrapped in a function returning
+     * a promise to be fired after the 60 second time limit is up
+     *
+     * Useful for when many queries need to be run consecutively
+     *
+     * @param  {string} query
+     * @param  {object} variables
+     * @returns {promise} resolving the results of the query after being staggered in the request queue
+     */
+    NetworkInterface.query = function (query, variables) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!!NetworkInterface.isClientDelinquent) return [3 /*break*/, 2];
+                        Logger_1.default.verbose('Query Count: %s', NetworkInterface.queryCount);
+                        NetworkInterface.queryCount++;
+                        return [4 /*yield*/, NetworkInterface.client.request(query, variables)];
+                    case 1: return [2 /*return*/, _a.sent()];
+                    case 2:
+                        Logger_1.default.warn('Request per minute threshold exceeded. Queuing your request for the next pass...');
+                        return [2 /*return*/, NetworkInterface.addToDelinquencyQueue(query, variables)];
+                }
             });
         });
     };

@@ -29,27 +29,30 @@ export default class NetworkInterface extends EventEmitter{
 	static delinquencyPaginatedQueue: any[]
 
 	static init(){
-		NetworkInterface.client = new GraphQLClient(API_URL, NetworkInterface.getHeaders())
-		NetworkInterface.isClientDelinquent = false
-		NetworkInterface.initialized = true
-
-		NetworkInterface.delinquencyQueue = [];
-		NetworkInterface.delinquencyPaginatedQueue = [];
-		NetworkInterface.queryCount = 0;
-		NetworkInterface.resetDelinquency = setInterval(() =>{
-			NetworkInterface.queryCount = 0
+		if(!NetworkInterface.initialized){
+			NetworkInterface.client = new GraphQLClient(API_URL, NetworkInterface.getHeaders())
 			NetworkInterface.isClientDelinquent = false
-			if(NetworkInterface.delinquencyQueue.length > 0){
-				NetworkInterface.delinquencyQueue.forEach( fcn => {
-					fcn()
-				})
-			}
-			if(NetworkInterface.delinquencyPaginatedQueue.length > 0){
-				NetworkInterface.delinquencyPaginatedQueue.forEach(fcn => {
-					fcn()
-				})
-			}
-		}, DELINQUENCY_TIMER)
+
+			NetworkInterface.delinquencyQueue = [];
+			NetworkInterface.delinquencyPaginatedQueue = [];
+			NetworkInterface.queryCount = 0;
+			NetworkInterface.resetDelinquency = setInterval(() =>{
+				log.warn('Delinquency Timer Reset!')
+				NetworkInterface.queryCount = 0
+				NetworkInterface.isClientDelinquent = false
+				if(NetworkInterface.delinquencyQueue.length > 0){
+					NetworkInterface.delinquencyQueue.forEach( fcn => {
+						fcn()
+					})
+				}
+				if(NetworkInterface.delinquencyPaginatedQueue.length > 0){
+					NetworkInterface.delinquencyPaginatedQueue.forEach(fcn => {
+						fcn()
+					})
+				}
+			}, DELINQUENCY_TIMER)
+			NetworkInterface.initialized = true
+		}
 	}
 
 	static getHeaders(){
@@ -65,30 +68,6 @@ export default class NetworkInterface extends EventEmitter{
 		}
 	}
 
-	
-	/**
-	 * query
-	 * 
-	 * takes a graphql query string and corresponding variable object
-	 * and puts the execution of this query into a queue which is staggered
-	 * by the standard rate limit imposed by smashgg.
-	 * 
-	 * Useful for when many queries need to be run consecutively
-	 * 
-	 * @param  {string} query
-	 * @param  {object} variables 
-	 * @returns {promise} resolving the results of the query after being staggered in the request queue
-	 */
-	static async query(query: string, variables: Variables) : Promise<any>{
-		if(!NetworkInterface.isClientDelinquent){
-			NetworkInterface.queryCount++
-			return await NetworkInterface.client.request(query, variables)
-		}
-		else {
-			log.warn('Request per minute threshold exceeded. Queuing your request for the next pass...')
-			return NetworkInterface.addToDelinquencyQueue(query, variables)
-		}
-	}
 
 	static addToDelinquencyQueue(query: string, variables: Variables){
 		return new Promise(function(resolve, reject){
@@ -115,6 +94,34 @@ export default class NetworkInterface extends EventEmitter{
 					.catch(reject)
 			}
 		)})
+	}
+	
+	/**
+	 * query
+	 * 
+	 * takes a graphql query string and corresponding variable object
+	 * if the client has not exceeded the threshold of 80 requests per 60 
+	 * seconds, it is considered Not Delinquent. 
+	 * otherwise, a Delinquent client will be halted from executing their 
+	 * queries. In this case, the query is wrapped in a function returning
+	 * a promise to be fired after the 60 second time limit is up
+	 * 
+	 * Useful for when many queries need to be run consecutively
+	 * 
+	 * @param  {string} query
+	 * @param  {object} variables 
+	 * @returns {promise} resolving the results of the query after being staggered in the request queue
+	 */
+	static async query(query: string, variables: Variables) : Promise<any>{
+		if(!NetworkInterface.isClientDelinquent){
+			log.verbose('Query Count: %s', NetworkInterface.queryCount)
+			NetworkInterface.queryCount++
+			return await NetworkInterface.client.request(query, variables)
+		}
+		else {
+			log.warn('Request per minute threshold exceeded. Queuing your request for the next pass...')
+			return NetworkInterface.addToDelinquencyQueue(query, variables)
+		}
 	}
 
 	static staggeredQuery(query: string, variables: Variables) : Promise<any>{

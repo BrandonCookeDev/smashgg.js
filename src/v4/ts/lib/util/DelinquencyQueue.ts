@@ -1,6 +1,7 @@
 import {EventEmitter} from 'events'
 import log from './Logger'
 import GQLClient from './GQLClient'
+import { clear } from 'winston';
 
 const DELINQUENCY_TIMER = 60000
 const DELINQUENCY_RATE = 60
@@ -15,7 +16,8 @@ export default class DelinquencyQueue extends EventEmitter{
 	static isFull: boolean = false;
 	static inspector: any
 	static groomRate: number = 1000
-	static semaphore: any
+	static executionSemaphore: any
+	static queuingSemaphore: any
 
 	constructor(count: number, delinquencyQueue: any[]){
 		super()
@@ -26,7 +28,8 @@ export default class DelinquencyQueue extends EventEmitter{
 	static getInstance(){
 		if(!DelinquencyQueue.instance){
 			DelinquencyQueue.instance = new DelinquencyQueue(0, [])
-			DelinquencyQueue.semaphore = null
+			DelinquencyQueue.queuingSemaphore = null
+			DelinquencyQueue.executionSemaphore = null
 			DelinquencyQueue.inspector = null
 
 			// listen and fire if an addition puts the queue at capacity
@@ -43,23 +46,42 @@ export default class DelinquencyQueue extends EventEmitter{
 		return DelinquencyQueue.instance
 	}
 
-	static getSemaphore(){
+	// semaphore management
+	static getExecutionSemaphore(){
 		return new Promise(function(resolve, reject){
-			if(!DelinquencyQueue.semaphore){
-				DelinquencyQueue.semaphore = {}
-				log.verbose('obtaining semaphore')
-				return resolve(DelinquencyQueue.semaphore)
+			if(!DelinquencyQueue.executionSemaphore){
+				DelinquencyQueue.executionSemaphore = {}
+				log.verbose('obtaining execution semaphore')
+				return resolve(DelinquencyQueue.executionSemaphore)
 			}
 			else return null;	
 		})
 	}
 
-	static releaseSemaphore(){
-		log.verbose('releasing semaphore')
-		if(DelinquencyQueue.semaphore)
-			DelinquencyQueue.semaphore = null
+	static releaseExecutionSemaphore(){
+		log.verbose('releasing execution semaphore')
+		if(DelinquencyQueue.executionSemaphore)
+			DelinquencyQueue.executionSemaphore = null
 	}
 
+	static getQueuingSemaphore(){
+		return new Promise(function(resolve, reject){
+			if(!DelinquencyQueue.queuingSemaphore){
+				DelinquencyQueue.queuingSemaphore = {}
+				log.verbose('obtaining queuing semaphore')
+				return resolve(DelinquencyQueue.queuingSemaphore)
+			}
+			else return null;	
+		})
+	}
+
+	static releaseQueuingSemaphore(){
+		log.verbose('releasing queuing semaphore')
+		if(DelinquencyQueue.queuingSemaphore)
+			DelinquencyQueue.queuingSemaphore = null
+	}
+
+	// instance
 	executeQuery(query: string, variables: any){
 		let _this = this
 		return new Promise(function(resolve, reject){
@@ -73,7 +95,7 @@ export default class DelinquencyQueue extends EventEmitter{
 
 			// obtain the global semaphore
 			let semaphoreInterval = setInterval(() => {
-				DelinquencyQueue.getSemaphore()
+				DelinquencyQueue.getExecutionSemaphore()
 					.then(semaphore => {
 						// if the semaphore was obtained, 
 						// let the execution proceed!
@@ -82,7 +104,7 @@ export default class DelinquencyQueue extends EventEmitter{
 							GQLClient.getInstance().request(query, variables)
 								.then(data => {
 									clearInterval(semaphoreInterval)
-									DelinquencyQueue.releaseSemaphore()
+									DelinquencyQueue.releaseExecutionSemaphore()
 									return data
 								})
 								.then(resolve)
@@ -126,18 +148,50 @@ export default class DelinquencyQueue extends EventEmitter{
 		let _this = this
 		return new Promise(function(resolve, reject){
 			if(!DelinquencyQueue.isFull){
-				_this.executeQuery(query, variables)
-					.then(resolve)
-					.catch(reject)
+				let queuingInterval = setInterval(() => {
+					DelinquencyQueue.getQueuingSemaphore()
+						.then(semaphore => {
+							if(semaphore){
+								// release interval to alleviate the event loop 
+								DelinquencyQueue.releaseQueuingSemaphore()
+
+								// add the query into the main queue
+								_this.executeQuery(query, variables)
+									.then(data => {
+										clearInterval(queuingInterval)
+										return data
+									})
+									.then(resolve)
+									.catch(reject)
+							}
+						})
+				}, SEMAPHORE_TIMER)
+
+					
 			}
 			else {
 				log.warn('Query waiting on delinquency queue to free up')
 				
 				// when element from main queue is removed, execute delinquent query
 				_this.on('remove', () => {
-					_this.executeQuery(query, variables)
-						.then(resolve)
-						.catch(reject)
+					let queuingInterval = setInterval(() => {
+						DelinquencyQueue.getQueuingSemaphore()
+							.then(semaphore => {
+								if(semaphore){
+									// release interval to alleviate the event loop 
+									DelinquencyQueue.releaseQueuingSemaphore()
+
+									// add the query into the main queue
+									_this.executeQuery(query, variables)
+										.then(data => {
+											clearInterval(queuingInterval)
+											return data
+										})
+										.then(resolve)
+										.catch(reject)
+								}
+							})
+					}, SEMAPHORE_TIMER)
 				})
 			}
 
@@ -153,9 +207,12 @@ export default class DelinquencyQueue extends EventEmitter{
 
 	removedFromQueue(){
 		this.count--
-		this.emit('remove')
-		DelinquencyQueue.isFull = false;
-		log.verbose('element removed from queue. Count: %s', this.count)
+		if(this.count <= DELINQUENCY_RATE){
+			this.emit('remove')
+			DelinquencyQueue.isFull = false;
+			log.verbose('element removed from queue. Count: %s', this.count)
+		}
+		else throw new Error('Queue is above rate limit of ' + DELINQUENCY_RATE)
 	}
 
 	queueIsEmpty(){

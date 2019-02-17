@@ -35,7 +35,8 @@ var DelinquencyQueue = /** @class */ (function (_super) {
     DelinquencyQueue.getInstance = function () {
         if (!DelinquencyQueue.instance) {
             DelinquencyQueue.instance = new DelinquencyQueue(0, []);
-            DelinquencyQueue.semaphore = null;
+            DelinquencyQueue.queuingSemaphore = null;
+            DelinquencyQueue.executionSemaphore = null;
             DelinquencyQueue.inspector = null;
             // listen and fire if an addition puts the queue at capacity
             DelinquencyQueue.instance.on('add', function () {
@@ -48,22 +49,40 @@ var DelinquencyQueue = /** @class */ (function (_super) {
         }
         return DelinquencyQueue.instance;
     };
-    DelinquencyQueue.getSemaphore = function () {
+    // semaphore management
+    DelinquencyQueue.getExecutionSemaphore = function () {
         return new Promise(function (resolve, reject) {
-            if (!DelinquencyQueue.semaphore) {
-                DelinquencyQueue.semaphore = {};
-                Logger_1.default.verbose('obtaining semaphore');
-                return resolve(DelinquencyQueue.semaphore);
+            if (!DelinquencyQueue.executionSemaphore) {
+                DelinquencyQueue.executionSemaphore = {};
+                Logger_1.default.verbose('obtaining execution semaphore');
+                return resolve(DelinquencyQueue.executionSemaphore);
             }
             else
                 return null;
         });
     };
-    DelinquencyQueue.releaseSemaphore = function () {
-        Logger_1.default.verbose('releasing semaphore');
-        if (DelinquencyQueue.semaphore)
-            DelinquencyQueue.semaphore = null;
+    DelinquencyQueue.releaseExecutionSemaphore = function () {
+        Logger_1.default.verbose('releasing execution semaphore');
+        if (DelinquencyQueue.executionSemaphore)
+            DelinquencyQueue.executionSemaphore = null;
     };
+    DelinquencyQueue.getQueuingSemaphore = function () {
+        return new Promise(function (resolve, reject) {
+            if (!DelinquencyQueue.queuingSemaphore) {
+                DelinquencyQueue.queuingSemaphore = {};
+                Logger_1.default.verbose('obtaining queuing semaphore');
+                return resolve(DelinquencyQueue.queuingSemaphore);
+            }
+            else
+                return null;
+        });
+    };
+    DelinquencyQueue.releaseQueuingSemaphore = function () {
+        Logger_1.default.verbose('releasing queuing semaphore');
+        if (DelinquencyQueue.queuingSemaphore)
+            DelinquencyQueue.queuingSemaphore = null;
+    };
+    // instance
     DelinquencyQueue.prototype.executeQuery = function (query, variables) {
         var _this = this;
         return new Promise(function (resolve, reject) {
@@ -75,7 +94,7 @@ var DelinquencyQueue = /** @class */ (function (_super) {
             }, DELINQUENCY_TIMER);
             // obtain the global semaphore
             var semaphoreInterval = setInterval(function () {
-                DelinquencyQueue.getSemaphore()
+                DelinquencyQueue.getExecutionSemaphore()
                     .then(function (semaphore) {
                     // if the semaphore was obtained, 
                     // let the execution proceed!
@@ -84,7 +103,7 @@ var DelinquencyQueue = /** @class */ (function (_super) {
                         GQLClient_1.default.getInstance().request(query, variables)
                             .then(function (data) {
                             clearInterval(semaphoreInterval);
-                            DelinquencyQueue.releaseSemaphore();
+                            DelinquencyQueue.releaseExecutionSemaphore();
                             return data;
                         })
                             .then(resolve)
@@ -124,17 +143,45 @@ var DelinquencyQueue = /** @class */ (function (_super) {
         var _this = this;
         return new Promise(function (resolve, reject) {
             if (!DelinquencyQueue.isFull) {
-                _this.executeQuery(query, variables)
-                    .then(resolve)
-                    .catch(reject);
+                var queuingInterval_1 = setInterval(function () {
+                    DelinquencyQueue.getQueuingSemaphore()
+                        .then(function (semaphore) {
+                        if (semaphore) {
+                            // release interval to alleviate the event loop 
+                            DelinquencyQueue.releaseQueuingSemaphore();
+                            // add the query into the main queue
+                            _this.executeQuery(query, variables)
+                                .then(function (data) {
+                                clearInterval(queuingInterval_1);
+                                return data;
+                            })
+                                .then(resolve)
+                                .catch(reject);
+                        }
+                    });
+                }, SEMAPHORE_TIMER);
             }
             else {
                 Logger_1.default.warn('Query waiting on delinquency queue to free up');
                 // when element from main queue is removed, execute delinquent query
                 _this.on('remove', function () {
-                    _this.executeQuery(query, variables)
-                        .then(resolve)
-                        .catch(reject);
+                    var queuingInterval = setInterval(function () {
+                        DelinquencyQueue.getQueuingSemaphore()
+                            .then(function (semaphore) {
+                            if (semaphore) {
+                                // release interval to alleviate the event loop 
+                                DelinquencyQueue.releaseQueuingSemaphore();
+                                // add the query into the main queue
+                                _this.executeQuery(query, variables)
+                                    .then(function (data) {
+                                    clearInterval(queuingInterval);
+                                    return data;
+                                })
+                                    .then(resolve)
+                                    .catch(reject);
+                            }
+                        });
+                    }, SEMAPHORE_TIMER);
                 });
             }
         });
@@ -146,9 +193,13 @@ var DelinquencyQueue = /** @class */ (function (_super) {
     };
     DelinquencyQueue.prototype.removedFromQueue = function () {
         this.count--;
-        this.emit('remove');
-        DelinquencyQueue.isFull = false;
-        Logger_1.default.verbose('element removed from queue. Count: %s', this.count);
+        if (this.count <= DELINQUENCY_RATE) {
+            this.emit('remove');
+            DelinquencyQueue.isFull = false;
+            Logger_1.default.verbose('element removed from queue. Count: %s', this.count);
+        }
+        else
+            throw new Error('Queue is above rate limit of ' + DELINQUENCY_RATE);
     };
     DelinquencyQueue.prototype.queueIsEmpty = function () {
         this.emit('empty');

@@ -49,7 +49,7 @@ export default class QueryQueue extends EventEmitter{
 	 */
 	static getInstance(){
 		if(!QueryQueue.initialized)
-			throw new Error('StaggeredRequestQueue not initialized!')
+			throw new Error('QueryQueue not initialized!')
 
 		return QueryQueue.instance
 	}

@@ -1,17 +1,4 @@
 "use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -58,97 +45,25 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var request_promise_1 = __importDefault(require("request-promise"));
-var graphql_request_1 = require("graphql-request");
-var events_1 = require("events");
 var Logger_1 = __importDefault(require("./Logger"));
 var Common = __importStar(require("./Common"));
 var StaggeredRequestQueue_1 = __importDefault(require("./StaggeredRequestQueue"));
-var TokenHandler_1 = __importDefault(require("./TokenHandler"));
+var GQLClient_1 = __importDefault(require("./GQLClient"));
+var DelinquencyQueue_1 = __importDefault(require("./DelinquencyQueue"));
 var Common_1 = require("./Common");
 //import {ITournament, IEvent, IPhase, IPhaseGroup, IPlayer, IGGSet} from '../internal'
-var API_URL = process.env.ApiUrl || 'https://api.smash.gg/gql/alpha';
 var RATE_LIMIT_MS_TIME = process.env.RateLimitMsTime || 1000;
 var TOTAL_PAGES_REGEX_JSON = new RegExp(/"pageInfo":[\s]?{[\n\s]*?"totalPages": ([0-9]*)/);
 var TOTAL_PAGES_REGEX_STRING = new RegExp(/"pageInfo":{"totalPages":([0-9]*)}/);
-var DELINQUENCY_TIMER = 60000;
-var DELINQUENCY_RATE = 60;
 var MAX_COMPLEXITY = 1000;
 var NetworkInterface = /** @class */ (function () {
     function NetworkInterface() {
     }
     NetworkInterface.init = function () {
         if (!NetworkInterface.initialized) {
-            NetworkInterface.client = new graphql_request_1.GraphQLClient(API_URL, NetworkInterface.getHeaders());
-            NetworkInterface.isClientDelinquent = false;
-            NetworkInterface.queryCount = 0;
-            NetworkInterface.delinquencyQueue = [];
-            NetworkInterface.delinquencyPaginatedQueue = [];
-            NetworkInterface.delinquencyTimer;
+            NetworkInterface.client = GQLClient_1.default.getInstance();
             NetworkInterface.initialized = true;
         }
-    };
-    NetworkInterface.determineDelinquency = function () {
-        // determine if delinquency time should be started, or if 
-        // we are above rate limit threshold and should begin queuing
-        NetworkInterface.queryCount++;
-        Logger_1.default.verbose('Query Count: %s', NetworkInterface.queryCount);
-        if (NetworkInterface.queryCount == 1)
-            NetworkInterface.activateDelinquencyTimer();
-        else if (NetworkInterface.queryCount === DELINQUENCY_RATE)
-            NetworkInterface.isClientDelinquent = true;
-        return NetworkInterface.isClientDelinquent;
-    };
-    NetworkInterface.activateDelinquencyTimer = function () {
-        /*
-            let logTimeInterval : any;
-            let time = 0;
-            logTimeInterval = setInterval(() => {
-                setTimeout(() => log.verbose('Time: %s seconds', time++), 1000);
-            }, 1000);
-        */
-        NetworkInterface.delinquencyTimer = setTimeout(function () {
-            Logger_1.default.warn('Activating Delinquency Timer!');
-            NetworkInterface.queryCount--;
-            NetworkInterface.isClientDelinquent = false;
-            if (NetworkInterface.delinquencyQueue.length > 0) {
-                NetworkInterface.delinquencyQueue.forEach(function (fcn) {
-                    fcn();
-                });
-            }
-            //if(logTimeInterval)
-            //	clearInterval(logTimeInterval);
-        }, DELINQUENCY_TIMER);
-    };
-    NetworkInterface.deactivateDelinquencyTimer = function () {
-        if (NetworkInterface.delinquencyTimer)
-            clearInterval(NetworkInterface.delinquencyTimer);
-    };
-    NetworkInterface.getHeaders = function () {
-        var token = TokenHandler_1.default.getToken();
-        if (!token)
-            throw new Error('Cannot initialize without a token for smash.gg');
-        return {
-            headers: {
-                'X-Source': 'smashgg.js',
-                'Content-Type': 'application/json',
-                'Authorization': "Bearer " + token
-            }
-        };
-    };
-    NetworkInterface.addToDelinquencyQueue = function (query, variables) {
-        return new Promise(function (resolve, reject) {
-            NetworkInterface.delinquencyQueue.push(function () {
-                Logger_1.default.warn('Running delinquency queued query');
-                NetworkInterface.query(query, variables)
-                    .then(function (data) {
-                    console.log('ran queued query');
-                    return data;
-                })
-                    .then(resolve)
-                    .catch(reject);
-            });
-        });
     };
     /**
      * query
@@ -166,44 +81,11 @@ var NetworkInterface = /** @class */ (function () {
      * @param  {object} variables
      * @returns {promise} resolving the results of the query after being staggered in the request queue
      */
-    NetworkInterface.query2 = function (query, variables) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        NetworkInterface.determineDelinquency();
-                        if (!!NetworkInterface.isClientDelinquent) return [3 /*break*/, 2];
-                        return [4 /*yield*/, NetworkInterface.client.request(query, variables)];
-                    case 1: return [2 /*return*/, _a.sent()];
-                    case 2:
-                        Logger_1.default.warn('Request per minute threshold exceeded. Queuing your request for the next pass...');
-                        return [2 /*return*/, NetworkInterface.delinquentQuery(query, variables)];
-                }
-            });
-        });
-    };
     NetworkInterface.query = function (query, variables) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, QueryQueue.getInstance().add(query, variables)];
-                    case 1: return [2 /*return*/, _a.sent()];
-                }
+                return [2 /*return*/, DelinquencyQueue_1.default.getInstance().add(query, variables)];
             });
-        });
-    };
-    NetworkInterface.delinquentQuery = function (query, variables) {
-        return new Promise(function (resolve, reject) {
-            setTimeout(function () {
-                Logger_1.default.warn('Running delinquency queued query');
-                NetworkInterface.query(query, variables)
-                    .then(function (data) {
-                    console.log('ran queued query');
-                    return data;
-                })
-                    .then(resolve)
-                    .catch(reject);
-            }, DELINQUENCY_TIMER);
         });
     };
     NetworkInterface.staggeredQuery = function (query, variables) {
@@ -223,31 +105,6 @@ var NetworkInterface = /** @class */ (function () {
                     case 1:
                         _a.sent();
                         return [4 /*yield*/, NetworkInterface.client.request(query, variables)];
-                    case 2: return [2 /*return*/, _a.sent()];
-                }
-            });
-        });
-    };
-    NetworkInterface.query3 = function (query, variables) {
-        return __awaiter(this, void 0, void 0, function () {
-            var options;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        options = {
-                            method: 'POST',
-                            headers: NetworkInterface.getHeaders().headers,
-                            uri: API_URL,
-                            body: {
-                                query: query,
-                                variables: variables
-                            },
-                            json: true
-                        };
-                        return [4 /*yield*/, Common.sleep(+RATE_LIMIT_MS_TIME)];
-                    case 1:
-                        _a.sent();
-                        return [4 /*yield*/, request_promise_1.default(options)];
                     case 2: return [2 /*return*/, _a.sent()];
                 }
             });
@@ -378,105 +235,4 @@ var NetworkInterface = /** @class */ (function () {
     return NetworkInterface;
 }());
 exports.default = NetworkInterface;
-var QueryQueue = /** @class */ (function (_super) {
-    __extends(QueryQueue, _super);
-    function QueryQueue(count) {
-        var _this_1 = _super.call(this) || this;
-        _this_1.count = 0;
-        _this_1.count = count;
-        return _this_1;
-    }
-    QueryQueue.getInstance = function () {
-        if (!QueryQueue.instance) {
-            QueryQueue.instance = new QueryQueue(0);
-            QueryQueue.inspector = null;
-            // listen and fire if an addition puts the queue at capacity
-            QueryQueue.instance.on('add', function () {
-                if (QueryQueue.instance.count >= DELINQUENCY_RATE) {
-                    QueryQueue.instance.queueIsFull();
-                }
-                QueryQueue.instance.startInspector();
-            });
-            QueryQueue.instance.startLogTimer(); //debug
-        }
-        return QueryQueue.instance;
-    };
-    QueryQueue.prototype.startLogTimer = function () {
-        var logTimeInterval;
-        var time = 0;
-        logTimeInterval = setInterval(function () {
-            setTimeout(function () { return Logger_1.default.verbose('Time: %s seconds', time++); }, 1000);
-        }, 1000);
-    };
-    QueryQueue.prototype.isEmpty = function () {
-        return this.count === 0;
-    };
-    QueryQueue.prototype.startInspector = function () {
-        var _this_1 = this;
-        if (!QueryQueue.inspector) {
-            Logger_1.default.verbose('Beginning Query Queue Inspector');
-            QueryQueue.inspector = setInterval(function () {
-                if (_this_1.count == 0) {
-                    _this_1.stopInspector();
-                    _this_1.queueIsEmpty();
-                }
-            }, QueryQueue.groomRate);
-        }
-    };
-    QueryQueue.prototype.stopInspector = function () {
-        if (QueryQueue.inspector)
-            clearInterval(QueryQueue.inspector);
-    };
-    QueryQueue.prototype.add = function (query, variables) {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            if (!QueryQueue.isFull) {
-                // fire event and increment counter
-                _this.addedToQueue();
-                // set a timer to remove count after delinquency timer
-                setTimeout(function () {
-                    _this.removedFromQueue();
-                }, DELINQUENCY_TIMER);
-                // execute and return the query results
-                NetworkInterface.client.request(query, variables)
-                    .then(resolve)
-                    .catch(reject);
-            }
-            else {
-                Logger_1.default.warn('Query waiting on delinquency queue to free up');
-                _this.on('remove', function () {
-                    //return new Promise(function(resolve, reject){
-                    Logger_1.default.verbose('Running delinquency queue query');
-                    NetworkInterface.client.request(query, variables)
-                        .then(resolve)
-                        .catch(reject);
-                    //}).then(resolve).catch(reject)
-                });
-            }
-        });
-    };
-    QueryQueue.prototype.addedToQueue = function () {
-        this.count++;
-        this.emit('add');
-        Logger_1.default.verbose('Adding query to queue. Count: %s', this.count);
-    };
-    QueryQueue.prototype.removedFromQueue = function () {
-        this.count--;
-        this.emit('remove');
-        QueryQueue.isFull = false;
-        Logger_1.default.verbose('element removed from queue. Count: %s', this.count);
-    };
-    QueryQueue.prototype.queueIsEmpty = function () {
-        this.emit('empty');
-        Logger_1.default.info('query queue is now empty');
-    };
-    QueryQueue.prototype.queueIsFull = function () {
-        this.emit('full');
-        QueryQueue.isFull = true;
-        Logger_1.default.warn('Query Queue capacity of %s hit. Further queries are being queued for execution', DELINQUENCY_RATE);
-    };
-    QueryQueue.isFull = false;
-    QueryQueue.groomRate = 1000;
-    return QueryQueue;
-}(events_1.EventEmitter));
 module.exports = NetworkInterface;

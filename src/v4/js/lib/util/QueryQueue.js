@@ -89,11 +89,11 @@ var QueryQueue = /** @class */ (function (_super) {
     /**
      * getInstance
      *
-     * returns the singleton instance of StaggeredRequestQueue
+     * returns the singleton instance of QueryQueue
      */
     QueryQueue.getInstance = function () {
         if (!QueryQueue.initialized)
-            throw new Error('StaggeredRequestQueue not initialized!');
+            throw new Error('QueryQueue not initialized!');
         return QueryQueue.instance;
     };
     /**

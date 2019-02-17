@@ -19,7 +19,7 @@ const smashggJsLevels = {
   }
 };
 
-const logger = winston.createLogger({
+let tempLogger = winston.createLogger({
   level: 'info',
   levels: smashggJsLevels.levels,
   format: winston.format.combine(
@@ -32,9 +32,11 @@ const logger = winston.createLogger({
   ]
 })
 
-logger.queries = function(msg: string) : void{
-  logger.log('queries', msg)
+const queries = function(msg: string) : void{
+  tempLogger.log('queries', msg)
 }
+
+const logger = Object.assign(tempLogger, {queries: queries})
 
 export default logger
 

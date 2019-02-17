@@ -34,47 +34,47 @@ function test(){
 }
 
 function testTournament(){
-	return gulp.src(TEST_DIR, 'testTournament.js')
+	return gulp.src(path.join(TEST_DIR, 'tournament.test.js'))
 		.pipe(mocha())
 }
 
 function testEvent(){
-	return gulp.src(TEST_DIR, 'testEvent.js')
+	return gulp.src(path.join(TEST_DIR, 'event.test.js'))
 		.pipe(mocha())
 }
 
 function testPhase(){
-	return gulp.src(TEST_DIR, 'testPhase.js')
+	return gulp.src(path.join(TEST_DIR, 'phase.test.js'))
 		.pipe(mocha())
 }
 
 function testPhaseGroup(){
-	return gulp.src(TEST_DIR, 'testPhaseGroup.js')
+	return gulp.src(path.join(TEST_DIR, 'phaseGroup.test.js'))
 		.pipe(mocha())
 }
 
 function testCache(){
-	return gulp.src(TEST_DIR, 'testZCache.js')
+	return gulp.src(path.join(TEST_DIR, 'testZCache.js'))
 		.pipe(mocha())
 }
 function testUser(){
-	return gulp.src(TEST_DIR, 'user.test.js')
+	return gulp.src(path.join(TEST_DIR, 'user.test.js'))
 		.pipe(mocha())
 }
 function testAttendee(){
-	return gulp.src(TEST_DIR, 'attendee.test.js')
+	return gulp.src(path.join(TEST_DIR, 'attendee.test.js'))
 		.pipe(mocha())
 }
 function testPlayer(){
-	return gulp.src(TEST_DIR, 'player.test.js')
+	return gulp.src(path.join(TEST_DIR, 'player.test.js'))
 		.pipe(mocha())
 }
 function testSet(){
-	return gulp.src(TEST_DIR, 'set.test.js')
+	return gulp.src(path.join(TEST_DIR, 'set.test.js'))
 		.pipe(mocha())
 }
 function testGame(){
-	return gulp.src(TEST_DIR, 'game.test.js')
+	return gulp.src(path.join(TEST_DIR, 'game.test.js'))
 		.pipe(mocha())
 }
 

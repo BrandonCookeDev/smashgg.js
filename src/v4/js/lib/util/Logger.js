@@ -22,7 +22,7 @@ var smashggJsLevels = {
         queries: 'cyan'
     }
 };
-var logger = winston_1.default.createLogger({
+var tempLogger = winston_1.default.createLogger({
     level: 'info',
     levels: smashggJsLevels.levels,
     format: winston_1.default.format.combine(winston_1.default.format.splat(), winston_1.default.format.simple(), winston_1.default.format.colorize()),
@@ -30,9 +30,10 @@ var logger = winston_1.default.createLogger({
         new winston_1.default.transports.Console()
     ]
 });
-logger.queries = function (msg) {
-    logger.log('queries', msg);
+var queries = function (msg) {
+    tempLogger.log('queries', msg);
 };
+var logger = Object.assign(tempLogger, { queries: queries });
 exports.default = logger;
 winston_1.default.addColors(smashggJsLevels.colors);
 function setLogLevel(level) {

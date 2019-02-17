@@ -45,7 +45,7 @@ export default class QueryQueue extends EventEmitter{
 	/**
 	 * getInstance
 	 * 
-	 * returns the singleton instance of StaggeredRequestQueue
+	 * returns the singleton instance of QueryQueue
 	 */
 	static getInstance(){
 		if(!QueryQueue.initialized)

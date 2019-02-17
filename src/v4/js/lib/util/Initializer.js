@@ -7,7 +7,7 @@ require("colors");
 var Cache_1 = __importDefault(require("./Cache"));
 var TokenHandler_1 = __importDefault(require("./TokenHandler"));
 var NetworkInterface_1 = __importDefault(require("./NetworkInterface"));
-var StaggeredRequestQueue_1 = __importDefault(require("./StaggeredRequestQueue"));
+var QueryQueue_1 = __importDefault(require("./QueryQueue"));
 var winston_1 = __importDefault(require("winston"));
 function handleErrors(e) {
     console.error(e.message.red);
@@ -22,6 +22,6 @@ function default_1(token) {
     TokenHandler_1.default.setToken(token);
     Cache_1.default.init();
     NetworkInterface_1.default.init();
-    StaggeredRequestQueue_1.default.init();
+    QueryQueue_1.default.init();
 }
 exports.default = default_1;

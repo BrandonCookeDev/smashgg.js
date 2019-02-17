@@ -6,7 +6,7 @@ import log from './Logger'
 import * as Common from './Common'
 import SRQ from './StaggeredRequestQueue'
 import GQLClient from './GQLClient'
-import DelinquencyQueue from './DelinquencyQueue'
+import QueryQueue from './QueryQueue'
 import TokenHandler from './TokenHandler'
 import {merge, mergeQuery} from './Common'
 
@@ -52,8 +52,14 @@ export default class NetworkInterface{
 	 * @param  {object} variables 
 	 * @returns {promise} resolving the results of the query after being staggered in the request queue
 	 */
-	static async query(query: string, variables: Variables) : Promise<any>{
-		return DelinquencyQueue.getInstance().add(query, variables)
+	static query(query: string, variables: Variables) : Promise<any>{
+		return new Promise(function(resolve, reject){
+			QueryQueue.getInstance().add(() => {
+				return NetworkInterface.client.request(query, variables)
+						.then(resolve)
+						.catch(reject)
+			})
+		})
 	}
 
 	static staggeredQuery(query: string, variables: Variables) : Promise<any>{

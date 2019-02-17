@@ -2,7 +2,7 @@ import 'colors'
 import Cache from './Cache'
 import TokenHandler from './TokenHandler'
 import NI from './NetworkInterface'
-import SRQ from './StaggeredRequestQueue'
+import QQ from './QueryQueue'
 import log from 'winston'
 
 function handleErrors(e: Error) : void{
@@ -20,5 +20,5 @@ export default function(token: string){
 	TokenHandler.setToken(token)
 	Cache.init()
 	NI.init()
-	SRQ.init()
+	QQ.init()
 }

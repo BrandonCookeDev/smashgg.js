@@ -49,7 +49,7 @@ var Logger_1 = __importDefault(require("./Logger"));
 var Common = __importStar(require("./Common"));
 var StaggeredRequestQueue_1 = __importDefault(require("./StaggeredRequestQueue"));
 var GQLClient_1 = __importDefault(require("./GQLClient"));
-var DelinquencyQueue_1 = __importDefault(require("./DelinquencyQueue"));
+var QueryQueue_1 = __importDefault(require("./QueryQueue"));
 var Common_1 = require("./Common");
 //import {ITournament, IEvent, IPhase, IPhaseGroup, IPlayer, IGGSet} from '../internal'
 var RATE_LIMIT_MS_TIME = process.env.RateLimitMsTime || 1000;
@@ -82,9 +82,11 @@ var NetworkInterface = /** @class */ (function () {
      * @returns {promise} resolving the results of the query after being staggered in the request queue
      */
     NetworkInterface.query = function (query, variables) {
-        return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                return [2 /*return*/, DelinquencyQueue_1.default.getInstance().add(query, variables)];
+        return new Promise(function (resolve, reject) {
+            QueryQueue_1.default.getInstance().add(function () {
+                return NetworkInterface.client.request(query, variables)
+                    .then(resolve)
+                    .catch(reject);
             });
         });
     };

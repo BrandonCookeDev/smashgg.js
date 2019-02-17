@@ -168,13 +168,13 @@ describe('smashgg Stream', function(){
 
 	// removesTasks
 	it('should get the correct stream removes tasks id 1', function(){
-		expect(stream1.getRemovesTasks()).to.be.undefined
+		expect(stream1.getRemovesTasks()).to.be.equal(testData.stream1.removesTasks)
 	})
 	it('should get the correct stream removes tasks id 2', function(){
-		expect(stream2.getRemovesTasks()).to.be.undefined
+		expect(stream2.getRemovesTasks()).to.be.equal(testData.stream2.removesTasks)
 	})
 	it('should get the correct stream removes tasks id 3', function(){
-		expect(stream3.getRemovesTasks()).to.be.undefined
+		expect(stream3.getRemovesTasks()).to.be.equal(testData.stream3.removesTasks)
 	})
 
 

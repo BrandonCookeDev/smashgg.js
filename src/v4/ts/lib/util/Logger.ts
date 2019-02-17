@@ -1,16 +1,44 @@
 import winston from 'winston'
 
+const smashggJsLevels = {
+  levels: {
+    error: 0,
+    warn: 1,
+    info: 2,
+    verbose: 3,
+    debug: 4,
+    queries: 5
+  },
+  colors: {
+    error: 'red',
+    warn: 'yellow',
+    info: 'green',
+    verbose: 'blue',
+    debug: 'magenta',
+    queries: 'cyan'
+  }
+};
+
 const logger = winston.createLogger({
   level: 'info',
+  levels: smashggJsLevels.levels,
   format: winston.format.combine(
     winston.format.splat(),
-    winston.format.simple()
+    winston.format.simple(),
+    winston.format.colorize()
   ),
   transports:[
     new winston.transports.Console()
   ]
 })
+
+logger.queries = function(msg: string) : void{
+  logger.log('queries', msg)
+}
+
 export default logger
+
+winston.addColors(smashggJsLevels.colors)
 
 export function setLogLevel(level: string) : void{
   logger.level = level
@@ -42,6 +70,7 @@ export function enableLog(){
 }
 
 export const levels = {
+  QUERIES: 'queries',
   DEBUG: 'debug',
   VERBOSE: 'verbose',
   INFO: 'info',

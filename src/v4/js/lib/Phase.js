@@ -172,7 +172,7 @@ var Phase = /** @class */ (function () {
             });
         });
     };
-    Phase.prototype.getSets3 = function (options) {
+    Phase.prototype.getSets2 = function (options) {
         if (options === void 0) { options = GGSet_1.IGGSet.getDefaultSetOptions(); }
         return __awaiter(this, void 0, void 0, function () {
             var pg, ids, filters, data, phaseGroups, setsData, sets;
@@ -198,7 +198,7 @@ var Phase = /** @class */ (function () {
             });
         });
     };
-    Phase.prototype.getSets1 = function (options) {
+    Phase.prototype.getSets = function (options) {
         if (options === void 0) { options = GGSet_1.IGGSet.getDefaultSetOptions(); }
         return __awaiter(this, void 0, void 0, function () {
             var phaseGroups, sets, _a, _b;
@@ -225,7 +225,7 @@ var Phase = /** @class */ (function () {
             });
         });
     };
-    Phase.prototype.getSets = function (options) {
+    Phase.prototype.getSets1 = function (options) {
         if (options === void 0) { options = GGSet_1.IGGSet.getDefaultSetOptions(); }
         return __awaiter(this, void 0, void 0, function () {
             var data, phaseGroups, setsData, sets;

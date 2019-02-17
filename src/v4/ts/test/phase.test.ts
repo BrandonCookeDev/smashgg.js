@@ -21,7 +21,7 @@ import {Attendee} from '../lib/Attendee'
 import Initializer from '../lib/util/Initializer';
 import * as testData from './data/phase.testData'
 
-const LOG_LEVEL = log.levels.VERBOSE
+const LOG_LEVEL = log.levels.DEBUG
 
 const ID1 = 111483
 const ID2 = 45262
@@ -110,7 +110,7 @@ describe('Smash GG Phase', function(){
 
 	// sets
 	it('should correctly get all sets 1', async function(){
-		this.timeout(30000)
+		this.timeout(60000)
 
 		let sets: GGSet[] = await phase1.getSets();
 		var hasDuplicates = function(a: GGSet[]) {
@@ -140,7 +140,7 @@ describe('Smash GG Phase', function(){
 	})
 
 	xit('should correctly get all sets 3', async function(){
-		this.timeout(30000)
+		this.timeout(60000)
 
 		let sets: GGSet[] = await phase2.getSets();
 		var hasDuplicates = function(a: GGSet[]) {

@@ -63,7 +63,7 @@ var Entrant_1 = require("../lib/Entrant");
 var Attendee_1 = require("../lib/Attendee");
 var Initializer_1 = __importDefault(require("../lib/util/Initializer"));
 var testData = __importStar(require("./data/phase.testData"));
-var LOG_LEVEL = log.levels.VERBOSE;
+var LOG_LEVEL = log.levels.DEBUG;
 var ID1 = 111483;
 var ID2 = 45262;
 var ID3 = 100046;
@@ -155,7 +155,7 @@ describe('Smash GG Phase', function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        this.timeout(30000);
+                        this.timeout(60000);
                         return [4 /*yield*/, phase1.getSets()];
                     case 1:
                         sets = _a.sent();
@@ -201,7 +201,7 @@ describe('Smash GG Phase', function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        this.timeout(30000);
+                        this.timeout(60000);
                         return [4 /*yield*/, phase2.getSets()];
                     case 1:
                         sets = _a.sent();

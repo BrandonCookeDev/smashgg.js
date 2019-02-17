@@ -42,7 +42,7 @@ function mergeQuery(target, obj) {
         Logger_1.default.warn('Replacing orphans with null');
         ret = ret.replace(orphanedVarsRegex, 'null');
     }
-    Logger_1.default.debug(ret);
+    Logger_1.default.queries(ret);
     return ret;
 }
 exports.mergeQuery = mergeQuery;

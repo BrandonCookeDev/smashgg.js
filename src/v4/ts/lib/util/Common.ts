@@ -33,7 +33,7 @@ export function merge(target: string, obj: any): string{
 }
 
 export function mergeQuery(target: string, obj: any): string{
-	let ret = _.clone(target)
+	let ret: string = _.clone(target)
 	for(let prop in obj){
 		let regex = new RegExp(`{${prop}}`, 'g')
 		ret = ret.replace(regex, obj[prop])
@@ -45,7 +45,7 @@ export function mergeQuery(target: string, obj: any): string{
 		log.warn('Replacing orphans with null')
 		ret = ret.replace(orphanedVarsRegex, 'null')
 	}
-	log.debug(ret)
+	log.queries(ret)
 	return ret
 }
 

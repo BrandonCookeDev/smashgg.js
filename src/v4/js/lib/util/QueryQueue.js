@@ -55,7 +55,7 @@ require("colors");
 var Logger_1 = __importDefault(require("./Logger"));
 var events_1 = require("events");
 var RETRY_RATE = 3;
-var DELINQUENCY_RATE = 80;
+var DELINQUENCY_RATE = 79;
 var DELINQUENCY_TIMER = 60000; // 1 min
 var QueryQueue = /** @class */ (function (_super) {
     __extends(QueryQueue, _super);
@@ -100,8 +100,7 @@ var QueryQueue = /** @class */ (function (_super) {
      * processQueue
      *
      * kicks off a while loop that executes until the queue is empty.
-     * continuously runs function elements staggered by a standard milisecond
-     * rate limit set by smashgg.
+     * continuously runs function elements
      */
     QueryQueue.prototype.processQueue = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -150,6 +149,13 @@ var QueryQueue = /** @class */ (function (_super) {
             });
         });
     };
+    /**
+     * processDelinquencyQueueElements
+     *
+     * Elements who were added after the rate limit were put in
+     * the Delinquency queue. These are elements who must wait for a
+     * slot to open in the main queue in order for them to be executed.
+     */
     QueryQueue.prototype.processDelinquencyQueueElements = function () {
         var _this = this;
         setInterval(function () {
@@ -166,7 +172,6 @@ var QueryQueue = /** @class */ (function (_super) {
             }
         }, 500);
     };
-    // TODO enforce strict type on element being added
     QueryQueue.prototype.add = function (element) {
         var _this = this;
         if (element.constructor.name != 'Function')

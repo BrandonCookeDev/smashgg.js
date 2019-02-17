@@ -6,7 +6,7 @@ import log from './Logger'
 import {EventEmitter} from 'events'
 
 const RETRY_RATE = 3
-const DELINQUENCY_RATE = 80
+const DELINQUENCY_RATE = 79
 const DELINQUENCY_TIMER = 60000 // 1 min
 
 export default class QueryQueue extends EventEmitter{
@@ -58,8 +58,7 @@ export default class QueryQueue extends EventEmitter{
 	 * processQueue
 	 * 
 	 * kicks off a while loop that executes until the queue is empty.
-	 * continuously runs function elements staggered by a standard milisecond
-	 * rate limit set by smashgg.
+	 * continuously runs function elements
 	 */
 	async processQueue(){
 		if(!QueryQueue.processing){
@@ -95,6 +94,13 @@ export default class QueryQueue extends EventEmitter{
 		}
 	}
 
+	/**
+	 * processDelinquencyQueueElements
+	 * 
+	 * Elements who were added after the rate limit were put in 
+	 * the Delinquency queue. These are elements who must wait for a 
+	 * slot to open in the main queue in order for them to be executed.
+	 */
 	processDelinquencyQueueElements(){
 		setInterval(() => {
 			// if delinquency queue has queries, add them to queue
@@ -106,13 +112,11 @@ export default class QueryQueue extends EventEmitter{
 					this.availableSlots -= additions.length
 					this.queue = this.queue.concat(additions)
 					this.processQueue()
-
 				}
 			}
 		}, 500)
 	}
 
-	// TODO enforce strict type on element being added
 	add(element: Function) : void{
 		if(element.constructor.name != 'Function')
 			throw new Error('SRQ Error: Elements added must be a function wrapping around a promise')

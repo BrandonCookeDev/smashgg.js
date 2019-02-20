@@ -8,6 +8,10 @@ export default class GQLClient{
 
 	static instance: GraphQLClient
 
+	static getApiUrl(){
+		return API_URL
+	}
+
 	static getHeaders(){
 		let token = TokenHandler.getToken()
 		if(!token) throw new Error('Cannot initialize without a token for smash.gg')

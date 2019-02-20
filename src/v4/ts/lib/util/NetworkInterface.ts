@@ -62,6 +62,16 @@ export default class NetworkInterface{
 		})
 	}
 
+	static rawQuery(query: string, variables: Variables) : Promise<any>{
+		return new Promise(function(resolve, reject){
+			QueryQueue.getInstance().add(() => {
+				return NetworkInterface.client.rawRequest(query, variables)
+					.then(resolve)
+					.catch(reject)
+			})
+		})
+	}
+
 	static staggeredQuery(query: string, variables: Variables) : Promise<any>{
 		return new Promise(function(resolve, reject){ 
 			SRQ.getInstance().add(() => {
@@ -95,21 +105,25 @@ export default class NetworkInterface{
 		}
 		queryOptions = Object.assign(queryOptions, additionalParams)
 		let query = mergeQuery(queryString, queryOptions)
-		let data = [await NetworkInterface.query(query, params)];
+		let data = [await NetworkInterface.rawQuery(query, params)];
 		if(data.length <= 0)
 			throw new Error(`${operationName}: No data returned from query for operation`)
 
-		// get total page count and verify we are getting things back from the api
 		let totalPages = NetworkInterface.parseTotalPages(operationName, data)
-		let complexity = NetworkInterface.determineComplexity(data[0]) - complexitySubtraction //Object.keys(data[0]).length
-		log.info('Total Pages using 1 perPage: %s, Object Complexity per Page: %s', totalPages, complexity)
+		let onePageComplexity = data[0].extensions.queryComplexity - complexitySubtraction;
+		log.info('Total Pages using 1 perPage: %s, Object Complexity per Page: %s', totalPages, onePageComplexity)
+
+
+		// get total page count and verify we are getting things back from the api
+		//let complexity = NetworkInterface.determineComplexity(data[0]) - complexitySubtraction //Object.keys(data[0]).length
+		//log.info('Total Pages using 1 perPage: %s, Object Complexity per Page: %s', totalPages, complexity)
 
 		// check to see if the implementer is forcing perPage
 		// if they are not, calculate the optimal perPage count, 
 		// requery for new pageCount, and continue
 		let isForcingPerPage = perPage > 1 && options != undefined && options.perPage != undefined // TODO this logic is probably superficial
 		if(!isForcingPerPage){
-			perPage = NetworkInterface.calculateOptimalPagecount(complexity, totalPages)
+			perPage = NetworkInterface.calculateOptimalPagecount(onePageComplexity, totalPages)
 			log.info('Optimal Per Page Count: %s', perPage)
 			queryOptions = {
 				page: page++,
@@ -159,9 +173,11 @@ export default class NetworkInterface{
 		)
 		
 		if(totalComplexity < MAX_COMPLEXITY)
-			return Math.ceil(MAX_COMPLEXITY / objectComplexity / totalPages)
+			return 1
+			//return Math.ceil(MAX_COMPLEXITY / objectComplexity / totalPages)
 		else
-			return Math.floor((objectComplexity * totalPages) / MAX_COMPLEXITY)
+			return Math.ceil(MAX_COMPLEXITY / objectComplexity / totalPages)
+			//return Math.floor((objectComplexity * totalPages) / MAX_COMPLEXITY)
 	}
 
 	static determineComplexity(objects: any[]) : number{

@@ -90,6 +90,15 @@ var NetworkInterface = /** @class */ (function () {
             });
         });
     };
+    NetworkInterface.rawQuery = function (query, variables) {
+        return new Promise(function (resolve, reject) {
+            QueryQueue_1.default.getInstance().add(function () {
+                return NetworkInterface.client.rawRequest(query, variables)
+                    .then(resolve)
+                    .catch(reject);
+            });
+        });
+    };
     NetworkInterface.staggeredQuery = function (query, variables) {
         return new Promise(function (resolve, reject) {
             StaggeredRequestQueue_1.default.getInstance().add(function () {
@@ -115,7 +124,7 @@ var NetworkInterface = /** @class */ (function () {
     NetworkInterface.paginatedQuery = function (operationName, queryString, params, options, additionalParams, complexitySubtraction) {
         if (complexitySubtraction === void 0) { complexitySubtraction = 0; }
         return __awaiter(this, void 0, void 0, function () {
-            var page, perPage, filters, queryOptions, query, data, totalPages, complexity, isForcingPerPage, optimizedData, i, _a, _b;
+            var page, perPage, filters, queryOptions, query, data, totalPages, onePageComplexity, isForcingPerPage, optimizedData, i, _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
@@ -131,19 +140,18 @@ var NetworkInterface = /** @class */ (function () {
                         };
                         queryOptions = Object.assign(queryOptions, additionalParams);
                         query = Common_1.mergeQuery(queryString, queryOptions);
-                        return [4 /*yield*/, NetworkInterface.query(query, params)];
+                        return [4 /*yield*/, NetworkInterface.rawQuery(query, params)];
                     case 1:
                         data = [_c.sent()];
                         if (data.length <= 0)
                             throw new Error(operationName + ": No data returned from query for operation");
                         totalPages = NetworkInterface.parseTotalPages(operationName, data);
-                        complexity = NetworkInterface.determineComplexity(data[0]) - complexitySubtraction //Object.keys(data[0]).length
-                        ;
-                        Logger_1.default.info('Total Pages using 1 perPage: %s, Object Complexity per Page: %s', totalPages, complexity);
+                        onePageComplexity = data[0].extensions.queryComplexity - complexitySubtraction;
+                        Logger_1.default.info('Total Pages using 1 perPage: %s, Object Complexity per Page: %s', totalPages, onePageComplexity);
                         isForcingPerPage = perPage > 1 && options != undefined && options.perPage != undefined // TODO this logic is probably superficial
                         ;
                         if (!!isForcingPerPage) return [3 /*break*/, 3];
-                        perPage = NetworkInterface.calculateOptimalPagecount(complexity, totalPages);
+                        perPage = NetworkInterface.calculateOptimalPagecount(onePageComplexity, totalPages);
                         Logger_1.default.info('Optimal Per Page Count: %s', perPage);
                         queryOptions = {
                             page: page++,
@@ -199,9 +207,11 @@ var NetworkInterface = /** @class */ (function () {
         var totalComplexity = objectComplexity * totalPages;
         Logger_1.default.verbose('Calculating Optimal Pagecount: Complexity [%s], Total Pages [%s], Total Complexity [%s]', objectComplexity, totalPages, totalComplexity);
         if (totalComplexity < MAX_COMPLEXITY)
-            return Math.ceil(MAX_COMPLEXITY / objectComplexity / totalPages);
+            return 1;
+        //return Math.ceil(MAX_COMPLEXITY / objectComplexity / totalPages)
         else
-            return Math.floor((objectComplexity * totalPages) / MAX_COMPLEXITY);
+            return Math.ceil(MAX_COMPLEXITY / objectComplexity / totalPages);
+        //return Math.floor((objectComplexity * totalPages) / MAX_COMPLEXITY)
     };
     NetworkInterface.determineComplexity = function (objects) {
         var complexity = 0;

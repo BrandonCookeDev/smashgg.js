@@ -9,6 +9,9 @@ var API_URL = process.env.ApiUrl || 'https://api.smash.gg/gql/alpha';
 var GQLClient = /** @class */ (function () {
     function GQLClient() {
     }
+    GQLClient.getApiUrl = function () {
+        return API_URL;
+    };
     GQLClient.getHeaders = function () {
         var token = TokenHandler_1.default.getToken();
         if (!token)

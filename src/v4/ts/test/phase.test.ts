@@ -124,7 +124,7 @@ describe('Smash GG Phase', function(){
 		return true;
 	})
 
-	it('should correctly get all sets 2', async function(){
+	xit('should correctly get all sets 2', async function(){
 		this.timeout(120000)
 
 		let sets: GGSet[] = await phase2.getSets();
@@ -167,7 +167,7 @@ describe('Smash GG Phase', function(){
 		entrants.forEach(set => {
 			expect(set).to.be.an.instanceof(Entrant);
 		});
-		expect(entrants.length).to.be.equal(200);
+		expect(entrants.length).to.be.equal(175);
 		return true;
 	})
 	xit('should correctly get all entrants 2', async function(){
@@ -195,7 +195,7 @@ describe('Smash GG Phase', function(){
 		entrants.forEach(set => {
 			expect(set).to.be.an.instanceof(Entrant);
 		});
-		expect(entrants.length).to.be.equal(275);
+		expect(entrants.length).to.be.equal(250);
 		return true;
 	})
 
@@ -212,7 +212,7 @@ describe('Smash GG Phase', function(){
 		attendee.forEach(set => {
 			expect(set).to.be.an.instanceof(Attendee);
 		});
-		expect(attendee.length).to.be.equal(200);
+		expect(attendee.length).to.be.equal(175);
 		return true;
 	})
 	xit('should correctly get all attendees 2', async function(){
@@ -240,7 +240,7 @@ describe('Smash GG Phase', function(){
 		attendee.forEach(set => {
 			expect(set).to.be.an.instanceof(Attendee);
 		});
-		expect(attendee.length).to.be.equal(275);
+		expect(attendee.length).to.be.equal(250);
 		return true;
 	})
 

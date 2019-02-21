@@ -418,7 +418,7 @@ var IGGSet;
     function getDefaultSetOptions() {
         return {
             page: 1,
-            perPage: 1,
+            perPage: null,
             sortBy: null,
             filters: null
         };

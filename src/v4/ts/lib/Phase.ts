@@ -128,28 +128,36 @@ export class Phase implements IPhase.Phase{
 		return attendees
 	}
 
-	async getSets2(options: IGGSet.SetOptions = IGGSet.getDefaultSetOptions()) : Promise<GGSet[]> {
+	async getSets(options: IGGSet.SetOptions = IGGSet.getDefaultSetOptions()) : Promise<GGSet[]> {
 		log.info('Getting sets for phase %s', this.id)
 
+		let subsetFactor = 2;
 		let pg = await this.getPhaseGroups()
 		let ids = _.flatten(pg.map(group => group.getId()))
-		let filters = {phaseGroupIds: ids.slice(0, 2)}
+		let idSubsets : number[][] = [];
+		while(ids.length > 0)
+			idSubsets.push(ids.splice(0, subsetFactor))
 
-		// add this phase's id to the filters for sets
-		log.verbose('Query variables: %s', JSON.stringify(options))
+		let total: GGSet[][] = await Promise.all(idSubsets.map( async (idSubset) => {
+			let filters = {phaseGroupIds: idSubset}
+			let params = {eventId: this.eventId, perPage: 1, phaseId: this.id, filters: filters}
 
-		let data: IPhase.DataSets[] = await NI.paginatedQuery(
-			`Phase Sets [${this.id}]`, queries.phaseSets, 
-			{eventId: this.eventId, phaseId: this.id, filters: filters}, 
-			options, {}, 3
-		)
-		let phaseGroups = _.flatten(data.map(setData => setData.event.phaseGroups))
-		let setsData: IGGSet.SetData[] = _.flatten(phaseGroups.map(pg => pg.paginatedSets.nodes)).filter(set => set != null)
-		let sets = setsData.map( (setData: IGGSet.SetData) => GGSet.parse(setData) )
-		return sets
+			// add this phase's id to the filters for sets
+			log.verbose('Query variables: %s', JSON.stringify(Object.assign(options, params)))
+
+			let data: IPhase.DataSets[] = await NI.paginatedQuery(
+				`Phase Sets [${this.id}]`, queries.phaseSets, 
+				params, options, {}, 3
+			)
+			let phaseGroups = _.flatten(data.map(setData => setData.event.phaseGroups))
+			let setsData: IGGSet.SetData[] = _.flatten(phaseGroups.map(pg => pg.paginatedSets.nodes)).filter(set => set != null)
+			let sets = setsData.map( (setData: IGGSet.SetData) => GGSet.parse(setData) )
+			return sets;
+		}));
+		return _.flatten(total)
 	}
 
-	async getSets(options: IGGSet.SetOptions = IGGSet.getDefaultSetOptions()) : Promise<GGSet[]> {
+	async getSets1(options: IGGSet.SetOptions = IGGSet.getDefaultSetOptions()) : Promise<GGSet[]> {
 		log.info('Getting sets for phase %s', this.id)
 		log.verbose('Query variables: %s', JSON.stringify(options))
 		let phaseGroups: PhaseGroup[] = await this.getPhaseGroups()
@@ -157,7 +165,7 @@ export class Phase implements IPhase.Phase{
 		return sets
 	}
 
-	async getSets1(options: IGGSet.SetOptions = IGGSet.getDefaultSetOptions()) : Promise<GGSet[]> {
+	async getSets2(options: IGGSet.SetOptions = IGGSet.getDefaultSetOptions()) : Promise<GGSet[]> {
 		log.info('Getting sets for phase %s', this.id)
 
 		// add this phase's id to the filters for sets

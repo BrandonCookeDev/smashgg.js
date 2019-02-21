@@ -172,33 +172,50 @@ var Phase = /** @class */ (function () {
             });
         });
     };
-    Phase.prototype.getSets2 = function (options) {
+    Phase.prototype.getSets = function (options) {
         if (options === void 0) { options = GGSet_1.IGGSet.getDefaultSetOptions(); }
         return __awaiter(this, void 0, void 0, function () {
-            var pg, ids, filters, data, phaseGroups, setsData, sets;
+            var subsetFactor, pg, ids, idSubsets, total;
+            var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         Logger_1.default.info('Getting sets for phase %s', this.id);
+                        subsetFactor = 2;
                         return [4 /*yield*/, this.getPhaseGroups()];
                     case 1:
                         pg = _a.sent();
                         ids = lodash_1.default.flatten(pg.map(function (group) { return group.getId(); }));
-                        filters = { phaseGroupIds: ids.slice(0, 2) };
-                        // add this phase's id to the filters for sets
-                        Logger_1.default.verbose('Query variables: %s', JSON.stringify(options));
-                        return [4 /*yield*/, NetworkInterface_1.default.paginatedQuery("Phase Sets [" + this.id + "]", queries.phaseSets, { eventId: this.eventId, phaseId: this.id, filters: filters }, options, {}, 3)];
+                        idSubsets = [];
+                        while (ids.length > 0)
+                            idSubsets.push(ids.splice(0, subsetFactor));
+                        return [4 /*yield*/, Promise.all(idSubsets.map(function (idSubset) { return __awaiter(_this, void 0, void 0, function () {
+                                var filters, params, data, phaseGroups, setsData, sets;
+                                return __generator(this, function (_a) {
+                                    switch (_a.label) {
+                                        case 0:
+                                            filters = { phaseGroupIds: idSubset };
+                                            params = { eventId: this.eventId, perPage: 1, phaseId: this.id, filters: filters };
+                                            // add this phase's id to the filters for sets
+                                            Logger_1.default.verbose('Query variables: %s', JSON.stringify(Object.assign(options, params)));
+                                            return [4 /*yield*/, NetworkInterface_1.default.paginatedQuery("Phase Sets [" + this.id + "]", queries.phaseSets, params, options, {}, 3)];
+                                        case 1:
+                                            data = _a.sent();
+                                            phaseGroups = lodash_1.default.flatten(data.map(function (setData) { return setData.event.phaseGroups; }));
+                                            setsData = lodash_1.default.flatten(phaseGroups.map(function (pg) { return pg.paginatedSets.nodes; })).filter(function (set) { return set != null; });
+                                            sets = setsData.map(function (setData) { return GGSet_1.GGSet.parse(setData); });
+                                            return [2 /*return*/, sets];
+                                    }
+                                });
+                            }); }))];
                     case 2:
-                        data = _a.sent();
-                        phaseGroups = lodash_1.default.flatten(data.map(function (setData) { return setData.event.phaseGroups; }));
-                        setsData = lodash_1.default.flatten(phaseGroups.map(function (pg) { return pg.paginatedSets.nodes; })).filter(function (set) { return set != null; });
-                        sets = setsData.map(function (setData) { return GGSet_1.GGSet.parse(setData); });
-                        return [2 /*return*/, sets];
+                        total = _a.sent();
+                        return [2 /*return*/, lodash_1.default.flatten(total)];
                 }
             });
         });
     };
-    Phase.prototype.getSets = function (options) {
+    Phase.prototype.getSets1 = function (options) {
         if (options === void 0) { options = GGSet_1.IGGSet.getDefaultSetOptions(); }
         return __awaiter(this, void 0, void 0, function () {
             var phaseGroups, sets, _a, _b;
@@ -225,7 +242,7 @@ var Phase = /** @class */ (function () {
             });
         });
     };
-    Phase.prototype.getSets1 = function (options) {
+    Phase.prototype.getSets2 = function (options) {
         if (options === void 0) { options = GGSet_1.IGGSet.getDefaultSetOptions(); }
         return __awaiter(this, void 0, void 0, function () {
             var data, phaseGroups, setsData, sets;

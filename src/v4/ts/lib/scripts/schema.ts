@@ -105,6 +105,18 @@ state
 country
 gamerTagChangedAt`
 
+export const setSlots = `
+slots(includeByes:false){
+	id
+	entrant {
+		id
+		name
+		participants {
+			id
+		}
+	}
+}`
+
 export const set = `
 id
 eventId
@@ -117,16 +129,8 @@ completedAt
 winnerId
 totalGames
 state
-slots(includeByes:false){
-	id
-	entrant {
-		id
-		name
-		participants {
-			id
-		}
-	}
-}`
+${setSlots}
+`
 
 export const game = `
 id

@@ -90,11 +90,14 @@ export default class NetworkInterface{
 	static async paginatedQuery(operationName: string, queryString: string, params: object, options?: IPaginatedQuery.Options, additionalParams?: {}, complexitySubtraction: number = 0) : Promise<any[]>{
 		log.info('%s: Calling Paginated Querys', operationName);
 
+		let results = [];
+
 		// parse options
 		let page = options != undefined && options.page ? options.page : 1
-		let perPage = options != undefined && options.perPage ? options.perPage : 1
+		let perPage = options != undefined && options.perPage ? options.perPage : null
 		let filters = options != undefined && options.filters  ? options.filters : null
 
+		// preflight query
 		// first paginated query should get the total page count w/ data
 		// also initial query will be used to determine optimal stats
 		let queryOptions: IPaginatedQuery.Options = {
@@ -104,14 +107,15 @@ export default class NetworkInterface{
 			pageInfo: 'pageInfo{\ntotalPages\n}'
 		}
 		queryOptions = Object.assign(queryOptions, additionalParams)
-		let query = mergeQuery(queryString, queryOptions)
-		let data = [await NetworkInterface.rawQuery(query, params)];
-		if(data.length <= 0)
+		let preflightQuery = mergeQuery(queryString, queryOptions)
+		let preflightData = [await NetworkInterface.rawQuery(preflightQuery, params)] as any[];
+		if(preflightData.length <= 0)
 			throw new Error(`${operationName}: No data returned from query for operation`)
 
-		let totalPages = NetworkInterface.parseTotalPages(operationName, data)
-		let onePageComplexity = data[0].extensions.queryComplexity - complexitySubtraction;
+		let totalPages = NetworkInterface.parseTotalPages(operationName, preflightData)
+		let onePageComplexity = preflightData[0].extensions.queryComplexity - complexitySubtraction
 		log.info('Total Pages using 1 perPage: %s, Object Complexity per Page: %s', totalPages, onePageComplexity)
+		perPage = NetworkInterface.calculateOptimalPerPagecount(onePageComplexity, totalPages)
 
 
 		// get total page count and verify we are getting things back from the api
@@ -121,12 +125,13 @@ export default class NetworkInterface{
 		// check to see if the implementer is forcing perPage
 		// if they are not, calculate the optimal perPage count, 
 		// requery for new pageCount, and continue
+		let query, data;
+		/*
 		let isForcingPerPage = perPage > 1 && options != undefined && options.perPage != undefined // TODO this logic is probably superficial
 		if(!isForcingPerPage){
-			perPage = NetworkInterface.calculateOptimalPagecount(onePageComplexity, totalPages)
 			log.info('Optimal Per Page Count: %s', perPage)
 			queryOptions = {
-				page: page++,
+				page: page,
 				perPage: perPage,
 				filters: filters,
 				pageInfo: 'pageInfo{\ntotalPages\n}'
@@ -140,22 +145,22 @@ export default class NetworkInterface{
 		}
 		else
 			log.warn('Implementer has chosen to force perPage at %s per page', perPage)
-			
+		*/
 			
 		// after, leave off the total page count to minimize complexity
-		for(let i = page; i<=totalPages; i++){
+		for(let i = 1; i<=totalPages; i++){
 			log.info('%s: Collected %s/%s pages', operationName, i, totalPages)
 			queryOptions = Object.assign({
-				page: page + i,
+				page: i,
 				perPage: perPage,
 				filters: filters,
 				pageInfo: ''
 			}, additionalParams);
 			query = mergeQuery(queryString, queryOptions)
-			data.push(await NetworkInterface.query(query, params))
+			results.push(await NetworkInterface.query(query, params))
 		}
 
-		return data
+		return results;
 	}
 
 	static parseTotalPages(operationName: string, results: any) : number{
@@ -165,9 +170,11 @@ export default class NetworkInterface{
 		return +parsed[1]
 	}
 
-	static calculateOptimalPagecount(objectComplexity: number, totalPages: number) : number{
+	static calculateOptimalPerPagecount(objectComplexity: number, totalPages: number) : number{
 		let totalComplexity = objectComplexity * totalPages
 		
+		return MAX_COMPLEXITY / objectComplexity;
+		/*
 		log.verbose('Calculating Optimal Pagecount: Complexity [%s], Total Pages [%s], Total Complexity [%s]', 
 			objectComplexity, totalPages, totalComplexity
 		)
@@ -178,6 +185,7 @@ export default class NetworkInterface{
 		else
 			return Math.ceil(MAX_COMPLEXITY / objectComplexity / totalPages)
 			//return Math.floor((objectComplexity * totalPages) / MAX_COMPLEXITY)
+		*/
 	}
 
 	static determineComplexity(objects: any[]) : number{

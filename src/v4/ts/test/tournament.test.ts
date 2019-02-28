@@ -15,6 +15,9 @@ const {expect} = chai
 
 import {Tournament, ITournament} from '../lib/Tournament'
 import {Event, IEvent} from '../lib/Event'
+import {GGSet} from '../lib/GGSet'
+import {Entrant} from '../lib/Entrant'
+import {Attendee} from '../lib/Attendee'
 import Initializer from '../lib/util/Initializer'
 import * as testData from './data/tournament.testData'
 import { Venue } from '../lib/Venue';
@@ -308,4 +311,52 @@ describe('smashgg Tournament', function(){
 		expect(tournament3.getContactTwitter()).to.be.equal(testData.organizer3.twitter)
 	})
 
+	// sets
+	it('should return the correct list of Sets in the Tournament 1', async function(){
+		this.timeout(30000)
+
+		let sets: GGSet[] = await tournament1.getSets();
+		var hasDuplicates = function(a: GGSet[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(sets)).to.be.false;
+		sets.forEach(set => {
+			expect(set).to.be.an.instanceof(GGSet);
+		});
+		expect(sets.length).to.be.equal(84);
+		return true;
+	})
+	xit('should return the correct list of Sets in the Tournament 2', async function(){
+		this.timeout(30000)
+
+		let sets: GGSet[] = await tournament2.getSets();
+		var hasDuplicates = function(a: GGSet[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(sets)).to.be.false;
+		sets.forEach(set => {
+			expect(set).to.be.an.instanceof(GGSet);
+		});
+		expect(sets.length).to.be.equal(84);
+		return true;
+	})
+	xit('should return the correct list of Sets in the Tournament 3', async function(){
+		this.timeout(30000)
+
+		let sets: GGSet[] = await tournament3.getSets();
+		var hasDuplicates = function(a: GGSet[]) {
+			return _.uniq(a).length !== a.length;
+		};
+		expect(hasDuplicates(sets)).to.be.false;
+		sets.forEach(set => {
+			expect(set).to.be.an.instanceof(GGSet);
+		});
+		expect(sets.length).to.be.equal(84);
+		return true;
+	})
+
+	// entrants
+
+
+	// attendees
 })

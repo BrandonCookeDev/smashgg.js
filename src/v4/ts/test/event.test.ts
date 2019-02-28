@@ -291,10 +291,10 @@ describe('smashgg Event', function(){
 		entrants.forEach(entrant => {
 			expect(entrant).to.be.an.instanceof(Entrant);
 		});
-		expect(entrants.length).to.be.equal(75);
+		expect(entrants.length).to.be.equal(50);
 		return true;
 	})
-	xit('should return the correct list of Entrants in the Event 2', async function(){
+	it('should return the correct list of Entrants in the Event 2', async function(){
 		this.timeout(30000)
 
 		let entrants: Entrant[] = await event2.getEntrants();
@@ -305,7 +305,7 @@ describe('smashgg Event', function(){
 		entrants.forEach(entrant => {
 			expect(entrant).to.be.an.instanceof(Entrant);
 		});
-		expect(entrants.length).to.be.equal(100);
+		expect(entrants.length).to.be.equal(84);
 		return true;
 	})
 	xit('should return the correct list of Entrants in the Event 3', async function(){
@@ -336,10 +336,10 @@ describe('smashgg Event', function(){
 		attendees.forEach(attendee => {
 			expect(attendee).to.be.an.instanceof(Attendee);
 		});
-		expect(attendees.length).to.be.equal(75);
+		expect(attendees.length).to.be.equal(50);
 		return true;
 	})
-	xit('should return the correct list of Attendees in the Event 2', async function(){
+	it('should return the correct list of Attendees in the Event 2', async function(){
 		this.timeout(30000)
 
 		let attendees: Attendee[] = await event2.getAttendees();
@@ -350,7 +350,7 @@ describe('smashgg Event', function(){
 		attendees.forEach(attendee => {
 			expect(attendee).to.be.an.instanceof(Attendee);
 		});
-		expect(attendees.length).to.be.equal(200);
+		expect(attendees.length).to.be.equal(168);
 		return true;
 	})
 	xit('should return the correct list of Attendees in the Event 3', async function(){
@@ -381,11 +381,11 @@ describe('smashgg Event', function(){
 		sets.forEach(set => {
 			expect(set).to.be.an.instanceof(GGSet);
 		});
-		expect(sets.length).to.be.equal(98);
+		expect(sets.length).to.be.equal(84);
 		return true;
 	})
-	xit('should return the correct list of Sets in the Event 2', async function(){
-		this.timeout(30000)
+	it('should return the correct list of Sets in the Event 2', async function(){
+		this.timeout(60000)
 
 		let sets: GGSet[] = await event2.getSets();
 		var hasDuplicates = function(a: GGSet[]) {
@@ -395,7 +395,7 @@ describe('smashgg Event', function(){
 		sets.forEach(set => {
 			expect(set).to.be.an.instanceof(GGSet);
 		});
-		expect(sets.length).to.be.equal(75);
+		expect(sets.length).to.be.equal(132);
 		return true;
 	})
 	xit('should return the correct list of Sets in the Event 3', async function(){

@@ -108,11 +108,11 @@ var NetworkInterface = /** @class */ (function () {
             });
         });
     };
-    NetworkInterface.clusterQuery = function (keys, fcn) {
+    NetworkInterface.clusterQuery = function (keys, fcn, options) {
         return Promise.all(keys.map(function (key) {
-            if (!key.hasOwnProperty(fcn))
+            if (!key.hasOwnProperty(fcn) && !key.__proto__.hasOwnProperty(fcn))
                 throw new Error(fcn + " is not a function in type " + typeof key);
-            return key[fcn]();
+            return key[fcn](options);
         }));
     };
     NetworkInterface.singleQuery = function (query, variables) {

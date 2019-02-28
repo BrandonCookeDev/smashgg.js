@@ -142,7 +142,7 @@ var QueryQueue = /** @class */ (function (_super) {
                     case 8:
                         QueryQueue.processing = false;
                         this.emitEmptyEvent();
-                        Logger_1.default.debug('loop ended'.red);
+                        Logger_1.default.debug('loop ended'.magenta);
                         _a.label = 9;
                     case 9: return [2 /*return*/];
                 }
@@ -183,7 +183,8 @@ var QueryQueue = /** @class */ (function (_super) {
             setTimeout(function () { _this.availableSlots++; _this.processQueue(); Logger_1.default.debug(("available: " + _this.availableSlots).green); }, DELINQUENCY_TIMER);
         }
         else {
-            Logger_1.default.warn('Query Queue at capacity [%s]. Queuing in delinquency queue', DELINQUENCY_RATE);
+            console.warn('Query Queue at capacity [%s]. Queuing in delinquency queue', DELINQUENCY_RATE);
+            //log.warn('Query Queue at capacity [%s]. Queuing in delinquency queue', DELINQUENCY_RATE)
             this.delinquencyQueue.push(element);
             this.emitAddEvent();
         }

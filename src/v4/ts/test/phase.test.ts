@@ -120,7 +120,7 @@ describe('Smash GG Phase', function(){
 		sets.forEach(set => {
 			expect(set).to.be.an.instanceof(GGSet);
 		});
-		expect(sets.length).to.be.equal(152);
+		expect(sets.length).to.be.equal(388);
 		return true;
 	})
 
@@ -157,7 +157,7 @@ describe('Smash GG Phase', function(){
 
 	// entrants
 	it('should correctly get all entrants 1', async function(){
-		this.timeout(30000)
+		this.timeout(60000)
 
 		let entrants: Entrant[] = await phase1.getEntrants();
 		var hasDuplicates = function(a: Entrant[]) {
@@ -167,7 +167,7 @@ describe('Smash GG Phase', function(){
 		entrants.forEach(set => {
 			expect(set).to.be.an.instanceof(Entrant);
 		});
-		expect(entrants.length).to.be.equal(175);
+		expect(entrants.length).to.be.equal(156);
 		return true;
 	})
 	xit('should correctly get all entrants 2', async function(){
@@ -230,7 +230,7 @@ describe('Smash GG Phase', function(){
 		return true;
 	})
 	it('should correctly get all attendees 3', async function(){
-		this.timeout(30000)
+		this.timeout(60000)
 
 		let attendee: Attendee[] = await phase3.getAttendees();
 		var hasDuplicates = function(a: Attendee[]) {
@@ -240,7 +240,7 @@ describe('Smash GG Phase', function(){
 		attendee.forEach(set => {
 			expect(set).to.be.an.instanceof(Attendee);
 		});
-		expect(attendee.length).to.be.equal(250);
+		expect(attendee.length).to.be.equal(226);
 		return true;
 	})
 

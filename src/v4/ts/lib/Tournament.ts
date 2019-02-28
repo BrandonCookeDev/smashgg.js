@@ -185,6 +185,30 @@ export class Tournament implements ITournament.Tournament{
 
 	async getSets(options: IGGSet.SetOptions = IGGSet.getDefaultSetOptions()) : Promise<GGSet[]> {
 		log.info('Getting Sets for Tournament [%s :: %s]', this.id, this.name)
+
+		let pgs = await this.getPhaseGroups()
+		let sets = await NI.clusterQuery(pgs, 'getSets', options)
+		return _.flatten(sets)
+	}
+
+	async getEntrants(options: IEntrant.EntrantOptions = IEntrant.getDefaultEntrantOptions()) : Promise<Entrant[]> {
+		log.info('Getting Entrants for Tournament [%s :: %s]', this.id, this.name)
+
+		let pgs = await this.getPhaseGroups()
+		let entrants = await NI.clusterQuery(pgs, 'getEntrants', options)
+		return _.flatten(entrants)
+	}
+
+	async getAttendees(options: IAttendee.AttendeeOptions = IAttendee.getDefaultAttendeeOptions()) : Promise<Attendee[]> {
+		log.info('Getting Attendees for Tournament [%s :: %s]', this.id, this.name)
+
+		let pgs = await this.getPhaseGroups()
+		let attendees = await NI.clusterQuery(pgs, 'getAttendees', options)
+		return _.flatten(attendees)
+	}
+
+	async getSets2(options: IGGSet.SetOptions = IGGSet.getDefaultSetOptions()) : Promise<GGSet[]> {
+		log.info('Getting Sets for Tournament [%s :: %s]', this.id, this.name)
 		let data: ITournament.TournamentSetData[] = await NI.paginatedQuery(
 			`Tournament Sets [${this.id} :: ${this.name}]`,
 			queries.tournamentSets, {id: this.id},
@@ -215,7 +239,7 @@ export class Tournament implements ITournament.Tournament{
 		return GGSet.filterForXMinutesBack(sets, minutes)
 	}
 
-	async getEntrants(options: IEntrant.EntrantOptions = IEntrant.getDefaultEntrantOptions()) : Promise<Entrant[]> {
+	async getEntrants2(options: IEntrant.EntrantOptions = IEntrant.getDefaultEntrantOptions()) : Promise<Entrant[]> {
 		log.info('Getting Entrants for Tournament [%s :: %s]', this.id, this.name)
 		let data: ITournament.TournamentEntrantData[] = await NI.paginatedQuery(
 			`Tournament Entrants [${this.id} :: ${this.name}]`,
@@ -229,7 +253,7 @@ export class Tournament implements ITournament.Tournament{
 		return entrants
 	}
 
-	async getAttendees(options: IAttendee.AttendeeOptions = IAttendee.getDefaultAttendeeOptions()) : Promise<Attendee[]> {
+	async getAttendees2(options: IAttendee.AttendeeOptions = IAttendee.getDefaultAttendeeOptions()) : Promise<Attendee[]> {
 		log.info('Getting Attendees for Tournament [%s :: %s]', this.id, this.name)
 		let data: ITournament.TournamentAttendeeData[] = await NI.paginatedQuery(
 			`Tournament Attendee [${this.id} :: ${this.name}]`,

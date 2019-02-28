@@ -90,7 +90,7 @@ export default class QueryQueue extends EventEmitter{
 			
 			QueryQueue.processing = false
 			this.emitEmptyEvent()
-			log.debug('loop ended'.red)
+			log.debug('loop ended'.magenta)
 		}
 	}
 
@@ -128,7 +128,8 @@ export default class QueryQueue extends EventEmitter{
 			setTimeout(() => {this.availableSlots++; this.processQueue(); log.debug(`available: ${this.availableSlots}`.green)}, DELINQUENCY_TIMER)
 		}
 		else{
-			log.warn('Query Queue at capacity [%s]. Queuing in delinquency queue', DELINQUENCY_RATE)
+			console.warn('Query Queue at capacity [%s]. Queuing in delinquency queue', DELINQUENCY_RATE);
+			//log.warn('Query Queue at capacity [%s]. Queuing in delinquency queue', DELINQUENCY_RATE)
 			this.delinquencyQueue.push(element)
 			this.emitAddEvent()
 		}

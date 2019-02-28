@@ -94,18 +94,18 @@ function getQueries(cb){
 	cb(null)
 }
 
-exports.test = test
-exports.testTournament = testTournament
-exports.testEvent = testEvent
-exports.testPhase = testPhase
-exports.testPhaseGroup = testPhaseGroup
-exports.testCache = testCache
-exports.testPlayer = testPlayer
-exports.testSet = testSet
-exports.testGame = testGame
-exports.testUser = testUser
-exports.testAttendee = testAttendee
-exports.testPlayer = testPlayer
+exports.test = gulp.series(tsc, test)
+exports.testTournament = gulp.series(tsc, testTournament)
+exports.testEvent = gulp.series(tsc, testEvent)
+exports.testPhase = gulp.series(tsc, testPhase)
+exports.testPhaseGroup = gulp.series(tsc, testPhaseGroup)
+exports.testCache = gulp.series(tsc, testCache)
+exports.testPlayer = gulp.series(tsc, testPlayer)
+exports.testSet = gulp.series(tsc, testSet)
+exports.testGame = gulp.series(tsc, testGame)
+exports.testUser = gulp.series(tsc, testUser)
+exports.testAttendee = gulp.series(tsc, testAttendee)
+exports.testPlayer = gulp.series(tsc, testPlayer)
 
 exports.tsc = tsc
 exports.createDTs = createDTs

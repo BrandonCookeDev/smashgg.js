@@ -386,13 +386,13 @@ describe('smashgg Event', function () {
                         entrants.forEach(function (entrant) {
                             expect(entrant).to.be.an.instanceof(Entrant_1.Entrant);
                         });
-                        expect(entrants.length).to.be.equal(75);
+                        expect(entrants.length).to.be.equal(50);
                         return [2 /*return*/, true];
                 }
             });
         });
     });
-    xit('should return the correct list of Entrants in the Event 2', function () {
+    it('should return the correct list of Entrants in the Event 2', function () {
         return __awaiter(this, void 0, void 0, function () {
             var entrants, hasDuplicates;
             return __generator(this, function (_a) {
@@ -409,7 +409,7 @@ describe('smashgg Event', function () {
                         entrants.forEach(function (entrant) {
                             expect(entrant).to.be.an.instanceof(Entrant_1.Entrant);
                         });
-                        expect(entrants.length).to.be.equal(100);
+                        expect(entrants.length).to.be.equal(84);
                         return [2 /*return*/, true];
                 }
             });
@@ -456,13 +456,13 @@ describe('smashgg Event', function () {
                         attendees.forEach(function (attendee) {
                             expect(attendee).to.be.an.instanceof(Attendee_1.Attendee);
                         });
-                        expect(attendees.length).to.be.equal(75);
+                        expect(attendees.length).to.be.equal(50);
                         return [2 /*return*/, true];
                 }
             });
         });
     });
-    xit('should return the correct list of Attendees in the Event 2', function () {
+    it('should return the correct list of Attendees in the Event 2', function () {
         return __awaiter(this, void 0, void 0, function () {
             var attendees, hasDuplicates;
             return __generator(this, function (_a) {
@@ -479,7 +479,7 @@ describe('smashgg Event', function () {
                         attendees.forEach(function (attendee) {
                             expect(attendee).to.be.an.instanceof(Attendee_1.Attendee);
                         });
-                        expect(attendees.length).to.be.equal(200);
+                        expect(attendees.length).to.be.equal(168);
                         return [2 /*return*/, true];
                 }
             });
@@ -526,19 +526,19 @@ describe('smashgg Event', function () {
                         sets.forEach(function (set) {
                             expect(set).to.be.an.instanceof(GGSet_1.GGSet);
                         });
-                        expect(sets.length).to.be.equal(98);
+                        expect(sets.length).to.be.equal(84);
                         return [2 /*return*/, true];
                 }
             });
         });
     });
-    xit('should return the correct list of Sets in the Event 2', function () {
+    it('should return the correct list of Sets in the Event 2', function () {
         return __awaiter(this, void 0, void 0, function () {
             var sets, hasDuplicates;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        this.timeout(30000);
+                        this.timeout(60000);
                         return [4 /*yield*/, event2.getSets()];
                     case 1:
                         sets = _a.sent();
@@ -549,7 +549,7 @@ describe('smashgg Event', function () {
                         sets.forEach(function (set) {
                             expect(set).to.be.an.instanceof(GGSet_1.GGSet);
                         });
-                        expect(sets.length).to.be.equal(75);
+                        expect(sets.length).to.be.equal(132);
                         return [2 /*return*/, true];
                 }
             });

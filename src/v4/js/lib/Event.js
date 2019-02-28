@@ -190,6 +190,63 @@ var Event = /** @class */ (function (_super) {
     Event.prototype.getEntrants = function (options) {
         if (options === void 0) { options = Entrant_1.IEntrant.getDefaultEntrantOptions(); }
         return __awaiter(this, void 0, void 0, function () {
+            var pgs, entrants;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        Logger_1.default.info('Getting Entrants for Event [%s :: %s]', this.id, this.name);
+                        return [4 /*yield*/, this.getPhaseGroups()];
+                    case 1:
+                        pgs = _a.sent();
+                        return [4 /*yield*/, NetworkInterface_1.default.clusterQuery(pgs, 'getEntrants', options)];
+                    case 2:
+                        entrants = _a.sent();
+                        return [2 /*return*/, lodash_1.default.flatten(entrants)];
+                }
+            });
+        });
+    };
+    Event.prototype.getAttendees = function (options) {
+        if (options === void 0) { options = Attendee_1.IAttendee.getDefaultAttendeeOptions(); }
+        return __awaiter(this, void 0, void 0, function () {
+            var pgs, attendees;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        Logger_1.default.info('Getting Attendees for Event [%s :: %s]', this.id, this.name);
+                        return [4 /*yield*/, this.getPhaseGroups()];
+                    case 1:
+                        pgs = _a.sent();
+                        return [4 /*yield*/, NetworkInterface_1.default.clusterQuery(pgs, "getAttendees", options)];
+                    case 2:
+                        attendees = _a.sent();
+                        return [2 /*return*/, lodash_1.default.flatten(attendees)];
+                }
+            });
+        });
+    };
+    Event.prototype.getSets = function (options) {
+        if (options === void 0) { options = GGSet_1.IGGSet.getDefaultSetOptions(); }
+        return __awaiter(this, void 0, void 0, function () {
+            var pgs, sets;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        Logger_1.default.info('Getting Sets for Event [%s :: %s]', this.id, this.name);
+                        return [4 /*yield*/, this.getPhaseGroups()];
+                    case 1:
+                        pgs = _a.sent();
+                        return [4 /*yield*/, NetworkInterface_1.default.clusterQuery(pgs, 'getSets', options)];
+                    case 2:
+                        sets = _a.sent();
+                        return [2 /*return*/, lodash_1.default.flatten(sets)];
+                }
+            });
+        });
+    };
+    Event.prototype.getEntrants2 = function (options) {
+        if (options === void 0) { options = Entrant_1.IEntrant.getDefaultEntrantOptions(); }
+        return __awaiter(this, void 0, void 0, function () {
             var data, entrantData, entrants;
             return __generator(this, function (_a) {
                 switch (_a.label) {
@@ -205,7 +262,7 @@ var Event = /** @class */ (function (_super) {
             });
         });
     };
-    Event.prototype.getAttendees = function (options) {
+    Event.prototype.getAttendees2 = function (options) {
         if (options === void 0) { options = Attendee_1.IAttendee.getDefaultAttendeeOptions(); }
         return __awaiter(this, void 0, void 0, function () {
             var data, entrantData, attendeeData, attendees;
@@ -224,7 +281,7 @@ var Event = /** @class */ (function (_super) {
             });
         });
     };
-    Event.prototype.getSets = function (options) {
+    Event.prototype.getSets2 = function (options) {
         if (options === void 0) { options = GGSet_1.IGGSet.getDefaultSetOptions(); }
         return __awaiter(this, void 0, void 0, function () {
             var data, phaseGroups, setData, sets;

@@ -219,6 +219,63 @@ var Tournament = /** @class */ (function () {
     Tournament.prototype.getSets = function (options) {
         if (options === void 0) { options = GGSet_1.IGGSet.getDefaultSetOptions(); }
         return __awaiter(this, void 0, void 0, function () {
+            var pgs, sets;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        Logger_1.default.info('Getting Sets for Tournament [%s :: %s]', this.id, this.name);
+                        return [4 /*yield*/, this.getPhaseGroups()];
+                    case 1:
+                        pgs = _a.sent();
+                        return [4 /*yield*/, NetworkInterface_1.default.clusterQuery(pgs, 'getSets', options)];
+                    case 2:
+                        sets = _a.sent();
+                        return [2 /*return*/, lodash_1.default.flatten(sets)];
+                }
+            });
+        });
+    };
+    Tournament.prototype.getEntrants = function (options) {
+        if (options === void 0) { options = Entrant_1.IEntrant.getDefaultEntrantOptions(); }
+        return __awaiter(this, void 0, void 0, function () {
+            var pgs, entrants;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        Logger_1.default.info('Getting Entrants for Tournament [%s :: %s]', this.id, this.name);
+                        return [4 /*yield*/, this.getPhaseGroups()];
+                    case 1:
+                        pgs = _a.sent();
+                        return [4 /*yield*/, NetworkInterface_1.default.clusterQuery(pgs, 'getEntrants', options)];
+                    case 2:
+                        entrants = _a.sent();
+                        return [2 /*return*/, lodash_1.default.flatten(entrants)];
+                }
+            });
+        });
+    };
+    Tournament.prototype.getAttendees = function (options) {
+        if (options === void 0) { options = Attendee_1.IAttendee.getDefaultAttendeeOptions(); }
+        return __awaiter(this, void 0, void 0, function () {
+            var pgs, attendees;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        Logger_1.default.info('Getting Attendees for Tournament [%s :: %s]', this.id, this.name);
+                        return [4 /*yield*/, this.getPhaseGroups()];
+                    case 1:
+                        pgs = _a.sent();
+                        return [4 /*yield*/, NetworkInterface_1.default.clusterQuery(pgs, 'getAttendees', options)];
+                    case 2:
+                        attendees = _a.sent();
+                        return [2 /*return*/, lodash_1.default.flatten(attendees)];
+                }
+            });
+        });
+    };
+    Tournament.prototype.getSets2 = function (options) {
+        if (options === void 0) { options = GGSet_1.IGGSet.getDefaultSetOptions(); }
+        return __awaiter(this, void 0, void 0, function () {
             var data, events, phaseGroups, setData, sets;
             return __generator(this, function (_a) {
                 switch (_a.label) {
@@ -284,7 +341,7 @@ var Tournament = /** @class */ (function () {
             });
         });
     };
-    Tournament.prototype.getEntrants = function (options) {
+    Tournament.prototype.getEntrants2 = function (options) {
         if (options === void 0) { options = Entrant_1.IEntrant.getDefaultEntrantOptions(); }
         return __awaiter(this, void 0, void 0, function () {
             var data, tournaments, events, entrantData, entrants;
@@ -304,7 +361,7 @@ var Tournament = /** @class */ (function () {
             });
         });
     };
-    Tournament.prototype.getAttendees = function (options) {
+    Tournament.prototype.getAttendees2 = function (options) {
         if (options === void 0) { options = Attendee_1.IAttendee.getDefaultAttendeeOptions(); }
         return __awaiter(this, void 0, void 0, function () {
             var data, tournaments, attendeeData, attendees;

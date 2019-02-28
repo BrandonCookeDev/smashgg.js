@@ -166,7 +166,7 @@ describe('Smash GG Phase', function () {
                         sets.forEach(function (set) {
                             expect(set).to.be.an.instanceof(GGSet_1.GGSet);
                         });
-                        expect(sets.length).to.be.equal(152);
+                        expect(sets.length).to.be.equal(388);
                         return [2 /*return*/, true];
                 }
             });
@@ -225,7 +225,7 @@ describe('Smash GG Phase', function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        this.timeout(30000);
+                        this.timeout(60000);
                         return [4 /*yield*/, phase1.getEntrants()];
                     case 1:
                         entrants = _a.sent();
@@ -236,7 +236,7 @@ describe('Smash GG Phase', function () {
                         entrants.forEach(function (set) {
                             expect(set).to.be.an.instanceof(Entrant_1.Entrant);
                         });
-                        expect(entrants.length).to.be.equal(175);
+                        expect(entrants.length).to.be.equal(156);
                         return [2 /*return*/, true];
                 }
             });
@@ -341,7 +341,7 @@ describe('Smash GG Phase', function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        this.timeout(30000);
+                        this.timeout(60000);
                         return [4 /*yield*/, phase3.getAttendees()];
                     case 1:
                         attendee = _a.sent();
@@ -352,7 +352,7 @@ describe('Smash GG Phase', function () {
                         attendee.forEach(function (set) {
                             expect(set).to.be.an.instanceof(Attendee_1.Attendee);
                         });
-                        expect(attendee.length).to.be.equal(250);
+                        expect(attendee.length).to.be.equal(226);
                         return [2 /*return*/, true];
                 }
             });

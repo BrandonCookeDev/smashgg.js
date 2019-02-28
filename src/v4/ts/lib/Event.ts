@@ -149,6 +149,30 @@ export class Event extends EventEmitter implements IEvent.Event{
 
 	async getEntrants(options: IEntrant.EntrantOptions = IEntrant.getDefaultEntrantOptions()) : Promise<Entrant[]> {
 		log.info('Getting Entrants for Event [%s :: %s]', this.id, this.name)
+
+		let pgs = await this.getPhaseGroups()
+		let entrants = await NI.clusterQuery(pgs, 'getEntrants', options)
+		return _.flatten(entrants);
+	}
+
+	async getAttendees(options: IAttendee.AttendeeOptions = IAttendee.getDefaultAttendeeOptions()) : Promise<Attendee[]> {
+		log.info('Getting Attendees for Event [%s :: %s]', this.id, this.name)
+
+		let pgs = await this.getPhaseGroups();
+		let attendees = await NI.clusterQuery(pgs, "getAttendees", options);
+		return _.flatten(attendees);
+	}
+
+	async getSets(options: IGGSet.SetOptions = IGGSet.getDefaultSetOptions()) : Promise<GGSet[]> {
+		log.info('Getting Sets for Event [%s :: %s]', this.id, this.name)
+
+		let pgs = await this.getPhaseGroups();
+		let sets = await NI.clusterQuery(pgs, 'getSets', options);
+		return _.flatten(sets);
+	}
+
+	async getEntrants2(options: IEntrant.EntrantOptions = IEntrant.getDefaultEntrantOptions()) : Promise<Entrant[]> {
+		log.info('Getting Entrants for Event [%s :: %s]', this.id, this.name)
 		let data: IEvent.EventEntrantData[] = await NI.paginatedQuery(
 			`Event Entrants [${this.id} :: ${this.name}]`,
 			queries.eventEntrants, {id: this.id},
@@ -159,7 +183,7 @@ export class Event extends EventEmitter implements IEvent.Event{
 		return entrants
 	}
 
-	async getAttendees(options: IAttendee.AttendeeOptions = IAttendee.getDefaultAttendeeOptions()) : Promise<Attendee[]> {
+	async getAttendees2(options: IAttendee.AttendeeOptions = IAttendee.getDefaultAttendeeOptions()) : Promise<Attendee[]> {
 		log.info('Getting Attendees for Event [%s :: %s]', this.id, this.name)
 		let data: IEvent.EventEntrantData[] = await NI.paginatedQuery(
 			`Event Attendees [${this.id} :: ${this.name}]`,
@@ -172,7 +196,7 @@ export class Event extends EventEmitter implements IEvent.Event{
 		return attendees
 	}
 
-	async getSets(options: IGGSet.SetOptions = IGGSet.getDefaultSetOptions()) : Promise<GGSet[]> {
+	async getSets2(options: IGGSet.SetOptions = IGGSet.getDefaultSetOptions()) : Promise<GGSet[]> {
 		log.info('Getting Sets for Event [%s :: %s]', this.id, this.name)
 		let data: IEvent.EventSetData[] = await NI.paginatedQuery(
 			`Event Sets [${this.id} :: ${this.name}]`,

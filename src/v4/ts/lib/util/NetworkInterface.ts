@@ -82,11 +82,11 @@ export default class NetworkInterface{
 		})
 	}
 
-	static clusterQuery(keys: any[], fcn: string) : Promise<any[]>{
+	static clusterQuery(keys: any[], fcn: string, options: any) : Promise<any[]>{
 		return Promise.all(keys.map(key => {
-			if(!key.hasOwnProperty(fcn))
+			if(!key.hasOwnProperty(fcn) && !key.__proto__.hasOwnProperty(fcn))
 				throw new Error(`${fcn} is not a function in type ${typeof key}`)
-			return key[fcn]()
+			return key[fcn](options)
 		}))
 	}
 

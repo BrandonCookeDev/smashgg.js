@@ -131,6 +131,23 @@ export class Phase implements IPhase.Phase{
 	async getSets(options: IGGSet.SetOptions = IGGSet.getDefaultSetOptions()) : Promise<GGSet[]> {
 		log.info('Getting sets for phase %s', this.id)
 
+		// get all phase group objects, then promise all over the array pf phpase groups
+		// getting their respective sets for time efficiency
+		let pgs = await this.getPhaseGroups()
+
+		/*
+		let pgSets = await Promise.all(pgs.map(pg => {
+			return pg.getSets();
+		}));
+		*/
+		
+		let pgSets = await NI.clusterQuery(pgs, 'getSets')
+		return _.flatten(pgSets)
+	}
+
+	async getSets3(options: IGGSet.SetOptions = IGGSet.getDefaultSetOptions()) : Promise<GGSet[]> {
+		log.info('Getting sets for phase %s', this.id)
+
 		let subsetFactor = 2;
 		let pg = await this.getPhaseGroups()
 		let ids = _.flatten(pg.map(group => group.getId()))

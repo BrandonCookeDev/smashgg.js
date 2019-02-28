@@ -175,6 +175,31 @@ var Phase = /** @class */ (function () {
     Phase.prototype.getSets = function (options) {
         if (options === void 0) { options = GGSet_1.IGGSet.getDefaultSetOptions(); }
         return __awaiter(this, void 0, void 0, function () {
+            var pgs, pgSets;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        Logger_1.default.info('Getting sets for phase %s', this.id);
+                        return [4 /*yield*/, this.getPhaseGroups()
+                            /*
+                            let pgSets = await Promise.all(pgs.map(pg => {
+                                return pg.getSets();
+                            }));
+                            */
+                        ];
+                    case 1:
+                        pgs = _a.sent();
+                        return [4 /*yield*/, NetworkInterface_1.default.clusterQuery(pgs, 'getSets')];
+                    case 2:
+                        pgSets = _a.sent();
+                        return [2 /*return*/, lodash_1.default.flatten(pgSets)];
+                }
+            });
+        });
+    };
+    Phase.prototype.getSets3 = function (options) {
+        if (options === void 0) { options = GGSet_1.IGGSet.getDefaultSetOptions(); }
+        return __awaiter(this, void 0, void 0, function () {
             var subsetFactor, pg, ids, idSubsets, total;
             var _this = this;
             return __generator(this, function (_a) {

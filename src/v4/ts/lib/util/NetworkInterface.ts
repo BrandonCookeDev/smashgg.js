@@ -82,6 +82,14 @@ export default class NetworkInterface{
 		})
 	}
 
+	static clusterQuery(keys: any[], fcn: string) : Promise<any[]>{
+		return Promise.all(keys.map(key => {
+			if(!key.hasOwnProperty(fcn))
+				throw new Error(`${fcn} is not a function in type ${typeof key}`)
+			return key[fcn]()
+		}))
+	}
+
 	static async singleQuery(query: string, variables: Variables) : Promise<any>{
 		await Common.sleep(+RATE_LIMIT_MS_TIME)
 		return await NetworkInterface.client.request(query, variables)

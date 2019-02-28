@@ -108,6 +108,13 @@ var NetworkInterface = /** @class */ (function () {
             });
         });
     };
+    NetworkInterface.clusterQuery = function (keys, fcn) {
+        return Promise.all(keys.map(function (key) {
+            if (!key.hasOwnProperty(fcn))
+                throw new Error(fcn + " is not a function in type " + typeof key);
+            return key[fcn]();
+        }));
+    };
     NetworkInterface.singleQuery = function (query, variables) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {

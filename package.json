@@ -84,7 +84,7 @@
     "mocha": "^5.2.0",
     "sinon": "^6.1.4",
     "tslint": "^5.13.0",
-    "typescript": "^3.2.4",
+    "typescript": "^3.3.3333",
     "typescript-eslint-parser": "^21.0.2"
   }
 }

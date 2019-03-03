@@ -53,33 +53,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 require("colors");
 var Logger_1 = __importDefault(require("./Logger"));
-var moment_1 = __importDefault(require("moment"));
 var events_1 = require("events");
 var RETRY_RATE = 3;
 var DELINQUENCY_RATE = 79;
 var DELINQUENCY_TIMER = 60000; // 1 min
-var UPDATE_INTERVAL = 250;
-var QueueItem = /** @class */ (function () {
-    function QueueItem(item, timestamp) {
-        this.item = item;
-        this.timestamp = timestamp;
-        this.isExecuted = false;
-    }
-    QueueItem.prototype.execute = function () {
-        this.item();
-        this.isExecuted = true;
-    };
-    return QueueItem;
-}());
 var QueryQueue = /** @class */ (function (_super) {
     __extends(QueryQueue, _super);
     function QueryQueue() {
-        var _this_1 = _super.call(this) || this;
-        _this_1.queue = [];
-        _this_1.availableSlots = DELINQUENCY_RATE;
-        _this_1.queue = [];
-        _this_1.availableSlots = DELINQUENCY_RATE;
-        return _this_1;
+        var _this = _super.call(this) || this;
+        _this.queue = [];
+        _this.availableSlots = DELINQUENCY_RATE;
+        _this.delinquencyQueue = [];
+        _this.queue = [];
+        _this.availableSlots = DELINQUENCY_RATE;
+        _this.delinquencyQueue = [];
+        return _this;
     }
     QueryQueue.init = function () {
         if (!QueryQueue.initialized) {
@@ -94,18 +82,7 @@ var QueryQueue = /** @class */ (function (_super) {
                     });
                 });
             });
-            QueryQueue.instance.on('empty', function () {
-                return __awaiter(this, void 0, void 0, function () {
-                    return __generator(this, function (_a) {
-                        QueryQueue.processing = false;
-                        clearInterval(QueryQueue.processInterval);
-                        return [2 /*return*/];
-                    });
-                });
-            });
-            QueryQueue.instance.processQueue();
-            QueryQueue.notificationInterval;
-            QueryQueue.processInterval;
+            QueryQueue.instance.processDelinquencyQueueElements();
             QueryQueue.initialized = true;
         }
     };
@@ -119,72 +96,98 @@ var QueryQueue = /** @class */ (function (_super) {
             throw new Error('QueryQueue not initialized!');
         return QueryQueue.instance;
     };
-    QueryQueue.prototype.getQueue = function () {
-        return this.queue.slice(0, DELINQUENCY_RATE);
-    };
-    QueryQueue.prototype.getDelinquencyQueue = function () {
-        return this.queue.slice(0, DELINQUENCY_RATE);
-    };
+    /**
+     * processQueue
+     *
+     * kicks off a while loop that executes until the queue is empty.
+     * continuously runs function elements
+     */
     QueryQueue.prototype.processQueue = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var retryCount, requestFcn, e_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!!QueryQueue.processing) return [3 /*break*/, 9];
+                        QueryQueue.processing = true;
+                        Logger_1.default.debug('loop begun'.green);
+                        Logger_1.default.debug('Queue Size: %s', String(this.queue.length).green);
+                        Logger_1.default.debug('Available Slots: %s', String(this.availableSlots).magenta);
+                        Logger_1.default.debug('Delinquency Length: %s', String(this.delinquencyQueue.length).red);
+                        _a.label = 1;
+                    case 1:
+                        if (!(this.queue.length > 0 || this.delinquencyQueue.length > 0)) return [3 /*break*/, 8];
+                        retryCount = 0;
+                        requestFcn = QueryQueue.getInstance().pop();
+                        if (!requestFcn)
+                            return [3 /*break*/, 8];
+                        _a.label = 2;
+                    case 2:
+                        if (!(retryCount < RETRY_RATE)) return [3 /*break*/, 7];
+                        _a.label = 3;
+                    case 3:
+                        _a.trys.push([3, 5, , 6]);
+                        return [4 /*yield*/, requestFcn()];
+                    case 4:
+                        _a.sent();
+                        Logger_1.default.debug('executed'.cyan);
+                        return [3 /*break*/, 7];
+                    case 5:
+                        e_1 = _a.sent();
+                        Logger_1.default.error('SRQ error: ' + e_1.message.red);
+                        retryCount++;
+                        return [3 /*break*/, 6];
+                    case 6: return [3 /*break*/, 2];
+                    case 7: return [3 /*break*/, 1];
+                    case 8:
+                        QueryQueue.processing = false;
+                        this.emitEmptyEvent();
+                        Logger_1.default.debug('loop ended'.magenta);
+                        _a.label = 9;
+                    case 9: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    /**
+     * processDelinquencyQueueElements
+     *
+     * Elements who were added after the rate limit were put in
+     * the Delinquency queue. These are elements who must wait for a
+     * slot to open in the main queue in order for them to be executed.
+     */
+    QueryQueue.prototype.processDelinquencyQueueElements = function () {
         var _this = this;
-        QueryQueue.processing = true;
-        // mange removing elements from the queue
-        QueryQueue.processInterval = setInterval(function () {
-            if (_this.queue.length > 0) {
-                var beginMoment = moment_1.default(_this.queue[0].timestamp);
-                var minuteAfter = moment_1.default(_this.queue[0].timestamp).add(1, 'minute');
-                var shouldBePopped = moment_1.default().isSameOrAfter(minuteAfter);
-                // pop element if needed and then set the DELINQUENCY_RATE'th element
-                // timestamp to right now
-                if (shouldBePopped) {
-                    _this.pop();
-                    Logger_1.default.info("Slot opened. Queue size: %s", _this.queue.length);
-                    if (_this.queue.length >= DELINQUENCY_RATE)
-                        _this.queue[DELINQUENCY_RATE - 1].timestamp = moment_1.default().toDate();
+        setInterval(function () {
+            // if delinquency queue has queries, add them to queue
+            if (_this.delinquencyQueue.length > 0) {
+                if (_this.availableSlots > 0) {
+                    Logger_1.default.verbose('Adding delinquent queries to %s available slots', _this.availableSlots);
+                    var additions = _this.delinquencyQueue.slice(0, _this.availableSlots);
+                    _this.delinquencyQueue.splice(0, _this.availableSlots);
+                    _this.availableSlots -= additions.length;
+                    _this.queue = _this.queue.concat(additions);
+                    _this.processQueue();
                 }
             }
-            // notify users of when the next query will fire if client is delinquent
-            if (_this.queue.length >= DELINQUENCY_RATE && !QueryQueue.notificationInterval) {
-                QueryQueue.notificationInterval = setInterval(function () {
-                    var minuteAfter = moment_1.default(_this.queue[0].timestamp).add(1, 'minute');
-                    var timeToNext = moment_1.default.duration(minuteAfter.diff(moment_1.default()));
-                    Logger_1.default.debug('element 0 timestamp: %s', moment_1.default(_this.queue[0].timestamp).format());
-                    Logger_1.default.debug('minuteAfter: %s', minuteAfter.format());
-                    Logger_1.default.info('next query firing in %s seconds', timeToNext.seconds());
-                }, 5000);
-            }
-            else if (_this.queue.length < DELINQUENCY_RATE && QueryQueue.notificationInterval) {
-                clearInterval(QueryQueue.notificationInterval);
-                QueryQueue.notificationInterval = null;
-            }
-            // handle function executions
-            // functions at or near the delinquency limit should be fired first
-            if (_this.queue.length > 0) {
-                var limit = _this.queue.length >= DELINQUENCY_RATE ? DELINQUENCY_RATE : _this.queue.length;
-                for (var i = limit; i > 0; i--) {
-                    if (!_this.queue[i - 1].isExecuted)
-                        _this.queue[i - 1].execute();
-                }
-            }
-            // fire event if the queue is empty
-            if (_this.queue.length == 0)
-                _this.emitEmptyEvent();
-        }, UPDATE_INTERVAL);
+        }, 500);
     };
     QueryQueue.prototype.add = function (element) {
+        var _this = this;
         if (element.constructor.name != 'Function')
             throw new Error('SRQ Error: Elements added must be a function wrapping around a promise');
-        var item;
-        if (this.queue.length < DELINQUENCY_RATE) {
-            Logger_1.default.verbose('Queue Size: %s. Adding to queue', this.queue.length);
-            item = new QueueItem(element, moment_1.default().toDate());
+        if (this.availableSlots > 0 && this.delinquencyQueue.length == 0) {
+            this.queue.push(element);
+            this.availableSlots--;
+            this.emitAddEvent();
+            setTimeout(function () { _this.availableSlots++; _this.processQueue(); Logger_1.default.debug(("available: " + _this.availableSlots).green); }, DELINQUENCY_TIMER);
         }
         else {
-            this.emitFullEvent();
-            Logger_1.default.warn('Queue Size: %s. Queueing in delinquency', this.queue.length);
-            item = new QueueItem(element, null);
+            console.warn('Query Queue at capacity [%s]. Queuing in delinquency queue', DELINQUENCY_RATE);
+            //log.warn('Query Queue at capacity [%s]. Queuing in delinquency queue', DELINQUENCY_RATE)
+            this.delinquencyQueue.push(element);
+            this.emitAddEvent();
         }
-        this.queue.push(item);
     };
     QueryQueue.prototype.pop = function () {
         if (this.queue.length > 0)

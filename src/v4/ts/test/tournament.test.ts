@@ -311,6 +311,7 @@ describe('smashgg Tournament', function(){
 		expect(tournament3.getContactTwitter()).to.be.equal(testData.organizer3.twitter)
 	})
 
+	/*
 	// sets
 	it('should return the correct list of Sets in the Tournament 1', async function(){
 		this.timeout(30000)
@@ -359,4 +360,5 @@ describe('smashgg Tournament', function(){
 
 
 	// attendees
+	*/
 })

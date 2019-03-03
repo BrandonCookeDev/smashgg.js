@@ -50,14 +50,12 @@ var ROOT = path_1.default.join(__dirname, '..', '..', '..', '..', '.env');
 var dotenv_1 = require("dotenv");
 dotenv_1.config({ path: ROOT });
 require("../lib/util/ErrorHandler");
-var lodash_1 = __importDefault(require("lodash"));
 var moment_1 = __importDefault(require("moment"));
 var chai_1 = __importDefault(require("chai"));
 var chai_as_promised_1 = __importDefault(require("chai-as-promised"));
 chai_1.default.use(chai_as_promised_1.default);
 var expect = chai_1.default.expect;
 var Tournament_1 = require("../lib/Tournament");
-var GGSet_1 = require("../lib/GGSet");
 var Initializer_1 = __importDefault(require("../lib/util/Initializer"));
 var testData = __importStar(require("./data/tournament.testData"));
 var tournament1, tournament2, tournament3;
@@ -325,76 +323,54 @@ describe('smashgg Tournament', function () {
         expect(tournament3.getContactTwitter()).to.be.equal(testData.tournament3.contactTwitter);
         expect(tournament3.getContactTwitter()).to.be.equal(testData.organizer3.twitter);
     });
+    /*
     // sets
-    it('should return the correct list of Sets in the Tournament 1', function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var sets, hasDuplicates;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        this.timeout(30000);
-                        return [4 /*yield*/, tournament1.getSets()];
-                    case 1:
-                        sets = _a.sent();
-                        hasDuplicates = function (a) {
-                            return lodash_1.default.uniq(a).length !== a.length;
-                        };
-                        expect(hasDuplicates(sets)).to.be.false;
-                        sets.forEach(function (set) {
-                            expect(set).to.be.an.instanceof(GGSet_1.GGSet);
-                        });
-                        expect(sets.length).to.be.equal(84);
-                        return [2 /*return*/, true];
-                }
-            });
+    it('should return the correct list of Sets in the Tournament 1', async function(){
+        this.timeout(30000)
+
+        let sets: GGSet[] = await tournament1.getSets();
+        var hasDuplicates = function(a: GGSet[]) {
+            return _.uniq(a).length !== a.length;
+        };
+        expect(hasDuplicates(sets)).to.be.false;
+        sets.forEach(set => {
+            expect(set).to.be.an.instanceof(GGSet);
         });
-    });
-    xit('should return the correct list of Sets in the Tournament 2', function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var sets, hasDuplicates;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        this.timeout(30000);
-                        return [4 /*yield*/, tournament2.getSets()];
-                    case 1:
-                        sets = _a.sent();
-                        hasDuplicates = function (a) {
-                            return lodash_1.default.uniq(a).length !== a.length;
-                        };
-                        expect(hasDuplicates(sets)).to.be.false;
-                        sets.forEach(function (set) {
-                            expect(set).to.be.an.instanceof(GGSet_1.GGSet);
-                        });
-                        expect(sets.length).to.be.equal(84);
-                        return [2 /*return*/, true];
-                }
-            });
+        expect(sets.length).to.be.equal(84);
+        return true;
+    })
+    xit('should return the correct list of Sets in the Tournament 2', async function(){
+        this.timeout(30000)
+
+        let sets: GGSet[] = await tournament2.getSets();
+        var hasDuplicates = function(a: GGSet[]) {
+            return _.uniq(a).length !== a.length;
+        };
+        expect(hasDuplicates(sets)).to.be.false;
+        sets.forEach(set => {
+            expect(set).to.be.an.instanceof(GGSet);
         });
-    });
-    xit('should return the correct list of Sets in the Tournament 3', function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var sets, hasDuplicates;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        this.timeout(30000);
-                        return [4 /*yield*/, tournament3.getSets()];
-                    case 1:
-                        sets = _a.sent();
-                        hasDuplicates = function (a) {
-                            return lodash_1.default.uniq(a).length !== a.length;
-                        };
-                        expect(hasDuplicates(sets)).to.be.false;
-                        sets.forEach(function (set) {
-                            expect(set).to.be.an.instanceof(GGSet_1.GGSet);
-                        });
-                        expect(sets.length).to.be.equal(84);
-                        return [2 /*return*/, true];
-                }
-            });
+        expect(sets.length).to.be.equal(84);
+        return true;
+    })
+    xit('should return the correct list of Sets in the Tournament 3', async function(){
+        this.timeout(30000)
+
+        let sets: GGSet[] = await tournament3.getSets();
+        var hasDuplicates = function(a: GGSet[]) {
+            return _.uniq(a).length !== a.length;
+        };
+        expect(hasDuplicates(sets)).to.be.false;
+        sets.forEach(set => {
+            expect(set).to.be.an.instanceof(GGSet);
         });
-    });
+        expect(sets.length).to.be.equal(84);
+        return true;
+    })
+
     // entrants
+
+
     // attendees
+    */
 });

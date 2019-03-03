@@ -183,6 +183,7 @@ export class Tournament implements ITournament.Tournament{
 		return phaseGroups
 	}
 
+	/*
 	async getSets(options: IGGSet.SetOptions = IGGSet.getDefaultSetOptions()) : Promise<GGSet[]> {
 		log.info('Getting Sets for Tournament [%s :: %s]', this.id, this.name)
 
@@ -265,6 +266,7 @@ export class Tournament implements ITournament.Tournament{
 		let attendees: Attendee[] = attendeeData.map(attendee => Attendee.parse(attendee))
 		return attendees;
 	}
+	*/
 	
 }
 
@@ -302,12 +304,15 @@ export namespace ITournament{
 		getEvents() : Promise<Event[]>
 		getPhases() : Promise<Phase[]>
 		getPhaseGroups() : Promise<PhaseGroup[]>
+
+		/*
 		getSets(options: IGGSet.SetOptions) : Promise<GGSet[]>
 		getIncompleteSets(options: IGGSet.SetOptions) : Promise<GGSet[]>
 		getCompletedSets(options: IGGSet.SetOptions) : Promise<GGSet[]>
 		getSetsXMinutesBack(minutesBack: number, options: IGGSet.SetOptions) : Promise<GGSet[]>
 		getEntrants(options: IEntrant.EntrantOptions) : Promise<Entrant[]>
 		getAttendees(options: IAttendee.AttendeeOptions) : Promise<Attendee[]> 
+		*/
 	}
 
 	export interface Data{

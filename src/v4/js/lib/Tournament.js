@@ -76,7 +76,7 @@ var Tournament = /** @class */ (function () {
     Tournament.parseFull = function (data) {
         return Tournament.parse(data.tournament);
     };
-    Tournament.get = function (id) {
+    Tournament.getById = function (id) {
         return __awaiter(this, void 0, void 0, function () {
             var data;
             return __generator(this, function (_a) {
@@ -91,7 +91,7 @@ var Tournament = /** @class */ (function () {
             });
         });
     };
-    Tournament.getBySlug = function (slug) {
+    Tournament.get = function (slug) {
         return __awaiter(this, void 0, void 0, function () {
             var data;
             return __generator(this, function (_a) {

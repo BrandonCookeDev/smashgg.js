@@ -16,6 +16,7 @@
     "url": "https://github.com/BrandonCookeDev/smashgg.js"
   },
   "scripts": {
+    "setupDebug": "node resources/scripts/setupDebug",
     "pretest": "tsc",
     "watch": "gulp watch",
     "test": "./node_modules/.bin/mocha ./src/js/test",

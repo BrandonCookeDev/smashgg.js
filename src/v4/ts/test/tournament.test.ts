@@ -41,13 +41,13 @@ describe('smashgg Tournament', function(){
 		this.timeout(20000)
 
 		await Initializer(process.env.API_TOKEN!)
-		let ti1 = await Tournament.get(TOURNAMENT_ID_1)
-		let ti2 = await Tournament.get(TOURNAMENT_ID_2)
-		let ti3 = await Tournament.get(TOURNAMENT_ID_3)
+		let ti1 = await Tournament.getById(TOURNAMENT_ID_1)
+		let ti2 = await Tournament.getById(TOURNAMENT_ID_2)
+		let ti3 = await Tournament.getById(TOURNAMENT_ID_3)
 
-		let ts1 = await Tournament.getBySlug(TOURNAMENT_SLUG_1)
-		let ts2 = await Tournament.getBySlug(TOURNAMENT_SLUG_2)
-		let ts3 = await Tournament.getBySlug(TOURNAMENT_SLUG_3)
+		let ts1 = await Tournament.get(TOURNAMENT_SLUG_1)
+		let ts2 = await Tournament.get(TOURNAMENT_SLUG_2)
+		let ts3 = await Tournament.get(TOURNAMENT_SLUG_3)
 
 		expect(ti1).to.deep.equal(ts1)
 		expect(ti2).to.deep.equal(ts2)

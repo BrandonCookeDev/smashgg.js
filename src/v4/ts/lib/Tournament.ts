@@ -72,13 +72,13 @@ export class Tournament implements ITournament.Tournament{
 		return Tournament.parse(data.tournament)
 	}
 
-	static async get(id: number) : Promise<Tournament> {
+	static async getById(id: number) : Promise<Tournament> {
 		log.info('Getting Tournament with id %s', id)
 		let data: ITournament.Data = await NI.query(queries.tournament, {id: id});
 		return Tournament.parseFull(data)
 	}
 
-	static async getBySlug(slug: string) : Promise<Tournament> {
+	static async get(slug: string) : Promise<Tournament> {
 		log.info('Getting Tournament with slug "%s"', slug)
 		let data: ITournament.Data = await NI.query(queries.tournamentBySlug, {slug: slug});
 		return Tournament.parseFull(data)

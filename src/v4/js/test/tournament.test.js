@@ -77,22 +77,22 @@ describe('smashgg Tournament', function () {
                         return [4 /*yield*/, Initializer_1.default(process.env.API_TOKEN)];
                     case 1:
                         _a.sent();
-                        return [4 /*yield*/, Tournament_1.Tournament.get(TOURNAMENT_ID_1)];
+                        return [4 /*yield*/, Tournament_1.Tournament.getById(TOURNAMENT_ID_1)];
                     case 2:
                         ti1 = _a.sent();
-                        return [4 /*yield*/, Tournament_1.Tournament.get(TOURNAMENT_ID_2)];
+                        return [4 /*yield*/, Tournament_1.Tournament.getById(TOURNAMENT_ID_2)];
                     case 3:
                         ti2 = _a.sent();
-                        return [4 /*yield*/, Tournament_1.Tournament.get(TOURNAMENT_ID_3)];
+                        return [4 /*yield*/, Tournament_1.Tournament.getById(TOURNAMENT_ID_3)];
                     case 4:
                         ti3 = _a.sent();
-                        return [4 /*yield*/, Tournament_1.Tournament.getBySlug(TOURNAMENT_SLUG_1)];
+                        return [4 /*yield*/, Tournament_1.Tournament.get(TOURNAMENT_SLUG_1)];
                     case 5:
                         ts1 = _a.sent();
-                        return [4 /*yield*/, Tournament_1.Tournament.getBySlug(TOURNAMENT_SLUG_2)];
+                        return [4 /*yield*/, Tournament_1.Tournament.get(TOURNAMENT_SLUG_2)];
                     case 6:
                         ts2 = _a.sent();
-                        return [4 /*yield*/, Tournament_1.Tournament.getBySlug(TOURNAMENT_SLUG_3)];
+                        return [4 /*yield*/, Tournament_1.Tournament.get(TOURNAMENT_SLUG_3)];
                     case 7:
                         ts3 = _a.sent();
                         expect(ti1).to.deep.equal(ts1);

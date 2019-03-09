@@ -112,10 +112,10 @@ const Tournament = smashgg.Tournament;
     let ceo2016 = await Tournament.getTournament('ceo2016');
     console.log(ceo2016.getName());
     
-    let ceoEvents = await Tournament.getEvents()
-    let phases = await Tournament.getPhases()
-    let phaseGroups = await Tournament.getPhaseGroups()
-})
+    let ceoEvents = await Tournament.getEvents();
+    let phases = await Tournament.getPhases();
+    let phaseGroups = await Tournament.getPhaseGroups();
+})();
 ```
 
 ### Constructor
@@ -223,6 +223,8 @@ const Tournament = smashgg.Tournament;
     * return Promise<[PhaseGroup](#phasegroup)[]>
 
 ## Venue
+A Venue is the location of a tournament, and encapsulates data about that location.
+
 ```javascript
 let venue = new Venue('Buckhead Theater', '3110 Roswell Rd NE, Atlanta, GA 30305', 'Atlanta', 'GA', '1', 'United States', '30305', 33.8403, 84.3796);
 
@@ -285,6 +287,8 @@ Venue(venueName, venueAddress, city, addrState, countryCode, region, postalCode,
     * number | null
 
 ## Organizer
+An Organizer is an individual or organization in Smash.gg that organizes a tournament and is the owner of a Tournament's webpage in smash.gg
+
 ```javascript
 let org = new Organizer(7000, 'info@recursion.gg', '123-456-7890', '@recursiongg', 'This is where info goes lul');
 
@@ -319,43 +323,12 @@ For instance, Melee Singles is an Event while Melee Doubles is another Event. Ev
 are comprised of optional Phases and Phases Groups.
 
 ```javascript
-/** NEW CONVENIENCE METHODS **/
-Event.getEvent('to12', 'melee-singles')
-    .then(event1 => {
-        //do stuff with event
-    })
-Event.getEventById(14335, {rawEncoding: 'base64'})
-    .then(event => {
-        //do stuff with event
-    })
+const smashgg = require('smashgg.js');
+const Event = smashgg.Event;
 
-/** OLD METHODS **/
-var event1 = new smashgg.Event('to12', 'melee-singles')
-event1.on('ready', function(){
-    //do stuff with event1
-})
-
-var event2 = new smashgg.Event(
-    'ceo-2106',
-    'melee-singles',
-    {
-        rawEncoding: 'base64',
-        expands:{
-            phase: true,
-            groups: false
-        },
-        isCached: false
-)
-event2.on('ready', function(){
-    //do stuff with event2
-}
-
-//additional constructor for id-only pulling
-var eventId = 14335
-var event3 = new smashgg.Event(eventId, {rawEncoding: 'utf8'})
-event3.on('ready', function(){
-    //do stuff with event3
-})
+(async function(){
+    await meleeSinglesAtEvo = await Event.get('evo-2017', )
+})();
 ```
 
 ### Constructor

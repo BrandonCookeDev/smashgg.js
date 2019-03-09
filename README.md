@@ -106,142 +106,212 @@ categorize different games played, game types within those games, and the matche
 make up those games.
 
 ```javascript
-/* NEW CONVENIENCE FUNCTIONS! */
-//Returns a tournament resolving promise
-Tournament.getTournament('to12')
-    .then(to12 => {
-        // do stuff with TO12
-    }))
-
-var to12 = new smashgg.Tournament('to12')
-to12.on('ready', function(){
-    //tournament is populated with data
-    console.log('Got tournament ' + tournament.getName()
-})
-
-var ceo2016 = new smashgg.Tournament(
-    'ceo-2016',
-    {
-        event: true,
-        phase: false,
-        groups: false,
-        stations: false
-    },
-    false
-)
-ceo2016.on('ready', function(){
-    //do stuff with ceo2016
+const smashgg = require('smashgg.js');
+const Tournament = smashgg.Tournament;
+(async function(){
+    let ceo2016 = await Tournament.getTournament('ceo2016');
+    console.log(ceo2016.getName());
+    
+    let ceoEvents = await Tournament.getEvents()
+    let phases = await Tournament.getPhases()
+    let phaseGroups = await Tournament.getPhaseGroups()
 })
 ```
 
 ### Constructor
-* **Tournament(tournamentName [,options]);**
+* **Tournament(tournamentName);**
 
     * **tournamentName** [required] - name slug or short tournament name
         * a slug is a string that uniquely identifies a tournament on the platform
             * ex: ceo-2016
         * a shortened name is a set abbreviation for a slug
             * ex: to12
-    * **options** - object determining options of the Tournament object
-        * **rawEncoding** - string value for what encoding the raw Smashgg data should be in
-            * Legal values:
-                * 'json' - *default* the raw should be kept in JSON format
-                * 'utf8' - the raw should be a utf8 string
-                * 'base64' - the raw should be a base64 string
-        * **expands** - an object that defines which additional data is sent back. By default all values are marked true.
-            * event - boolean - condensed data for the events that comprise this tournament
-            * phase - boolean -condensed data for the phases that comprise the events
-            * groups - boolean -condensed data for the groups that comprise the phases
-            * stations - boolean -condensed data for the stations for each group
-        * **isCached** - boolean parameter for if the api should cache the resulting object
 
 ### Properties
-* **data** - a copy of the raw Tournament JSON that comprises this object
-* **name** - the tournament name from the constructor
-* **rawEncoding** - the encoding type the smashgg raw is in
-* **isCached** - True/False value of if the object should be cached
-* **expands** - Object that asks smash.gg for more info when api is called
-* **expandsString** - url encoded string version of the expands object
-* **url** - smash.gg api url used to create this Tournament object
-
-### Events
-* **'ready'**
-    * indicates when the Tournament object is populated with data
-* **'error'**
-    * indicates an error occurred when creating the Tournament
-    * returns an Error object to be used by the user
-
-### Methods
-### Convenience
-* **static getTournament(tournamentId [,options])**
-    * Returns a Promise that resolves a `Tournament` object
-    * **tournamentId** - [*required*] tournament name/slug
-    * **options** - options for the Tournament object
-
-#### Aggregation Promises
-* **getAllPlayers([options])**
-    * Returns a Promise that resolves an array of all `Player` objects that partook in the Tournament
-    * **options** - options for the bulk pull proceedure
-        * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
-        * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
-* **getAllSets([options])**
-    * Returns a Promise that resolves an array of all `GGSet` objects that took place in the Tournament
-    * **options** - options for the bulk pull proceedure
-        * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
-        * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
-* **getAllEvents([options])**
-    * Returns a Promise that resolves an array of all `Events` objects that are part of the Tournament.
-    * **options** - options for the bulk pull proceedure
-        * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
-        * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
-* **getCompleteSets([options])**
-    * Returns a Promise that resolves an array of `GGSet` objects that are completed
-    * **options** - options for the bulk pull proceedure
-        * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
-        * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
-* **getIncompleteSets([options])**
-    * Returns a Promise that resolves an array of `GGSet` objects that are not completed yet
-    * **options** - options for the bulk pull proceedure
-        * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
-        * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
+* **id** 
+    * number
+    * id number of the tournament
+* **name** 
+    * string
+    * name of the tournament
+* **slug** 
+    * string
+    * url slug of the tournament
+* **startTime** 
+    * Date | null
+    * start time unix epoch of the tournament
+* **endTime** 
+    * Date | null
+    * end time unix epoch of the tournament
+* **timezone** 
+    * string | null
+    * timezone of the location of the tournament
+* **venue** 
+    * [Venue](#venue)
+    * contains information about the Venue (see Venue docs) 
+* **organizer** 
+    * [Organizer](#organizer)
+    * contains information about the Organizer (see Organizer docs)
 
 #### Getters
+* **getId()** 
+    * gets the numeric identifier for the tournament
+    * returns number
+* **getName()** 
+    * gets the name of the tournament
+    * returns string 
+* **getSlug()** 
+    * gets the string url slug of the tournament
+    * returns string
+* **getTimezone()** 
+    * gets the timezone string of the location of the tournament
+    * returns string | null
+* **getStartTime()** 
+    * gets the start time of the tournament in JS Date object
+    * returns Date | null
+* **getStartTimeString()** 
+    * gets the start time of the tournament in Date string
+    * returns string | null
+* **getEndTime()** 
+    * gets the end time of the tournament in JS Date object
+    * returns Date | null
+* **getEndTimeString()** 
+    * gets the end time of the tournament in Date string
+    * returns string | null
+* **getVenue()** 
+    * gets the Venue object where this tournament takes place
+    * returns [Venue](#venue)
+* **getVenueName()** 
+    * gets the venue name where this tournament takes place
+    * returns string | null
+* **getCity()** 
+    * gets the city string where this tournament takes place
+    * returns string | null
+* **getState()** 
+    * gets the state string where this tournament takes place
+    * returns string | null
+* **getAddress()** 
+    * gets the address string where this tournament takes place
+    * returns string | null
+* **getZipCode()** 
+    * gets the zip code string where this tournament takes place
+    * returns string | null
+* **getOrganizer()** 
+    * gets the Organizer object who organized this tournament
+    * returns [Organizer](#organizer)
+* **getContactInfo()** 
+    * gets the contact info of the organizer
+    * returns string | null
+* **getContactEmail()** 
+    * gets the email string of the organizer
+    * returns string | null
+* **getContactTwitter()** 
+    * gets the twitter handle string of the organizer
+    * returns string | null
+* **getOwnerId()** 
+    * get the numeric id of the owner's player profile
+    * returns number | null
+
+* **getEvents()** 
+    * aggregates all of the Event objects belonging to the tournament 
+    * return Promise<[Event](#event)[]>
+* **getPhases()** 
+    * aggregates all the Phase objects belonging to the tournament
+    * return Promise<[Phase](#phase)[]>
+* **getPhaseGroups()** 
+    * aggregates all the PhaseGroup objects belonging to the tournament
+    * return Promise<[PhaseGroup](#phasegroup)[]>
+
+## Venue
+```javascript
+let venue = new Venue('Buckhead Theater', '3110 Roswell Rd NE, Atlanta, GA 30305', 'Atlanta', 'GA', '1', 'United States', '30305', 33.8403, 84.3796);
+
+console.log(venue.getName()); // prints "Buckhead Theater"
+console.log(venue.getCity()); // prints "Atlanta"
+```
+
+### Constructor
+Venue(venueName, venueAddress, city, addrState, countryCode, region, postalCode, lat, lng);
+
+### Properties
+
+* **venueName**
+    * string | null
+* **venueAddress**
+    * string | null
+* **city**
+    * string | null
+* **addrState**
+    * string | null
+* **countryCode**
+    * string | null
+* **region**
+    * string | null
+* **postalCode**
+    * string | null
+* **lat**
+    * number | null
+* **lng**
+    * number | null
+
+### Getters
+
+* **getName()** 
+    * get the name string of the venue
+    * string | null
+* **getAddress()** 
+    * get the address of the venue
+    * string | null
+* **getCity()** 
+    * get the city string of the venue
+    * string | null
+* **getState()** 
+    * get the state string of the venue
+    * string | null
+* **getPostalCode()** 
+    * get the postal code string of the venue
+    * string | null
+* **getCountryCode()** 
+    * get the country code string of the venue
+    * string | null
+* **getRegion()** 
+    * get the country region of the venue
+    * string | null
+* **getLatitude()** 
+    * get the numeric latitude of the venue
+    * number | null
+* **getLongitude()** 
+    * get the numeric longitude of the venue
+    * number | null
+
+## Organizer
+```javascript
+let org = new Organizer(7000, 'info@recursion.gg', '123-456-7890', '@recursiongg', 'This is where info goes lul');
+
+console.log(org.getName());
+console.log(org.getTwitter());
+```
+
+### Constructor
+Organizer(ownerId, email, phone, twitter, info);
+
+### Getters
 * **getId()**
-    * returns the id of the tournament
-* **getName()**
-    * returns the name of the tournament
-* **getSlug()**
-    * returns the slug for the tournament
-* **getTimezone()**
-    * returns the string timezone the tournament occurred in
-* **getStartTime()**
-    * returns a JS Date object for the start time of the tournament
-* **getStartTimeString()**
-    * returns a string 'MM-DD-YYYY HH:mm:ss tz' for the start time of the tournament
-* **getEndTime()**
-    * returns a JS Date object for the end time of the tournament
-* **getEndTimeString()**
-    * returns a string 'MM-DD-YYYY HH:mm:ss tz' for the end time of the tournament
-* **getWhenRegistrationCloses()**
-    * returns a JS Date object for the time registration is set to close
-* **getWhenRegistrationClosesString()**
-    * returns a string 'MM-DD-YYYY HH:mm:ss tz' for the time registration is set to close
-* **getCity()**
-    * returns the city where the tournament occurred
-* **getState()**
-    * returns the state where the tournament occurred
-* **getZipCode()**
-    * returns the zip code where the tournament occurred
-* **getContactEmail()**
-    * return the email address listed for contacting
-* **getContactTwitter()**
-    * return the twitter handle listed for contacting
-* **getOwnerId()**
-    * return the id of the tournament owner
-* **getVenueFee()**
-    * return the cost of the venue fee for the tournament
-* **getProcessingFee()**
-    * return the cost of the processing fee to register for the tournament
+    * gets the numeric id of the organizer
+    * number | null
+* **getEmail()**
+    * gets the email string of the organizer
+    * string | null
+* **getPhone()**
+    * gets the phone number string of the organizer
+    * string | null
+* **getTwitter()**
+    * gets the twitter handle string of the organizer
+    * string | null
+* **getInfo()**
+    * gets the information string of the organizer
+    * string | null
+
 
 ## Event
 An Event in smash.gg is a broad collection of matches for a single game and game type.

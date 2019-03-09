@@ -119,13 +119,16 @@ const Tournament = smashgg.Tournament;
 ```
 
 ### Constructor
-* **Tournament(tournamentName);**
-
-    * **tournamentName** [required] - name slug or short tournament name
-        * a slug is a string that uniquely identifies a tournament on the platform
-            * ex: ceo-2016
-        * a shortened name is a set abbreviation for a slug
-            * ex: to12
+Tournament(
+    id: number,
+    name: string,
+    slug: string,
+    startTime: Date | null,
+    endTime: Date | null,
+    timezone: string | null,
+    venue: Venue,
+    organizer: Organizer
+)
 
 ### Properties
 * **id** 
@@ -233,7 +236,17 @@ console.log(venue.getCity()); // prints "Atlanta"
 ```
 
 ### Constructor
-Venue(venueName, venueAddress, city, addrState, countryCode, region, postalCode, lat, lng);
+Venue(
+    name: string | null,
+    address: string | null,
+    city: string | null,
+    state: string | null,
+    postalCode: string | null,
+    countryCode: string | null,
+    region: string | null,
+    latitude: number | null,
+    longitude: number | null
+);
 
 ### Properties
 
@@ -297,7 +310,13 @@ console.log(org.getTwitter());
 ```
 
 ### Constructor
-Organizer(ownerId, email, phone, twitter, info);
+Organizer(
+    id: number | null,
+    email: string | null,
+    phone: string | null,
+    twitter: string | null,
+    info: string | null
+);
 
 ### Getters
 * **getId()**
@@ -327,331 +346,343 @@ const smashgg = require('smashgg.js');
 const Event = smashgg.Event;
 
 (async function(){
-    await meleeSinglesAtEvo = await Event.get('evo-2017', )
+    let meleeSinglesAtEvo = await Event.get('evo-2017', 'melee-singles');
+    let meleeDoublesAtFunction1 = await Event.get('function-1-recursion-regional', 'melee-doubles');
+    let sfvAtEvo = await Event.getById(21726);
+    let wiiUAtEvo = await Event.getBySlug('tournament/evo-2017/events/super-smash-bros-for-wii-u');
+
+    let phaseGroups = await meleeSinglesAtEvo.getPhaseGroups();
+    let sets = sfvAtEvo.getSets();
 })();
 ```
 
 ### Constructor
-* **Event(eventId [,tournamentId, options])**
-    * **eventId** [required] - event id number or slug
-        * id ex: 14335
-        * slug ex: melee-singles or bracket-pools
-    * **tournamentId** [required] - tournament slug (**no longer takes shorthand name of the tournament**)
-        * slug: ceo-2016
-        * shorthand: *removed by gg* - this object no longer takes shorthand for a tournament slug (eg: *to12 for tipped-off-12-presented-by-the-lab-gaming-center*)
-    * **options** - object determining options of the Event object
-        * **rawEncoding** - string value for what encoding the raw Smashgg data should be in
-            * Legal values:
-                * 'json' - *default* the raw should be kept in JSON format
-                * 'utf8' - the raw should be a utf8 string
-                * 'base64' - the raw should be a base64 string
-        * **expands** - an object that defines which additional data is sent back. By default all values are marked true.
-            * phase - boolean -condensed data for the phases that comprises the event
-            * groups - boolean -condensed data for the groups that comprise the phases
-        * **isCached** - boolean value for if the resulting object should be cached
+Event(
+    id: number ,
+    name: string,
+    slug: string,
+    state: string | null,
+    startAt: number | null,
+    numEntrants: number | null,
+    checkInBuffer: number | null,
+    checkInDuration: number | null,
+    checkInEnabled: boolean | null,
+    isOnline: boolean | null,
+    teamNameAllowed: boolean | null,
+    teamManagementDeadline: number | null
+)
 
 ### Properties
-* **data** - a copy of the raw Event JSON that comprises this object
-* **tournamentName** - the tournament name from the constructor, to which this event belongs
-* **eventName** - the event name from the constructor
-* **rawEncoding** - the encoding type the smashgg raw is in
-* **isCached** - True/False value of if the object should be cached
-* **expands** - Object that asks smash.gg for more info when api is called
-* **expandsString** - url encoded string version of the expands object
-* **url** - smash.gg api url used to create this Event object
-* **tournamentSlug** - the api slug for the tournament to which this event belongs
-
-### Events
-* **'ready'**
-    * indicates when the Event object is populated with data
-* **'error'**
-    * indicates an error occurred when creating the Event
-    * returns an Error object to be used by the user
+* **id**
+    * number ,
+* **name**
+    * string,
+* **slug**
+    * string,
+* **state**
+    * string | null,
+* **startAt**
+    * number | null,
+* **numEntrants**
+    * number | null,
+* **checkInBuffer**
+    * number | null,
+* **checkInDuration**
+    * number | null,
+* **checkInEnabled**
+    * boolean | null,
+* **isOnline**
+    * boolean | null,
+* **teamNameAllowed**
+    * boolean | null,
+* **teamManagementDeadline**
+    * number | null
 
 ### Methods
-#### Convenience Methods
-* **static getEvent(eventId, tournamentId [, options])**
-    * Returns a Promise resolving an Event object
-    * **eventId** - [*required*] event name/slug
-    * **tournamentId** - [*required*] tournament slug/shorthand
-    * **options** - options for the Event [in constructor]
 
-* **static getEventById(eventId [, options])**
-    * Returns a Promise resolving an Event object
-    * **eventId** - [*required*] event numeric id
-    * **options** - options for the Event [in constructor]
-
-#### Aggregation Promises
-* **getEventPhases([options])**
-    * Returns a Promise resolving an array of `Phase` objects for this Event
-    * **options** - options for the bulk pull proceedure
-        * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
-        * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
-* **getEventPhaseGroups([options])**
-    * Returns a Promise resolving an array of `PhaseGroup` objects for this Event
-    * **options** - options for the bulk pull proceedure
-        * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
-        * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
-* **getSets([options])**
-    * Returns a Promise resolving an array of `GGSet` objects belonging to this Event
-    * **options** - options for the bulk pull proceedure
-        * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
-        * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
-* **getTop8Sets([options]**
-    * Returns a Promise resolving an array of Top 8 `GGSet` objects belonging to this Event
-    * This function deterministically returns the Top 8 sets of an event by finding the most-likely Phase name (Top 8, Top 64, etc) and aggregating the Top 8 from there.
-    * **options** - options for the bulk pull proceedure
-        * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
-        * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
-* **getPlayers([options])**
-    * Returns a Promise resolving an array of `Player` objects belonging to this Event
-    * **options** - options for the bulk pull proceedure
-        * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
-        * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
-* **getCompleteSets([options])**
-    * Returns a Promise that resolves an array of `GGSet` objects that are completed
-    * **options** - options for the bulk pull proceedure
-        * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
-        * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
-* **getIncompleteSets([options])**
-    * Returns a Promise that resolves an array of `GGSet` objects that are not completed yet
-    * **options** - options for the bulk pull proceedure
-        * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
-        * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
-
-#### Getters
+* **getId()**
+    * gets the numeric identifier for the event
+    * returns number
 * **getName()**
-    * returns the name of the event
+    * gets the name string for the event
+    * returns string
 * **getSlug()**
-    * returns the slug for the event
-* **getStartTime()**
-    * returns a JS Date object for when the event is set to begin
-* **getStartTimeString()**
-    * returns a date string (MM-DD-YYYY HH:mm:ss tz) for when the event is set to begin
-* **getEndTime()**
-    * returns a JS Date object for when the event is set to end
-* **getEndTimeString()**
-    * returns a date string (MM-DD-YYYY HH:mm:ss tz) for when the event is set to end
+    * gets the name url slug for the event
+    * returns string
+* **getState()**
+    * gets the state string of the event
+    * this is the current state of the event
+        * eg: 'COMPLETED'
+    * returns string | null
+* **getNumEntrants()**
+    * gets the number of tournament attendees who entered this event
+    * returns number | null
+* **getCheckInBuffer()**
+    * gets the amount of time before check in begins
+    * returns number | null
+* **getCheckInDuration()**
+    * gets the amount of time check in will last
+    * returns number | null
+* **getCheckInEnabled()**
+    * gets the true/false value for if event is doing check-in
+    * returns boolean | null
+* **getIsOnline()**
+    * gets the true/false value for if the event is Online
+    * returns boolean | null
+* **getTeamNameAllowed()**
+    * gets the true/false value for if the event allows team names
+    * returns boolean | null
+* **getTeamManagementDeadline()**
+    * gets the true/false value for if the event has a team management deadline
+    * returns number | null
+
+#### Aggregations
+* **getPhases()** 
+    * gets the Phase objects owned by this Event
+    * returns Promise<Phase[]>
+* **getPhaseGroups()** 
+    * gets the Phase Group that occurred in this event
+    * returns Promise<PhaseGroup[]>
+* **getEntrants(options: IEntrant.EntrantOptions)** 
+    * gets the tournament attendees who competed in this event
+    * parameters 
+        * options
+            * [EntrantOptions](#entrantoptions)
+            * series of options for the return set of Entrants
+    * returns Promise<Entrant[]>
+* **getAttendees(options: IAttendee.AttendeeOptions)**
+    * gets the tournament attendees who are in this event
+    * parameters
+        * options
+            * [AttendeeOptions](#attendeeoptions)
+            * series of options for the return set of Attendees
+    * returns Promise<Attendee[]>
+* **getSets(options: IGGSet.SetOptions)**
+    * gets the tournament sets that occurred in this event
+    * parameters
+        * options
+            * [SetOptions](#setoptions)
+            * series of options for the return set of GGSets
+    * returns Promise<GGSet[]>
+* **getIncompleteSets(options: IGGSet.SetOptions)**
+    * gets the tournament sets in this event that have yet to be completed
+    * parameters
+        * options
+            * [SetOptions](#setoptions)
+            * series of options for the return set of GGSets
+    * returns Promise<GGSet[]>
+* **getCompleteSets(options: IGGSet.SetOptions)**
+    * gets the tournament sets in this event that have been completed
+    * parameters
+        * options
+            * [SetOptions](#setoptions)
+            * series of options for the return set of GGSets
+    * returns Promise<GGSet[]>
+* **getSetsXMinutesBack(minutesBack: number, options: IGGSet.SetOptions)**
+    * gets the tournament sets in this event that were completed x minutes ago
+    * parameters
+        * minutesBack
+            * number
+            * how many minutes ago do you want to search for completed sets
+        * options
+            * [SetOptions](#setoptions)
+            * series of options for the return set of GGSets
+    * returns Promise<GGSet[]> 
 
 ## Phase
 A phase in smash.gg is a subset of matches and brackets inside an Event. For example,
 a wave in pools is a Phase. Everything in that Phase is a Group (or Phase Group).
 
-```javascript
-/** NEW CONVENIENCE METHODS **/
 Phase.getPhase(111483)
-    .then(phase => {
-        //do stuff with phase
-    })
+
 Phase.getPhase(45262, {
-    rawEncoding: 'base64',
-    expands: {
-        groups: false
-    },
-    isCached: false
-}).then(phase =>{
-    //do stuff with phase
-})
+```javascript
+const smashgg = require('smashgg.js');
+const Phase = smashgg.Phase;
 
-var phase1 = new smashgg.Phase(111483)
-phase1.on('ready', function(){
-    //do stuff with phase1
-})
+(async function(){
+    let phase1 = await Phase.get(111483);
+    
+    console.log(phase1.getName()); // prints "Pools"
+    console.log(phase1.getNumSeeds()); // prints 156
 
-var phase2 = new smashgg.Phase(
-    45262,
-    {
-        rawEncoding: 'base64',
-        expands: {
-            groups: false
-        },
-        isCached: false
-    }
-)
-phase2.on('ready', function(){
-    //do stuff with phase2
-})
+    let entrants = await phase1.getEntrants(); 
+})()
 ```
 
 ### Constructor
-* **Phase(id [, options])**
-    * **id** [required] - unique identifier for the Phase
-    * **options** - object determining options of the Phase object
-        * **rawEncoding** - string value for what encoding the raw Smashgg data should be in
-            * Legal values:
-                * 'json' - *default* the raw should be kept in JSON format
-                * 'utf8' - the raw should be a utf8 string
-                * 'base64' - the raw should be a base64 string
-        * **expands** - an object that defines which additional data is sent back. By default all values are marked true.
-            * groups - boolean -condensed data for the groups that comprise the phases
-        * **isCached** - boolean parameter for if the api should cache the resulting object
+Phase(
+    id: number,
+    name: string,
+    eventId: number,
+    numSeeds: number,
+    groupCount: number
+)
 
 ### Properties
-* **data** - a copy of the raw Phase JSON that comprises this object
-* **id** - the id from the constructor, a unique identifier for the phase
-* **rawEncoding** - the encoding type the smashgg raw is in
-* **isCached** - True/False value of if the object should be cached
-* **expands** - Object that asks smash.gg for more info when api is called
-* **expandsString** - url encoded string version of the expands object
-* **url** - smash.gg api url used to create this Phase object
+* **id**
+    * returns number
+* **name**
+    * returns string
+* **eventId**
+    * returns number
+* **numSeeds**
+    * returns number
+* **groupCount**
+    * returns number
 
-### Events
-* **'ready'**
-    * indicates when the Phase object is populated with data
-* **'error'**
-    * indicates an error occurred when creating the Phase
-    * returns an Error object to be used by the user
 
 ### Methods
-#### Convenience Methods
-* **static getPhase(id [, options])**
-    * Returns a Promise resolving a Phase object
-    * **id** - [*required*] Id of the Phase
-    * **options** - options for the Phase object
-
-#### Aggregation Promises
-* **getPhaseGroups([options])**
-    * Returns a Promise resolving an array of `PhaseGroup` objects belonging to this Phase
-    * **options** - options for the bulk pull proceedure
-        * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
-        * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
-* **getSets([options])**
-    * Returns a Promise resolving an array of `GGSet` objects belonging to this Phase
-    * **options** - options for the bulk pull proceedure
-        * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
-        * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
-* **getPlayers([options])**
-    * Returns a Promise resolving an array of `Player` objects belonging to this Phase
-    * **options** - options for the bulk pull proceedure
-        * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
-        * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
-* **getCompleteSets([options])**
-    * Returns a Promise that resolves an array of `GGSet` objects that are completed
-    * **options** - options for the bulk pull proceedure
-        * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
-        * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
-* **getIncompleteSets([options])**
-    * Returns a Promise that resolves an array of `GGSet` objects that are not completed yet
-    * **options** - options for the bulk pull proceedure
-        * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
-        * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
-
-    
-
-#### Getters
-* **getName()**
-    * returns the name of the Phase
+* **getId()**
+    * gets the numeric identifier of this phase
+    * returns number
 * **getEventId()**
-    * returns the id of the Event this Phase belongs to
+    * gets the numeric identifier of the event which owns this phase
+    * returns number
+* **getName()**
+    * gets the name string of the phase
+    * returns string
+* **getNumSeeds()**
+    * gets the number of seeds that are in this phase
+    * returns number
+* **getGroupCount()**
+    * gets the number of phase groups belonging to this phase
+    * returns number	
+* **getPhaseGroups()**
+    * gets the phase groups belonging to this phase
+    * returns: Promise<PhaseGroup[]>
+
+* **getSets(options: IGGSet.SetOptions)**
+    * gets the tournament sets that occurred in this phase
+    * returns Promise<[GGSet](#ggset)[]>
+* **getEntrants(options: IEntrant.EntrantOptions)**
+    * gets the tournament attendees who competed in this phase
+    * returns Promise<[Entrant](#entrant)[]>
+* **getIncompleteSets(options: IGGSet.SetOptions)**
+    * gets the tournament sets that occurred in this phase which are not completed
+    * returns Promise<[GGSet](#ggset)[]>
+* **getCompleteSets(options: IGGSet.SetOptions)**
+    * gets the tournament sets that occurred in this phase which are completed    
+    * returns Promise<[GGSet](#ggset)[]>
+* **getSetsXMinutesBack(minutesBack: number, options: IGGSet.SetOptions)**
+    * gets the tournament sets that occurred in this phase which were completed x minutes ago
+    * returns Promise<[GGSet](#ggset)[]>
+
 
 ## PhaseGroup
 A Phase Group is the lowest unit on smash.gg. It is a bracket of some sort that belongs to a Phase.
 
 ```javascript
-/** NEW CONVENIENCE METHODS **/
-PhaseGroup.getPhaseGroup(44445)
-    .then(phaseGroup => {
-        //do stuff with phaseGroup
-    })
-PhaseGroup.getPhaseGroup(301994, {
-    rawEncoding: 'base64',  
-    expands: {
-        sets: true,
-        entrants: true,
-        standings: true,
-        seeds: false
-    },
-    isCached: false
-}).then(phaseGroup => {
-    //do stuff with phaseGroup
-})
+const smashgg = require('smashgg.js');
+const PhaseGroup = smashgg.PhaseGroup;
 
-var phaseGroup1 = new smashgg.PhaseGroup(44445)
-phaseGroup1.on('ready', function(){
-    //do stuff with phaseGroup1
-})
-
-var phaseGroup2 = new smashgg.PhaseGroup(
-    301994,
-    {
-        rawEncoding: 'base64',
-        expands: {
-            sets: true,
-            entrants: true,
-            standings: true,
-            seeds: false
-        },
-        isCached: false
-    }
-)
-phaseGroup2.on('ready', function(){
-    //do stuff with phaseGroup2
-})
+let phaseGroup1 = await PhaseGroup.get(44445);
 ```
 
 ### Constructor
-* **PhaseGroup(id, options)**
-    * **id** [required] - unique identifier for this Phase Group
-    * **options** - object determining options of the Tournament object
-        * **rawEncoding** - string value for what encoding the raw Smashgg data should be in
-            * Legal values:
-                * 'json' - *default* the raw should be kept in JSON format
-                * 'utf8' - the raw should be a utf8 string
-                * 'base64' - the raw should be a base64 string
-        * **expands** - an object that defines which additional data is sent back. By default all values are marked true.
-            * sets - boolean - data for the sets that comprises the phase group
-            * entrants - boolean - data for the entrants that comprise the phase group
-            * standings - boolean - data for the standings of the entrants for the phase group
-            * seeds - boolean - data for the seeding of entrants for the for the phase group
-        * **isCached** - boolean value for if the resulting object should be cached
+PhaseGroup(
+    id: number,
+    phaseId: number,
+    displayIdentifier: string | null,
+    firstRoundTime: number | null,
+    state: number | null,
+    waveId: number | null,
+    tiebreakOrder: object | null
+)
 
 ### Properties
-* **data** - a copy of the raw PhaseGroup JSON that comprises this object
-* **id** - the id from the constructor, a unique identifier for the Phase Group
-* **rawEncoding** - the encoding type the smashgg raw is in
-* **isCached** - True/False value of if the object should be cached
-* **expands** - Object that asks smash.gg for more info when api is called
-* **expandsString** - url encoded string version of the expands object
-* **url** - smash.gg api url used to create this PhaseGroup object
+* **id** 
+    * returns number
+* **phaseId** 
+    * returns number
+* **displayIdentifier** 
+    * returns string | null
+* **firstRoundTime** 
+    * returns number | null
+* **state** 
+    * returns number | null
+* **waveId** 
+    * returns number | null
+* **tiebreakOrder** 
+    * returns object | null
 
-### Events
-* **'ready'**
-    * indicates when the PhaseGroup object is populated with data
-* **'error'**
-    * indicates an error occurred when creating the Phase Group
-    * returns an Error object to be used by the user
 
 ### Methods
-#### Convenience Methods
-* **static getPhaseGroup(id [, options])**
-    * Returns a Promise resolving a PhaseGroup object
-    * **id** - [*required*] id of the Phase Group
-    * **options** - options for the PhaseGroup object
 
-#### Aggregation Promises
-* **getPlayers([options])**
-    * Returns a Promise that resolves an array of `Player` objects for the Phase Group.
-    * **options** - options for the bulk pull proceedure
-        * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
-* **getSets([options])**
-    * Return a Promise that resolves an array of `GGSet` objects for the Phase Group.
-    * **options** - options for the bulk pull proceedure
-        * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
-* **getCompleteSets([options])**
-    * Returns a Promise that resolves an array of `GGSet` objects that are completed
-    * **options** - options for the bulk pull proceedure
-        * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
-        * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
-* **getIncompleteSets([options])**
-    * Returns a Promise that resolves an array of `GGSet` objects that are not completed yet
-    * **options** - options for the bulk pull proceedure
-        * **isCached** - boolean value for if the value should be retrieved from cache. Defaults to true
-        * **concurrency** - integer value for how many web request promises should be made concurrently. Defaults to 4
-
-
-#### Getters
+* **getId()**
+    * gets the numeric identifier of the phase group
+    * returns number
 * **getPhaseId()**
-    * returns the Phase Id that owns this Phase Group
+    * gets the numeric identifier of the phase groups owning phase
+    * returns number
+* **getDisplayIdentifier()**
+    * gets the display identifier string of the phase group
+    * returns string | null
+* **getFirstRoundTime()**
+    * get the time of the first round of the phase group as a unix epoch
+    * returns number | null
+* **getState()**
+    * get the numeric state of the the phase group
+    * returns number | null
+* **getWaveId()**
+    * get the numeric wave id of the phase group
+    * returns number | null
+* **getTiebreakOrder()**
+    * get the JSON tiebreaker order of the phase group
+    * returns object | null
+
+* **getSeeds(options: ISeed.SeedOptions)**
+    * gets the seeds in this phase group
+    * parameters
+        * options
+            * [SeedOptions](#seedoptions)
+            * series of options for the return set of Seeds
+    * returns Promise<[Seed](#seed)[]>
+* **getEntrants(options: IEntrant.EntrantOptions)**
+    * gets the tournament attendees who competed in this phase group
+    * parameters
+        * options
+            * [EntrantOptions](#entrantoptions)
+            * series of options for the return set of Entrants
+    * returns Promise<[Entrant](#entrant)[]>
+* **getAttendees(options: IAttendee.AttendeeOptions)**
+    * gets the tournament attendees who were in this phase group
+    * parameters
+        * options
+            * [AttendeeOptions](#attendeeoptions)
+            * series of options for the return set of Attendees
+    * returns Promise<[Attendee](#attendee)[]>
+* **getSets(options: IGGSet.SetOptions)**
+    * gets the tournament sets that occurred in this phase group
+    * parameters
+        * options
+            * [SetOptions](#setoptions)
+            * series of options for the return set of GGSet
+    * returns Promise<[GGSet](#ggset)[]>
+* **getCompleteSets(options: IGGSet.SetOptions)**
+    * get the tournament sets in this phase group that have been completed
+    * parameters
+        * options
+            * [SetOptions](#setoptions)
+            * series of options for the return set of GGSet
+    * returns Promise<[GGSet](#ggset)[]>
+* **getIncompleteSets(options: IGGSet.SetOptions)**
+    * get the tournament sets in this phase group that have not been completed
+    * parameters
+        * options
+            * [SetOptions](#setoptions)
+            * series of options for the return set of GGSet
+    * returns Promise<[GGSet](#ggset)[]>
+* **getSetsXMinutesBack(minutes: number, options: IGGSet.SetOptions)**
+    * get the tournament sets in this phase group that have been completed within the last x minutes
+    * parameters
+        * options
+            * [SetOptions](#setoptions)
+            * series of options for the return set of GGSet
+    * returns Promise<[GGSet](#ggset)[]>
+
+
+
 
 ## Player
 A Player is a data object that holds information about players who

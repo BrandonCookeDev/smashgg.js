@@ -66,10 +66,16 @@ var testData = __importStar(require("./data/event.testData"));
 var event1, event2, event3;
 var EVENT_ID_1 = 133902;
 var EVENT_SLUG_1 = 'tournament/21xx-cameron-s-birthday-bash-1/event/melee-singles';
+var EVENT_TOURNAMENT_SLUG_1 = '21xx-cameron-s-birthday-bash-1';
+var EVENT_EVENT_SLUG_1 = 'melee-singles';
 var EVENT_ID_2 = 23597;
 var EVENT_SLUG_2 = 'tournament/tipped-off-12-presented-by-the-lab-gaming-center/event/melee-doubles';
+var EVENT_TOURNAMENT_SLUG_2 = 'tipped-off-12-presented-by-the-lab-gaming-center';
+var EVENT_EVENT_SLUG_2 = 'melee-doubles';
 var EVENT_ID_3 = 11787;
 var EVENT_SLUG_3 = 'tournament/ceo-2016/event/melee-singles';
+var EVENT_TOURNAMENT_SLUG_3 = 'ceo-2016';
+var EVENT_EVENT_SLUG_3 = 'melee-singles';
 var TOP_8_LABELS = [
     'Losers Quarter-Final', 'Losers Quarter-Final',
     'Losers Semi-Final', 'Losers Semi-Final',
@@ -81,7 +87,7 @@ describe('smashgg Event', function () {
     this.timeout(10000);
     before(function () {
         return __awaiter(this, void 0, void 0, function () {
-            var ei1, ei2, ei3, es1, es2, es3;
+            var ei1, ei2, ei3, es1, es2, es3, e1, e2, e3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -89,13 +95,13 @@ describe('smashgg Event', function () {
                         return [4 /*yield*/, Initializer_1.default(process.env.API_TOKEN)];
                     case 1:
                         _a.sent();
-                        return [4 /*yield*/, Event_1.Event.get(EVENT_ID_1)];
+                        return [4 /*yield*/, Event_1.Event.getById(EVENT_ID_1)];
                     case 2:
                         ei1 = _a.sent();
-                        return [4 /*yield*/, Event_1.Event.get(EVENT_ID_2)];
+                        return [4 /*yield*/, Event_1.Event.getById(EVENT_ID_2)];
                     case 3:
                         ei2 = _a.sent();
-                        return [4 /*yield*/, Event_1.Event.get(EVENT_ID_3)];
+                        return [4 /*yield*/, Event_1.Event.getById(EVENT_ID_3)];
                     case 4:
                         ei3 = _a.sent();
                         return [4 /*yield*/, Event_1.Event.getBySlug(EVENT_SLUG_1)];
@@ -107,9 +113,21 @@ describe('smashgg Event', function () {
                         return [4 /*yield*/, Event_1.Event.getBySlug(EVENT_SLUG_3)];
                     case 7:
                         es3 = _a.sent();
+                        return [4 /*yield*/, Event_1.Event.get(EVENT_TOURNAMENT_SLUG_1, EVENT_EVENT_SLUG_1)];
+                    case 8:
+                        e1 = _a.sent();
+                        return [4 /*yield*/, Event_1.Event.get(EVENT_TOURNAMENT_SLUG_2, EVENT_EVENT_SLUG_2)];
+                    case 9:
+                        e2 = _a.sent();
+                        return [4 /*yield*/, Event_1.Event.get(EVENT_TOURNAMENT_SLUG_3, EVENT_EVENT_SLUG_3)];
+                    case 10:
+                        e3 = _a.sent();
                         expect(ei1).to.deep.equal(es1);
                         expect(ei2).to.deep.equal(es2);
                         expect(ei3).to.deep.equal(es3);
+                        expect(e1).to.deep.equal(es1);
+                        expect(e2).to.deep.equal(es2);
+                        expect(e3).to.deep.equal(es3);
                         event1 = ei1;
                         event2 = ei2;
                         event3 = ei3;

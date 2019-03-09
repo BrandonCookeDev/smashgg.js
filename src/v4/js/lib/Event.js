@@ -5,7 +5,7 @@ var __extends = (this && this.__extends) || (function () {
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
             function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
-    };
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -59,6 +59,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var lodash_1 = __importDefault(require("lodash"));
+var util_1 = require("util");
 var events_1 = require("events");
 var Logger_1 = __importDefault(require("./util/Logger"));
 var Phase_1 = require("./Phase");
@@ -92,7 +93,17 @@ var Event = /** @class */ (function (_super) {
     Event.parseFull = function (data) {
         return Event.parse(data.event);
     };
-    Event.get = function (id) {
+    Event.get = function (tournamentSlug, eventSlug) {
+        return __awaiter(this, void 0, void 0, function () {
+            var slug;
+            return __generator(this, function (_a) {
+                Logger_1.default.info('Getting Event with tournament slug %s and event slug %s', tournamentSlug, eventSlug);
+                slug = util_1.format('tournament/%s/event/%s', tournamentSlug, eventSlug);
+                return [2 /*return*/, Event.getBySlug(slug)];
+            });
+        });
+    };
+    Event.getById = function (id) {
         return __awaiter(this, void 0, void 0, function () {
             var data;
             return __generator(this, function (_a) {

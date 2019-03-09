@@ -1,5 +1,6 @@
 
 import _ from 'lodash'
+import {format} from 'util';
 import { EventEmitter } from 'events'
 import log from './util/Logger'
 
@@ -78,7 +79,13 @@ export class Event extends EventEmitter implements IEvent.Event{
 		return Event.parse(data.event);
 	}
 
-	static async get(id: number)  : Promise<Event> {
+	static async get(tournamentSlug: string, eventSlug: string) : Promise<Event> {
+		log.info('Getting Event with tournament slug %s and event slug %s', tournamentSlug, eventSlug)
+		let slug = format('tournament/%s/event/%s', tournamentSlug, eventSlug);
+		return Event.getBySlug(slug);
+	}
+
+	static async getById(id: number)  : Promise<Event> {
 		log.info('Getting Event with id %s', id)
 		let data: IEvent.Data = await NI.query(queries.event, {id: id})
 		return Event.parseFull(data)

@@ -26,12 +26,18 @@ let event1: Event, event2: Event, event3: Event
 
 const EVENT_ID_1 = 133902
 const EVENT_SLUG_1 = 'tournament/21xx-cameron-s-birthday-bash-1/event/melee-singles'
+const EVENT_TOURNAMENT_SLUG_1='21xx-cameron-s-birthday-bash-1'
+const EVENT_EVENT_SLUG_1='melee-singles'
 
 const EVENT_ID_2 = 23597
 const EVENT_SLUG_2 = 'tournament/tipped-off-12-presented-by-the-lab-gaming-center/event/melee-doubles'
+const EVENT_TOURNAMENT_SLUG_2='tipped-off-12-presented-by-the-lab-gaming-center'
+const EVENT_EVENT_SLUG_2='melee-doubles'
 
 const EVENT_ID_3 = 11787
 const EVENT_SLUG_3 = 'tournament/ceo-2016/event/melee-singles'
+const EVENT_TOURNAMENT_SLUG_3='ceo-2016'
+const EVENT_EVENT_SLUG_3='melee-singles'
 
 const TOP_8_LABELS = [
 	'Losers Quarter-Final', 'Losers Quarter-Final', 
@@ -48,17 +54,24 @@ describe('smashgg Event', function(){
 		this.timeout(20000)
 		await Initializer(process.env.API_TOKEN!)
 
-		let ei1 = await Event.get(EVENT_ID_1)
-		let ei2 = await Event.get(EVENT_ID_2)
-		let ei3 = await Event.get(EVENT_ID_3)
+		let ei1 = await Event.getById(EVENT_ID_1)
+		let ei2 = await Event.getById(EVENT_ID_2)
+		let ei3 = await Event.getById(EVENT_ID_3)
 
 		let es1 = await Event.getBySlug(EVENT_SLUG_1)
 		let es2 = await Event.getBySlug(EVENT_SLUG_2)
 		let es3 = await Event.getBySlug(EVENT_SLUG_3)
 
+		let e1 = await Event.get(EVENT_TOURNAMENT_SLUG_1, EVENT_EVENT_SLUG_1)
+		let e2 = await Event.get(EVENT_TOURNAMENT_SLUG_2, EVENT_EVENT_SLUG_2)
+		let e3 = await Event.get(EVENT_TOURNAMENT_SLUG_3, EVENT_EVENT_SLUG_3)
+		
 		expect(ei1).to.deep.equal(es1)
 		expect(ei2).to.deep.equal(es2)
 		expect(ei3).to.deep.equal(es3)
+		expect(e1).to.deep.equal(es1)
+		expect(e2).to.deep.equal(es2)
+		expect(e3).to.deep.equal(es3)
 
 		event1 = ei1;
 		event2 = ei2;

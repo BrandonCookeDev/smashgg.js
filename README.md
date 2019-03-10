@@ -843,61 +843,61 @@ Attendee(
 
 ### Methods
 * **getId()**
-    * get the numeric id for the attendee in the tournament
+    * get the numeric id for the Attendee in the tournament
     * returns number
 * **getGamerTag()**
-    * get the gamer tag of the attendee
+    * get the gamer tag of the Attendee
     * returns string
 * **getSponsor()**
-    * get the sponsor prefix of the attendee
+    * get the sponsor prefix of the Attendee
     * returns string | null
 * **getCreatedAt()**
-    * get the unix epoch of when this attendee was created
+    * get the unix epoch of when this Attendee was created
     * returns number | null
 * **getClaimed()**
-    * get the true/false value of if this attendee is claimed by a user 
+    * get the true/false value of if this Attendee is claimed by a user 
     * returns boolean | null
 * **getVerified()**
-    * get the true/false value of if this attendee is verified
+    * get the true/false value of if this Attendee is verified
     * returns boolean | null
 * **getPlayerId()**
     * get the numeric identifier of the associated `User` object
     * returns number | null
 * **getPhoneNumber()**
-    * get the phone number of the attendee
+    * get the phone number of the Attendee
     * returns number | null
 * **getContactInfo()**
-    * get the contact info of the attendee
+    * get the contact info of the Attendee
     * returns ContactInfo | null
 * **getCity()**
-    * get the city the attendee is from
+    * get the city the Attendee is from
     * returns string | null
 * **getState()**
-    * get the state the attendee is from
+    * get the state the Attendee is from
     * returns string | null
 * **getStateId()**
-    * get the numeric id of the state the attendee is from
+    * get the numeric id of the state the Attendee is from
     * returns number | null
 * **getCountry()**
-    * get the country the attendee is from
+    * get the country the Attendee is from
     * returns string | null
 * **getCountryId()**
-    * get the numeric id of the country the attendee is from
+    * get the numeric id of the country the Attendee is from
     * returns number | null
 * **getContactName()**
-    * get the contact name of the attendee
+    * get the contact name of the Attendee
     * returns string | null
 * **getFirstName()**
-    * get the first name of the attendee
+    * get the first name of the Attendee
     * returns string | null
 * **getLastName()**
-    * get the last name of the attendee
+    * get the last name of the Attendee
     * returns string | null
 * **getZipcode()**
-    * get the zip code of the attendee
+    * get the zip code of the Attendee
     * returns string | null
 * **getConnectedAccounts()**
-    * get a list of connected accounts to this attendee
+    * get a list of connected accounts to this Attendee
     * returns object | null
 
 
@@ -906,12 +906,147 @@ An `Entrant` is an `Attendee` who entered and competed in an `Event`.
 This is the same as `Entrant` in Smash.gg's context
 
 ### Constructor
-
+Entrant(
+    id: number,
+    name: string, 
+    eventId: number,
+    skill: number,
+    attendeeData: Attendee[]
+)
 
 ### Properties
-
+* **id** 
+    * number,
+* **name** 
+    * string, 
+* **eventId** 
+    * number,
+* **skill** 
+    * number,
+* **attendeeData** 
+    * Attendee[]
 
 ### Methods
+* **getId()**
+    * get the numeric id of the Entrant
+    * returns number
+* **getName()**
+    * get the name of the Entrant
+    * returns string 
+* **getEventId()**
+    * get the numeric identifier of the Event the Entrant is in
+    * returns number
+* **getSkill()**
+    * get the skill level of the Entrant
+    * returns number
+
+* **getAttendeeData(position: number)**
+    * get a list of Attendee data connected to the Entrant
+    * parameters
+        * position
+            * number
+            * the array index of the desired Attendee
+    * returns Attendee | Attendee[]
+* **getAttendeeId(position: number)**
+    * get the numeric id of the Attendee connected to the Entrant
+    * parameters
+        * position
+            * number
+            * the array index of the desired Attendee
+    * returns number
+* **getGamerTag(position: number)**
+    * get the gamer tag of the Attendee connected to the Entrant
+    * parameters
+        * position
+            * number
+            * the array index of the desired Attendee
+    * returns string
+* **getSponsor(position: number)**
+    * get the sponsor prefix of the Attendee connected to the Entrant
+    * parameters
+        * position
+            * number
+            * the array index of the desired Attendee
+    * returns string | null
+* **getPhoneNumber(position: number)**
+    * get the phone number of the Attendee connected to the Entrant
+    * parameters
+        * position
+            * number
+            * the array index of the desired Attendee
+    * returns number | null
+* **getContactInfo(position: number)**
+    * get the contact info of the Attendee connected to the Entrant
+    * parameters
+        * position
+            * number
+            * the array index of the desired Attendee
+    * returns IAttendee.ContactInfo | null
+* **getCity(position: number)**
+    * get the city of the Attendee connected to the Entrant
+    * parameters
+        * position
+            * number
+            * the array index of the desired Attendee
+    * returns string | null
+* **getState(position: number)**
+    * get the state of the Attendee connected to the Entrant
+    * parameters
+        * position
+            * number
+            * the array index of the desired Attendee
+    * returns string | null
+* **getStateId(position: number)**
+    * get the numeric id of the state of the Attendee connected to the Entrant
+    * parameters
+        * position
+            * number
+            * the array index of the desired Attendee
+    * returns number | null
+* **getCountry(position: number)**
+    * get the country of the Attendee connected to the Entrant
+    * parameters
+        * position
+            * number
+            * the array index of the desired Attendee
+    * returns string | null
+* **getCountryId(position: number)**
+    * get the numeric id of the country of the Attendee connected to the Entrant
+    * parameters
+        * position
+            * number
+            * the array index of the desired Attendee
+    * returns number | null
+* **getName(position: number)**
+    * get the name of the of the Attendee connected to the Entrant
+    * parameters
+        * position
+            * number
+            * the array index of the desired Attendee
+    * returns string | null
+* **getFirstName(position: number)**
+    * get the first name of the Attendee connected to the Entrant
+    * parameters
+        * position
+            * number
+            * the array index of the desired Attendee
+    * returns string | null
+* **getLastName(position: number)**
+    * get the last name of the Attendee connected to the Entrant
+    * parameters
+        * position
+            * number
+            * the array index of the desired Attendee
+    * returns string | null
+* **getZipcode(position: number)**
+    * get the zip code of the Attendee connected to the Entrant
+    * parameters
+        * position
+            * number
+            * the array index of the desired Attendee
+    * returns string | null		
+* **getConnectedAccounts()**
+    * returns object | null
 
 
 ## GGSet
@@ -923,19 +1058,142 @@ that took place at a tournament.
 ```
 
 ### Constructor
+GGSet(
+    id: number,
+    eventId: number | null,
+    phaseGroupId: number | null,
+    displayScore: string | null,
+    fullRoundText: string | null,
+    round: number | null,
+    startedAt: number | null,
+    completedAt: number | null,
+    winnerId: number | null,
+    totalGames: number | null,
+    state: number | null,
+    player1: IGGSet.PlayerLite,
+    player2: IGGSet.PlayerLite,
+    score1: number | null,
+    score2: number | null
+)
 
+### PlayerLite Object
+{
 
+}
 
 ### Properties 
-
+* **id**
+    * number 
+* **eventId**
+    * number | null
+* **phaseGroupId**
+    * number | null
+* **displayScore**
+    * string | null 
+* **fullRoundText**
+    * string | null
+* **round**
+    * number | null
+* **startedAt**
+    * number | null
+* **completedAt**
+    * number | null
+* **winnerId**
+    * number | null
+* **totalGames**
+    * number | null
+* **state**
+    * number | null
+* **player1**
+    * IGGSet.PlayerLite
+* **player2**
+    * IGGSet.PlayerLite
+* **score1**
+    * number | null
+* **score2**
+    * number | null
 
 
 ### Methods
- 
- 
-
-#### Getters
-
+* **getEventId()**
+    * get the numeric identifier of the GGSet
+    * returns number | null
+* **getPhaseGroupId()**
+    * get the numeric identifier of the Phase the GGSet belongs to
+    * returns number | null
+* **getStartedAt()**
+    * get the time the GGSet started as a JS Date object
+    * returns Date | null 
+* **getCompletedAt()**
+    * get the time the GGSet ended as a JS Date object
+    * returns Date | null 
+* **getDisplayScore()**
+    * get the display score string of the GGSet
+    * format "Tag1 Score1 - Score2 Tag2"
+    * returns string | null
+* **getFullRoundText()**
+    * get the full round text of the tournament this GGSet takes place 
+    * returns string | null
+* **getRound()**
+    * get the numeric round of the tournament this GGSet takes place
+    * returns number | null
+* **getState()**
+    * get the numeric state of the GGSet
+    * returns number | null
+* **getPlayer1()**
+    * get the first player in the GGSet
+    * returns PlayerLite | undefined | null
+* **getPlayer1Tag()**
+    * get the first player's tag in the GGSet
+    * returns string | undefined | null
+* **getPlayer1PlayerId()**
+    * get the first player's User ID in the GGSet
+    * returns number | undefined | null
+* **getPlayer1AttendeeIds()**
+    * get the first player's Attendee ID in the GGSet
+    * returns number[] | undefined | null
+* **getPlayer2()**
+    * get the second player in the GGSet
+    * returns PlayerLite | undefined | null
+* **getPlayer2Tag()**
+    * get the second player's tag in the GGSet
+    * returns string | undefined | null
+* **getPlayer2PlayerId()**
+    * get the second player's User ID in the GGSet
+    * returns number | undefined | null
+* **getPlayer2AttendeeIds()**
+    * get the second player's Attendee ID In the GGSet
+    * returns number[] | undefined | null
+* **getWinnerId()**
+    * get the Entrant ID of the winning player
+    * returns number | null
+* **getLoserId()**
+    * get the Entrant ID of the losing player
+    * returns number | null
+* **getIsComplete()**
+    * get the true/false value for if this GGSet has been completed
+    * returns boolean | null
+* **getPlayer1Score()**
+    * get the score of the first player in the GGSet
+    * returns number | null
+* **getPlayer2Score()**
+    * get the score of the second player in the GGSet
+    * returns number | null
+* **getWinner()**
+    * get the winner of the GGSet
+    * returns PlayerLite | undefined
+* **getLoser()**
+    * get the loser of the GGSet
+    * returns PlayerLite | undefined
+* **getBestOfCount()**
+    * get the Best-Of count of the GGSet
+    * returns number | string
+* **getWinnerScore()**
+    * get the score of the winner in the GGSet
+    * returns number | string
+* **getLoserScore()**
+    * get the score of the loser in the GGSet
+    * returns number | string
 
 
 ## Character

@@ -23,8 +23,8 @@
     "lint": "./node_modules/.bin/eslint .",
     "tsc": "tsc",
     "sandbox": "node ./sandbox/sandbox",
-    "sample1": "node ./resources/samples/sample1",
-    "sample2": "node ./resources/samples/sample2"
+    "sample1": "node ./resources/samples/v4/sample1",
+    "sample2": "node ./resources/samples/v4/sample2"
   },
   "keywords": [
     "smashgg",

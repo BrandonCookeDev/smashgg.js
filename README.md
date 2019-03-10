@@ -20,6 +20,23 @@ with data about tournament brackets that have occurred on their platform.
 * Email: BrandonCookeDev@gmail.com
 * Discord: cookiE#7679
 
+```js
+const smashgg = require('smashgg.js');
+const {Event} = smashgg;
+
+smashgg.initialize('<your api key>');
+
+(async function(){
+    let tournamentSlug = 'function-1-recursion-regional';
+    let eventSlug = 'melee-singles';
+    let meleeAtFunction = await Event.get(tournamentSlug, eventSlug);
+
+    let sets = await meleeAtFunction.getSets();
+
+    return true;
+})()
+```
+
 ## Installation
 ```bash
 npm install --save smashgg.js
@@ -44,6 +61,8 @@ npm install --save smashgg.js
     -  [Character](#character)
     -  [VideoGame](#videogame)
 - [Upgrading](#upgrading)
+
+
 
 ## Logging
 ### Winston
@@ -161,7 +180,26 @@ Tournament(
     * [Organizer](#organizer)
     * contains information about the Organizer (see Organizer docs)
 
-#### Getters
+### Statics
+* **async get(slug)**
+    * get a tournament object
+    * parameters
+        * slug
+            * string
+            * shorthand or tournament slug-name in smashgg
+                * ceo-2016 or function-1-recursion-regional
+                * shorthand: to12 instead of tipped-off-12-presented-by-the-lab-gaming-center
+    * returns Promise<Tournament>
+
+* **async getById(id)**
+    * get a tournament object
+    * parameters
+        * id
+            * number
+            * numeric identifier of the tournament
+    * returns Promise<Tournament>
+
+### Methods
 * **getId()** 
     * gets the id property of the tournament
     * returns number
@@ -414,6 +452,38 @@ Event(
 * **teamManagementDeadline**
     * number | null
 
+
+### Statics
+
+* **async get(tournamentSlug, eventSlug)**
+    * get an event by tournament and event names
+    * parameters
+        * tournamentSlug
+            * string
+            * **NOTE** this is not eligable for shorthand
+            * smashgg url slug of the tournament
+        * eventSlug
+            * string
+            * smashgg url slug of the event
+    * returns Promise<Event>
+
+* **async getBySlug(slug)**
+    * get an event by the full slug path
+    * parameters
+        * slug 
+            * string
+            * tournament + event all-in-one slug
+            * ie. tournament/ceo-2017/event/melee-singles
+    * returns Promise<Event>
+
+* **async getById(id)**
+    * get an event by the numeric id
+    * parameters
+        * id
+            * number
+            * numeric id of the event
+    * returns Promise<Event>
+
 ### Methods
 
 * **getId()**
@@ -548,6 +618,13 @@ Phase(
 * **groupCount**
     * number
 
+### Statics
+* **async get(id)**
+    * get a phase by numeric id
+    * parameters 
+        * id
+            * number
+            * numeric id of the phase
 
 ### Methods
 * **getId()**
@@ -645,6 +722,15 @@ PhaseGroup(
     * number | null
 * **tiebreakOrder** 
     * object | null
+
+
+### Statics
+* **async get(id)**
+    * get a phase group by numeric id
+    * parameters 
+        * id
+            * number
+            * numeric id of the phase group
 
 
 ### Methods
@@ -1244,10 +1330,10 @@ GGSet(
     * returns number | null
 * **getWinner()**
     * get the winner of the GGSet
-    * returns PlayerLite | undefined
+    * returns [PlayerLite](#playerlite) | undefined
 * **getLoser()**
     * get the loser of the GGSet
-    * returns PlayerLite | undefined
+    * returns [PlayerLite](#playerlite) | undefined
 * **getBestOfCount()**
     * get the Best-Of count of the GGSet
     * returns number | string

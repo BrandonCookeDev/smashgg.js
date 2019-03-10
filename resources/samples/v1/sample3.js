@@ -1,7 +1,7 @@
 /* eslint-disable */
 'use strict';
 
-let smashgg = require('../..')
+let smashgg = require('../../../src/v1')
 let log = smashgg.Log;
 
 (async function(){

@@ -2,8 +2,9 @@
 
 const chalk = require('chalk')
 
-let Tournament = require('../lib/Tournament')
-let Event = require('../lib/Event')
+let smashgg = require('../../../src/v1')
+let Tournament = smashgg.Tournament;
+let Event = smashgg.Event;
 let winston = require('winston')
 winston.remove(winston.transports.Console)
 winston.add(winston.transports.Console, {

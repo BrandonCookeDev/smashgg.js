@@ -123,6 +123,7 @@ const Tournament = smashgg.Tournament;
 ```
 
 ### Constructor
+```js
 Tournament(
     id: number,
     name: string,
@@ -133,6 +134,7 @@ Tournament(
     venue: Venue,
     organizer: Organizer
 )
+```
 
 ### Properties
 * **id** 
@@ -242,6 +244,7 @@ console.log(venue.getCity()); // prints "Atlanta"
 ```
 
 ### Constructor
+```js
 Venue(
     name: string | null,
     address: string | null,
@@ -253,6 +256,7 @@ Venue(
     latitude: number | null,
     longitude: number | null
 );
+```
 
 ### Properties
 
@@ -318,6 +322,7 @@ console.log(org.getTwitter());
 ```
 
 ### Constructor
+```js
 Organizer(
     id: number | null,
     email: string | null,
@@ -325,6 +330,7 @@ Organizer(
     twitter: string | null,
     info: string | null
 );
+```
 
 ### Getters
 * **getId()**
@@ -366,6 +372,7 @@ const Event = smashgg.Event;
 ```
 
 ### Constructor
+```js
 Event(
     id: number ,
     name: string,
@@ -380,6 +387,7 @@ Event(
     teamNameAllowed: boolean | null,
     teamManagementDeadline: number | null
 )
+```
 
 ### Properties
 * **id**
@@ -519,6 +527,7 @@ const Phase = smashgg.Phase;
 ```
 
 ### Constructor
+```js
 Phase(
     id: number,
     name: string,
@@ -526,6 +535,7 @@ Phase(
     numSeeds: number,
     groupCount: number
 )
+```
 
 ### Properties
 * **id**
@@ -556,10 +566,10 @@ Phase(
 * **getGroupCount()**
     * gets the number of phase groups belonging to this phase
     * returns number	
+
 * **getPhaseGroups()**
     * gets the phase groups belonging to this phase
-    * returns: Promise<PhaseGroup[]>
-
+    * returns: Promise<[PhaseGroup](#phasegroup)[]>
 * **getEntrants(options: IEntrant.EntrantOptions)**
     * gets the tournament attendees who competed in this phase
     * parameters
@@ -609,6 +619,7 @@ let phaseGroup1 = await PhaseGroup.get(44445);
 ```
 
 ### Constructor
+```js
 PhaseGroup(
     id: number,
     phaseId: number,
@@ -618,6 +629,7 @@ PhaseGroup(
     waveId: number | null,
     tiebreakOrder: object | null
 )
+```
 
 ### Properties
 * **id** 
@@ -725,6 +737,7 @@ console.log(user.getState()); // prints 'GA'
 ```
 
 ### Constructor
+```js
 User(
     id: number,
     gamerTag: string,
@@ -738,6 +751,7 @@ User(
     country: string | null,
     gamerTagChangedAt: number | null
 )
+```
 
 ### Properties
 * **id** 
@@ -800,7 +814,7 @@ User(
 
 * **getRecentSets()** 
     * get a list of the recent GGSets the User has competed in
-    * return Promise<GGSet[]>
+    * return Promise<[GGSet](#ggset)[]>
 * **getRankings()** 
     * get a list of the rankings the User has achieved.
     * return Promise<PlayerRank[]>
@@ -812,6 +826,7 @@ An Attendee is a person who attendeed a tournament.
 This is equivalent to `Participant` in Smash.gg's context.
 
 ### Constructor
+```js
 Attendee(
     id: number,
     gamerTag: string,
@@ -825,6 +840,7 @@ Attendee(
     contactInfo: IAttendee.ContactInfo | null,
     eventIds: number[] | null
 )
+```
 
 ### Properties
 * **id** 
@@ -870,7 +886,7 @@ Attendee(
     * get the true/false value of if this Attendee is verified
     * returns boolean | null
 * **getPlayerId()**
-    * get the numeric identifier of the associated `User` object
+    * get the numeric identifier of the associated [User](#user) object
     * returns number | null
 * **getPhoneNumber()**
     * get the phone number of the Attendee
@@ -910,6 +926,7 @@ Attendee(
     * returns object | null
 
 ### AttendeeOptions
+```js
 {
     page?: number | null,
     perPage?: number | null,
@@ -927,6 +944,7 @@ Attendee(
         }
     }
 }
+```
 
 ----
 
@@ -935,6 +953,7 @@ An `Entrant` is an `Attendee` who entered and competed in an `Event`.
 This is the same as `Entrant` in Smash.gg's context
 
 ### Constructor
+```js
 Entrant(
     id: number,
     name: string, 
@@ -942,6 +961,7 @@ Entrant(
     skill: number,
     attendeeData: Attendee[]
 )
+```
 
 ### Properties
 * **id** 
@@ -970,114 +990,115 @@ Entrant(
     * returns number
 
 * **getAttendeeData(position: number)**
-    * get a list of Attendee data connected to the Entrant
+    * get a list of [Attendee](#attendee) data connected to the Entrant
     * parameters
         * position
             * number
-            * the array index of the desired Attendee
+            * the array index of the desired [Attendee](#attendee)
     * returns Attendee | Attendee[]
 * **getAttendeeId(position: number)**
-    * get the numeric id of the Attendee connected to the Entrant
+    * get the numeric id of the [Attendee](#attendee) connected to the Entrant
     * parameters
         * position
             * number
-            * the array index of the desired Attendee
+            * the array index of the desired [Attendee](#attendee)
     * returns number
 * **getGamerTag(position: number)**
-    * get the gamer tag of the Attendee connected to the Entrant
+    * get the gamer tag of the [Attendee](#attendee) connected to the Entrant
     * parameters
         * position
             * number
-            * the array index of the desired Attendee
+            * the array index of the desired [Attendee](#attendee)
     * returns string
 * **getSponsor(position: number)**
-    * get the sponsor prefix of the Attendee connected to the Entrant
+    * get the sponsor prefix of the [Attendee](#attendee) connected to the Entrant
     * parameters
         * position
             * number
-            * the array index of the desired Attendee
+            * the array index of the desired [Attendee](#attendee)
     * returns string | null
 * **getPhoneNumber(position: number)**
-    * get the phone number of the Attendee connected to the Entrant
+    * get the phone number of the [Attendee](#attendee) connected to the Entrant
     * parameters
         * position
             * number
-            * the array index of the desired Attendee
+            * the array index of the desired [Attendee](#attendee)
     * returns number | null
 * **getContactInfo(position: number)**
-    * get the contact info of the Attendee connected to the Entrant
+    * get the contact info of the [Attendee](#attendee) connected to the Entrant
     * parameters
         * position
             * number
-            * the array index of the desired Attendee
+            * the array index of the desired [Attendee](#attendee)
     * returns IAttendee.ContactInfo | null
 * **getCity(position: number)**
-    * get the city of the Attendee connected to the Entrant
+    * get the city of the [Attendee](#attendee) connected to the Entrant
     * parameters
         * position
             * number
-            * the array index of the desired Attendee
+            * the array index of the desired [Attendee](#attendee)
     * returns string | null
 * **getState(position: number)**
-    * get the state of the Attendee connected to the Entrant
+    * get the state of the [Attendee](#attendee) connected to the Entrant
     * parameters
         * position
             * number
-            * the array index of the desired Attendee
+            * the array index of the desired [Attendee](#attendee)
     * returns string | null
 * **getStateId(position: number)**
-    * get the numeric id of the state of the Attendee connected to the Entrant
+    * get the numeric id of the state of the [Attendee](#attendee) connected to the Entrant
     * parameters
         * position
             * number
-            * the array index of the desired Attendee
+            * the array index of the desired [Attendee](#attendee)
     * returns number | null
 * **getCountry(position: number)**
-    * get the country of the Attendee connected to the Entrant
+    * get the country of the [Attendee](#attendee) connected to the Entrant
     * parameters
         * position
             * number
-            * the array index of the desired Attendee
+            * the array index of the desired [Attendee](#attendee)
     * returns string | null
 * **getCountryId(position: number)**
-    * get the numeric id of the country of the Attendee connected to the Entrant
+    * get the numeric id of the country of the [Attendee](#attendee) connected to the Entrant
     * parameters
         * position
             * number
-            * the array index of the desired Attendee
+            * the array index of the desired [Attendee](#attendee)
     * returns number | null
 * **getName(position: number)**
-    * get the name of the of the Attendee connected to the Entrant
+    * get the name of the of the [Attendee](#attendee) connected to the Entrant
     * parameters
         * position
             * number
-            * the array index of the desired Attendee
+            * the array index of the desired [Attendee](#attendee)
     * returns string | null
 * **getFirstName(position: number)**
-    * get the first name of the Attendee connected to the Entrant
+    * get the first name of the [Attendee](#attendee) connected to the Entrant
     * parameters
         * position
             * number
-            * the array index of the desired Attendee
+            * the array index of the desired [Attendee](#attendee)
     * returns string | null
 * **getLastName(position: number)**
-    * get the last name of the Attendee connected to the Entrant
+    * get the last name of the [Attendee](#attendee) connected to the Entrant
     * parameters
         * position
             * number
-            * the array index of the desired Attendee
+            * the array index of the desired [Attendee](#attendee)
     * returns string | null
 * **getZipcode(position: number)**
-    * get the zip code of the Attendee connected to the Entrant
+    * get the zip code of the [Attendee](#attendee) connected to the Entrant
     * parameters
         * position
             * number
-            * the array index of the desired Attendee
+            * the array index of the desired [Attendee](#attendee)
     * returns string | null		
 * **getConnectedAccounts()**
     * returns object | null
 
 ### EntrantOptions
+```js
 {
     page?: number | null,
     perPage?: number | null,
@@ -1095,6 +1116,7 @@ Entrant(
         }
     }
 }
+```
 
 ----
 
@@ -1103,6 +1125,7 @@ A Set is a data object that holds information about a tournament set
 that took place at a tournament.
 
 ### Constructor
+```js
 GGSet(
     id: number,
     eventId: number | null,
@@ -1115,18 +1138,12 @@ GGSet(
     winnerId: number | null,
     totalGames: number | null,
     state: number | null,
-    player1: IGGSet.PlayerLite,
-    player2: IGGSet.PlayerLite,
+    player1: PlayerLite,
+    player2: PlayerLite,
     score1: number | null,
     score2: number | null
 )
-
-### PlayerLite Object
-{
-    tag: string | null,
-    entrantId: number | null,
-    attendeeIds: number[]
-}
+```
 
 ### Properties 
 * **id**
@@ -1152,9 +1169,9 @@ GGSet(
 * **state**
     * number | null
 * **player1**
-    * IGGSet.PlayerLite
+    * [PlayerLite](#playerlite)
 * **player2**
-    * IGGSet.PlayerLite
+    * [PlayerLite](#playerlite)
 * **score1**
     * number | null
 * **score2**
@@ -1189,7 +1206,7 @@ GGSet(
     * returns number | null
 * **getPlayer1()**
     * get the first player in the GGSet
-    * returns PlayerLite | undefined | null
+    * returns [PlayerLite](#playerlite) | undefined | null
 * **getPlayer1Tag()**
     * get the first player's tag in the GGSet
     * returns string | undefined | null
@@ -1201,7 +1218,7 @@ GGSet(
     * returns number[] | undefined | null
 * **getPlayer2()**
     * get the second player in the GGSet
-    * returns PlayerLite | undefined | null
+    * returns [PlayerLite](#playerlite) | undefined | null
 * **getPlayer2Tag()**
     * get the second player's tag in the GGSet
     * returns string | undefined | null
@@ -1243,6 +1260,7 @@ GGSet(
     * returns number | string
 
 ### SetOptions
+```js
 {
     filterDQs?: boolean,
     filterByes?: boolean,
@@ -1259,6 +1277,16 @@ GGSet(
         roundNumber?: number
     }
 }
+```
+
+### PlayerLite
+```js
+{
+    tag: string | null,
+    entrantId: number | null,
+    attendeeIds: number[]
+}
+```
 
 ----
 
@@ -1266,6 +1294,7 @@ GGSet(
 A Stream is a live stream of a Tournament
 
 ### Constructor
+```js
 Stream(
     id: number,
     eventId: number | null,
@@ -1283,6 +1312,7 @@ Stream(
     streamGame: string | null,
     streamLogo: string | null
 )
+```
 
 ### Properties
 * **id** 
@@ -1366,33 +1396,36 @@ Stream(
 ----
 
 ## StreamQueue
-A StreamQueue is a Queue of GGSets that are in line to be played on a Stream
+A StreamQueue is a Queue of [GGSets](#ggset) that are in line to be played on a [Stream](#stream)
 
 ### Constructor
+```js
 StreamQueue(
     stream: Stream,
     sets: GGSet[]
 )
+```
 
 ### Properties
 * **stream** 
-    * Stream
+    * [Stream](#stream)
 * **sets** 
-    * GGSet[]
+    * [GGSet](#ggset)[]
 
 ### Methods
 * **getStream()**
-    * get the associated Stream object
-    * return Stream
+    * get the associated [Stream](#stream) object
+    * return [Stream](#stream)
 * **getSets()**
-    * get a list of GGSets queued to be played on the Stream
-    * return GGSet[]
+    * get a list of GGSets queued to be played on the [Stream](#stream)
+    * return [GGSet](#ggset)[]
 
 ----
 
 ## Seed
 
 ### Constructor
+```js
 Seed(
     id: number,
 	entrantId: number,
@@ -1401,6 +1434,7 @@ Seed(
 	placement: number,
 	isBye: boolean
 )
+```
 
 ### Properties
 * **id** 
@@ -1417,6 +1451,7 @@ Seed(
     * boolean
 
 ### SeedOptions
+```js
 {
     page?: number | null,
     perPage?: number | null,
@@ -1434,6 +1469,7 @@ Seed(
         }
     }
 }
+```
 
 
 ----

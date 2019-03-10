@@ -4,7 +4,7 @@
 Promise = require('bluebird')
 
 let _	   = require('lodash');
-let smashgg = require('../..')
+let smashgg = require('../../../src/v1')
 let Event   = smashgg.Event;
 
 (async function(){

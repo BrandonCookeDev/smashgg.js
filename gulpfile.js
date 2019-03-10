@@ -4,6 +4,7 @@ const path = require('path')
 const gulp = require('gulp')
 const ts = require('gulp-typescript')
 const mocha = require('gulp-mocha')
+const {exec} = require('child_process');
 
 const ROOT = __dirname
 const SRC_DIR = path.join(ROOT, 'src', 'v4')
@@ -82,6 +83,14 @@ function watch(){
 	return gulp.watch(TS_DIR + '/**/*.ts', gulp.parallel(tsc))
 }
 
+function publish(cb){
+	exec("npm publish", (err, stdout, stderr) => {
+		console.out(stdout);
+		console.error(stderr);
+		cb(err);
+	})
+}
+
 function getQueries(cb){
 	let queries = require('./src/v4/js/lib/scripts/schema')
 	for(var prop in queries){
@@ -111,3 +120,4 @@ exports.tsc = tsc
 exports.createDTs = createDTs
 exports.watch = watch
 exports.getQueries = getQueries
+exports.publish = gulp.series(tsc, publish);

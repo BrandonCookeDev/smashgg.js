@@ -158,28 +158,28 @@ Tournament(
 
 #### Getters
 * **getId()** 
-    * gets the numeric identifier for the tournament
+    * gets the id property of the tournament
     * returns number
 * **getName()** 
-    * gets the name of the tournament
+    * gets the name property of the tournament
     * returns string 
 * **getSlug()** 
-    * gets the string url slug of the tournament
+    * gets the slug property of the tournament
     * returns string
 * **getTimezone()** 
-    * gets the timezone string of the location of the tournament
+    * gets the timezone property of the tournament
     * returns string | null
 * **getStartTime()** 
-    * gets the start time of the tournament in JS Date object
+    * gets the start time property of the tournament in JS Date object
     * returns Date | null
 * **getStartTimeString()** 
-    * gets the start time of the tournament in Date string
+    * gets the start time property of the tournament in Date string
     * returns string | null
 * **getEndTime()** 
-    * gets the end time of the tournament in JS Date object
+    * gets the end time property of the tournament in JS Date object
     * returns Date | null
 * **getEndTimeString()** 
-    * gets the end time of the tournament in Date string
+    * gets the end time property of the tournament in Date string
     * returns string | null
 * **getVenue()** 
     * gets the Venue object where this tournament takes place
@@ -374,27 +374,27 @@ Event(
 
 ### Properties
 * **id**
-    * number ,
+    * number 
 * **name**
-    * string,
+    * string
 * **slug**
-    * string,
+    * string
 * **state**
-    * string | null,
+    * string | null
 * **startAt**
-    * number | null,
+    * number | null
 * **numEntrants**
-    * number | null,
+    * number | null
 * **checkInBuffer**
-    * number | null,
+    * number | null
 * **checkInDuration**
-    * number | null,
+    * number | null
 * **checkInEnabled**
-    * boolean | null,
+    * boolean | null
 * **isOnline**
-    * boolean | null,
+    * boolean | null
 * **teamNameAllowed**
-    * boolean | null,
+    * boolean | null
 * **teamManagementDeadline**
     * number | null
 
@@ -521,15 +521,15 @@ Phase(
 
 ### Properties
 * **id**
-    * returns number
+    * number
 * **name**
-    * returns string
+    * string
 * **eventId**
-    * returns number
+    * number
 * **numSeeds**
-    * returns number
+    * number
 * **groupCount**
-    * returns number
+    * number
 
 
 ### Methods
@@ -552,20 +552,40 @@ Phase(
     * gets the phase groups belonging to this phase
     * returns: Promise<PhaseGroup[]>
 
-* **getSets(options: IGGSet.SetOptions)**
-    * gets the tournament sets that occurred in this phase
-    * returns Promise<[GGSet](#ggset)[]>
 * **getEntrants(options: IEntrant.EntrantOptions)**
     * gets the tournament attendees who competed in this phase
+    * parameters
+        * options
+            * [EntrantOptions](#entrantoptions)
+            * series of options for the return set of Entrants
     * returns Promise<[Entrant](#entrant)[]>
+* **getSets(options: IGGSet.SetOptions)**
+    * gets the tournament sets that occurred in this phase
+    * parameters
+        * options
+            * [SetOptions](#setoptions)
+            * series of options for the return set of GGSet
+    * returns Promise<[GGSet](#ggset)[]>
 * **getIncompleteSets(options: IGGSet.SetOptions)**
     * gets the tournament sets that occurred in this phase which are not completed
+    * parameters
+        * options
+            * [SetOptions](#setoptions)
+            * series of options for the return set of GGSet
     * returns Promise<[GGSet](#ggset)[]>
 * **getCompleteSets(options: IGGSet.SetOptions)**
     * gets the tournament sets that occurred in this phase which are completed    
+    * parameters
+        * options
+            * [SetOptions](#setoptions)
+            * series of options for the return set of GGSet
     * returns Promise<[GGSet](#ggset)[]>
 * **getSetsXMinutesBack(minutesBack: number, options: IGGSet.SetOptions)**
     * gets the tournament sets that occurred in this phase which were completed x minutes ago
+    * parameters
+        * options
+            * [SetOptions](#setoptions)
+            * series of options for the return set of GGSet
     * returns Promise<[GGSet](#ggset)[]>
 
 
@@ -592,19 +612,19 @@ PhaseGroup(
 
 ### Properties
 * **id** 
-    * returns number
+    * number
 * **phaseId** 
-    * returns number
+    * number
 * **displayIdentifier** 
-    * returns string | null
+    * string | null
 * **firstRoundTime** 
-    * returns number | null
+    * number | null
 * **state** 
-    * returns number | null
+    * number | null
 * **waveId** 
-    * returns number | null
+    * number | null
 * **tiebreakOrder** 
-    * returns object | null
+    * object | null
 
 
 ### Methods
@@ -684,143 +704,239 @@ PhaseGroup(
 
 
 
-## Player
-A Player is a data object that holds information about players who
-went to a tournament using smash.gg.
-```javascript
-var player = new smashgg.Player(000000, 'cookiE', 'Brandon Cooke', 'US', 'GA', 'Recursion')
+## User
+A User is a data object that holds information about users on Smash.gg's platform 
+This is equivalent to the `Player` object in smash.gg's context.
 
-var tournament = smashgg.Tournament('to12')
-tournament.on('ready', async function(){
-    var players = await tournament.getAllPlayers()
-    //returns all players in a tournament as Player objects
-})
+```javascript
+
+var user = new User(000000, 'cookiE', 'Brandon Cooke', 'US', 'GA', 'Recursion')
+
+console.log(user.getTag()); // prints 'cookiE'
+console.log(user.getState()); // prints 'GA'
 ```
 
 ### Constructor
-* **Player(id [, tag, name, country, state/region, sponsor/prefix, participantId, data])**
-    * **id** [required] - the global id for the player in smash.gg
-    * **tag** - smash tag of the player
-    * **name** - real name of the player
-    * **country** - country the player hails from
-    * **state/region** - state or region the player is from in the country
-    * **sponsor/prefix** - the sponsor (or user selected prefix) of the player
-    * **participantId** - the participant id the player was assigned upon registering for a tournament
-    * **data** - the raw player data from smash.gg
+User(
+    id: number,
+    gamerTag: string,
+    prefix: string | null,
+    color: string | null,
+    twitchStream: string | null,
+    twitterHandle: string | null,
+    youtube: string | null,
+    region: string | null,
+    state: string | null,
+    country: string | null,
+    gamerTagChangedAt: number | null
+)
 
 ### Properties
-* no additional properties for Player
+* **id** 
+    * number
+* **gamerTag** 
+    * string
+* **prefix** 
+    * string | null
+* **color** 
+    * string | null
+* **twitchStream** 
+    * string | null
+* **twitterHandle** 
+    * string | null
+* **youtube** 
+    * string | null
+* **region** 
+    * string | null
+* **state** 
+    * string | null
+* **country** 
+    * string | null
+* **gamerTagChangedAt** 
+    * number | null
 
 ### Methods
-#### Convenience
-* **static async getPlayer(id [, options])**
-    * This method returns a Promise resolving a Player object for the given ID
-    * **id** [required] -  Global ID number in smashgg
-    * **options**
-        * **isCached** - Boolean for if the value should be pulled from cache or put in cache
+* **getId()** 
+    * gets the numeric id of the User
+    * returns number
+* **getGamerTag()** 
+    * gets the gamer tag of the User
+    * returns string
+* **getSponsor()** 
+    * get the sponsor prefix of the User
+    * returns string | null
+* **getColor()** 
+    * get the color the User has chosen
+    * returns string | null
+* **getTwitchStream()** 
+    * get the linked twitch channel name of the User
+    * returns string | null
+* **getTwitterHandle()** 
+    * get the linked twitter handle of the User
+    * returns string | null
+* **getYoutube()** 
+    * get the linked youtube channel of the User
+    * returns string | null
+* **getRegion()** 
+    * get the region the User is from
+    * returns string | null
+* **getState()** 
+    * get the state the User is from
+    * returns string | null
+* **getCountry()** 
+    * get the country the User is from
+    * returns string | null
+* **getGamerTagChangedAt()** 
+    * get the last time the User changed their gamer tag as a JS Date object
+    * returns Date | null
 
-#### Statics
-* **resolve(data)**
-    * **data** - the raw player data from smash.gg
-    * this method takes the raw json payload of a single player in the system and returns a player object
+* **getRecentSets()** 
+    * get a list of the recent GGSets the User has competed in
+    * return Promise<GGSet[]>
+* **getRankings()** 
+    * get a list of the rankings the User has achieved.
+    * return Promise<PlayerRank[]>
 
-#### Getters
+
+## Attendee
+An Attendee is a person who attendeed a tournament.
+This is equivalent to `Participant` in Smash.gg's context.
+
+### Constructor
+Attendee(
+    id: number,
+    gamerTag: string,
+    prefix: string | null,
+    createdAt: number | null,
+    claimed: boolean | null,
+    verified: boolean | null,
+    playerId: number | null,
+    phoneNumber: number | null,
+    connectedAccounts: object | null,
+    contactInfo: IAttendee.ContactInfo | null,
+    eventIds: number[] | null
+)
+
+### Properties
+* **id** 
+    * number
+* **gamerTag** 
+    * string
+* **prefix** 
+    * string | null
+* **createdAt** 
+    * number | null
+* **claimed** 
+    * boolean | null
+* **verified** 
+    * boolean | null
+* **playerId** 
+    * number | null
+* **phoneNumber** 
+    * number | null
+* **connectedAccounts** 
+    * object | null
+* **contactInfo** 
+    * IAttendee.ContactInfo | null
+* **eventIds** 
+    * number[] | null
+
+### Methods
 * **getId()**
-    * return the id of the Player
-* **getTag()**
-    * return the tag of the Player
-* **getName()**
-    * return the name of the Player
-* **getCountry()**
-    * return the country of the Player
-* **getState()**
-    * return the state of the Player
+    * get the numeric id for the attendee in the tournament
+    * returns number
+* **getGamerTag()**
+    * get the gamer tag of the attendee
+    * returns string
 * **getSponsor()**
-    * return the Sponsor of the Player
-* **getParticipantId()**
-    * return the participant id of the Player
-* **getFinalPlacement()**
-    * requires **data** property
-    * return the final placement of the Player
+    * get the sponsor prefix of the attendee
+    * returns string | null
+* **getCreatedAt()**
+    * get the unix epoch of when this attendee was created
+    * returns number | null
+* **getClaimed()**
+    * get the true/false value of if this attendee is claimed by a user 
+    * returns boolean | null
+* **getVerified()**
+    * get the true/false value of if this attendee is verified
+    * returns boolean | null
+* **getPlayerId()**
+    * get the numeric identifier of the associated `User` object
+    * returns number | null
+* **getPhoneNumber()**
+    * get the phone number of the attendee
+    * returns number | null
+* **getContactInfo()**
+    * get the contact info of the attendee
+    * returns ContactInfo | null
+* **getCity()**
+    * get the city the attendee is from
+    * returns string | null
+* **getState()**
+    * get the state the attendee is from
+    * returns string | null
+* **getStateId()**
+    * get the numeric id of the state the attendee is from
+    * returns number | null
+* **getCountry()**
+    * get the country the attendee is from
+    * returns string | null
+* **getCountryId()**
+    * get the numeric id of the country the attendee is from
+    * returns number | null
+* **getContactName()**
+    * get the contact name of the attendee
+    * returns string | null
+* **getFirstName()**
+    * get the first name of the attendee
+    * returns string | null
+* **getLastName()**
+    * get the last name of the attendee
+    * returns string | null
+* **getZipcode()**
+    * get the zip code of the attendee
+    * returns string | null
+* **getConnectedAccounts()**
+    * get a list of connected accounts to this attendee
+    * returns object | null
+
+
+## Entrant
+An `Entrant` is an `Attendee` who entered and competed in an `Event`.
+This is the same as `Entrant` in Smash.gg's context
+
+### Constructor
+
+
+### Properties
+
+
+### Methods
+
 
 ## GGSet
 A Set is a data object that holds information about a tournament set
 that took place at a tournament.
 
 ```javascript
-var Player1 = new smashgg.Player(000000, 'BootyBlastWarrior', 'Andy', 'US', 'GA', null)
-var Player2 = new smashgg.Player(000001, 'cookiE', 'Brandon Cooke', 'US', 'GA', 'Recursion')
 
-var set = new smashgg.GGSet(000001, 000002, 'Losers Semis', Player1, Player2, true, 3, 2, 000000, 000001);
-var set2 = new smashgg.GGSet(000002, 000003, 'Grand Finals', Player1, Player2, false)
-
-var tournament = new smashgg.Tournament('to12')
-tournament.on('ready', async function(){
-    var sets = await tournament.getAllSets()
-    //returns a list of Set objects from the tournament
-})
-
-var set1 = await smashgg.getSet(1202)
 ```
 
 ### Constructor
-* **GGSet(id, eventId, round, Player1, Player2 [, isComplete, score1, score2, winnerId, loserId, data])**
-    * **id** [required] - unique identifier of the Set object
-    * **eventId** [required] - id of the event this Set belongs to
-    * **round** [required] - round name of the Set
-    * **Player1** [required] - Player object of the first player of the Set
-    * **Player2** [required] - Player object of the second player of the Set
-    * **isComplete** - Boolean for if the set is complete
-    * **score1** - Integer score for player1 of the set
-    * **score2** - Integer score for player2 of the set
-    * **winnerId** - ID of the Winning Player of the set
-    * **loserId** - ID of the Losing Player of the set
-    * **data** - Raw data of the Set back from Smash.gg
 
-### Properties
-* no additional properties for Set
+
+
+### Properties 
+
+
 
 ### Methods
-#### Convenience
-* **static async getSet(id [, options])**
-    * This method returns a Promise that resolves a Set object from the given ID
-    * **id** [required] - ID number of the set in smashgg's system
-    * **options** 
-        * **isCached** - Boolean value for if the set should be pulled from cache or put in
+ 
+ 
 
 #### Getters
-* **getRound()**
-    * return the round name for the Set
-* **getWinner()**
-    * return the Winner Player object for the Set
-* **getLoser()**
-    * return the Loser Player object for the Set
-* **getWinnerId()**
-    * return the Winner Player ID for the Set
-* **getLoserId()**
-    * return the Loser Player ID for the Set
-* **getGames()**
-    * return the list of Games for the Set if available
-* **getBestOfCount()**
-    * return the best-of count for the Set
-* **getWinnerScore()**
-    * return the winner's score for the Set
-* **getLoserScore()**
-    * return the loser's score for the Set
-* **getBracketId()**
-    * return the bracket id for the Set
-* **getMidsizeRoundText()**
-    * return the midsize round text for the Set
-* **getPhaseGroupId()**
-    * return the phase id for the Phase which this Set belongs to
-* **getWinnersTournamentPlacement()**
-    * return the Set winner's final tournament placing
-* **getLosersTournamentPlacement()**
-    * return the Set loser's final tournament placing
-* **getStartedAt()**
-    * returns a Date object for the time the Set was begun
-* **getCompletedAt()**
-    * returns a Date object for the time the Set was completed
+
+
 
 ## Character
 A Character object encapsulates data about a fighting game character in the smashgg system

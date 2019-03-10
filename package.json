@@ -5,7 +5,7 @@
     "email": "brandoncookedev@gmail.com",
     "url": "http://linkedin.com/in/BrandonCookeDev"
   },
-  "version": "3.3.4",
+  "version": "4.0.0",
   "description": "Node.JS wrapper for the Smash.gg public API Edit",
   "main": "index.js",
   "engines": {
@@ -16,14 +16,15 @@
     "url": "https://github.com/BrandonCookeDev/smashgg.js"
   },
   "scripts": {
+    "setupDebug": "node resources/scripts/setupDebug",
     "pretest": "tsc",
     "watch": "gulp watch",
     "test": "./node_modules/.bin/mocha ./src/js/test",
     "lint": "./node_modules/.bin/eslint .",
     "tsc": "tsc",
     "sandbox": "node ./sandbox/sandbox",
-    "sample1": "node ./resources/samples/sample1",
-    "sample2": "node ./resources/samples/sample2"
+    "sample1": "node ./resources/samples/v4/sample1",
+    "sample2": "node ./resources/samples/v4/sample2"
   },
   "keywords": [
     "smashgg",
@@ -48,11 +49,13 @@
   ],
   "license": "ISC",
   "dependencies": {
-    "bluebird": "^3.5.3",
+    "bluebird": "^3.5.1",
     "colors": "^1.3.3",
-    "lodash": "^4.17.10",
-    "moment": "^2.22.2",
-    "moment-timezone": "^0.5.21",
+    "dotenv": "^6.2.0",
+    "graphql-request": "^1.8.2",
+    "lodash": "^4.17.11",
+    "moment": "^2.23.0",
+    "moment-timezone": "^0.5.23",
     "node-cache": "^4.2.0",
     "p-map": "^1.2.0",
     "request": "^2.87.0",
@@ -62,6 +65,7 @@
   "devDependencies": {
     "@types/chai": "^4.1.7",
     "@types/chai-as-promised": "^7.1.0",
+    "@types/dotenv": "^6.1.0",
     "@types/lodash": "^4.14.119",
     "@types/mocha": "^5.2.5",
     "@types/moment-timezone": "^0.5.10",
@@ -73,14 +77,15 @@
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
     "chalk": "^2.4.1",
-    "eslint": "^5.0.1",
+    "eslint": "^5.14.1",
     "gulp": "^4.0.0",
     "gulp-cli": "^2.0.1",
     "gulp-mocha": "^6.0.0",
     "gulp-typescript": "^5.0.0",
     "mocha": "^5.2.0",
     "sinon": "^6.1.4",
-    "typescript": "^3.2.4",
+    "tslint": "^5.13.0",
+    "typescript": "^3.3.3333",
     "typescript-eslint-parser": "^21.0.2"
   }
 }

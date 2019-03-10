@@ -1,6 +1,8 @@
 /* eslint-disable */
 require('colors');
+require('dotenv').config({path: require('path').join(__dirname, '..', '.env')});
 const smashgg = require('..');
+smashgg.initialize(process.env.API_TOKEN);
 const {Tournament, Event, GGSet, Player, Phase, PhaseGroup} = smashgg;
 
 const tournamentSlugRegex = new RegExp(/(http|https):\/\/api.smash.gg\/tournament\/([\S]*)\/?/);
@@ -9,8 +11,8 @@ const phaseSlugRegex = new RegExp(/(http|https):\/\/api.smash.gg\/tournament\/([
 const phaseGroupSlugRegex = new RegExp(/(http|https):\/\/api.smash.gg\/tournament\/([\S]*)\/events\/([\S]*)\/brackets\/([0-9]*)\/([0-9]*)\/?/);
 
 (async function(){
-    
 
+    return true;
 })()
 
 function parseTournamentSlug(slug){

@@ -2,6 +2,7 @@
 .hgcheck/
 .idea/
 .vscode/
+.env
+.DS_Store
 node_modules/
 *.tgz
-.env

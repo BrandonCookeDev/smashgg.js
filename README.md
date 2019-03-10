@@ -29,7 +29,6 @@ npm install --save smashgg.js
 * Please submit any issues or feature requests to the [Issues Section of the Github](https://github.com/BrandonCookeDev/smashgg.js/issues)
 
 ## Contents
-- [Example](#example)
 - [Logging](#logging)
 - [Docs](#docs)
     -  [Tournament](#tournament)

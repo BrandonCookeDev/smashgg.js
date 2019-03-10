@@ -2,10 +2,13 @@ node_modules/
 old/
 test/
 .vscode/
-src/ts/
+src/v1/ts/
+src/v4/ts/
+sandbox/
+resources/
+patchnotes/
 .env
 .eslintrc.json
 tsconfig.json
 *.tgz
 gulpfile.js
-sandbox/

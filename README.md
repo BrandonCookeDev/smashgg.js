@@ -55,6 +55,9 @@ npm install --save smashgg.js
 * Please submit any issues or feature requests to the [Issues Section of the Github](https://github.com/BrandonCookeDev/smashgg.js/issues)
 
 ## Contents
+- [Getting Started](#getting-started)
+- [Limitations](#limitations)
+- [Access V1-V3](#access-v1-v3)
 - [Logging](#logging)
 - [Docs](#docs)
     -  [Tournament](#tournament)
@@ -71,7 +74,42 @@ npm install --save smashgg.js
     -  [VideoGame](#videogame)
 - [Upgrading](#upgrading)
 
+## Getting Started
+To begin coding with the SDK, you need an Access Token. You may get one by 
+[Joining the Smash.gg discord](#http://bit.ly/sggDiscord) and asking Furtive for an
+API key. 
 
+Once you have this key, you may use the following function to authenticate with the API
+and then you may move on
+```js
+// import the SDK
+const smashgg = require('smashgg.js');
+
+// authenticate with key
+smashgg.initialize('<your api key here>');
+```
+
+## Limitations
+Currently, `smashgg.js` is limited by Smash.gg's rate limiting rules. Those are currently
+80 requests per 60 seconds. That is, every request made to the API starts a 60 second timer. 
+If 80 requests are made before the first 60 second timer is completed, your next request will 
+be dropped.
+
+This SDK implements a Queueing system when your code becomes "Delinquent", that is it has made
+too many requests too fast. Your requests won't be dropped, but rather will wait until the next
+available request slot opens.
+
+If you wish to see this queuing info, it is recommended you maintain the "info" logging level
+(See [Logging](#logging)).
+
+## Access to V1-V3
+The original API has no Sunset date set currently. While this is the case, I thought it best
+to make the original SDK available to people so that they may maintain their apps while beginning
+to move into V4. You may access v1-v3 SDK as follows:
+
+```js
+let smashggV1 = require('smashgg.js/src/v1');
+```
 
 ## Logging
 ### Winston
@@ -1733,6 +1771,27 @@ let allGames = await VideoGame.getAll()
 
 ## Upgrading
 This section is for detailing the transition between major versions. 
+
+### V3 to V4
+Easily the largest change that has occurred in the lifespan of this SDK. Please read carefully to 
+successfully upgrade versions.
+
+* All major objects (`Tournament`, `Event`, `Phase`, `PhaseGroup`) have refactored the main getter renamed to `get()`
+    * `Tournament.getTournament(slug)` ==> `Tournament.get(slug)`
+    * `Event.getEvent(eventName, tournamentName)` ==> `Event.get(tournamentName, eventName)`
+    * `Phase.getPhase(id)` ==> `Phase.get(id)`
+    * `PhaseGroup.getPhaseGroup(id)` ==> `PhaseGroup.get(id)`
+* `Event` no longer accepts `Tournament` slug shorthand
+    * shorthand like "function1" need to be refactored to their full slug version like "function-1-recursion-regional"
+* `Tournament` no longer has aggregate functions like `getAllSets()` or `getAllPlayers()`
+    * due to the [limitations](#limitations), the SDK can no longer support aggregate functions for Tournament objects, 
+    I recommend using individual `Event` objects to accomplish your goals
+* Take caution in doing aggregate functions on `Events` of very large size, like Evo Melee or something similar. You could 
+find yourself hitting the rate limit very easily.
+
+#### Maintaining V1-V3
+As described in [Access V1-V3](#access-v1-v3), you may use the original SDK while it has not been 
+Sunset. See that section for more details.
 
 ### V2 to V3
 In order to transition successfully from V2 to V3, please ensure the following 

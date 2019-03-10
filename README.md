@@ -504,9 +504,6 @@ Event(
 A phase in smash.gg is a subset of matches and brackets inside an Event. For example,
 a wave in pools is a Phase. Everything in that Phase is a Group (or Phase Group).
 
-Phase.getPhase(111483)
-
-Phase.getPhase(45262, {
 ```javascript
 const smashgg = require('smashgg.js');
 const Phase = smashgg.Phase;
@@ -912,6 +909,26 @@ Attendee(
     * get a list of connected accounts to this Attendee
     * returns object | null
 
+### AttendeeOptions
+{
+    page?: number | null,
+    perPage?: number | null,
+    sortBy?: string | null,
+    filter?: null | {
+        id?: number,
+        entrantName?: string,
+        checkInState?: number,
+        phaseGroupId?: number[],
+        phaseId?: number[],
+        eventId?: number,
+        seach?:{
+            fieldsToSearch: string[],
+            searchString: string
+        }
+    }
+}
+
+----
 
 ## Entrant
 An `Entrant` is an `Attendee` who entered and competed in an `Event`.
@@ -1060,6 +1077,25 @@ Entrant(
 * **getConnectedAccounts()**
     * returns object | null
 
+### EntrantOptions
+{
+    page?: number | null,
+    perPage?: number | null,
+    sortBy?: string | null,
+    filter?: null | {
+        id?: number,
+        entrantName?: string,
+        checkInState?: number,
+        phaseGroupId?: number[],
+        phaseId?: number[],
+        eventId?: number,
+        seach?:{
+            fieldsToSearch: string[],
+            searchString: string
+        }
+    }
+}
+
 ----
 
 ## GGSet
@@ -1087,7 +1123,9 @@ GGSet(
 
 ### PlayerLite Object
 {
-
+    tag: string | null,
+    entrantId: number | null,
+    attendeeIds: number[]
 }
 
 ### Properties 
@@ -1203,6 +1241,24 @@ GGSet(
 * **getLoserScore()**
     * get the score of the loser in the GGSet
     * returns number | string
+
+### SetOptions
+{
+    filterDQs?: boolean,
+    filterByes?: boolean,
+    filterResets?: boolean,
+    page?: number | null,
+    perPage?: number | null,
+    sortBy?: null | 'NONE' | 'STANDARD' | 'RACE_SPECTATOR' | 'ADMIN',
+    filters?: null | {
+        entrantIds?: number[],
+        state?: number[],
+        stationIds?: number[],
+        phaseIds?: number[],
+        phaseGroupIds?: number[],
+        roundNumber?: number
+    }
+}
 
 ----
 
@@ -1331,6 +1387,53 @@ StreamQueue(
 * **getSets()**
     * get a list of GGSets queued to be played on the Stream
     * return GGSet[]
+
+----
+
+## Seed
+
+### Constructor
+Seed(
+    id: number,
+	entrantId: number,
+	placeholderName: string,
+	seedNumber: number,
+	placement: number,
+	isBye: boolean
+)
+
+### Properties
+* **id** 
+    * number
+* **entrantId** 
+    * number
+* **placeholderName** 
+    * string
+* **seedNumber** 
+    * number
+* **placement** 
+    * number
+* **isBye** 
+    * boolean
+
+### SeedOptions
+{
+    page?: number | null,
+    perPage?: number | null,
+    sortBy?: string | null,
+    filter?: null | {
+        id?: number
+        entrantName?: string
+        checkInState?: number
+        phaseGroupId?: number[]
+        phaseId?: number[]
+        eventId?: number
+        search?: {
+            fieldsToSearch: string[]
+            searchString: string
+        }
+    }
+}
 
 
 ----

@@ -11,9 +11,22 @@ const phaseSlugRegex = new RegExp(/(http|https):\/\/api.smash.gg\/tournament\/([
 const phaseGroupSlugRegex = new RegExp(/(http|https):\/\/api.smash.gg\/tournament\/([\S]*)\/events\/([\S]*)\/brackets\/([0-9]*)\/([0-9]*)\/?/);
 
 (async function(){
-    let phase1 = await Phase.get(111483);
-    console.log(phase1.getName());
-    console.log(phase1.getNumSeeds());
+        let tournamentSlug = 'function-1-recursion-regional';
+        let eventSlug = 'melee-singles';
+        let meleeAtFunction = await Event.get(tournamentSlug, eventSlug);
+    
+        let sets = await meleeAtFunction.getSets();
+        let phaseGroups = await meleeAtFunction.getPhaseGroups();
+    
+        console.log('Function 1 had %s sets played in %s phase groups', 
+            sets.length, phaseGroups.length);
+    
+        console.log('Set Results:')
+        for(var i in sets){
+            console.log(`${String(sets[i].getFullRoundText()).magenta}: ${String(sets[i].getDisplayScore()).green}`);
+        }
+    
+        return true; // exit async
 
     process.exit(0); // don't remove this
 })()

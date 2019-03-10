@@ -36,8 +36,12 @@ npm install --save smashgg.js
     -  [Event](#event)
     -  [Phase](#phase)
     -  [PhaseGroup](#phasegroup)
-    -  [Player](#player)
+    -  [User](#user)
+    -  [Attendee](#attendee)
+    -  [Entrant](#entrant)
     -  [GGSet](#ggset)
+    -  [Stream](#stream)
+    -  [StreamQueue](#streamqueue)
     -  [Character](#character)
     -  [VideoGame](#videogame)
 - [Upgrading](#upgrading)
@@ -225,6 +229,8 @@ Tournament(
     * aggregates all the PhaseGroup objects belonging to the tournament
     * return Promise<[PhaseGroup](#phasegroup)[]>
 
+----
+
 ## Venue
 A Venue is the location of a tournament, and encapsulates data about that location.
 
@@ -299,6 +305,8 @@ Venue(
     * get the numeric longitude of the venue
     * number | null
 
+----
+
 ## Organizer
 An Organizer is an individual or organization in Smash.gg that organizes a tournament and is the owner of a Tournament's webpage in smash.gg
 
@@ -335,6 +343,7 @@ Organizer(
     * gets the information string of the organizer
     * string | null
 
+----
 
 ## Event
 An Event in smash.gg is a broad collection of matches for a single game and game type.
@@ -489,6 +498,8 @@ Event(
             * series of options for the return set of GGSets
     * returns Promise<GGSet[]> 
 
+----
+
 ## Phase
 A phase in smash.gg is a subset of matches and brackets inside an Event. For example,
 a wave in pools is a Phase. Everything in that Phase is a Group (or Phase Group).
@@ -588,6 +599,7 @@ Phase(
             * series of options for the return set of GGSet
     * returns Promise<[GGSet](#ggset)[]>
 
+----
 
 ## PhaseGroup
 A Phase Group is the lowest unit on smash.gg. It is a bracket of some sort that belongs to a Phase.
@@ -701,8 +713,7 @@ PhaseGroup(
             * series of options for the return set of GGSet
     * returns Promise<[GGSet](#ggset)[]>
 
-
-
+----
 
 ## User
 A User is a data object that holds information about users on Smash.gg's platform 
@@ -797,6 +808,7 @@ User(
     * get a list of the rankings the User has achieved.
     * return Promise<PlayerRank[]>
 
+----
 
 ## Attendee
 An Attendee is a person who attendeed a tournament.
@@ -1048,14 +1060,11 @@ Entrant(
 * **getConnectedAccounts()**
     * returns object | null
 
+----
 
 ## GGSet
 A Set is a data object that holds information about a tournament set
 that took place at a tournament.
-
-```javascript
-
-```
 
 ### Constructor
 GGSet(
@@ -1195,6 +1204,136 @@ GGSet(
     * get the score of the loser in the GGSet
     * returns number | string
 
+----
+
+## Stream
+A Stream is a live stream of a Tournament
+
+### Constructor
+Stream(
+    id: number,
+    eventId: number | null,
+    tournamentId: number | null,
+    streamName: string,
+    numSetups: number | null,
+    streamSource: 'TWITCH' | 'HITBOX' | 'STREAMME' | 'MIXER' | null,
+    streamType: number | null,
+    streamTypeId: number | null,
+    isOnline: boolean | null,
+    enabled: boolean | null,
+    followerCount: number | null,
+    removesTasks: boolean | null,
+    streamStatus: string | null,
+    streamGame: string | null,
+    streamLogo: string | null
+)
+
+### Properties
+* **id** 
+    * number
+* **eventId** 
+    * number | null
+* **tournamentId** 
+    * number | null
+* **streamName** 
+    * string
+* **numSetups** 
+    * number | null
+* **streamSource** 
+    * 'TWITCH' | 'HITBOX' | 'STREAMME' | 'MIXER' | null
+* **streamType** 
+    * number | null
+* **streamTypeId** 
+    * number | null
+* **isOnline** 
+    * boolean | null
+* **enabled** 
+    * boolean | null
+* **followerCount** 
+    * number | null
+* **removesTasks** 
+    * boolean | null
+* **streamStatus** 
+    * string | null
+* **streamGame** 
+    * string | null
+* **streamLogo** 
+    * string | null
+
+### Methods
+* **getId()** 
+    * get the numeric ID of the Stream
+    * number,
+* **getEventId()** 
+    * get the ID of the Event this Stream occurred in
+    * number | null,
+* **getTournamentId()** 
+    * get the ID of the Tournament this Stream occurred in
+    * number | null,
+* **getStreamName()** 
+    * get the name of the Stream
+    * string,
+* **getNumSetups()** 
+    * get the number of setups
+    * number | null,
+* **getStreamSource()** 
+    * get the source of the Stream
+    * 'TWITCH' | 'HITBOX' | 'STREAMME' | 'MIXER' | null,
+* **getStreamType()** 
+    * get the type of the Stream
+    * number | null,
+* **getStreamTypeId()** 
+    * get the numeric type of the Stream
+    * number | null,
+* **getIsOnline()** 
+    * get the true/false value for if the Stream is online
+    * boolean | null,
+* **getEnabled()** 
+    * get the true/false value of if the Stream is enabled
+    * boolean | null,
+* **getFollowerCount()** 
+    * get the follower count the Stream has
+    * number | null,
+* **getRemovesTasks()** 
+    * get the true/false value of if this Stream removes tasks
+    * boolean | null,
+* **getStreamStatus()** 
+    * get the status of the Stream
+    * string | null,
+* **getStreamGame()** 
+    * get the game the Stream is streaming
+    * string | null,
+* **getStreamLogo()** 
+    * get the url of the Stream's logo
+    * string | null
+
+----
+
+## StreamQueue
+A StreamQueue is a Queue of GGSets that are in line to be played on a Stream
+
+### Constructor
+StreamQueue(
+    stream: Stream,
+    sets: GGSet[]
+)
+
+### Properties
+* **stream** 
+    * Stream
+* **sets** 
+    * GGSet[]
+
+### Methods
+* **getStream()**
+    * get the associated Stream object
+    * return Stream
+* **getSets()**
+    * get a list of GGSets queued to be played on the Stream
+    * return GGSet[]
+
+
+----
 
 ## Character
 A Character object encapsulates data about a fighting game character in the smashgg system
@@ -1268,6 +1407,7 @@ let wolfPM = await Character.getByNameAndGameId('wolf', 2)
 * **getIsCommon()** - returns the T/F isCommon value of the character
 * **getVideoGameId()** - return the SmashGG VideoGame ID that the character belongs to
 
+----
 
 ## VideoGame
 A VideoGame object encapsulates data about VideoGames respective to how they are known in Smash GG's system

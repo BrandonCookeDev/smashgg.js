@@ -11,16 +11,8 @@
 Node.js SDK for the public Smash.gg API, which is rich
 with data about tournament brackets that have occurred on their platform.
 
-![example](resources/images/smashgg.js.jpg)
-
-[See the full sample code](https://github.com/BrandonCookeDev/smashgg.js/blob/master/resources/samples/sample1.js)
-
-## Author: Brandon Cooke
-* Organization: [RecursionGG](http://recursion.gg)
-* Email: BrandonCookeDev@gmail.com
-* Discord: cookiE#7679
-
 ```js
+require('colors');
 const smashgg = require('smashgg.js');
 const {Event} = smashgg;
 
@@ -32,10 +24,27 @@ smashgg.initialize('<your api key>');
     let meleeAtFunction = await Event.get(tournamentSlug, eventSlug);
 
     let sets = await meleeAtFunction.getSets();
+    let phaseGroups = await meleeAtFunction.getPhaseGroups();
 
-    return true;
+    console.log('Function 1 had %s sets played in %s phase groups', 
+        sets.length, phaseGroups.length);
+
+    console.log('Set Results:')
+    for(var i in sets){
+        console.log(`${String(sets[i].getFullRoundText()).magenta}: ${String(sets[i].getDisplayScore()).green}`);
+    }
+
+    return true; // exit async
 })()
 ```
+
+Results: 
+![example](resources/images/smashgg.js.v4.png)
+
+## Author: Brandon Cooke
+* Organization: [RecursionGG](http://recursion.gg)
+* Email: BrandonCookeDev@gmail.com
+* Discord: cookiE#7679
 
 ## Installation
 ```bash

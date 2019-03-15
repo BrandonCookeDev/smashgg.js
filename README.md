@@ -76,7 +76,7 @@ npm install --save smashgg.js
 
 ## Getting Started
 To begin coding with the SDK, you need an Access Token. You may get one by 
-[Joining the Smash.gg discord](#http://bit.ly/sggDiscord) and asking Furtive for an
+[Joining the Smash.gg discord](http://bit.ly/sggDiscord) and asking Furtive for an
 API key. 
 
 Once you have this key, you may use the following function to authenticate with the API

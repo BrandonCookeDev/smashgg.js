@@ -1,6 +1,9 @@
 /** Patch Notes **/
 
-/** 4.0.0 **/
+/** 4.0.1 :: 03/10/2019 **/
+* Fixed wiring for V1 library. Was broken before
+
+/** 4.0.0 :: 03/10/2019 **/
 * Overhaul for new GraphQL API (see docs)
 
 /** 3.3.4 **/

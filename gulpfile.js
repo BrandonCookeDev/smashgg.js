@@ -79,6 +79,11 @@ function testGame(){
 		.pipe(mocha())
 }
 
+function testV1(){
+	return gulp.src(path.join(ROOT, 'src', 'v1', 'js', 'test'))
+		.pipe(mocha());
+}
+
 function watch(){
 	return gulp.watch(TS_DIR + '/**/*.ts', gulp.parallel(tsc))
 }
@@ -115,6 +120,7 @@ exports.testGame = gulp.series(tsc, testGame)
 exports.testUser = gulp.series(tsc, testUser)
 exports.testAttendee = gulp.series(tsc, testAttendee)
 exports.testPlayer = gulp.series(tsc, testPlayer)
+exports.testV1 = testV1;
 
 exports.tsc = tsc
 exports.createDTs = createDTs

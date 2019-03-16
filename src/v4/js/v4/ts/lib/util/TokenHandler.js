@@ -6,7 +6,7 @@ var TokenHandler = /** @class */ (function () {
     }
     TokenHandler.setToken = function (token) {
         if (!tokenRegex.test(token))
-            throw new Error("Invalid token '" + token + "'. Must be 32 lowercase, hexidecimal characters.");
+            throw new Error("Invalid token '" + token + "'. Must be 32 alphanumeric, lowercase characters.");
         TokenHandler.token = token;
     };
     TokenHandler.getToken = function () {

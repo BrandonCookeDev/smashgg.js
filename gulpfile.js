@@ -92,7 +92,7 @@ function testV1(){
 		.pipe(mocha())
 }
 
-function sandbox(cb){
+function sandbox(){
 	require('./sandbox/sandbox')
 }
 

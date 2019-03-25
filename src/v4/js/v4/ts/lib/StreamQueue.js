@@ -61,7 +61,7 @@ var StreamQueue = /** @class */ (function () {
         return new StreamQueue(stream, sets);
     };
     StreamQueue.parseFull = function (data) {
-        return data.tournament.streamQueue.map(function (sq) { return StreamQueue.parse(sq); });
+        return data.streamQueue.map(function (sq) { return StreamQueue.parse(sq); });
     };
     StreamQueue.get = function (tournamentId) {
         return __awaiter(this, void 0, void 0, function () {
@@ -73,6 +73,7 @@ var StreamQueue = /** @class */ (function () {
                         return [4 /*yield*/, NetworkInterface_1.default.query(queries.streamQueue, { tournamentId: tournamentId })];
                     case 1:
                         data = _a.sent();
+                        console.log(data);
                         return [2 /*return*/, StreamQueue.parseFull(data)];
                 }
             });

@@ -1,5 +1,8 @@
 /** Patch Notes **/
 
+/** 4.0.2 :: 03/25/2019 **/
+* Repaired the StreamQueue query and object. Warns on null stream queue. modified IStreamQueue interfaces
+
 /** 4.0.1 :: 03/10/2019 **/
 * Fixed wiring for V1 library. Was broken before
 

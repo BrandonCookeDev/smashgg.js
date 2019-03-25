@@ -12,6 +12,15 @@ const phaseGroupSlugRegex = new RegExp(/(http|https):\/\/api.smash.gg\/tournamen
 
 (async function(){
 
+    const {StreamQueue} = smashgg
+    var slug = 'frozen-phoenix-2019'
+    var fp = await Tournament.get(slug)
+    var id = fp.getId()
+    console.log('%s::%s', fp.getName(), id);
+
+    var sq = await StreamQueue.get(id)
+    console.log(sq)
+
     return true;
 })()
 

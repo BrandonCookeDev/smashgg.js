@@ -72,6 +72,7 @@ describe('smashgg Stream Queue', function () {
                         return [4 /*yield*/, StreamQueue_1.StreamQueue.get(STREAM_QUEUE_TOURNAMENT_ID_1)];
                     case 2:
                         streamQueue1 = _a.sent();
+                        expect(streamQueue1).to.not.be.null;
                         return [2 /*return*/, true];
                 }
             });

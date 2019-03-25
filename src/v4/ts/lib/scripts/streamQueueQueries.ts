@@ -1,10 +1,12 @@
 import * as Schema from './schema'
 
-export const streamQueue = `query StreamQueueQuery($tournamentId: Int!, $includePlayerStreams: Boolean){
-	stream{
-		${Schema.stream}
-	}
-	sets{
-		${Schema.set}
+export const streamQueue = `query StreamQueueQuery($tournamentId: ID!, $includePlayerStreams: Boolean){
+	streamQueue(tournamentId:$tournamentId, includePlayerStreams:$includePlayerStreams){
+		stream{
+			${Schema.stream}
+		}
+		sets{
+			${Schema.set}
+		}
 	}
 }`

@@ -8,4 +8,4 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var Schema = __importStar(require("./schema"));
-exports.streamQueue = "query StreamQueueQuery($tournamentId: Int!, $includePlayerStreams: Boolean){\n\tstream{\n\t\t" + Schema.stream + "\n\t}\n\tsets{\n\t\t" + Schema.set + "\n\t}\n}";
+exports.streamQueue = "query StreamQueueQuery($tournamentId: Int!, $includePlayerStreams: Boolean){\n\tstreamQueue(tournamentId:$tournamentId, includePlayerStreams:$includePlayerStreams){\n\t\tstream{\n\t\t\t" + Schema.stream + "\n\t\t}\n\t\tsets{\n\t\t\t" + Schema.set + "\n\t\t}\n\t}\n}";

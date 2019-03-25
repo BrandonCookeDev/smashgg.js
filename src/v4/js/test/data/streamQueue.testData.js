@@ -49,9 +49,7 @@ exports.streamQueue1 = [{
 exports.streamQueue2 = {};
 exports.streamQueue3 = {};
 exports.streamQueueData1 = {
-    tournament: {
-        streamQueue: exports.streamQueue1
-    }
+    streamQueue: exports.streamQueue1
 };
 exports.streamQueueData2 = {
     streamQueue: exports.streamQueue2

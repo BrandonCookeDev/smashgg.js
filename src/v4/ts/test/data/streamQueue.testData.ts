@@ -62,9 +62,7 @@ export const streamQueue3 = {
 }
 
 export const streamQueueData1: IStreamQueue.Data = {
-	tournament:{
-		streamQueue: streamQueue1
-	}
+	streamQueue: streamQueue1
 }
 
 export const streamQueueData2 = {

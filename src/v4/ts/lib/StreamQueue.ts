@@ -26,13 +26,19 @@ export class StreamQueue implements IStreamQueue.StreamQueue{
 	}
 
 	static parseFull(data: IStreamQueue.Data) : StreamQueue[]{
-		return data.tournament.streamQueue.map(sq => StreamQueue.parse(sq))
+		return data.streamQueue.map(sq => StreamQueue.parse(sq))
 	}
 
-	static async get(tournamentId: number) : Promise<StreamQueue[]> {
+	static async get(tournamentId: number) : Promise<StreamQueue[] | null> {
 		log.info('Getting Stream Queues for Tournament with Id %s', tournamentId)
 		let data: IStreamQueue.Data = await NI.query(queries.streamQueue, {tournamentId: tournamentId})
-		return StreamQueue.parseFull(data)
+
+		if(data.streamQueue)
+			return StreamQueue.parseFull(data)
+		else{
+			log.warn('Stream Queue for tournament %s is null', tournamentId)
+			return null
+		}
 	}
 
 	getStream() : Stream{
@@ -55,9 +61,7 @@ export namespace IStreamQueue{
 	}
 
 	export interface Data{
-		tournament:{
-			streamQueue: StreamQueueData[]
-		}
+		streamQueue: StreamQueueData[]
 	}
 
 	export interface StreamQueueData{

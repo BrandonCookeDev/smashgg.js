@@ -4,7 +4,7 @@ const path = require('path')
 const gulp = require('gulp')
 const ts = require('gulp-typescript')
 const mocha = require('gulp-mocha')
-const {exec} = require('child_process');
+const {exec} = require('child_process')
 
 const ROOT = __dirname
 const SRC_DIR = path.join(ROOT, 'src', 'v4')
@@ -78,10 +78,22 @@ function testGame(){
 	return gulp.src(path.join(TEST_DIR, 'game.test.js'))
 		.pipe(mocha())
 }
+function testStream(){
+	return gulp.src(path.join(TEST_DIR, 'stream.test.js'))
+		.pipe(mocha())
+}
+function testStreamQueue(){
+	return gulp.src(path.join(TEST_DIR, 'streamQueue.test.js'))
+		.pipe(mocha())
+}
 
 function testV1(){
 	return gulp.src(path.join(ROOT, 'src', 'v1', 'js', 'test'))
-		.pipe(mocha());
+		.pipe(mocha())
+}
+
+function sandbox(cb){
+	require('./sandbox/sandbox')
 }
 
 function watch(){
@@ -89,10 +101,10 @@ function watch(){
 }
 
 function publish(cb){
-	exec("npm publish", (err, stdout, stderr) => {
-		console.out(stdout);
-		console.error(stderr);
-		cb(err);
+	exec('npm publish', (err, stdout, stderr) => {
+		console.out(stdout)
+		console.error(stderr)
+		cb(err)
 	})
 }
 
@@ -120,10 +132,13 @@ exports.testGame = gulp.series(tsc, testGame)
 exports.testUser = gulp.series(tsc, testUser)
 exports.testAttendee = gulp.series(tsc, testAttendee)
 exports.testPlayer = gulp.series(tsc, testPlayer)
-exports.testV1 = testV1;
+exports.testStream = gulp.series(tsc, testStream)
+exports.testStreamQueue = gulp.series(tsc, testStreamQueue)
+exports.testV1 = testV1
 
 exports.tsc = tsc
 exports.createDTs = createDTs
 exports.watch = watch
+exports.sandbox = gulp.series(tsc, sandbox)
 exports.getQueries = getQueries
-exports.publish = gulp.series(tsc, publish);
+exports.publish = gulp.series(tsc, publish)

@@ -1,5 +1,9 @@
 /** Patch Notes **/
 
+/** 4.0.4 03/31/2019 **/
+* Added an option to AttendeeOptions and EntrantOptions stating if seeds are unpublished
+* Added conditional logic to Event getAttendees and getEntrants that on unpublished seeds query the Event schema itself
+
 /** 4.0.3 :: 03/25/2019 **/
 * Repaired the StreamQueue query and object. Warns on null stream queue. modified IStreamQueue interfaces
 

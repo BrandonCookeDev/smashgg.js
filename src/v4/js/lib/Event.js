@@ -206,6 +206,8 @@ var Event = /** @class */ (function (_super) {
                 switch (_a.label) {
                     case 0:
                         Logger_1.default.info('Getting Entrants for Event [%s :: %s]', this.id, this.name);
+                        if (!options.areSeedsPublished)
+                            return [2 /*return*/, this.getEntrants2(options)];
                         return [4 /*yield*/, this.getPhaseGroups()];
                     case 1:
                         pgs = _a.sent();
@@ -225,6 +227,8 @@ var Event = /** @class */ (function (_super) {
                 switch (_a.label) {
                     case 0:
                         Logger_1.default.info('Getting Attendees for Event [%s :: %s]', this.id, this.name);
+                        if (!options.areSeedsPublished)
+                            return [2 /*return*/, this.getAttendees2(options)];
                         return [4 /*yield*/, this.getPhaseGroups()];
                     case 1:
                         pgs = _a.sent();

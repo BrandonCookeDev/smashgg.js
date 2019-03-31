@@ -171,6 +171,7 @@ var IAttendee;
 (function (IAttendee) {
     function getDefaultAttendeeOptions() {
         return {
+            areSeedsPublished: true,
             page: 1,
             perPage: 1,
             sortBy: null,

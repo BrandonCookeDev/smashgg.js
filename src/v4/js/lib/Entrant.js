@@ -103,6 +103,7 @@ var IEntrant;
 (function (IEntrant) {
     function getDefaultEntrantOptions() {
         return {
+            areSeedsPublished: true,
             page: 1,
             perPage: 1,
             sortBy: null,

@@ -157,6 +157,9 @@ export class Event extends EventEmitter implements IEvent.Event{
 	async getEntrants(options: IEntrant.EntrantOptions = IEntrant.getDefaultEntrantOptions()) : Promise<Entrant[]> {
 		log.info('Getting Entrants for Event [%s :: %s]', this.id, this.name)
 
+		if(!options.areSeedsPublished)
+			return this.getEntrants2(options)
+
 		let pgs = await this.getPhaseGroups()
 		let entrants = await NI.clusterQuery(pgs, 'getEntrants', options)
 		return _.flatten(entrants);
@@ -164,6 +167,9 @@ export class Event extends EventEmitter implements IEvent.Event{
 
 	async getAttendees(options: IAttendee.AttendeeOptions = IAttendee.getDefaultAttendeeOptions()) : Promise<Attendee[]> {
 		log.info('Getting Attendees for Event [%s :: %s]', this.id, this.name)
+
+		if(!options.areSeedsPublished)
+			return this.getAttendees2(options)
 
 		let pgs = await this.getPhaseGroups();
 		let attendees = await NI.clusterQuery(pgs, "getAttendees", options);

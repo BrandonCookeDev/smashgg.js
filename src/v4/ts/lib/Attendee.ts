@@ -238,6 +238,7 @@ export namespace IAttendee{
 	}
 
 	export interface AttendeeOptions{
+		areSeedsPublished?: boolean
 		page?: number | null,
 		perPage?: number | null,
 		sortBy?: string | null,
@@ -257,6 +258,7 @@ export namespace IAttendee{
 
 	export function getDefaultAttendeeOptions() : AttendeeOptions{
 		return {
+			areSeedsPublished: true,
 			page: 1,
 			perPage: 1,
 			sortBy: null,

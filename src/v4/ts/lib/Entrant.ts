@@ -166,6 +166,7 @@ export namespace IEntrant{
 	}
 
 	export interface EntrantOptions{
+		areSeedsPublished?: boolean,
 		page?: number | null,
 		perPage?: number | null,
 		sortBy?: string | null,
@@ -185,6 +186,7 @@ export namespace IEntrant{
 
 	export function getDefaultEntrantOptions() : EntrantOptions{
 		return {
+			areSeedsPublished: true,
 			page: 1,
 			perPage: 1,
 			sortBy: null,

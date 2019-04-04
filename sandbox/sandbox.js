@@ -13,12 +13,11 @@ const phaseGroupSlugRegex = new RegExp(/(http|https):\/\/api.smash.gg\/tournamen
 (async function(){
 
     let evt = await Event.get('svenska-raketligan-open-qualifiers-5', 'svenska-raketligan-open-qualifiers-1')
-    let attendees = await evt.getAttendees({areSeedsPublished: false});
+    let attendees = await evt.getAttendees({areSeedsPublished: false, isVerified: true});
     console.log(attendees.length)
     
     let entrants = await evt.getEntrants({areSeedsPublished: false});
     console.log(entrants.length)
-
 
     return true;
 })()

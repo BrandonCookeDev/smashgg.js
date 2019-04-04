@@ -2,7 +2,9 @@
 .hgcheck/
 .idea/
 .vscode/
+node_modules/
+src/*/js/
+
+*.tgz
 .env
 .DS_Store
-node_modules/
-*.tgz

@@ -3,7 +3,8 @@
 .idea/
 .vscode/
 node_modules/
-src/*/js/
+src/v4/js/
+src/v1/js/
 
 *.tgz
 .env

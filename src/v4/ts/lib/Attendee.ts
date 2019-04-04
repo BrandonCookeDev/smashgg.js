@@ -238,7 +238,8 @@ export namespace IAttendee{
 	}
 
 	export interface AttendeeOptions{
-		areSeedsPublished?: boolean
+		areSeedsPublished?: boolean,
+		isVerified?: boolean,
 		page?: number | null,
 		perPage?: number | null,
 		sortBy?: string | null,

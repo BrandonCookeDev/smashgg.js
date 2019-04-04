@@ -160,8 +160,8 @@ export class Event extends EventEmitter implements IEvent.Event{
 		if(!options.areSeedsPublished)
 			return this.getEntrants2(options)
 
-		let pgs = await this.getPhaseGroups()
-		let entrants = await NI.clusterQuery(pgs, 'getEntrants', options)
+		let pgs: PhaseGroup[] = await this.getPhaseGroups()
+		let entrants: Entrant[] = await NI.clusterQuery(pgs, 'getEntrants', options)
 		return _.flatten(entrants);
 	}
 
@@ -171,16 +171,17 @@ export class Event extends EventEmitter implements IEvent.Event{
 		if(!options.areSeedsPublished)
 			return this.getAttendees2(options)
 
-		let pgs = await this.getPhaseGroups();
-		let attendees = await NI.clusterQuery(pgs, "getAttendees", options);
+		let pgs: PhaseGroup[] = await this.getPhaseGroups();
+		let attendees: Attendee[] = await NI.clusterQuery(pgs, "getAttendees", options);
+		if(options.isVerified) attendees = attendees.filter(attendee => attendee.getVerified());
 		return _.flatten(attendees);
 	}
 
 	async getSets(options: IGGSet.SetOptions = IGGSet.getDefaultSetOptions()) : Promise<GGSet[]> {
 		log.info('Getting Sets for Event [%s :: %s]', this.id, this.name)
 
-		let pgs = await this.getPhaseGroups();
-		let sets = await NI.clusterQuery(pgs, 'getSets', options);
+		let pgs: PhaseGroup[] = await this.getPhaseGroups();
+		let sets: GGSet[] = await NI.clusterQuery(pgs, 'getSets', options);
 		return _.flatten(sets);
 	}
 
@@ -192,20 +193,20 @@ export class Event extends EventEmitter implements IEvent.Event{
 			options, {}, 2
 		)
 		let entrantData = _.flatten(data.map(d => d.event.entrants.nodes))
-		let entrants = entrantData.map(entrant => Entrant.parse(entrant))
+		let entrants: Entrant[] = entrantData.map(entrant => Entrant.parse(entrant))
 		return entrants
 	}
 
 	async getAttendees2(options: IAttendee.AttendeeOptions = IAttendee.getDefaultAttendeeOptions()) : Promise<Attendee[]> {
 		log.info('Getting Attendees for Event [%s :: %s]', this.id, this.name)
-		let data: IEvent.EventEntrantData[] = await NI.paginatedQuery(
+		let data: IEvent.EventAttendeeData[] = await NI.paginatedQuery(
 			`Event Attendees [${this.id} :: ${this.name}]`,
 			queries.eventAttendees, {id: this.id},
 			options, {}, 3
 		)
-		let entrantData = _.flatten(data.map(d => d.event.entrants.nodes))
-		let attendeeData = _.flatten(entrantData.map(entrant => entrant.participants))
-		let attendees = attendeeData.map(attendee => Attendee.parse(attendee))
+		let attendeeData = _.flatten(data.map(d => d.event.tournament.participants.nodes))
+		let attendees: Attendee[] = attendeeData.map(attendee => Attendee.parse(attendee))
+		if(options.isVerified) attendees = attendees.filter(attendee => attendee.getVerified())
 		return attendees
 	}
 
@@ -218,28 +219,28 @@ export class Event extends EventEmitter implements IEvent.Event{
 		)
 		let phaseGroups = _.flatten(data.map(d => d.event.phaseGroups))
 		let setData = _.flatten(phaseGroups.map(pg => pg.paginatedSets.nodes))
-		let sets = setData.map(set => GGSet.parse(set))
+		let sets: GGSet[] = setData.map(set => GGSet.parse(set))
 		return sets
 	}
 
 	// need coverage
 	async getIncompleteSets(options: IGGSet.SetOptions = IGGSet.getDefaultSetOptions()) : Promise<GGSet[]> {
 		log.info('Getting Incomplete Sets for Event [%s :: %s]', this.id, this.name)
-		let sets = await this.getSets(options)
+		let sets: GGSet[] = await this.getSets(options)
 		return GGSet.filterForIncompleteSets(sets)
 	}
 
 	// need coverage
 	async getCompleteSets(options: IGGSet.SetOptions = IGGSet.getDefaultSetOptions()) : Promise<GGSet[]> {
 		log.info('Getting Completed Sets for Event [%s :: %s]', this.id, this.name)
-		let sets = await this.getSets(options)		
+		let sets: GGSet[] = await this.getSets(options)		
 		return GGSet.filterForCompleteSets(sets)
 	}
 
 	// need coverage
 	async getSetsXMinutesBack(minutes: number, options: IGGSet.SetOptions = IGGSet.getDefaultSetOptions()) : Promise<GGSet[]> {
 		log.info('Getting sets completed %s minutes ago for Event [%s :: %s]', minutes, this.id, this.name)
-		let sets = await this.getSets(options)
+		let sets: GGSet[] = await this.getSets(options)
 		return GGSet.filterForXMinutesBack(sets, minutes);
 	}
 }
@@ -325,6 +326,19 @@ export namespace IEvent{
 	}
 
 	export interface EventAttendeeData{
+		event:{
+			tournament:{
+				participants: {
+					pageInfo?:{
+						totalPages: number
+					}
+					nodes: IAttendee.AttendeeData[]
+				}
+			}
+		}
+	}
+
+	export interface EventAttendeeData2{
 		event:{
 			entrants:{
 				pageInfo?: {

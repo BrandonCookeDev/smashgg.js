@@ -63,7 +63,25 @@ export const eventEntrants = `query EventSets($id: Int, $page: Int, $perPage: In
     }
 }`
 
-export const eventAttendees = `query EventSets($id: Int, $page: Int, $perPage: Int, $sortBy: String, $filter: EventEntrantPageQueryFilter){
+export const eventAttendees = `query EventAttendees($id: Int, $page: Int, $perPage: Int, $sortBy: String, $isAdmin: Boolean, $filter: ParticipantPageFilter){
+    event(id: $id){
+        tournament{
+            participants(query: {
+                page: $page,
+                perPage: $perPage,
+                sortBy: $sortBy,
+                filter: $filter
+            }, isAdmin: $isAdmin){
+                {pageInfo}
+                nodes{
+                    ${Schema.attendee}
+                }
+            }
+        }
+    }
+}`
+
+export const eventAttendees2 = `query EventAttendees($id: Int, $page: Int, $perPage: Int, $sortBy: String, $filter: EventEntrantPageQueryFilter){
     event(id: $id){
         entrants(query: {
             page: $page,

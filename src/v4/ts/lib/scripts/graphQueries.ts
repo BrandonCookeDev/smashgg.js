@@ -1,5 +1,5 @@
 import * as Schema from './schema'
-exports.phaseGroupSets = `query PhaseGroupSetsById($id: Int){
+exports.phaseGroupSets = `query PhaseGroupSetsById($id: ID!){
     phaseGroup(id: $id){
         sets{
             id
@@ -11,7 +11,7 @@ exports.phaseGroupSets = `query PhaseGroupSetsById($id: Int){
     }
 }`
 
-exports.phaseGroupSets2 = `query PhaseGroupSetsById($id: Int){
+exports.phaseGroupSets2 = `query PhaseGroupSetsById($id: ID!){
     phaseGroup(id: $id){
         sets{
             id
@@ -26,7 +26,7 @@ exports.phaseGroupSets2 = `query PhaseGroupSetsById($id: Int){
     }
 }`
 
-exports.phaseGroupSetsWithoutEntrants = `query PhaseGroupSetsById($id: Int){
+exports.phaseGroupSetsWithoutEntrants = `query PhaseGroupSetsById($id: ID!){
     phaseGroup(id: $id){
         sets{
             id
@@ -42,7 +42,7 @@ exports.phaseGroupSetsWithoutEntrants = `query PhaseGroupSetsById($id: Int){
     }
 }`
 
-exports.phaseGroupSetsWithEntrants = `query PhaseGroupSetsById($id: Int){
+exports.phaseGroupSetsWithEntrants = `query PhaseGroupSetsById($id: ID!){
     phaseGroup(id: $id){
         sets{
             id

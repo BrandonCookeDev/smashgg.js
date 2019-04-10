@@ -1,5 +1,8 @@
 /** Patch Notes **/
 
+/** 4.0.6 04/10/2019 **/
+* Update all queries to enforce ID! schema data type
+
 /** 4.0.5 04/04/2019 **/
 * Altered Event Attendee pulling logic by accessing the Tournament Schema instead of querying entrants
 

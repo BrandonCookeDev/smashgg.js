@@ -1,6 +1,6 @@
 import * as Schema from './schema'
 export const phase = `
-query PhaseQuery($id: Int){
+query PhaseQuery($id: ID!){
 	phase(id: $id){
 		${Schema.phase}
 	}
@@ -8,7 +8,7 @@ query PhaseQuery($id: Int){
 `
 
 export const phaseSeeds = `
-query PhaseSeedQuery($id: Int, $page: Int, $perPage: Int, $sortBy: String, $filter: SeedPageFilter){
+query PhaseSeedQuery($id: ID!, $page: Int, $perPage: Int, $sortBy: String, $filter: SeedPageFilter){
 	phase(id: $id){
 		paginatedSeeds(query: {
 			page: $page,
@@ -54,7 +54,7 @@ query PhaseSets($eventId:Int, $page: Int, $perPage: Int, $sortType: SetSortType,
 }`
 
 export const phaseEntrants = `
-query PhaseEntrants($id: Int, $page: Int, $perPage: Int, $sortBy: String, $filter: SeedPageFilter){
+query PhaseEntrants($id: ID!, $page: Int, $perPage: Int, $sortBy: String, $filter: SeedPageFilter){
 	phase(id: $id){
 		paginatedSeeds(query: {
 		  page: $page,
@@ -73,7 +73,7 @@ query PhaseEntrants($id: Int, $page: Int, $perPage: Int, $sortBy: String, $filte
 }`
 
 export const phaseAttendees = `
-query PhaseAttendees($id: Int, $page: Int, $perPage: Int, $sortBy: String, $filter: SeedPageFilter){
+query PhaseAttendees($id: ID!, $page: Int, $perPage: Int, $sortBy: String, $filter: SeedPageFilter){
 	phase(id: $id){
 		paginatedSeeds(query:{
 		  page: $page,

@@ -10,19 +10,19 @@ export const tournamentBySlug = `query TournamentQuery($slug: String) {
     }
 }`
 
-export const tournamentOrganizer = `query tournamentOrganizer($id: Int){
+export const tournamentOrganizer = `query tournamentOrganizer($id: ID!){
     tournament(id: $id){
         ${Schema.organizer}
     }   
 }`
 
-export const tournamentVenue = `query tournamentVenue($id: Int){
+export const tournamentVenue = `query tournamentVenue($id: ID!){
     tournament(id: $id){
 		${Schema.venue}
 	}	
 }`
 
-export const tournamentEntrants = `query TournamentEntrants($id: Int, $page: Int, $perPage: Int, $sortBy: String, $filter: EventEntrantPageQueryFilter){
+export const tournamentEntrants = `query TournamentEntrants($id: ID!, $page: Int, $perPage: Int, $sortBy: String, $filter: EventEntrantPageQueryFilter){
     tournament(id: $id){
         events{
             entrants(query: {
@@ -40,7 +40,7 @@ export const tournamentEntrants = `query TournamentEntrants($id: Int, $page: Int
     }
 }`
 
-export const tournamentAttendees = `query TournamentAttendees($id: Int, $page: Int, $perPage: Int, $sortBy: String, $filter: ParticipantPageFilter){
+export const tournamentAttendees = `query TournamentAttendees($id: ID!, $page: Int, $perPage: Int, $sortBy: String, $filter: ParticipantPageFilter){
     tournament(id: $id){
         participants(query: {
             page: $page,
@@ -57,7 +57,7 @@ export const tournamentAttendees = `query TournamentAttendees($id: Int, $page: I
     }  
 }`
 
-export const tournamentEvents = `query TournamentEvents($id: Int){
+export const tournamentEvents = `query TournamentEvents($id: ID!){
     tournament(id: $id){
         events:{
             ${Schema.event}
@@ -65,7 +65,7 @@ export const tournamentEvents = `query TournamentEvents($id: Int){
     }
 }`
 
-export const tournamentPhases = `query TournamentPhases($id: Int){
+export const tournamentPhases = `query TournamentPhases($id: ID!){
     tournament(id: $id){
         events{
             id
@@ -76,7 +76,7 @@ export const tournamentPhases = `query TournamentPhases($id: Int){
     }   
 }`
 
-export const tournamentPhaseGroups = `query TournamentPhaseGroups($id: Int){
+export const tournamentPhaseGroups = `query TournamentPhaseGroups($id: ID!){
     tournament(id: $id){
         events{
             phaseGroups{
@@ -87,7 +87,7 @@ export const tournamentPhaseGroups = `query TournamentPhaseGroups($id: Int){
 }`
 
 /** WARNING THIS DOES NOT WORK CURRENTLY DUE TO RECURSIVE LIMITATIONS, Use tournamentPhaseGroupIds instead **/
-export const tournamentSets = `query TournamentSets($id: Int){
+export const tournamentSets = `query TournamentSets($id: ID!){
     tournament(id: $id){
         events{
             phaseGroups{
@@ -99,7 +99,7 @@ export const tournamentSets = `query TournamentSets($id: Int){
     }   
 }`
 
-export const tournamentPhaseGroupIds = `query PhaseGroupIdQuery($id: Int){
+export const tournamentPhaseGroupIds = `query PhaseGroupIdQuery($id: ID!){
     tournament(id: $id){
         events{
             id

@@ -1,5 +1,8 @@
 /** Patch Notes **/
 
+/** 4.0.7 04/12/2019 **/
+* Uncommented Tournament aggregation queries, but included a warning message to divert users to Event in the instance of lowered usability.
+
 /** 4.0.6 04/10/2019 **/
 * Update all queries to enforce ID! schema data type
 

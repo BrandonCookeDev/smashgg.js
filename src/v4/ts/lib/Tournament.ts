@@ -182,11 +182,11 @@ export class Tournament implements ITournament.Tournament{
 		let phaseGroups: PhaseGroup[] = _.flatten(events.map(event => event.phaseGroups.map(group => PhaseGroup.parse(group))))
 		return phaseGroups
 	}
-
-	/*
+	
 	async getSets(options: IGGSet.SetOptions = IGGSet.getDefaultSetOptions()) : Promise<GGSet[]> {
 		log.info('Getting Sets for Tournament [%s :: %s]', this.id, this.name)
 
+		log.warn('Puilling Sets for large or massive Tournaments may lead to long execution times and lowered usability. It is recommended to pull from Event if you are targetting a single event\'s Sets')
 		let pgs = await this.getPhaseGroups()
 		let sets = await NI.clusterQuery(pgs, 'getSets', options)
 		return _.flatten(sets)
@@ -195,6 +195,7 @@ export class Tournament implements ITournament.Tournament{
 	async getEntrants(options: IEntrant.EntrantOptions = IEntrant.getDefaultEntrantOptions()) : Promise<Entrant[]> {
 		log.info('Getting Entrants for Tournament [%s :: %s]', this.id, this.name)
 
+		log.warn('Puilling Entrants for large or massive Tournaments may lead to long execution times and lowered usability. It is recommended to pull from Event if you are targetting a single event\'s Entrants')
 		let pgs = await this.getPhaseGroups()
 		let entrants = await NI.clusterQuery(pgs, 'getEntrants', options)
 		return _.flatten(entrants)
@@ -203,11 +204,13 @@ export class Tournament implements ITournament.Tournament{
 	async getAttendees(options: IAttendee.AttendeeOptions = IAttendee.getDefaultAttendeeOptions()) : Promise<Attendee[]> {
 		log.info('Getting Attendees for Tournament [%s :: %s]', this.id, this.name)
 
+		log.warn('Puilling Attendees for large or massive Tournaments may lead to long execution times and lowered usability. It is recommended to pull from Event if you are targetting a single event\'s Attendees')
 		let pgs = await this.getPhaseGroups()
 		let attendees = await NI.clusterQuery(pgs, 'getAttendees', options)
 		return _.flatten(attendees)
 	}
 
+	/*
 	async getSets2(options: IGGSet.SetOptions = IGGSet.getDefaultSetOptions()) : Promise<GGSet[]> {
 		log.info('Getting Sets for Tournament [%s :: %s]', this.id, this.name)
 		let data: ITournament.TournamentSetData[] = await NI.paginatedQuery(

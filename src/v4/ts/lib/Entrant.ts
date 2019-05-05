@@ -37,6 +37,7 @@ export class Entrant implements IEntrant.Entrant{
 	static parseFull(data: IEntrant.Data) : Entrant{
 		return Entrant.parse(data.entrant)
 	}
+	
 
 	getId(): number{
 		return this.id

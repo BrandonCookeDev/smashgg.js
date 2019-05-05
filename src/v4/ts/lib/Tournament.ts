@@ -198,6 +198,7 @@ export class Tournament implements ITournament.Tournament{
 		log.warn('Puilling Entrants for large or massive Tournaments may lead to long execution times and lowered usability. It is recommended to pull from Event if you are targetting a single event\'s Entrants')
 		let pgs = await this.getPhaseGroups()
 		let entrants = await NI.clusterQuery(pgs, 'getEntrants', options)
+		entrants = _.uniq(entrants)
 		return _.flatten(entrants)
 	}
 
@@ -207,6 +208,7 @@ export class Tournament implements ITournament.Tournament{
 		log.warn('Puilling Attendees for large or massive Tournaments may lead to long execution times and lowered usability. It is recommended to pull from Event if you are targetting a single event\'s Attendees')
 		let pgs = await this.getPhaseGroups()
 		let attendees = await NI.clusterQuery(pgs, 'getAttendees', options)
+		attendees = _.uniqWith(attendees, (a1: Attendee, a2: Attendee) => Attendee.eq(a1, a2));
 		return _.flatten(attendees)
 	}
 

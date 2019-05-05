@@ -63,6 +63,12 @@ export class Attendee implements IAttendee.Attendee{
 		return this.parse(data.participant);
 	}
 
+	static eq(a1: Attendee, a2: Attendee){
+		return a1.gamerTag == a2.gamerTag && 
+				a1.prefix == a2.prefix && 
+				a1.playerId == a2.playerId;
+	}
+
 	getId(): number{
 		return this.id
 	}

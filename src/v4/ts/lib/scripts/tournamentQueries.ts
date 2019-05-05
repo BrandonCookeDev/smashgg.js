@@ -1,5 +1,5 @@
 import * as Schema from './schema'
-export const tournament = `query TournamentQuery($id:Int){
+export const tournament = `query TournamentQuery($id: ID!){
     tournament(id: $id){
         ${Schema.tournament}
     }

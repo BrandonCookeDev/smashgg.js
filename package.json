@@ -19,7 +19,7 @@
     "setupDebug": "node resources/scripts/setupDebug",
     "pretest": "tsc",
     "watch": "gulp watch",
-    "test": "./node_modules/.bin/mocha ./src/js/test",
+    "test": "./node_modules/.bin/mocha ./src/v4/js/test",
     "lint": "./node_modules/.bin/eslint .",
     "tsc": "tsc",
     "sandbox": "node ./sandbox/sandbox",

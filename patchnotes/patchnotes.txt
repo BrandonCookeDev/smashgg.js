@@ -1,5 +1,8 @@
 /** Patch Notes **/
 
+/** 4.0.9 05/30/2019 **/
+* Added an attendee search feature to the Tournament object
+
 /** 4.0.8 05/04/2019 **/
 * Fixed tournament queries to all reference new ID! type
 

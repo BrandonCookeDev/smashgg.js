@@ -311,6 +311,28 @@ describe('smashgg Tournament', function(){
 		expect(tournament3.getContactTwitter()).to.be.equal(testData.organizer3.twitter)
 	})
 
+	/*attendee search*/
+	it('should correctly search attendees and find a match', async function(){
+		const searched: Attendee[] | null = await tournament1.searchAttendees('GAwes');
+		expect(searched).to.not.be.null;
+		expect(searched!.length).to.be.greaterThan(0);
+		expect(searched![0].getGamerTag()).to.be.equal('GAwes');
+	})
+
+	it('should correctly search attendees and find no match', async function(){
+		const searched: Attendee[] | null = await tournament1.searchAttendees('GAwes2');
+		expect(searched).to.be.null;
+	})
+
+	it('should correctly search attendees and find multiple matches', async function(){
+		const searched: Attendee[] | null = await tournament1.searchAttendees('GA');
+		expect(searched).to.not.be.null;
+		expect(searched!.length).to.be.greaterThan(0);
+		expect(searched![0].getGamerTag()).to.be.equal('GAwes');
+		expect(searched![1].getGamerTag()).to.be.equal('Gas$');
+		expect(searched![2].getGamerTag()).to.be.equal('Gato');
+	})
+
 	/*
 	// sets
 	it('should return the correct list of Sets in the Tournament 1', async function(){

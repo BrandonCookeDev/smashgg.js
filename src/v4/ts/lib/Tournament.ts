@@ -212,6 +212,23 @@ export class Tournament implements ITournament.Tournament{
 		return _.flatten(attendees)
 	}
 
+	async searchAttendees(smashtag: string) : Promise<Attendee[] | null>{
+		log.info('Searching Tournament [%s :: %s] with smashtag: %s', this.id, this.name, smashtag);
+
+		const results = await NI.query(queries.tournamentAttendeeSearch, {id: this.id, smashtag: smashtag});
+
+		try{
+			const nodes: IAttendee.AttendeeData[] = results.tournament.participants.nodes;
+			if(nodes.length == 0)
+				return null;
+
+			const matchingAttendees: Attendee[] = nodes.map((element: IAttendee.AttendeeData) => Attendee.parse(element));
+			return matchingAttendees;
+		} catch {
+			return null; // bad parse, no attendee
+		}
+	}
+
 	/*
 	async getSets2(options: IGGSet.SetOptions = IGGSet.getDefaultSetOptions()) : Promise<GGSet[]> {
 		log.info('Getting Sets for Tournament [%s :: %s]', this.id, this.name)
@@ -309,6 +326,7 @@ export namespace ITournament{
 		getEvents() : Promise<Event[]>
 		getPhases() : Promise<Phase[]>
 		getPhaseGroups() : Promise<PhaseGroup[]>
+		searchAttendees(smashtag: string): Promise<Attendee[] | null>
 
 		/*
 		getSets(options: IGGSet.SetOptions) : Promise<GGSet[]>

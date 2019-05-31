@@ -246,6 +246,14 @@ Tournament(
             * numeric identifier of the tournament
     * returns Promise<Tournament>
 
+* **async searchAttendees(smashtag)**
+    * get a list of Attendees that contain the given smashtag in their gamertag
+    * parameters
+        * smashtag
+            * string
+            * the smashtag you are searching for, or a subsect of characters from it
+    * returns Promise<Attendee[] | null>
+
 ### Methods
 * **getId()** 
     * gets the id property of the tournament

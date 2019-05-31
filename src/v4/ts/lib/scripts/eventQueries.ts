@@ -98,3 +98,4 @@ export const eventAttendees2 = `query EventAttendees($id: ID!, $page: Int, $perP
         }
     }
 }`
+

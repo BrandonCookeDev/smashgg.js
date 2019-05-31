@@ -57,6 +57,26 @@ export const tournamentAttendees = `query TournamentAttendees($id: ID!, $page: I
     }  
 }`
 
+export const tournamentAttendeeSearch = `query SearchTournamentAttendeesQuery($id:ID!, $smashtag:String){
+    tournament(id:$id){
+      participants(query:{
+        page: 1,
+        perPage: 50,
+        sortBy: "asc",
+        filter:{
+          search:{
+            fieldsToSearch:["gamerTag"],
+            searchString: $smashtag
+          }
+        }
+      }, isAdmin:false){
+        nodes{
+          ${Schema.attendee}
+        }
+      }
+    }
+  }`
+
 export const tournamentEvents = `query TournamentEvents($id: ID!){
     tournament(id: $id){
         events:{

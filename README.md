@@ -251,8 +251,16 @@ Tournament(
     * parameters
         * smashtag
             * string
-            * the smashtag you are searching for, or a subsect of characters from it
-    * returns Promise<Attendee[] | null>
+            * the smashtag you are searching for, or a subset of characters from it
+    * returns a Promise resolving a List of [Attendee](#attendee) objects, or null if no match
+
+* **async searchAttendeesBySponsorTag(sponsorTag)**
+    * get a list of Attendees that contain the given sponsor tag in their profile
+    * parameters
+        * sponsorTag
+            * string
+            * the sponsor tag you are searching for, or a subset of characters from it
+    * returns a Promise resolving a List of [Attendee](#attendee) objects, or null if no match
 
 ### Methods
 * **getId()** 

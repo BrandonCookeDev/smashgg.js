@@ -232,7 +232,7 @@ export class Tournament implements ITournament.Tournament{
 	async searchAttendeesBySponsorTag(sponsorTag: string) : Promise<Attendee[] | null>{
 		log.info('Searching Tournament [%s :: %s] with smashtag: %s', this.id, this.name, sponsorTag);
 
-		const results = await NI.query(queries.tournamentAttendeeSearchByPrefix, {id: this.id, sponsor: sponsorTag});
+		const results = await NI.query(queries.tournamentAttendeeSearchByPrefix, {id: this.id, sponsor: sponsorTag.toLowerCase()});
 
 		try{
 			const nodes: IAttendee.AttendeeData[] = results.tournament.participants.nodes;

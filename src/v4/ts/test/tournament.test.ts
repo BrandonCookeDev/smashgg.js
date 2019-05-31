@@ -333,12 +333,33 @@ describe('smashgg Tournament', function(){
 		expect(searched![2].getGamerTag()).to.be.equal('Gato');
 	})
 
-	it('should correctly search attendees by prefix and find a match', async function(){
-		const searched: Attendee[] | null = await tournament1.searchAttendeesBySponsorTag('SS');
+	it('should correctly search attendees by prefix and find no match', async function(){
+		const searched: Attendee[] | null = await tournament1.searchAttendeesBySponsorTag('faketaglol');
+		expect(searched).to.be.null;
+	})
+
+	it('should lower case an upper case prefix on sponsor tag search', async function(){
+		const searched: Attendee[] | null = await tournament1.searchAttendeesBySponsorTag('rcs');
 		expect(searched).to.not.be.null;
 		expect(searched!.length).to.be.greaterThan(0);
-		expect(searched![0].getGamerTag()).to.be.equal('Colbol');
+		expect(searched![0].getGamerTag()).to.be.equal('KPAN');
+	})
+
+	it('should correctly search attendees by prefix and find a match', async function(){
+		const searched: Attendee[] | null = await tournament1.searchAttendeesBySponsorTag('rcs');
+		expect(searched).to.not.be.null;
+		expect(searched!.length).to.be.greaterThan(0);
+		expect(searched![0].getGamerTag()).to.be.equal('KPAN');
+	})
+
+	it('should correctly search attendees by prefix and find more than one match', async function(){
+		const searched: Attendee[] | null = await tournament1.searchAttendeesBySponsorTag('ss');
+		expect(searched).to.not.be.null;
+		expect(searched!.length).to.be.greaterThan(0);
+		expect(searched![0].getGamerTag()).to.be.equal('FullMetal')
 		expect(searched![1].getGamerTag()).to.be.equal('Stango');
+		expect(searched![2].getGamerTag()).to.be.equal('Colbol');
+		expect(searched![3].getGamerTag()).to.be.equal('Flow');
 	})
 
 	/*

@@ -1,6 +1,6 @@
 /** Patch Notes **/
 
-/** 4.0.11 05/31/2019 **/
+/** 4.0.12 05/31/2019 **/
 * Added an attendee search by sponsor tag to the Tournament object
 
 /** 4.0.10 05/30/2019 **/

@@ -77,6 +77,26 @@ export const tournamentAttendeeSearch = `query SearchTournamentAttendeesQuery($i
     }
   }`
 
+  export const tournamentAttendeeSearchByPrefix = `query SearchTournamentAttendeesBySponsorQuery($id:ID!, $sponsor:String){
+    tournament(id:$id){
+      participants(query:{
+        page: 1,
+        perPage: 50,
+        sortBy: "asc",
+        filter:{
+          search:{
+            fieldsToSearch:["prefix"],
+            searchString: $sponsor
+          }
+        }
+      }, isAdmin:false){
+        nodes{
+          ${Schema.attendee}
+        }
+      }
+    }
+  }`
+
 export const tournamentEvents = `query TournamentEvents($id: ID!){
     tournament(id: $id){
         events:{

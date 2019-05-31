@@ -229,6 +229,23 @@ export class Tournament implements ITournament.Tournament{
 		}
 	}
 
+	async searchAttendeesBySponsorTag(sponsorTag: string) : Promise<Attendee[] | null>{
+		log.info('Searching Tournament [%s :: %s] with smashtag: %s', this.id, this.name, sponsorTag);
+
+		const results = await NI.query(queries.tournamentAttendeeSearchByPrefix, {id: this.id, sponsor: sponsorTag});
+
+		try{
+			const nodes: IAttendee.AttendeeData[] = results.tournament.participants.nodes;
+			if(nodes.length == 0)
+				return null;
+
+			const matchingAttendees: Attendee[] = nodes.map((element: IAttendee.AttendeeData) => Attendee.parse(element));
+			return matchingAttendees;
+		} catch {
+			return null; // bad parse, no attendee
+		}
+	}
+
 	/*
 	async getSets2(options: IGGSet.SetOptions = IGGSet.getDefaultSetOptions()) : Promise<GGSet[]> {
 		log.info('Getting Sets for Tournament [%s :: %s]', this.id, this.name)

@@ -333,6 +333,14 @@ describe('smashgg Tournament', function(){
 		expect(searched![2].getGamerTag()).to.be.equal('Gato');
 	})
 
+	it('should correctly search attendees by prefix and find a match', async function(){
+		const searched: Attendee[] | null = await tournament1.searchAttendeesBySponsorTag('SS');
+		expect(searched).to.not.be.null;
+		expect(searched!.length).to.be.greaterThan(0);
+		expect(searched![0].getGamerTag()).to.be.equal('Colbol');
+		expect(searched![1].getGamerTag()).to.be.equal('Stango');
+	})
+
 	/*
 	// sets
 	it('should return the correct list of Sets in the Tournament 1', async function(){

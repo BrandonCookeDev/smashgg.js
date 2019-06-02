@@ -1,6 +1,6 @@
 /** Patch Notes **/
 
-/** 4.0.18 06/02/2019 **/
+/** 4.0.19 06/02/2019 **/
 * Fixed a bug where User object never is fetchable
 * Added two functions to the Attendee class that allow for fetching of list of Phase or PhaseGroups that the Attendee has entered 
 

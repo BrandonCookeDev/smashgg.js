@@ -185,7 +185,7 @@ export class Attendee implements IAttendee.Attendee{
 		Log.info('Getting Phase Groups that Attendee %s (Participant %s) entered', this.gamerTag, this.id)
 		const data: IAttendee.AttendeeWithPhaseGroupsData = await NI.query(queries.getAttendeePhaseGroups, {id: this.id})
 		const seedData = _.flatten(data.participant.entrants.map(entrant => entrant.seeds))
-		const groupData: IPhaseGroup.PhaseGroupData[] = _.flatten(seedData.map(seed => seed.phase))
+		const groupData: IPhaseGroup.PhaseGroupData[] = _.flatten(seedData.map(seed => seed.phaseGroup))
 		const groups: PhaseGroup[] = groupData.map(data => PhaseGroup.parse(data))
 		return groups;
 	}
@@ -267,7 +267,7 @@ export namespace IAttendee{
 			entrants: {
 				seeds : {
 					id: string
-					phase: IPhaseGroup.PhaseGroupData[]
+					phaseGroup: IPhaseGroup.PhaseGroupData[]
 				}[]
 			}[]
 		}

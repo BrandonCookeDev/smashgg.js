@@ -183,7 +183,7 @@ export class Attendee implements IAttendee.Attendee{
 
 	async getEnteredPhaseGroups() : Promise<PhaseGroup[]> {
 		Log.info('Getting Phase Groups that Attendee %s (Participant %s) entered', this.gamerTag, this.id)
-		const data: IAttendee.AttendeeWithPhaseGroupsData = await NI.query(queries.getAttendeePhases, {id: this.id})
+		const data: IAttendee.AttendeeWithPhaseGroupsData = await NI.query(queries.getAttendeePhaseGroups, {id: this.id})
 		const seedData = _.flatten(data.participant.entrants.map(entrant => entrant.seeds))
 		const groupData: IPhaseGroup.PhaseGroupData[] = _.flatten(seedData.map(seed => seed.phase))
 		const groups: PhaseGroup[] = groupData.map(data => PhaseGroup.parse(data))

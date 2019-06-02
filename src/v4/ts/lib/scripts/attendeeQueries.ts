@@ -13,7 +13,7 @@ export const getAttendeePhases = `query AttendeePhasesQuery($id: ID!){
     }
 }`
 
-export const getAttendeePhaseGroups = `query AttendeePhasesQuery($id: ID!){
+export const getAttendeePhaseGroups = `query AttendeePhaseGroupsQuery($id: ID!){
     participant(id: $id){
         entrants {
             seeds {

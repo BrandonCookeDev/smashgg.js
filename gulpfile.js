@@ -102,7 +102,7 @@ function watch(){
 
 function publish(cb){
 	exec('npm publish', (err, stdout, stderr) => {
-		console.out(stdout)
+		console.log(stdout)
 		console.error(stderr)
 		cb(err)
 	})

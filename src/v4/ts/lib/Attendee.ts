@@ -168,12 +168,12 @@ export class Attendee implements IAttendee.Attendee{
 	*/
 
 	async getUserAccount() : Promise<User> {
-		Log.info('Getting User account that Attendee %s (Participant %s) entered', this.gamerTag, this.playerId!)
+		Log.info('Getting User account that Attendee %s (Participant %s) entered', this.gamerTag, this.id!)
 		return await User.getById(this.playerId!)
 	}
 
 	async getEnteredPhases() : Promise<Phase[]> {
-		Log.info('Getting Phases that Attendee %s (Participant %s) entered', this.gamerTag, this.playerId)
+		Log.info('Getting Phases that Attendee %s (Participant %s) entered', this.gamerTag, this.id)
 		const data: IAttendee.AttendeeWithPhasesData = await NI.query(queries.getAttendeePhases, {id: this.id})
 		const seedData = _.flatten(data.participant.entrants.map(entrant => entrant.seeds))
 		const phaseData: IPhase.PhaseData[] = _.flatten(seedData.map(seed => seed.phase))
@@ -182,7 +182,7 @@ export class Attendee implements IAttendee.Attendee{
 	}
 
 	async getEnteredPhaseGroups() : Promise<PhaseGroup[]> {
-		Log.info('Getting Phases that Attendee %s (Participant %s) entered', this.gamerTag, this.playerId)
+		Log.info('Getting Phase Groups that Attendee %s (Participant %s) entered', this.gamerTag, this.id)
 		const data: IAttendee.AttendeeWithPhaseGroupsData = await NI.query(queries.getAttendeePhases, {id: this.id})
 		const seedData = _.flatten(data.participant.entrants.map(entrant => entrant.seeds))
 		const groupData: IPhaseGroup.PhaseGroupData[] = _.flatten(seedData.map(seed => seed.phase))

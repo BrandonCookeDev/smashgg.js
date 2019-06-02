@@ -54,6 +54,7 @@ export default class NetworkInterface{
 	 */
 	static query(query: string, variables: Variables) : Promise<any>{
 		return new Promise(function(resolve, reject){
+			log.queries("Query: " + query + ":\n" + variables);
 			QueryQueue.getInstance().add(() => {
 				return NetworkInterface.client.request(query, variables)
 						.then(resolve)
@@ -63,6 +64,7 @@ export default class NetworkInterface{
 	}
 
 	static rawQuery(query: string, variables: Variables) : Promise<any>{
+		log.queries("Raw Query: " + query + ":\n" + variables);
 		return new Promise(function(resolve, reject){
 			QueryQueue.getInstance().add(() => {
 				return NetworkInterface.client.rawRequest(query, variables)
@@ -97,6 +99,7 @@ export default class NetworkInterface{
 
 	static async paginatedQuery(operationName: string, queryString: string, params: object, options?: IPaginatedQuery.Options, additionalParams?: {}, complexitySubtraction: number = 0) : Promise<any[]>{
 		log.info('%s: Calling Paginated Querys', operationName);
+		log.queries("Paginated Query: " + queryString + ":\n" + params);
 
 		let results = [];
 

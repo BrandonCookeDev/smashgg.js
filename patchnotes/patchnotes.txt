@@ -1,5 +1,9 @@
 /** Patch Notes **/
 
+/** 4.0.13 06/02/2019 **/
+* Fixed a bug where User object never is fetchable
+* Added two functions to the Attendee class that allow for fetching of list of Phase or PhaseGroups that the Attendee has entered 
+
 /** 4.0.12 05/31/2019 **/
 * Added an attendee search by sponsor tag to the Tournament object
 

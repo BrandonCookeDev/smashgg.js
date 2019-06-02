@@ -1072,6 +1072,15 @@ Attendee(
 * **getConnectedAccounts()**
     * get a list of connected accounts to this Attendee
     * returns object | null
+* **async getUserAccount()**
+    * get the corresponding smash.gg [User](#user) object associated with this Attendee
+    * returns Promise resolving [User](#user)
+* **async getEnteredPhases()**
+    * get list of Phases that this Attendee entered
+    * returns Promise resolving a list of [Phase](#phase) objects
+* **async getEnteredPhaseGroups()**
+    * get list of Phase Groups that this Attendee entered
+    * returns Promise resolving a list of [PhaseGroup](#phasegroup) objects
 
 ### AttendeeOptions
 ```js

@@ -5,11 +5,7 @@
     "email": "brandoncookedev@gmail.com",
     "url": "http://linkedin.com/in/BrandonCookeDev"
   },
-<<<<<<< HEAD
-  "version": "4.1.0",
-=======
   "version": "4.0.19",
->>>>>>> de14b38cdac89a9e2aafe013f548910a403f9519
   "description": "Node.JS wrapper for the Smash.gg public API Edit",
   "main": "index.js",
   "engines": {

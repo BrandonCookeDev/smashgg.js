@@ -1,6 +1,11 @@
 /** aka Participant **/
-import {User} from './User' // TODO change to internal later
+import _ from 'lodash'
 import Log from './util/Logger'
+import {User} from './User' // TODO change to internal later
+import { IPhase, Phase } from './Phase'
+import { IPhaseGroup, PhaseGroup } from './PhaseGroup'
+import * as queries from './scripts/attendeeQueries'
+import NI from './util/NetworkInterface'
 
 export class Attendee implements IAttendee.Attendee{
 	id: number
@@ -163,8 +168,26 @@ export class Attendee implements IAttendee.Attendee{
 	*/
 
 	async getUserAccount() : Promise<User> {
-		Log.info('Getting User account that Attendee %s (Participant %s) entered', this.gamerTag, this.playerId!);
-		return await User.getById(this.playerId!);
+		Log.info('Getting User account that Attendee %s (Participant %s) entered', this.gamerTag, this.id!)
+		return await User.getById(this.playerId!)
+	}
+
+	async getEnteredPhases() : Promise<Phase[]> {
+		Log.info('Getting Phases that Attendee %s (Participant %s) entered', this.gamerTag, this.id)
+		const data: IAttendee.AttendeeWithPhasesData = await NI.query(queries.getAttendeePhases, {id: this.id})
+		const seedData = _.flatten(data.participant.entrants.map(entrant => entrant.seeds))
+		const phaseData: IPhase.PhaseData[] = _.flatten(seedData.map(seed => seed.phase))
+		const phases: Phase[] = phaseData.map(data => Phase.parse(data))
+		return phases;
+	}
+
+	async getEnteredPhaseGroups() : Promise<PhaseGroup[]> {
+		Log.info('Getting Phase Groups that Attendee %s (Participant %s) entered', this.gamerTag, this.id)
+		const data: IAttendee.AttendeeWithPhaseGroupsData = await NI.query(queries.getAttendeePhaseGroups, {id: this.id})
+		const seedData = _.flatten(data.participant.entrants.map(entrant => entrant.seeds))
+		const groupData: IPhaseGroup.PhaseGroupData[] = _.flatten(seedData.map(seed => seed.phaseGroup))
+		const groups: PhaseGroup[] = groupData.map(data => PhaseGroup.parse(data))
+		return groups;
 	}
 }
 
@@ -203,6 +226,8 @@ export namespace IAttendee{
 
 		//getEvents() : Promise<Event[]>
 		getUserAccount() : Promise<User>
+		getEnteredPhases() : Promise<Phase[]>
+		getEnteredPhaseGroups() : Promise<PhaseGroup[]>
 
 	}
 
@@ -226,9 +251,29 @@ export namespace IAttendee{
 		}[]
 	}
 
-	export interface ConnectedAccount{
+	export interface AttendeeWithPhasesData{
+		participant:{
+			entrants: {
+				seeds : {
+					id: string
+					phase: IPhase.PhaseData[]
+				}[]
+			}[]
+		}
+	} 
 
+	export interface AttendeeWithPhaseGroupsData{
+		participant:{
+			entrants: {
+				seeds : {
+					id: string
+					phaseGroup: IPhaseGroup.PhaseGroupData[]
+				}[]
+			}[]
+		}
 	}
+
+	export interface ConnectedAccount{ }
 
 	export interface ContactInfo{
 		id: string | null,

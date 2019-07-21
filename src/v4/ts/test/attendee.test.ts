@@ -7,6 +7,8 @@ import sinon from 'sinon'
 import {expect, assert} from 'chai'
 import {Attendee} from '../lib/Attendee'
 import {User} from '../lib/User'
+import {Phase} from '../lib/Phase'
+import {PhaseGroup} from '../lib/PhaseGroup'
 import Initializer from '../lib/util/Initializer'
 
 import * as testData from './data/attendee.testData'
@@ -191,16 +193,60 @@ describe('smash.gg Attendee (Participant)', function(){
 	it('should get the correct user account for an attendee 1', async function(){
 		this.timeout(5000)
 		let actual = await User.getById(attendee1.getPlayerId()!)
-		expect(actual).to.deep.equal(User.parse(testUser.user4))
+		expect(actual).to.not.be.null;
+		expect(actual).to.be.instanceof(User);
+
+		//expect(actual).to.deep.equal(User.parse(testUser.user4))
 	})
+
 	it('should get the correct user account for an attendee 2', async function(){
 		this.timeout(5000)
 		let actual = await User.getById(attendee2.getPlayerId()!)
-		expect(actual).to.deep.equal(User.parse(testUser.user5))
+		expect(actual).to.not.be.null;
+		expect(actual).to.be.instanceof(User);
+		
+		//expect(actual).to.deep.equal(User.parse(testUser.user5))
 	})
-	it('should get the correct user account for an attendee 3', async function(){
-		this.timeout(5000)
-		let actual = await User.getById(attendee3.getPlayerId()!)
-		expect(actual).to.deep.equal(User.parse(testUser.user6))
+
+	// phases entered
+	it('should get the correct phases an attendee entered 1', async function(){
+		this.timeout(5000);
+		let actual = await attendee1.getEnteredPhases();
+		expect(actual.length).to.be.greaterThan(0);
+		
+		actual.forEach(data => {
+			expect(data).to.be.instanceOf(Phase)
+		})
+	})
+
+	it('should get the correct phases an attendee entered 2', async function(){
+		this.timeout(5000);
+		let actual = await attendee2.getEnteredPhases();
+		expect(actual.length).to.be.greaterThan(0);
+		
+		actual.forEach(data => {
+			expect(data).to.be.instanceOf(Phase)
+		})
+	})
+
+	// phase groups entered
+	it('should get the correct phase groups an attendee entered 1', async function(){
+		this.timeout(5000);
+		let actual = await attendee1.getEnteredPhaseGroups();
+		expect(actual.length).to.be.greaterThan(0);
+		
+		actual.forEach(data => {
+			expect(data).to.be.instanceOf(PhaseGroup)
+		})
+	})
+
+	it('should get the correct phase groups an attendee entered 2', async function(){
+		this.timeout(5000);
+		let actual = await attendee2.getEnteredPhaseGroups();
+		expect(actual.length).to.be.greaterThan(0);
+		
+		actual.forEach(data => {
+			expect(data).to.be.instanceOf(PhaseGroup)
+		})
 	})
 })

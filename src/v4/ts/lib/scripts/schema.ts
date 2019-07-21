@@ -15,7 +15,6 @@ lng
 timezone
 startAt
 endAt
-contactInfo
 contactEmail
 contactTwitter
 contactPhone

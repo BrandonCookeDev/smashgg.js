@@ -15,28 +15,14 @@ const phaseGroupSlugRegex = new RegExp(/(http|https):\/\/api.smash.gg\/tournamen
 
     let e = await Event.get('tipped-off-12-presented-by-the-lab-gaming-center', 'melee-singles')
     let standings = await e.getStandings();
-    console.log(e);
+    //console.log(standings)
 
-        /*
-    Tournament.get('infinity-stage-san-jose').then(tournament => {
-        tournament.getAttendees({
-            page: 2
-        }).then(attendees => {
-            console.log('Length with page defined: %d', attendees.length)
-            return tournament.getAttendees()
-        }).then(attendees => console.log('Length without page defined: %d', attendees.length))
-        
+    console.log('Standings for %s at Tipped Off 12', e.getName().green);
+    standings.forEach(result => {
+        console.log("%s: %d", result.getGamerTag().magenta, result.getPlacement())
     })
-        tournament.getAttendees().then(attendees => {
-                console.log(attendees);
-            }).catch(err => {
-                console.log(err);
-            });
-        }).catch(err => {
-            console.log(err);
-        });
-        */
-    return true;
+
+    return true
 })()
 
 function parseTournamentSlug(slug){

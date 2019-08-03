@@ -145,14 +145,6 @@ export class Event extends EventEmitter implements IEvent.Event{
 	}
 
 	// aggregation
-	async getStandings(options: IStandings.StandingsOptions = IStandings.getDefaultOptions()): Promise<Standings[]> {
-		log.info('Getting Standings for Event [%s :: %s]', this.id, this.name);
-		let data: IEvent.EventStandings[] = await NI.query(queries.eventStandings, {id: this.id})
-		let events = _.flatten(data.map(d => d.event))
-		let standings: IStandings.Standings[] = _.flatten(_.flatten(events.map(event => event.standings.nodes.map(standingData => Standings.parse(standingData)))));
-		return standings
-	}
-
 	async getPhases() : Promise<Phase[]> {
 		log.info('Getting Phases for Event [%s :: %s]', this.id, this.name);
 		let data: IEvent.EventPhaseData = await NI.query(queries.eventPhases, {id: this.id});
@@ -163,6 +155,23 @@ export class Event extends EventEmitter implements IEvent.Event{
 		log.info('Getting Phase Groups for Event [%s :: %s]', this.id, this.name)
 		let data: IEvent.EventPhaseGroupData = await NI.query(queries.eventPhaseGroups, {id: this.id})
 		return data.event.phaseGroups.map(phaseGroupData => PhaseGroup.parse(phaseGroupData))
+	}
+
+	async getStandings(options: IStandings.StandingsOptions = IStandings.getDefaultOptions()): Promise<Standings[]> {
+		log.info('Getting Standings for Event [%s :: %s]', this.id, this.name);
+		
+		let data: IEvent.EventStandings[] = await NI.paginatedQuery(
+			`Event Standings: [${this.id} :: ${this.name}]`, queries.eventStandings,
+			{id: this.id}, options, {}, 3)
+
+		let events = _.flatten(data.map(d => d.event))
+		let standings: IStandings.Standings[] = _.flatten(
+			_.flatten(
+				events.map(event => event.standings.nodes.map(standingData => Standings.parse(standingData)))
+			)
+		);
+		_.sortBy(standings, 'placement')
+		return standings
 	}
 
 	async getEntrants(options: IEntrant.EntrantOptions = IEntrant.getDefaultEntrantOptions()) : Promise<Entrant[]> {

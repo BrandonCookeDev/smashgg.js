@@ -173,12 +173,13 @@ export default class NetworkInterface{
 			log.info('%s: Collected %s/%s pages', operationName, i, totalPages)
 			queryOptions = Object.assign({
 				page: i,
-				perPage: perPage,
+				// TODO fix perPage
+				//perPage: perPage.toFixed(0),
 				filters: filters,
 				pageInfo: ''
-			}, additionalParams);
+			}, additionalParams, params);
 			query = mergeQuery(queryString, queryOptions)
-			results.push(await NetworkInterface.query(query, params))
+			results.push(await NetworkInterface.query(query, queryOptions))
 		}
 
 		return results;

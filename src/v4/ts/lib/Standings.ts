@@ -25,6 +25,24 @@ export class Standings implements IStandings.Standings{
             Entrant.parse(data.entrant)
         )
     }
+
+    public getId(): number | null {
+        return this.id
+    }
+
+    public getPlacement(): number | null {
+        return this.placement
+    }
+
+    public getEntrant(): IEntrant.Entrant | null {
+        return this.entrant
+    }
+
+    public getGamerTag(): String | null {
+        if(this.entrant)
+            return this.entrant.getAttendee().getGamerTag()
+        return null
+    }
 }
 
 export class StandingsStats implements IStandings.Stats{
@@ -39,7 +57,12 @@ export namespace IStandings{
     export interface Standings{
         id: number | null,
         placement: number | null,
-        entrant: Entrant
+        entrant: Entrant,
+
+        getId(): number | null,
+        getPlacement(): number | null,
+        getEntrant(): IEntrant.Entrant | null,
+        getGamerTag(): String | null
     }
 
     export interface StandingsData{

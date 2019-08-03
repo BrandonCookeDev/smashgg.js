@@ -235,6 +235,13 @@ export namespace IAttendee{
 		"participant": AttendeeData
 	}
 
+	export interface PaginatedData{
+		nodes: AttendeeData[],
+		pageInfo?: {
+			totalPages: number
+		}
+	}
+
 	export interface AttendeeData{
 		id: number
 		gamerTag: string,
@@ -311,7 +318,7 @@ export namespace IAttendee{
 	export function getDefaultAttendeeOptions() : AttendeeOptions{
 		return {
 			areSeedsPublished: true,
-			page: 1,
+			page: null,
 			perPage: 1,
 			sortBy: null,
 			filter: null

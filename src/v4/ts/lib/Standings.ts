@@ -1,22 +1,29 @@
 
-import {Entrant} from './Entrant'
+import {Entrant, IEntrant} from './Entrant'
 import {User} from './User'
 import NI from './util/NetworkInterface'
 
 export class Standings implements IStandings.Standings{
     id: number | null
     placement: number | null
-    entrantId: number | null
+    entrant: Entrant
     
     constructor(
         id: number | null, 
         placement: number | null, 
-        entrantId: number | null,
-        userIds: number[] | null
+        entrant: Entrant
     ){
         this.id = id
         this.placement = placement
-        this.entrantId = entrantId
+        this.entrant = entrant
+    }
+
+    public static parse(data: IStandings.StandingsData){
+        return new Standings(
+            data.id,
+            data.placement,
+            Entrant.parse(data.entrant)
+        )
     }
 }
 
@@ -32,7 +39,13 @@ export namespace IStandings{
     export interface Standings{
         id: number | null,
         placement: number | null,
-        entrantId: number | null
+        entrant: Entrant
+    }
+
+    export interface StandingsData{
+        id: number | null,
+        placement: number | null,
+        entrant: IEntrant.EntrantData
     }
 
     export interface Stats{
@@ -60,5 +73,14 @@ export namespace IStandings{
 				searchString: string
 			}
 		}
+    }
+
+    export function getDefaultOptions(){
+        return {
+            perPage: 1,
+            page: null,
+            sortBy: null,
+            filter: null
+        }
     }
 }

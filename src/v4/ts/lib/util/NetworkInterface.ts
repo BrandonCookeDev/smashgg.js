@@ -104,6 +104,7 @@ export default class NetworkInterface{
 		let results = [];
 
 		// parse options
+		let isSinglePage = options != undefined && options.page;
 		let page = options != undefined && options.page ? options.page : 1
 		let perPage = options != undefined && options.perPage ? options.perPage : null
 		let filters = options != undefined && options.filters  ? options.filters : null
@@ -118,6 +119,14 @@ export default class NetworkInterface{
 			pageInfo: 'pageInfo{\ntotalPages\n}'
 		}
 		queryOptions = Object.assign(queryOptions, additionalParams)
+
+		// if the option for a single page is requested, return a standard query. dont paginate
+		if(isSinglePage){
+			params = Object.assign(params, queryOptions)
+			let query = mergeQuery(queryString, queryOptions)
+			return [await NetworkInterface.query(query, params)]
+		}
+
 		let preflightQuery = mergeQuery(queryString, queryOptions)
 		let preflightData = [await NetworkInterface.rawQuery(preflightQuery, params)] as any[];
 		if(preflightData.length <= 0)
@@ -159,6 +168,7 @@ export default class NetworkInterface{
 		*/
 			
 		// after, leave off the total page count to minimize complexity
+		
 		for(let i = 1; i<=totalPages; i++){
 			log.info('%s: Collected %s/%s pages', operationName, i, totalPages)
 			queryOptions = Object.assign({

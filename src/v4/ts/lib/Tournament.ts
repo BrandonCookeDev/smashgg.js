@@ -202,10 +202,14 @@ export class Tournament implements ITournament.Tournament{
 		return _.flatten(entrants)
 	}
 
-	async getAttendees(options: IAttendee.AttendeeOptions = IAttendee.getDefaultAttendeeOptions()) : Promise<Attendee[]> {
+	async getAttendees2(options: IAttendee.AttendeeOptions = IAttendee.getDefaultAttendeeOptions()) : Promise<Attendee[]> {
 		log.info('Getting Attendees for Tournament [%s :: %s]', this.id, this.name)
 
 		log.warn('Puilling Attendees for large or massive Tournaments may lead to long execution times and lowered usability. It is recommended to pull from Event if you are targetting a single event\'s Attendees')
+		
+		if(options.page != null)
+			return await this.getAttendees(options);
+		
 		let pgs = await this.getPhaseGroups()
 		let attendees = await NI.clusterQuery(pgs, 'getAttendees', options)
 		attendees = _.uniqWith(attendees, (a1: Attendee, a2: Attendee) => Attendee.eq(a1, a2));
@@ -292,20 +296,22 @@ export class Tournament implements ITournament.Tournament{
 		let entrants: Entrant[] = entrantData.map(entrant => Entrant.parse(entrant))
 		return entrants
 	}
+	*/
 
-	async getAttendees2(options: IAttendee.AttendeeOptions = IAttendee.getDefaultAttendeeOptions()) : Promise<Attendee[]> {
-		log.info('Getting Attendees for Tournament [%s :: %s]', this.id, this.name)
+	async getAttendees(options: IAttendee.AttendeeOptions = IAttendee.getDefaultAttendeeOptions()) : Promise<Attendee[]> {
+		//log.info('Getting Attendees for Tournament [%s :: %s]', this.id, this.name)
 		let data: ITournament.TournamentAttendeeData[] = await NI.paginatedQuery(
 			`Tournament Attendee [${this.id} :: ${this.name}]`,
 			queries.tournamentAttendees, {id: this.id},
 			options, {}, 3
 		)
+		
 		let tournaments = _.flatten(data.map(d => d.tournament))
-		let attendeeData: IAttendee.AttendeeData[] = _.flatten(tournaments.map(tournament => tournament.participants))
-		let attendees: Attendee[] = attendeeData.map(attendee => Attendee.parse(attendee))
+		let attendeeData: IAttendee.PaginatedData[] = _.flatten(tournaments.map(tournament => tournament.participants))
+		let attendees: Attendee[] = _.flatten(attendeeData.map(data => data.nodes.map(attendee => Attendee.parse(attendee))))
 		return attendees;
 	}
-	*/
+	
 	
 }
 
@@ -409,7 +415,7 @@ export namespace ITournament{
 
 	export interface TournamentAttendeeData{
 		tournament: {
-			participants: IAttendee.AttendeeData[]
+			participants: IAttendee.PaginatedData[]
 		}
 	}
 

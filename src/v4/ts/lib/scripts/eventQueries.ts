@@ -99,3 +99,22 @@ export const eventAttendees2 = `query EventAttendees($id: ID!, $page: Int, $perP
     }
 }`
 
+export const eventStandings = `
+query StandingsQuery($id:ID!, $page:Int, $perPage:Int, $sortBy:String, $filter:StandingPageFilter){
+    event(id:$id){
+      standings(query:{
+        page: $page,
+        perPage: $perPage,
+        sortBy: $sortBy,
+        filter: $filter
+      }){
+        nodes{
+          placement
+          entrant{
+            ${Schema.entrant}
+          }
+        }
+      }
+    }
+  }
+`

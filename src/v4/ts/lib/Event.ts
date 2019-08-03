@@ -8,7 +8,8 @@ import {Phase, IPhase} from './Phase'
 import {PhaseGroup, IPhaseGroup} from './PhaseGroup'
 import {GGSet, IGGSet} from './GGSet'
 import {Entrant, IEntrant} from './Entrant'
-import {Attendee, IAttendee} from './Attendee';
+import {Attendee, IAttendee} from './Attendee'
+import {Standings, IStandings} from './Standings'
 
 import NI from './util/NetworkInterface'
 import * as queries from './scripts/eventQueries'
@@ -82,7 +83,9 @@ export class Event extends EventEmitter implements IEvent.Event{
 	static async get(tournamentSlug: string, eventSlug: string) : Promise<Event> {
 		log.info('Getting Event with tournament slug %s and event slug %s', tournamentSlug, eventSlug)
 		let slug = format('tournament/%s/event/%s', tournamentSlug, eventSlug);
-		return Event.getBySlug(slug);
+		
+		log.debug('formatted slug: %s', slug)
+		return Event.getBySlug(slug)
 	}
 
 	static async getById(id: number)  : Promise<Event> {
@@ -142,6 +145,14 @@ export class Event extends EventEmitter implements IEvent.Event{
 	}
 
 	// aggregation
+	async getStandings(options: IStandings.StandingsOptions = IStandings.getDefaultOptions()): Promise<Standings[]> {
+		log.info('Getting Standings for Event [%s :: %s]', this.id, this.name);
+		let data: IEvent.EventStandings[] = await NI.query(queries.eventStandings, {id: this.id})
+		let events = _.flatten(data.map(d => d.event))
+		let standings: IStandings.Standings[] = _.flatten(_.flatten(events.map(event => event.standings.nodes.map(standingData => Standings.parse(standingData)))));
+		return standings
+	}
+
 	async getPhases() : Promise<Phase[]> {
 		log.info('Getting Phases for Event [%s :: %s]', this.id, this.name);
 		let data: IEvent.EventPhaseData = await NI.query(queries.eventPhases, {id: this.id});
@@ -168,8 +179,10 @@ export class Event extends EventEmitter implements IEvent.Event{
 	async getAttendees(options: IAttendee.AttendeeOptions = IAttendee.getDefaultAttendeeOptions()) : Promise<Attendee[]> {
 		log.info('Getting Attendees for Event [%s :: %s]', this.id, this.name)
 
-		if(!options.areSeedsPublished)
+		if(!options.areSeedsPublished){
+			log.verbose('seeds are not published, getting attendees from pagination')
 			return this.getAttendees2(options)
+		}
 
 		let pgs: PhaseGroup[] = await this.getPhaseGroups();
 		let attendees: Attendee[] = await NI.clusterQuery(pgs, "getAttendees", options);
@@ -357,6 +370,17 @@ export namespace IEvent{
 						totalPages: number
 					},
 					nodes: IGGSet.SetData[]
+				}
+			}
+		}
+	}
+
+	export interface EventStandings{
+		event: {
+			standings: {
+				nodes: IStandings.StandingsData[],
+				pageInfo?:{
+					totalPages: number
 				}
 			}
 		}

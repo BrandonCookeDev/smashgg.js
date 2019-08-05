@@ -46,22 +46,38 @@ const PG_4_DATE = moment.unix(PG_4_START_AT)
 const PG_1_SEED_COUNT = 13
 const PG_1_ENTRANT_COUNT = 13
 const PG_1_ATTENDEE_COUNT = 13
-const PG_1_SET_COUNT = 28
+const PG_1_SET_COUNT = 26
+const PG_1_DQ_FILTERED_SET_COUNT = 26
+const PG_1_RESET_FILTERED_SET_COUNT = 26
+const PG_1_COMPLETED_SET_COUNT = 26
+const PG_1_INCOMPLETE_SET_COUNT = 0
 
-const PG_2_SEED_COUNT =6
+const PG_2_SEED_COUNT = 6
 const PG_2_ENTRANT_COUNT = 6
 const PG_2_ATTENDEE_COUNT = 12
 const PG_2_SET_COUNT = 7
+const PG_2_DQ_FILTERED_SET_COUNT = 7
+//const PG_2_RESET_FILTERED_SET_COUNT = 
+//const PG_2_COMPLETED_SET_COUNT = 
+//const PG_2_INCOMPLETE_SET_COUNT = 
 
-const PG_3_SEED_COUNT =23
+const PG_3_SEED_COUNT = 23
 const PG_3_ENTRANT_COUNT = 23
 const PG_3_ATTENDEE_COUNT = 46
 const PG_3_SET_COUNT = 70
+//const PG_3_DQ_FILTERED_SET_COUNT = 
+//const PG_3_RESET_FILTERED_SET_COUNT = 
+//const PG_3_COMPLETED_SET_COUNT = 
+//const PG_3_INCOMPLETE_SET_COUNT = 
 
-const PG_4_SEED_COUNT = 50
-const PG_4_ENTRANT_COUNT = 50
-const PG_4_ATTENDEE_COUNT = 50
-const PG_4_SET_COUNT = 84
+const PG_4_SEED_COUNT = 39
+const PG_4_ENTRANT_COUNT = 39
+const PG_4_ATTENDEE_COUNT = 39
+const PG_4_SET_COUNT = 77
+//const PG_4_DQ_FILTERED_SET_COUNT = 28
+const PG_4_RESET_FILTERED_SET_COUNT = 76
+const PG_4_COMPLETED_SET_COUNT = 72
+const PG_4_INCOMPLETE_SET_COUNT = 5
 
 
 const LOG_LEVEL = log.levels.VERBOSE
@@ -241,22 +257,22 @@ describe('smash.gg PhaseGroup', function(){
 	// set
 	it('should return the correct Sets 1', async function(){
 		this.timeout(30000)
-		await testSets(phaseGroup1, PG_1_ENTRANT_COUNT)
+		await testSets(phaseGroup1, PG_1_SET_COUNT)
 		return true;
 	})
 	it('should return the correct Sets 2', async function(){
 		this.timeout(30000)
-		await testSets(phaseGroup2, PG_2_ENTRANT_COUNT)
+		await testSets(phaseGroup2, PG_2_SET_COUNT)
 		return true;
 	})
 	xit('should return the correct Sets 3', async function(){
 		this.timeout(30000)
-		await testSets(phaseGroup3, PG_3_ENTRANT_COUNT)
+		await testSets(phaseGroup3, PG_3_SET_COUNT)
 		return true;
 	})
 	it('should return the correct Sets 4', async function(){
 		this.timeout(30000)
-		await testSets(phaseGroup4, PG_4_ENTRANT_COUNT)
+		await testSets(phaseGroup4, PG_4_SET_COUNT)
 		return true;
 	})
 
@@ -264,30 +280,12 @@ describe('smash.gg PhaseGroup', function(){
 	// sets filter dq
 	it('should return the correct DQ filtered Sets 1', async function(){
 		this.timeout(30000)
-
-		let sets: GGSet[] = await phaseGroup1.getSets({filterDQs: true})
-		var hasDuplicates = function(a: GGSet[]) {
-			return _.uniq(a).length !== a.length;
-		};
-		expect(hasDuplicates(sets)).to.be.false;
-		sets.forEach(set => {
-			expect(set).to.be.an.instanceof(GGSet);
-		});
-		expect(sets.length).to.be.equal(28);
+		await testSetsFilterDQ(phaseGroup1, PG_1_DQ_FILTERED_SET_COUNT)
 		return true;
 	})
 	it('should return the correct DQ filtered Sets 2', async function(){
 		this.timeout(30000)
-
-		let sets: GGSet[] = await phaseGroup2.getSets({filterDQs: true})
-		var hasDuplicates = function(a: GGSet[]) {
-			return _.uniq(a).length !== a.length;
-		};
-		expect(hasDuplicates(sets)).to.be.false;
-		sets.forEach(set => {
-			expect(set).to.be.an.instanceof(GGSet);
-		});
-		expect(sets.length).to.be.equal(7);
+		await testSetsFilterDQ(phaseGroup2, PG_2_DQ_FILTERED_SET_COUNT)
 		return true;
 	})
 
@@ -295,30 +293,12 @@ describe('smash.gg PhaseGroup', function(){
 	// sets filter reset
 	it('should return the correct Reset filtered Sets 1', async function(){
 		this.timeout(30000)
-
-		let sets: GGSet[] = await phaseGroup1.getSets({filterResets: true})
-		var hasDuplicates = function(a: GGSet[]) {
-			return _.uniq(a).length !== a.length;
-		};
-		expect(hasDuplicates(sets)).to.be.false;
-		sets.forEach(set => {
-			expect(set).to.be.an.instanceof(GGSet);
-		});
-		expect(sets.length).to.be.equal(28);
+		await testSetsFilterResets(phaseGroup1, PG_1_RESET_FILTERED_SET_COUNT)
 		return true;
 	})
 	it('should return the correct Reset filtered Sets 4', async function(){
 		this.timeout(30000)
-
-		let sets: GGSet[] = await phaseGroup4.getSets({filterResets: true})
-		var hasDuplicates = function(a: GGSet[]) {
-			return _.uniq(a).length !== a.length;
-		};
-		expect(hasDuplicates(sets)).to.be.false;
-		sets.forEach(set => {
-			expect(set).to.be.an.instanceof(GGSet);
-		});
-		expect(sets.length).to.be.equal(78);
+		await testSetsFilterResets(phaseGroup4, PG_4_RESET_FILTERED_SET_COUNT)
 		return true;
 	})
 
@@ -326,30 +306,12 @@ describe('smash.gg PhaseGroup', function(){
 	// completed sets
 	it('should get the correct number of completed sets 1', async function(){
 		this.timeout(30000)
-
-		let sets: GGSet[] = await phaseGroup1.getCompleteSets()
-		var hasDuplicates = function(a: GGSet[]) {
-			return _.uniq(a).length !== a.length;
-		};
-		expect(hasDuplicates(sets)).to.be.false;
-		sets.forEach(set => {
-			expect(set).to.be.an.instanceof(GGSet);
-		});
-		expect(sets.length).to.be.equal(28);
+		await testSetsCompleted(phaseGroup1, PG_1_COMPLETED_SET_COUNT)
 		return true;
 	})
 	it('should get the correct number of completed sets 4', async function(){
 		this.timeout(30000)
-
-		let sets: GGSet[] = await phaseGroup4.getCompleteSets()
-		var hasDuplicates = function(a: GGSet[]) {
-			return _.uniq(a).length !== a.length;
-		};
-		expect(hasDuplicates(sets)).to.be.false;
-		sets.forEach(set => {
-			expect(set).to.be.an.instanceof(GGSet);
-		});
-		expect(sets.length).to.be.equal(54);
+		await testSetsCompleted(phaseGroup4, PG_4_COMPLETED_SET_COUNT)
 		return true;
 	})
 
@@ -357,30 +319,12 @@ describe('smash.gg PhaseGroup', function(){
 	// incompleted sets
 	it('should get the correct number of incomplete sets 1', async function(){
 		this.timeout(30000)
-
-		let sets: GGSet[] = await phaseGroup1.getIncompleteSets()
-		var hasDuplicates = function(a: GGSet[]) {
-			return _.uniq(a).length !== a.length;
-		};
-		expect(hasDuplicates(sets)).to.be.false;
-		sets.forEach(set => {
-			expect(set).to.be.an.instanceof(GGSet);
-		});
-		expect(sets.length).to.be.equal(0);
+		await testSetsIncomplete(phaseGroup1, PG_1_INCOMPLETE_SET_COUNT)
 		return true;
 	})
 	it('should get the correct number of incomplete sets 4', async function(){
 		this.timeout(30000)
-
-		let sets: GGSet[] = await phaseGroup4.getIncompleteSets()
-		var hasDuplicates = function(a: GGSet[]) {
-			return _.uniq(a).length !== a.length;
-		};
-		expect(hasDuplicates(sets)).to.be.false;
-		sets.forEach(set => {
-			expect(set).to.be.an.instanceof(GGSet);
-		});
-		expect(sets.length).to.be.equal(30); // really should be 2
+		await testSetsIncomplete(phaseGroup4, PG_4_INCOMPLETE_SET_COUNT)
 		return true;
 	})
 
@@ -452,6 +396,58 @@ async function testSets(phaseGroup: PhaseGroup, expected: number){
 
 async function testSetsFilterDQ(phaseGroup: PhaseGroup, expected: number){
 	const arr = await phaseGroup.getSets({filterDQs: true})
+
+	arr.forEach(set => {
+		expect(set).to.be.an.instanceof(GGSet);
+		expect(
+			arr.filter(x => x.id == set.id).length,
+			'Set array must not have duplicates! Found: ' + set.id
+		).to.be.equal(1)
+	});
+	expect(arr.length).to.be.equal(expected);
+}
+
+async function testSetsFilterResets(phaseGroup: PhaseGroup, expected: number){
+	const arr = await phaseGroup.getSets({filterResets: true})
+
+	arr.forEach(set => {
+		expect(set).to.be.an.instanceof(GGSet);
+		expect(
+			arr.filter(x => x.id == set.id).length,
+			'Set array must not have duplicates! Found: ' + set.id
+		).to.be.equal(1)
+	});
+	expect(arr.length).to.be.equal(expected);
+}
+
+async function testSetsFilterByes(phaseGroup: PhaseGroup, expected: number){
+	const arr = await phaseGroup.getSets({filterByes: true})
+
+	arr.forEach(set => {
+		expect(set).to.be.an.instanceof(GGSet);
+		expect(
+			arr.filter(x => x.id == set.id).length,
+			'Set array must not have duplicates! Found: ' + set.id
+		).to.be.equal(1)
+	});
+	expect(arr.length).to.be.equal(expected);
+}
+
+async function testSetsCompleted(phaseGroup: PhaseGroup, expected: number){
+	const arr = await phaseGroup.getCompleteSets()
+
+	arr.forEach(set => {
+		expect(set).to.be.an.instanceof(GGSet);
+		expect(
+			arr.filter(x => x.id == set.id).length,
+			'Set array must not have duplicates! Found: ' + set.id
+		).to.be.equal(1)
+	});
+	expect(arr.length).to.be.equal(expected);
+}
+
+async function testSetsIncomplete(phaseGroup: PhaseGroup, expected: number){
+	const arr = await phaseGroup.getIncompleteSets()
 
 	arr.forEach(set => {
 		expect(set).to.be.an.instanceof(GGSet);

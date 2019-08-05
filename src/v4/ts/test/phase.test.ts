@@ -25,18 +25,21 @@ const LOG_LEVEL = log.levels.DEBUG
 
 const ID1 = 111483
 const EVENT_ID_1 = 25545
+const PHASE_1_PG_COUNT = 16
 const PHASE_1_SET_COUNT = 232
 const PHASE_1_ENTRANT_COUNT = 156
 const PHASE_1_ATTENDEE_COUNT = 156
 
 const ID2 = 45262
 const EVENT_ID_2 = 11787
+const PHASE_2_PG_COUNT = 25
 const PHASE_2_SET_COUNT = 1164
 const PHASE_2_ENTRANT_COUNT = 429
 const PHASE_2_ATTENDEE_COUNT = 200
 
 const ID3 = 100046
 const EVENT_ID_3 = 23596
+const PHASE_3_PG_COUNT = 16
 const PHASE_3_SET_COUNT = 1164
 const PHASE_3_ENTRANT_COUNT = 226
 const PHASE_3_ATTENDEE_COUNT = 226
@@ -178,18 +181,18 @@ describe('Smash GG Phase', function(){
 	// phase groups
 	it('should correctly get all phase groups 1', async function(){
 		this.timeout(30000)
-		await testPhaseGroups(phase1, PHASE_1_ATTENDEE_COUNT)
-		return true;
+		await testPhaseGroups(phase1, PHASE_1_PG_COUNT)
+		return true
 	})
 	it('should correctly get all phase groups 2', async function(){
 		this.timeout(30000)
-		await testPhaseGroups(phase2, PHASE_2_ATTENDEE_COUNT)
-		return true;
+		await testPhaseGroups(phase2, PHASE_2_PG_COUNT)
+		return true
 	})
 	it('should correctly get all phase groups 3', async function(){
 		this.timeout(30000)
-		await testPhaseGroups(phase3, PHASE_3_ATTENDEE_COUNT)
-		return true;
+		await testPhaseGroups(phase3, PHASE_3_PG_COUNT)
+		return true
 	})
 
 

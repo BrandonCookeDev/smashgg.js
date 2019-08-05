@@ -127,6 +127,7 @@ export default class NetworkInterface{
 			return [await NetworkInterface.query(query, params)]
 		}
 
+		// otherwise, calculate the most optimal pagination count
 		let preflightQuery = mergeQuery(queryString, queryOptions)
 		let preflightData = [await NetworkInterface.rawQuery(preflightQuery, params)] as any[];
 		if(preflightData.length <= 0)
@@ -145,7 +146,6 @@ export default class NetworkInterface{
 		// check to see if the implementer is forcing perPage
 		// if they are not, calculate the optimal perPage count, 
 		// requery for new pageCount, and continue
-		let query, data;
 		/*
 		let isForcingPerPage = perPage > 1 && options != undefined && options.perPage != undefined // TODO this logic is probably superficial
 		if(!isForcingPerPage){
@@ -169,6 +169,7 @@ export default class NetworkInterface{
 			
 		// after, leave off the total page count to minimize complexity
 		
+		let query, data;
 		for(let i = 1; i<=totalPages; i++){
 			log.info('%s: Collected %s/%s pages', operationName, i, totalPages)
 			queryOptions = Object.assign({

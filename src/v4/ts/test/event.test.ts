@@ -24,20 +24,28 @@ import * as testData from './data/event.testData'
 
 let event1: Event, event2: Event, event3: Event
 
-const EVENT_ID_1 = 133902
-const EVENT_SLUG_1 = 'tournament/21xx-cameron-s-birthday-bash-1/event/melee-singles'
-const EVENT_TOURNAMENT_SLUG_1='21xx-cameron-s-birthday-bash-1'
-const EVENT_EVENT_SLUG_1='melee-singles'
+const EVENT_1_ID = 133902
+const EVENT_1_SLUG = 'tournament/21xx-cameron-s-birthday-bash-1/event/melee-singles'
+const EVENT_1_TOURNAMENT_SLUG='21xx-cameron-s-birthday-bash-1'
+const EVENT_1_EVENT_SLUG='melee-singles'
+const EVENT_1_ENTRANT_COUNT = 39
+const EVENT_1_ATTENDEE_COUNT = 39
+const EVENT_1_SET_COUNT = 77
 
-const EVENT_ID_2 = 23597
-const EVENT_SLUG_2 = 'tournament/tipped-off-12-presented-by-the-lab-gaming-center/event/melee-doubles'
-const EVENT_TOURNAMENT_SLUG_2='tipped-off-12-presented-by-the-lab-gaming-center'
-const EVENT_EVENT_SLUG_2='melee-doubles'
+const EVENT_2_ID = 23597
+const EVENT_2_SLUG = 'tournament/tipped-off-12-presented-by-the-lab-gaming-center/event/melee-doubles'
+const EVENT_2_TOURNAMENT_SLUG='tipped-off-12-presented-by-the-lab-gaming-center'
+const EVENT_2_EVENT_SLUG='melee-doubles'
+const EVENT_2_ENTRANT_COUNT = 60
+const EVENT_2_ATTENDEE_COUNT = 60
+const EVENT_2_SET_COUNT = 121
 
-const EVENT_ID_3 = 11787
-const EVENT_SLUG_3 = 'tournament/ceo-2016/event/melee-singles'
-const EVENT_TOURNAMENT_SLUG_3='ceo-2016'
-const EVENT_EVENT_SLUG_3='melee-singles'
+const EVENT_3_ID = 11787
+const EVENT_3_SLUG = 'tournament/ceo-2016/event/melee-singles'
+const EVENT_3_TOURNAMENT_SLUG='ceo-2016'
+const EVENT_3_EVENT_SLUG='melee-singles'
+const EVENT_3_ENTRANT_COUNT = 725
+const EVENT_3_ATTENDEE_COUNT = 725
 
 const TOP_8_LABELS = [
 	'Losers Quarter-Final', 'Losers Quarter-Final', 
@@ -54,17 +62,17 @@ describe('smashgg Event', function(){
 		this.timeout(20000)
 		await Initializer(process.env.API_TOKEN!)
 
-		let ei1 = await Event.getById(EVENT_ID_1)
-		let ei2 = await Event.getById(EVENT_ID_2)
-		let ei3 = await Event.getById(EVENT_ID_3)
+		let ei1 = await Event.getById(EVENT_1_ID)
+		let ei2 = await Event.getById(EVENT_2_ID)
+		let ei3 = await Event.getById(EVENT_3_ID)
 
-		let es1 = await Event.getBySlug(EVENT_SLUG_1)
-		let es2 = await Event.getBySlug(EVENT_SLUG_2)
-		let es3 = await Event.getBySlug(EVENT_SLUG_3)
+		let es1 = await Event.getBySlug(EVENT_1_SLUG)
+		let es2 = await Event.getBySlug(EVENT_2_SLUG)
+		let es3 = await Event.getBySlug(EVENT_3_SLUG)
 
-		let e1 = await Event.get(EVENT_TOURNAMENT_SLUG_1, EVENT_EVENT_SLUG_1)
-		let e2 = await Event.get(EVENT_TOURNAMENT_SLUG_2, EVENT_EVENT_SLUG_2)
-		let e3 = await Event.get(EVENT_TOURNAMENT_SLUG_3, EVENT_EVENT_SLUG_3)
+		let e1 = await Event.get(EVENT_1_TOURNAMENT_SLUG, EVENT_1_EVENT_SLUG)
+		let e2 = await Event.get(EVENT_2_TOURNAMENT_SLUG, EVENT_2_EVENT_SLUG)
+		let e3 = await Event.get(EVENT_3_TOURNAMENT_SLUG, EVENT_3_EVENT_SLUG)
 		
 		expect(ei1).to.deep.equal(es1)
 		expect(ei2).to.deep.equal(es2)
@@ -295,89 +303,34 @@ describe('smashgg Event', function(){
 	// entrants
 	it('should return the correct list of Entrants in the Event 1', async function(){
 		this.timeout(30000)
-
-		let entrants: Entrant[] = await event1.getEntrants();
-		var hasDuplicates = function(a: Entrant[]) {
-			return _.uniq(a).length !== a.length;
-		};
-		expect(hasDuplicates(entrants)).to.be.false;
-		entrants.forEach(entrant => {
-			expect(entrant).to.be.an.instanceof(Entrant);
-		});
-		expect(entrants.length).to.be.equal(50);
+		await testEntrant(event1, EVENT_1_ENTRANT_COUNT)
 		return true;
 	})
 	it('should return the correct list of Entrants in the Event 2', async function(){
 		this.timeout(30000)
-
-		let entrants: Entrant[] = await event2.getEntrants();
-		var hasDuplicates = function(a: Entrant[]) {
-			return _.uniq(a).length !== a.length;
-		};
-		expect(hasDuplicates(entrants)).to.be.false;
-		entrants.forEach(entrant => {
-			expect(entrant).to.be.an.instanceof(Entrant);
-		});
-		expect(entrants.length).to.be.equal(84);
+		await testEntrant(event2, EVENT_2_ENTRANT_COUNT)
 		return true;
 	})
 	xit('should return the correct list of Entrants in the Event 3', async function(){
 		this.timeout(60000)
-
-		let entrants: Entrant[] = await event3.getEntrants();
-		var hasDuplicates = function(a: Entrant[]) {
-			return _.uniq(a).length !== a.length;
-		};
-		expect(hasDuplicates(entrants)).to.be.false;
-		entrants.forEach(entrant => {
-			expect(entrant).to.be.an.instanceof(Entrant);
-		});
-		expect(entrants.length).to.be.equal(725);
+		await testEntrant(event3, EVENT_3_ENTRANT_COUNT)
 		return true;
 	})
-
 
 	// attendee
 	it('should return the correct list of Attendees in the Event 1', async function(){
 		this.timeout(30000)
-
-		let attendees: Attendee[] = await event1.getAttendees();
-		var hasDuplicates = function(a: Attendee[]) {
-			return _.uniq(a).length !== a.length;
-		};
-		expect(hasDuplicates(attendees)).to.be.false;
-		attendees.forEach(attendee => {
-			expect(attendee).to.be.an.instanceof(Attendee);
-		});
-		expect(attendees.length).to.be.equal(50);
+		await testAttendees(event1, EVENT_1_ATTENDEE_COUNT)
 		return true;
 	})
 	it('should return the correct list of Attendees in the Event 2', async function(){
 		this.timeout(30000)
-
-		let attendees: Attendee[] = await event2.getAttendees();
-		var hasDuplicates = function(a: Attendee[]) {
-			return _.uniq(a).length !== a.length;
-		};
-		expect(hasDuplicates(attendees)).to.be.false;
-		attendees.forEach(attendee => {
-			expect(attendee).to.be.an.instanceof(Attendee);
-		});
-		expect(attendees.length).to.be.equal(168);
+		await testAttendees(event2, EVENT_2_ATTENDEE_COUNT)
 		return true;
 	})
 	xit('should return the correct list of Attendees in the Event 3', async function(){
 		this.timeout(60000)
-
-		let attendees: Attendee[] = await event3.getAttendees();
-		var hasDuplicates = function(a: Attendee[]) {
-			return _.uniq(a).length !== a.length;
-		};
-		expect(hasDuplicates(attendees)).to.be.false;
-		attendees.forEach(attendee => {
-			expect(attendee).to.be.an.instanceof(Attendee);
-		});
-		expect(attendees.length).to.be.equal(725);
+		await testAttendees(event3, EVENT_3_ATTENDEE_COUNT)
 		return true;
 	})
 
@@ -394,7 +347,7 @@ describe('smashgg Event', function(){
 		sets.forEach(set => {
 			expect(set).to.be.an.instanceof(GGSet);
 		});
-		expect(sets.length).to.be.equal(84);
+		expect(sets.length).to.be.equal(EVENT_1_SET_COUNT);
 		return true;
 	})
 	it('should return the correct list of Sets in the Event 2', async function(){
@@ -408,21 +361,36 @@ describe('smashgg Event', function(){
 		sets.forEach(set => {
 			expect(set).to.be.an.instanceof(GGSet);
 		});
-		expect(sets.length).to.be.equal(132);
-		return true;
-	})
-	xit('should return the correct list of Sets in the Event 3', async function(){
-		this.timeout(30000)
-
-		let sets: GGSet[] = await event3.getSets();
-		var hasDuplicates = function(a: GGSet[]) {
-			return _.uniq(a).length !== a.length;
-		};
-		expect(hasDuplicates(sets)).to.be.false;
-		sets.forEach(set => {
-			expect(set).to.be.an.instanceof(GGSet);
-		});
-		expect(sets.length).to.be.equal(75);
+		expect(sets.length).to.be.equal(EVENT_2_SET_COUNT);
 		return true;
 	})
 })
+
+async function testEntrant(event: Event, expected: number){
+	let entrants: Entrant[] = await event.getEntrants();
+	
+	entrants.forEach(entrant => {
+		expect(entrant).to.be.an.instanceof(Entrant);
+		expect(
+			entrants.filter(x => x.id == entrant.id).length,
+			'Entrant array must not have duplicates! Found: ' + entrant.id
+		).to.be.equal(1);
+	});
+	expect(entrants.length).to.be.equal(expected);
+	return true;
+}
+
+async function testAttendees(event: Event, expected: number){
+	let attendees: Attendee[] = await event.getAttendees();
+	
+	attendees.forEach(attendee => {
+		expect(attendee).to.be.an.instanceof(Attendee);
+		expect(
+			attendees.filter(x => x.id == attendee.id).length,
+			'Attendee array must not have duplicates! Found: ' + attendee.id
+		).to.be.equal(1);
+	});
+	
+	expect(attendees.length).to.be.equal(expected);
+	return true;
+}

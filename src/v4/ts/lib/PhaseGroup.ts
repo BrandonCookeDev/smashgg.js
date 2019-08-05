@@ -94,11 +94,13 @@ export class PhaseGroup implements IPhaseGroup.PhaseGroup{
 	async getSeeds(options: ISeed.SeedOptions = ISeed.getDefaultSeedOptions()) : Promise<Seed[]> {
 		log.info('Getting Seeds for Phase Group [%s]', this.id)
 		log.verbose('Query variables: %s', JSON.stringify(options))
+		
 		let data: IPhaseGroup.PhaseGroupSeedData[] = await NI.paginatedQuery(
 			`Phase Group Seeds [${this.id}]`,
 			queries.phaseGroupSeeds, {id: this.id},
 			options, {}, 2
 		)
+
 		let phaseGroups = _.flatten(data.map(pg => pg.phaseGroup))
 		let seedData: ISeed.SeedData[] = _.flatten(phaseGroups.map(pg => pg.paginatedSeeds.nodes))
 		let seeds = seedData.map(seed => Seed.parse(seed))

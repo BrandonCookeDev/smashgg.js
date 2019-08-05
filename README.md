@@ -1290,7 +1290,25 @@ Entrant(
 ## Standings
 A Standing is an individual entrant's placement in a given Event.
 
+### Properties
 
+* **id**
+    * number
+* **placement**
+    * number
+* **entrant**
+    * [Entrant](#entrant)
+
+### Methods
+
+* **getId()**
+    * Gets the current Standing's id property
+* **getPlacement()**
+    * Gets the current Standing's placement property
+* **getEntrant()**
+    * Gets the current Standing's entrant property
+* **getGamerTag()**
+    * Gets the current Standing's gamer tag for entrant 1
 
 ----
 

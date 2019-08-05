@@ -1,6 +1,6 @@
 
 import {Entrant} from './Entrant'
-import {Standings} from './Standings'
+import {Standing} from './Standing'
 
 export class Seed implements ISeed.Seed{
 	id: number
@@ -88,7 +88,7 @@ export namespace ISeed{
 
 	export function getDefaultSeedOptions() : SeedOptions{
 		return {
-			page: 1,
+			page: null,
 			perPage: 1,
 			sortBy: null,
 			filter: null

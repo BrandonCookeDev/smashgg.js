@@ -94,15 +94,17 @@ export class PhaseGroup implements IPhaseGroup.PhaseGroup{
 	async getSeeds(options: ISeed.SeedOptions = ISeed.getDefaultSeedOptions()) : Promise<Seed[]> {
 		log.info('Getting Seeds for Phase Group [%s]', this.id)
 		log.verbose('Query variables: %s', JSON.stringify(options))
+		
 		let data: IPhaseGroup.PhaseGroupSeedData[] = await NI.paginatedQuery(
 			`Phase Group Seeds [${this.id}]`,
 			queries.phaseGroupSeeds, {id: this.id},
 			options, {}, 2
 		)
+
 		let phaseGroups = _.flatten(data.map(pg => pg.phaseGroup))
 		let seedData: ISeed.SeedData[] = _.flatten(phaseGroups.map(pg => pg.paginatedSeeds.nodes))
 		let seeds = seedData.map(seed => Seed.parse(seed))
-		return seeds
+		return _.uniqBy(seeds, 'id')
 	}
 
 	async getEntrants(options: IEntrant.EntrantOptions = IEntrant.getDefaultEntrantOptions()) : Promise<Entrant[]>{
@@ -115,7 +117,7 @@ export class PhaseGroup implements IPhaseGroup.PhaseGroup{
 		) 
 		let phaseGroups = data.map(pg => pg.phaseGroup);
 		let entrants: Entrant[] = _.flatten(phaseGroups.map(pg => pg.paginatedSeeds.nodes.map(e => Entrant.parseFull(e)).filter(seed => seed != null)))
-		return entrants
+		return _.uniqBy(entrants, 'id')
 	}
 
 	async getAttendees(options: IAttendee.AttendeeOptions = IAttendee.getDefaultAttendeeOptions()) : Promise<Attendee[]>{
@@ -130,7 +132,7 @@ export class PhaseGroup implements IPhaseGroup.PhaseGroup{
 		let entrants = seeds.map(seed => seed.entrant).filter(entrant => entrant != null)
 		let attendeeData: IAttendee.AttendeeData[] = _.flatten(entrants.map(entrant => entrant.participants))
 		let attendees: Attendee[] = attendeeData.map(a => Attendee.parse(a))
-		return attendees
+		return _.uniqBy(attendees, 'id')
 	}
 
 	async getSets(options: IGGSet.SetOptions = IGGSet.getDefaultSetOptions()) : Promise<GGSet[]>{
@@ -149,7 +151,7 @@ export class PhaseGroup implements IPhaseGroup.PhaseGroup{
 		if(options.filterResets) sets = GGSet.filterOutResets(sets)
 		if(options.filterByes) sets = GGSet.filterOutByes(sets)
 
-		return sets
+		return _.uniqBy(sets, 'id')
 	}
 
 	async getCompleteSets(options: IGGSet.SetOptions = IGGSet.getDefaultSetOptions()) : Promise<GGSet[]>{
@@ -208,6 +210,8 @@ export namespace IPhaseGroup{
 			phaseGroups: PhaseGroupData[]
 		}
 	}
+
+	
 
 	export interface PhaseGroupData{
 		id: number

@@ -542,7 +542,7 @@ export namespace IGGSet{
 
 	export function getDefaultSetOptions() : SetOptions{
 		return {
-			page: 1,
+			page: null,
 			perPage: null,
 			sortBy: null,
 			filters: null

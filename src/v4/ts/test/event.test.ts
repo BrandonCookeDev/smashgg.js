@@ -24,20 +24,34 @@ import * as testData from './data/event.testData'
 
 let event1: Event, event2: Event, event3: Event
 
-const EVENT_ID_1 = 133902
-const EVENT_SLUG_1 = 'tournament/21xx-cameron-s-birthday-bash-1/event/melee-singles'
-const EVENT_TOURNAMENT_SLUG_1='21xx-cameron-s-birthday-bash-1'
-const EVENT_EVENT_SLUG_1='melee-singles'
+const EVENT_1_ID = 133902
+const EVENT_1_SLUG = 'tournament/21xx-cameron-s-birthday-bash-1/event/melee-singles'
+const EVENT_1_TOURNAMENT_SLUG='21xx-cameron-s-birthday-bash-1'
+const EVENT_1_EVENT_SLUG='melee-singles'
+const EVENT_1_PHASE_COUNT = 1
+const EVENT_1_PHASE_GROUP_COUNT = 1
+const EVENT_1_ENTRANT_COUNT = 39
+const EVENT_1_ATTENDEE_COUNT = 39
+const EVENT_1_SET_COUNT = 77
 
-const EVENT_ID_2 = 23597
-const EVENT_SLUG_2 = 'tournament/tipped-off-12-presented-by-the-lab-gaming-center/event/melee-doubles'
-const EVENT_TOURNAMENT_SLUG_2='tipped-off-12-presented-by-the-lab-gaming-center'
-const EVENT_EVENT_SLUG_2='melee-doubles'
+const EVENT_2_ID = 23597
+const EVENT_2_SLUG = 'tournament/tipped-off-12-presented-by-the-lab-gaming-center/event/melee-doubles'
+const EVENT_2_TOURNAMENT_SLUG='tipped-off-12-presented-by-the-lab-gaming-center'
+const EVENT_2_EVENT_SLUG='melee-doubles'
+const EVENT_2_PHASE_COUNT = 2
+const EVENT_2_PHASE_GROUP_COUNT = 9
+const EVENT_2_ENTRANT_COUNT = 60
+const EVENT_2_ATTENDEE_COUNT = 120
+const EVENT_2_SET_COUNT = 77
 
-const EVENT_ID_3 = 11787
-const EVENT_SLUG_3 = 'tournament/ceo-2016/event/melee-singles'
-const EVENT_TOURNAMENT_SLUG_3='ceo-2016'
-const EVENT_EVENT_SLUG_3='melee-singles'
+const EVENT_3_ID = 11787
+const EVENT_3_SLUG = 'tournament/ceo-2016/event/melee-singles'
+const EVENT_3_TOURNAMENT_SLUG='ceo-2016'
+const EVENT_3_EVENT_SLUG='melee-singles'
+const EVENT_3_PHASE_COUNT = 2
+const EVENT_3_PHASE_GROUP_COUNT = 33
+const EVENT_3_ENTRANT_COUNT = 725
+const EVENT_3_ATTENDEE_COUNT = 725
 
 const TOP_8_LABELS = [
 	'Losers Quarter-Final', 'Losers Quarter-Final', 
@@ -54,17 +68,17 @@ describe('smashgg Event', function(){
 		this.timeout(20000)
 		await Initializer(process.env.API_TOKEN!)
 
-		let ei1 = await Event.getById(EVENT_ID_1)
-		let ei2 = await Event.getById(EVENT_ID_2)
-		let ei3 = await Event.getById(EVENT_ID_3)
+		let ei1 = await Event.getById(EVENT_1_ID)
+		let ei2 = await Event.getById(EVENT_2_ID)
+		let ei3 = await Event.getById(EVENT_3_ID)
 
-		let es1 = await Event.getBySlug(EVENT_SLUG_1)
-		let es2 = await Event.getBySlug(EVENT_SLUG_2)
-		let es3 = await Event.getBySlug(EVENT_SLUG_3)
+		let es1 = await Event.getBySlug(EVENT_1_SLUG)
+		let es2 = await Event.getBySlug(EVENT_2_SLUG)
+		let es3 = await Event.getBySlug(EVENT_3_SLUG)
 
-		let e1 = await Event.get(EVENT_TOURNAMENT_SLUG_1, EVENT_EVENT_SLUG_1)
-		let e2 = await Event.get(EVENT_TOURNAMENT_SLUG_2, EVENT_EVENT_SLUG_2)
-		let e3 = await Event.get(EVENT_TOURNAMENT_SLUG_3, EVENT_EVENT_SLUG_3)
+		let e1 = await Event.get(EVENT_1_TOURNAMENT_SLUG, EVENT_1_EVENT_SLUG)
+		let e2 = await Event.get(EVENT_2_TOURNAMENT_SLUG, EVENT_2_EVENT_SLUG)
+		let e3 = await Event.get(EVENT_3_TOURNAMENT_SLUG, EVENT_3_EVENT_SLUG)
 		
 		expect(ei1).to.deep.equal(es1)
 		expect(ei2).to.deep.equal(es2)
@@ -205,44 +219,17 @@ describe('smashgg Event', function(){
 	// phases
 	it('should return the correct list of Phases in the Event 1', async function(){
 		this.timeout(30000)
-
-		let phases: Phase[] = await event1.getPhases();
-		var hasDuplicates = function(a: Phase[]) {
-			return _.uniq(a).length !== a.length;
-		};
-		expect(hasDuplicates(phases)).to.be.false;
-		phases.forEach(phase => {
-			expect(phase).to.be.an.instanceof(Phase);
-		});
-		expect(phases.length).to.be.equal(1);
+		await testPhases(event1, EVENT_1_PHASE_COUNT)
 		return true;
 	})
 	it('should return the correct list of Phases in the Event 2', async function(){
 		this.timeout(30000)
-
-		let phases: Phase[] = await event2.getPhases();
-		var hasDuplicates = function(a: Phase[]) {
-			return _.uniq(a).length !== a.length;
-		};
-		expect(hasDuplicates(phases)).to.be.false;
-		phases.forEach(phase => {
-			expect(phase).to.be.an.instanceof(Phase);
-		});
-		expect(phases.length).to.be.equal(2);
+		await testPhases(event2, EVENT_2_PHASE_COUNT)
 		return true;
 	})
 	it('should return the correct list of Phases in the Event 3', async function(){
 		this.timeout(30000)
-
-		let phases: Phase[] = await event3.getPhases();
-		var hasDuplicates = function(a: Phase[]) {
-			return _.uniq(a).length !== a.length;
-		};
-		expect(hasDuplicates(phases)).to.be.false;
-		phases.forEach(phase => {
-			expect(phase).to.be.an.instanceof(Phase);
-		});
-		expect(phases.length).to.be.equal(2);
+		await testPhases(event3, EVENT_3_PHASE_COUNT)
 		return true;
 	})
 
@@ -250,44 +237,17 @@ describe('smashgg Event', function(){
 	// phase groups
 	it('should return the correct list of Phase Groups in the Event 1', async function(){
 		this.timeout(30000)
-
-		let groups: PhaseGroup[] = await event1.getPhaseGroups();
-		var hasDuplicates = function(a: PhaseGroup[]) {
-			return _.uniq(a).length !== a.length;
-		};
-		expect(hasDuplicates(groups)).to.be.false;
-		groups.forEach(group => {
-			expect(group).to.be.an.instanceof(PhaseGroup);
-		});
-		expect(groups.length).to.be.equal(1);
+		await testPhaseGroups(event1, EVENT_1_PHASE_GROUP_COUNT)
 		return true;
 	})
 	it('should return the correct list of Phase Groups in the Event 2', async function(){
 		this.timeout(30000)
-
-		let groups: PhaseGroup[] = await event2.getPhaseGroups();
-		var hasDuplicates = function(a: PhaseGroup[]) {
-			return _.uniq(a).length !== a.length;
-		};
-		expect(hasDuplicates(groups)).to.be.false;
-		groups.forEach(group => {
-			expect(group).to.be.an.instanceof(PhaseGroup);
-		});
-		expect(groups.length).to.be.equal(9);
+		await testPhaseGroups(event2, EVENT_2_PHASE_GROUP_COUNT)
 		return true;
 	})
 	it('should return the correct list of Phase Groups in the Event 3', async function(){
 		this.timeout(30000)
-
-		let groups: PhaseGroup[] = await event3.getPhaseGroups();
-		var hasDuplicates = function(a: PhaseGroup[]) {
-			return _.uniq(a).length !== a.length;
-		};
-		expect(hasDuplicates(groups)).to.be.false;
-		groups.forEach(group => {
-			expect(group).to.be.an.instanceof(PhaseGroup);
-		});
-		expect(groups.length).to.be.equal(33);
+		await testPhaseGroups(event3, EVENT_3_PHASE_GROUP_COUNT)
 		return true;
 	})
 
@@ -295,89 +255,34 @@ describe('smashgg Event', function(){
 	// entrants
 	it('should return the correct list of Entrants in the Event 1', async function(){
 		this.timeout(30000)
-
-		let entrants: Entrant[] = await event1.getEntrants();
-		var hasDuplicates = function(a: Entrant[]) {
-			return _.uniq(a).length !== a.length;
-		};
-		expect(hasDuplicates(entrants)).to.be.false;
-		entrants.forEach(entrant => {
-			expect(entrant).to.be.an.instanceof(Entrant);
-		});
-		expect(entrants.length).to.be.equal(50);
+		await testEntrants(event1, EVENT_1_ENTRANT_COUNT)
 		return true;
 	})
 	it('should return the correct list of Entrants in the Event 2', async function(){
 		this.timeout(30000)
-
-		let entrants: Entrant[] = await event2.getEntrants();
-		var hasDuplicates = function(a: Entrant[]) {
-			return _.uniq(a).length !== a.length;
-		};
-		expect(hasDuplicates(entrants)).to.be.false;
-		entrants.forEach(entrant => {
-			expect(entrant).to.be.an.instanceof(Entrant);
-		});
-		expect(entrants.length).to.be.equal(84);
+		await testEntrants(event2, EVENT_2_ENTRANT_COUNT)
 		return true;
 	})
 	xit('should return the correct list of Entrants in the Event 3', async function(){
 		this.timeout(60000)
-
-		let entrants: Entrant[] = await event3.getEntrants();
-		var hasDuplicates = function(a: Entrant[]) {
-			return _.uniq(a).length !== a.length;
-		};
-		expect(hasDuplicates(entrants)).to.be.false;
-		entrants.forEach(entrant => {
-			expect(entrant).to.be.an.instanceof(Entrant);
-		});
-		expect(entrants.length).to.be.equal(725);
+		await testEntrants(event3, EVENT_3_ENTRANT_COUNT)
 		return true;
 	})
-
 
 	// attendee
 	it('should return the correct list of Attendees in the Event 1', async function(){
 		this.timeout(30000)
-
-		let attendees: Attendee[] = await event1.getAttendees();
-		var hasDuplicates = function(a: Attendee[]) {
-			return _.uniq(a).length !== a.length;
-		};
-		expect(hasDuplicates(attendees)).to.be.false;
-		attendees.forEach(attendee => {
-			expect(attendee).to.be.an.instanceof(Attendee);
-		});
-		expect(attendees.length).to.be.equal(50);
+		await testAttendees(event1, EVENT_1_ATTENDEE_COUNT)
 		return true;
 	})
 	it('should return the correct list of Attendees in the Event 2', async function(){
 		this.timeout(30000)
-
-		let attendees: Attendee[] = await event2.getAttendees();
-		var hasDuplicates = function(a: Attendee[]) {
-			return _.uniq(a).length !== a.length;
-		};
-		expect(hasDuplicates(attendees)).to.be.false;
-		attendees.forEach(attendee => {
-			expect(attendee).to.be.an.instanceof(Attendee);
-		});
-		expect(attendees.length).to.be.equal(168);
+		await testAttendees(event2, EVENT_2_ATTENDEE_COUNT)
 		return true;
 	})
 	xit('should return the correct list of Attendees in the Event 3', async function(){
 		this.timeout(60000)
-
-		let attendees: Attendee[] = await event3.getAttendees();
-		var hasDuplicates = function(a: Attendee[]) {
-			return _.uniq(a).length !== a.length;
-		};
-		expect(hasDuplicates(attendees)).to.be.false;
-		attendees.forEach(attendee => {
-			expect(attendee).to.be.an.instanceof(Attendee);
-		});
-		expect(attendees.length).to.be.equal(725);
+		await testAttendees(event3, EVENT_3_ATTENDEE_COUNT)
 		return true;
 	})
 
@@ -385,44 +290,82 @@ describe('smashgg Event', function(){
 	// sets
 	it('should return the correct list of Sets in the Event 1', async function(){
 		this.timeout(30000)
-
-		let sets: GGSet[] = await event1.getSets();
-		var hasDuplicates = function(a: GGSet[]) {
-			return _.uniq(a).length !== a.length;
-		};
-		expect(hasDuplicates(sets)).to.be.false;
-		sets.forEach(set => {
-			expect(set).to.be.an.instanceof(GGSet);
-		});
-		expect(sets.length).to.be.equal(84);
+		await testSets(event1, EVENT_1_SET_COUNT)
 		return true;
 	})
 	it('should return the correct list of Sets in the Event 2', async function(){
 		this.timeout(60000)
-
-		let sets: GGSet[] = await event2.getSets();
-		var hasDuplicates = function(a: GGSet[]) {
-			return _.uniq(a).length !== a.length;
-		};
-		expect(hasDuplicates(sets)).to.be.false;
-		sets.forEach(set => {
-			expect(set).to.be.an.instanceof(GGSet);
-		});
-		expect(sets.length).to.be.equal(132);
-		return true;
-	})
-	xit('should return the correct list of Sets in the Event 3', async function(){
-		this.timeout(30000)
-
-		let sets: GGSet[] = await event3.getSets();
-		var hasDuplicates = function(a: GGSet[]) {
-			return _.uniq(a).length !== a.length;
-		};
-		expect(hasDuplicates(sets)).to.be.false;
-		sets.forEach(set => {
-			expect(set).to.be.an.instanceof(GGSet);
-		});
-		expect(sets.length).to.be.equal(75);
+		await testSets(event2, EVENT_2_SET_COUNT)
 		return true;
 	})
 })
+
+async function testPhases(event: Event, expected: number){
+	let phases: Phase[] = await event.getPhases();
+	
+	phases.forEach(phase => {
+		expect(phase).to.be.an.instanceof(Phase);
+		expect(
+			phases.filter(x => x.id == phase.id).length,
+			'Phase array must not have duplicates! Found: ' + phase.id
+		).to.be.equal(1);
+	});
+	expect(phases.length).to.be.equal(expected);
+}
+
+async function testPhaseGroups(event: Event, expected: number){
+	let groups = await event.getPhaseGroups()
+
+	groups.forEach(group => {
+		expect(group).to.be.an.instanceof(PhaseGroup);
+		expect(
+			groups.filter(x => x.id == group.id).length,
+			'Phase Group array must not have duplicates! Found: ' + group.id
+		).to.be.equal(1);
+	});
+	expect(groups.length).to.be.equal(expected);
+
+	return true
+}
+
+async function testEntrants(event: Event, expected: number){
+	let entrants: Entrant[] = await event.getEntrants();
+	
+	entrants.forEach(entrant => {
+		expect(entrant).to.be.an.instanceof(Entrant);
+		expect(
+			entrants.filter(x => x.id == entrant.id).length,
+			'Entrant array must not have duplicates! Found: ' + entrant.id
+		).to.be.equal(1);
+	});
+	expect(entrants.length).to.be.equal(expected);
+	return true;
+}
+
+async function testAttendees(event: Event, expected: number){
+	let attendees: Attendee[] = await event.getAttendees();
+
+	attendees.forEach(attendee => {
+		expect(attendee).to.be.an.instanceof(Attendee);
+		expect(
+			attendees.filter(x => x.id == attendee.id).length,
+			'Attendee array must not have duplicates! Found: ' + attendee.id
+		).to.be.equal(1);
+	});
+	
+	expect(attendees.length).to.be.equal(expected);
+	return true;
+}
+
+async function testSets(event: Event, expected: number){
+	let sets: GGSet[] = await event.getSets();
+
+	sets.forEach(set => {
+		expect(set).to.be.an.instanceof(GGSet);
+		expect(
+			sets.filter(x => x.id == set.id).length,
+			'Set array must not have duplicates! Found: ' + set.id
+		).to.be.equal(1);
+	});
+	expect(sets.length).to.be.equal(EVENT_1_SET_COUNT);
+}

@@ -67,6 +67,7 @@ npm install --save smashgg.js
     -  [User](#user)
     -  [Attendee](#attendee)
     -  [Entrant](#entrant)
+    -  [Standings](#standings)
     -  [GGSet](#ggset)
     -  [Stream](#stream)
     -  [StreamQueue](#streamqueue)
@@ -592,41 +593,48 @@ Event(
 * **getPhaseGroups()** 
     * gets the Phase Group that occurred in this event
     * returns Promise<PhaseGroup[]>
+* **getStandings(options: IStandings.StandingsOptions)**
+    * gets the final standings for a given event
+    * parameters
+        * options
+            * [StandingsOptions](#standingsoptions)
+            * series of options for the return set of Standings
+    * returns Promise<[Standings](#standings)[]>
 * **getEntrants(options: IEntrant.EntrantOptions)** 
     * gets the tournament attendees who competed in this event
     * parameters 
         * options
             * [EntrantOptions](#entrantoptions)
             * series of options for the return set of Entrants
-    * returns Promise<Entrant[]>
+    * returns Promise<[Entrant](#entrant)[]>
 * **getAttendees(options: IAttendee.AttendeeOptions)**
     * gets the tournament attendees who are in this event
     * parameters
         * options
             * [AttendeeOptions](#attendeeoptions)
             * series of options for the return set of Attendees
-    * returns Promise<Attendee[]>
+    * returns Promise<[Attendee](#attendee)[]>
 * **getSets(options: IGGSet.SetOptions)**
     * gets the tournament sets that occurred in this event
     * parameters
         * options
             * [SetOptions](#setoptions)
             * series of options for the return set of GGSets
-    * returns Promise<GGSet[]>
+    * returns Promise<[GGSet](#ggset)[]>
 * **getIncompleteSets(options: IGGSet.SetOptions)**
     * gets the tournament sets in this event that have yet to be completed
     * parameters
         * options
             * [SetOptions](#setoptions)
             * series of options for the return set of GGSets
-    * returns Promise<GGSet[]>
+    * returns Promise<[GGSet](#ggset)[]>
 * **getCompleteSets(options: IGGSet.SetOptions)**
     * gets the tournament sets in this event that have been completed
     * parameters
         * options
             * [SetOptions](#setoptions)
             * series of options for the return set of GGSets
-    * returns Promise<GGSet[]>
+    * returns Promise<[GGSet](#ggset)[]>
 * **getSetsXMinutesBack(minutesBack: number, options: IGGSet.SetOptions)**
     * gets the tournament sets in this event that were completed x minutes ago
     * parameters
@@ -636,7 +644,7 @@ Event(
         * options
             * [SetOptions](#setoptions)
             * series of options for the return set of GGSets
-    * returns Promise<GGSet[]> 
+    * returns Promise<[GGSet](#ggset)[]> 
 
 ----
 
@@ -1277,6 +1285,12 @@ Entrant(
     }
 }
 ```
+----
+
+## Standings
+A Standing is an individual entrant's placement in a given Event.
+
+
 
 ----
 

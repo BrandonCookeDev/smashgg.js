@@ -188,7 +188,7 @@ export namespace IEntrant{
 	export function getDefaultEntrantOptions() : EntrantOptions{
 		return {
 			areSeedsPublished: true,
-			page: 1,
+			page: null,
 			perPage: 1,
 			sortBy: null,
 			filter: null

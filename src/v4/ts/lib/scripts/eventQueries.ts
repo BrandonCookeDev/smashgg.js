@@ -109,11 +109,13 @@ query StandingsQuery($id:ID!, $page:Int, $perPage:Int, $sortBy:String, $filter:S
         filter: $filter
       }){
         nodes{
+          id
           placement
           entrant{
             ${Schema.entrant}
           }
-        }
+        },
+        {pageInfo}
       }
     }
   }

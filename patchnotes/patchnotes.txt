@@ -1,5 +1,9 @@
 /** Patch Notes **/
 
+/** 4.1.0 07/05/2019 **/
+* Major improvement in all main paginated functions including attendees entrants and sets
+* Added functionality to pull the Standings of an event
+
 /** 4.0.20 07/02/2019 **/
 * Shifted GetAttendees from tournament to use the standard pagination query
 

@@ -67,6 +67,7 @@ npm install --save smashgg.js
     -  [User](#user)
     -  [Attendee](#attendee)
     -  [Entrant](#entrant)
+    -  [Standings](#standings)
     -  [GGSet](#ggset)
     -  [Stream](#stream)
     -  [StreamQueue](#streamqueue)
@@ -1284,6 +1285,12 @@ Entrant(
     }
 }
 ```
+----
+
+## Standings
+A Standing is an individual entrant's placement in a given Event.
+
+
 
 ----
 

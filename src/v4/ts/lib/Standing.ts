@@ -3,7 +3,7 @@ import {Entrant, IEntrant} from './Entrant'
 import {User} from './User'
 import NI from './util/NetworkInterface'
 
-export class Standings implements IStandings.Standings{
+export class Standing implements IStandings.Standings{
     id: number | null
     placement: number | null
     entrant: Entrant
@@ -19,7 +19,7 @@ export class Standings implements IStandings.Standings{
     }
 
     public static parse(data: IStandings.StandingsData){
-        return new Standings(
+        return new Standing(
             data.id,
             data.placement,
             Entrant.parse(data.entrant)

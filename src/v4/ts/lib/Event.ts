@@ -9,7 +9,7 @@ import {PhaseGroup, IPhaseGroup} from './PhaseGroup'
 import {GGSet, IGGSet} from './GGSet'
 import {Entrant, IEntrant} from './Entrant'
 import {Attendee, IAttendee} from './Attendee'
-import {Standings, IStandings} from './Standings'
+import {Standing, IStandings} from './Standing'
 
 import NI from './util/NetworkInterface'
 import * as queries from './scripts/eventQueries'
@@ -157,7 +157,7 @@ export class Event extends EventEmitter implements IEvent.Event{
 		return data.event.phaseGroups.map(phaseGroupData => PhaseGroup.parse(phaseGroupData))
 	}
 
-	async getStandings(options: IStandings.StandingsOptions = IStandings.getDefaultOptions()): Promise<Standings[]> {
+	async getStandings(options: IStandings.StandingsOptions = IStandings.getDefaultOptions()): Promise<Standing[]> {
 		log.info('Getting Standings for Event [%s :: %s]', this.id, this.name);
 		
 		let data: IEvent.EventStandings[] = await NI.paginatedQuery(
@@ -167,7 +167,7 @@ export class Event extends EventEmitter implements IEvent.Event{
 		let events = _.flatten(data.map(d => d.event))
 		let standings: IStandings.Standings[] = _.flatten(
 			_.flatten(
-				events.map(event => event.standings.nodes.map(standingData => Standings.parse(standingData)))
+				events.map(event => event.standings.nodes.map(standingData => Standing.parse(standingData)))
 			)
 		);
 		_.sortBy(standings, 'placement')

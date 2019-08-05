@@ -28,6 +28,8 @@ const EVENT_1_ID = 133902
 const EVENT_1_SLUG = 'tournament/21xx-cameron-s-birthday-bash-1/event/melee-singles'
 const EVENT_1_TOURNAMENT_SLUG='21xx-cameron-s-birthday-bash-1'
 const EVENT_1_EVENT_SLUG='melee-singles'
+const EVENT_1_PHASE_COUNT = 1
+const EVENT_1_PHASE_GROUP_COUNT = 1
 const EVENT_1_ENTRANT_COUNT = 39
 const EVENT_1_ATTENDEE_COUNT = 39
 const EVENT_1_SET_COUNT = 77
@@ -36,14 +38,18 @@ const EVENT_2_ID = 23597
 const EVENT_2_SLUG = 'tournament/tipped-off-12-presented-by-the-lab-gaming-center/event/melee-doubles'
 const EVENT_2_TOURNAMENT_SLUG='tipped-off-12-presented-by-the-lab-gaming-center'
 const EVENT_2_EVENT_SLUG='melee-doubles'
+const EVENT_2_PHASE_COUNT = 2
+const EVENT_2_PHASE_GROUP_COUNT = 9
 const EVENT_2_ENTRANT_COUNT = 60
-const EVENT_2_ATTENDEE_COUNT = 60
-const EVENT_2_SET_COUNT = 121
+const EVENT_2_ATTENDEE_COUNT = 120
+const EVENT_2_SET_COUNT = 77
 
 const EVENT_3_ID = 11787
 const EVENT_3_SLUG = 'tournament/ceo-2016/event/melee-singles'
 const EVENT_3_TOURNAMENT_SLUG='ceo-2016'
 const EVENT_3_EVENT_SLUG='melee-singles'
+const EVENT_3_PHASE_COUNT = 2
+const EVENT_3_PHASE_GROUP_COUNT = 33
 const EVENT_3_ENTRANT_COUNT = 725
 const EVENT_3_ATTENDEE_COUNT = 725
 
@@ -213,44 +219,17 @@ describe('smashgg Event', function(){
 	// phases
 	it('should return the correct list of Phases in the Event 1', async function(){
 		this.timeout(30000)
-
-		let phases: Phase[] = await event1.getPhases();
-		var hasDuplicates = function(a: Phase[]) {
-			return _.uniq(a).length !== a.length;
-		};
-		expect(hasDuplicates(phases)).to.be.false;
-		phases.forEach(phase => {
-			expect(phase).to.be.an.instanceof(Phase);
-		});
-		expect(phases.length).to.be.equal(1);
+		await testPhases(event1, EVENT_1_PHASE_COUNT)
 		return true;
 	})
 	it('should return the correct list of Phases in the Event 2', async function(){
 		this.timeout(30000)
-
-		let phases: Phase[] = await event2.getPhases();
-		var hasDuplicates = function(a: Phase[]) {
-			return _.uniq(a).length !== a.length;
-		};
-		expect(hasDuplicates(phases)).to.be.false;
-		phases.forEach(phase => {
-			expect(phase).to.be.an.instanceof(Phase);
-		});
-		expect(phases.length).to.be.equal(2);
+		await testPhases(event2, EVENT_2_PHASE_COUNT)
 		return true;
 	})
 	it('should return the correct list of Phases in the Event 3', async function(){
 		this.timeout(30000)
-
-		let phases: Phase[] = await event3.getPhases();
-		var hasDuplicates = function(a: Phase[]) {
-			return _.uniq(a).length !== a.length;
-		};
-		expect(hasDuplicates(phases)).to.be.false;
-		phases.forEach(phase => {
-			expect(phase).to.be.an.instanceof(Phase);
-		});
-		expect(phases.length).to.be.equal(2);
+		await testPhases(event3, EVENT_3_PHASE_COUNT)
 		return true;
 	})
 
@@ -258,44 +237,17 @@ describe('smashgg Event', function(){
 	// phase groups
 	it('should return the correct list of Phase Groups in the Event 1', async function(){
 		this.timeout(30000)
-
-		let groups: PhaseGroup[] = await event1.getPhaseGroups();
-		var hasDuplicates = function(a: PhaseGroup[]) {
-			return _.uniq(a).length !== a.length;
-		};
-		expect(hasDuplicates(groups)).to.be.false;
-		groups.forEach(group => {
-			expect(group).to.be.an.instanceof(PhaseGroup);
-		});
-		expect(groups.length).to.be.equal(1);
+		await testPhaseGroups(event1, EVENT_1_PHASE_GROUP_COUNT)
 		return true;
 	})
 	it('should return the correct list of Phase Groups in the Event 2', async function(){
 		this.timeout(30000)
-
-		let groups: PhaseGroup[] = await event2.getPhaseGroups();
-		var hasDuplicates = function(a: PhaseGroup[]) {
-			return _.uniq(a).length !== a.length;
-		};
-		expect(hasDuplicates(groups)).to.be.false;
-		groups.forEach(group => {
-			expect(group).to.be.an.instanceof(PhaseGroup);
-		});
-		expect(groups.length).to.be.equal(9);
+		await testPhaseGroups(event2, EVENT_2_PHASE_GROUP_COUNT)
 		return true;
 	})
 	it('should return the correct list of Phase Groups in the Event 3', async function(){
 		this.timeout(30000)
-
-		let groups: PhaseGroup[] = await event3.getPhaseGroups();
-		var hasDuplicates = function(a: PhaseGroup[]) {
-			return _.uniq(a).length !== a.length;
-		};
-		expect(hasDuplicates(groups)).to.be.false;
-		groups.forEach(group => {
-			expect(group).to.be.an.instanceof(PhaseGroup);
-		});
-		expect(groups.length).to.be.equal(33);
+		await testPhaseGroups(event3, EVENT_3_PHASE_GROUP_COUNT)
 		return true;
 	})
 
@@ -303,17 +255,17 @@ describe('smashgg Event', function(){
 	// entrants
 	it('should return the correct list of Entrants in the Event 1', async function(){
 		this.timeout(30000)
-		await testEntrant(event1, EVENT_1_ENTRANT_COUNT)
+		await testEntrants(event1, EVENT_1_ENTRANT_COUNT)
 		return true;
 	})
 	it('should return the correct list of Entrants in the Event 2', async function(){
 		this.timeout(30000)
-		await testEntrant(event2, EVENT_2_ENTRANT_COUNT)
+		await testEntrants(event2, EVENT_2_ENTRANT_COUNT)
 		return true;
 	})
 	xit('should return the correct list of Entrants in the Event 3', async function(){
 		this.timeout(60000)
-		await testEntrant(event3, EVENT_3_ENTRANT_COUNT)
+		await testEntrants(event3, EVENT_3_ENTRANT_COUNT)
 		return true;
 	})
 
@@ -338,35 +290,45 @@ describe('smashgg Event', function(){
 	// sets
 	it('should return the correct list of Sets in the Event 1', async function(){
 		this.timeout(30000)
-
-		let sets: GGSet[] = await event1.getSets();
-		var hasDuplicates = function(a: GGSet[]) {
-			return _.uniq(a).length !== a.length;
-		};
-		expect(hasDuplicates(sets)).to.be.false;
-		sets.forEach(set => {
-			expect(set).to.be.an.instanceof(GGSet);
-		});
-		expect(sets.length).to.be.equal(EVENT_1_SET_COUNT);
+		await testSets(event1, EVENT_1_SET_COUNT)
 		return true;
 	})
 	it('should return the correct list of Sets in the Event 2', async function(){
 		this.timeout(60000)
-
-		let sets: GGSet[] = await event2.getSets();
-		var hasDuplicates = function(a: GGSet[]) {
-			return _.uniq(a).length !== a.length;
-		};
-		expect(hasDuplicates(sets)).to.be.false;
-		sets.forEach(set => {
-			expect(set).to.be.an.instanceof(GGSet);
-		});
-		expect(sets.length).to.be.equal(EVENT_2_SET_COUNT);
+		await testSets(event2, EVENT_2_SET_COUNT)
 		return true;
 	})
 })
 
-async function testEntrant(event: Event, expected: number){
+async function testPhases(event: Event, expected: number){
+	let phases: Phase[] = await event.getPhases();
+	
+	phases.forEach(phase => {
+		expect(phase).to.be.an.instanceof(Phase);
+		expect(
+			phases.filter(x => x.id == phase.id).length,
+			'Phase array must not have duplicates! Found: ' + phase.id
+		).to.be.equal(1);
+	});
+	expect(phases.length).to.be.equal(expected);
+}
+
+async function testPhaseGroups(event: Event, expected: number){
+	let groups = await event.getPhaseGroups()
+
+	groups.forEach(group => {
+		expect(group).to.be.an.instanceof(PhaseGroup);
+		expect(
+			groups.filter(x => x.id == group.id).length,
+			'Phase Group array must not have duplicates! Found: ' + group.id
+		).to.be.equal(1);
+	});
+	expect(groups.length).to.be.equal(expected);
+
+	return true
+}
+
+async function testEntrants(event: Event, expected: number){
 	let entrants: Entrant[] = await event.getEntrants();
 	
 	entrants.forEach(entrant => {
@@ -382,7 +344,7 @@ async function testEntrant(event: Event, expected: number){
 
 async function testAttendees(event: Event, expected: number){
 	let attendees: Attendee[] = await event.getAttendees();
-	
+
 	attendees.forEach(attendee => {
 		expect(attendee).to.be.an.instanceof(Attendee);
 		expect(
@@ -393,4 +355,17 @@ async function testAttendees(event: Event, expected: number){
 	
 	expect(attendees.length).to.be.equal(expected);
 	return true;
+}
+
+async function testSets(event: Event, expected: number){
+	let sets: GGSet[] = await event.getSets();
+
+	sets.forEach(set => {
+		expect(set).to.be.an.instanceof(GGSet);
+		expect(
+			sets.filter(x => x.id == set.id).length,
+			'Set array must not have duplicates! Found: ' + set.id
+		).to.be.equal(1);
+	});
+	expect(sets.length).to.be.equal(EVENT_1_SET_COUNT);
 }

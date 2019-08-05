@@ -24,7 +24,7 @@ query PhaseSeedQuery($id: ID!, $page: Int, $perPage: Int, $sortBy: String, $filt
 	}	
 }`
 
-export const phasePhaseGroups = `
+export const phasePhaseGroups2 = `
 query PhaseGroupsQuery($eventId: Int){
 	event(id: $eventId){
 		phaseGroups{
@@ -32,6 +32,18 @@ query PhaseGroupsQuery($eventId: Int){
 		}
 	}
 }`
+
+export const phasePhaseGroups = `
+query PhaseGroupsQuery($id:ID!){
+	phase(id:$id){
+		phaseGroups(query:{}){
+			nodes{
+				${Schema.phaseGroup}
+			}
+		}
+	}
+}
+`
 
 export const phaseSets = `
 query PhaseSets($eventId:Int, $page: Int, $perPage: Int, $sortType: SetSortType, $filters: SetFilters, $hasPermissions: Boolean){

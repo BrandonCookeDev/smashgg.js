@@ -74,12 +74,20 @@ export class Phase implements IPhase.Phase{
 		return this.groupCount
 	}
 
-	async getPhaseGroups() : Promise<PhaseGroup[]> {
+	async getPhaseGroups2() : Promise<PhaseGroup[]> {
 		log.info('Getting phase groups for phase %s', this.id)
-		let data: IPhase.PhaseGroupData = await NI.query(queries.phasePhaseGroups, {eventId: this.eventId})
+		let data: IPhase.PhaseGroupData = await NI.query(queries.phasePhaseGroups2, {eventId: this.eventId})
 		let phaseGroupData: IPhaseGroup.PhaseGroupData[] = data.event.phaseGroups.filter(phaseGroupData => phaseGroupData.phaseId === this.id)
 		let phaseGroups: PhaseGroup[] = phaseGroupData.map(pg => PhaseGroup.parse(pg))
 		return phaseGroups;
+	}
+
+	async getPhaseGroups(): Promise<PhaseGroup[]> {
+		log.info('Getting phase groups for phase %s', this.id)
+		let data: IPhase.PaginatedPhaseGroupData = await NI.query(queries.phasePhaseGroups, {id: this.id})
+		let phaseGroupData: IPhaseGroup.PhaseGroupData[] = data.phase.phaseGroups.nodes.filter(phaseGroupData => phaseGroupData.phaseId === this.id)
+		let phaseGroups: PhaseGroup[] = phaseGroupData.map(pg => PhaseGroup.parse(pg))
+		return phaseGroups
 	}
 
 	async getSeeds(options: ISeed.SeedOptions) : Promise<Seed[]> {
@@ -88,15 +96,16 @@ export class Phase implements IPhase.Phase{
 
 		let pgs = await this.getPhaseGroups()
 		let seeds = await NI.clusterQuery(pgs, 'getSeeds', options)
-		return _.flatten(seeds)
+		return _.uniqBy(_.flatten(seeds), 'id')
 	}
+
 	async getEntrants(options: IEntrant.EntrantOptions = IEntrant.getDefaultEntrantOptions()) : Promise<Entrant[]> {
 		log.info('Getting entrants for phase %s', this.id)
 		log.verbose('Query variables: %s', JSON.stringify(options))
 
 		let pgs = await this.getPhaseGroups()
 		let entrants = await NI.clusterQuery(pgs, 'getEntrants', options)
-		return _.flatten(entrants)
+		return _.uniqBy(_.flatten(entrants), 'id')
 	}
 
 	async getAttendees(options: IAttendee.AttendeeOptions = IAttendee.getDefaultAttendeeOptions()) : Promise<Attendee[]> {
@@ -105,7 +114,7 @@ export class Phase implements IPhase.Phase{
 
 		let pgs = await this.getPhaseGroups()
 		let attendees = await NI.clusterQuery(pgs, 'getAttendees', options)
-		return _.flatten(attendees);
+		return _.uniqBy(_.flatten(attendees), 'id')
 	}
 
 	async getSets(options: IGGSet.SetOptions = IGGSet.getDefaultSetOptions()) : Promise<GGSet[]> {
@@ -115,7 +124,7 @@ export class Phase implements IPhase.Phase{
 		// getting their respective sets for time efficiency
 		let pgs = await this.getPhaseGroups()
 		let pgSets = await NI.clusterQuery(pgs, 'getSets', options)
-		return _.flatten(pgSets)
+		return _.uniqBy(_.flatten(pgSets), 'id')
 	}
 
 	// alternatives
@@ -130,7 +139,7 @@ export class Phase implements IPhase.Phase{
 		)
 		let seedData: ISeed.SeedData[] = _.flatten(data.map(results => results.phase.paginatedSeeds.nodes)).filter(seed => seed != null)
 		let seeds = seedData.map( (seedData: ISeed.SeedData) => Seed.parse(seedData) )
-		return seeds
+		return _.uniqBy(seeds, 'id')
 	}
 
 	async getEntrants2(options: IEntrant.EntrantOptions = IEntrant.getDefaultEntrantOptions()) : Promise<Entrant[]> {
@@ -144,7 +153,7 @@ export class Phase implements IPhase.Phase{
 		)
 		let entrantData: IEntrant.Data[] = _.flatten(data.map(entrantData => entrantData.phase.paginatedSeeds.nodes )).filter(entrant => entrant != null)
 		let entrants: Entrant[] = entrantData.map(e => Entrant.parseFull(e)) as Entrant[];
-		return entrants
+		return _.uniqBy(entrants, 'id')
 	}
 
 	async getAttendees2(options: IAttendee.AttendeeOptions = IAttendee.getDefaultAttendeeOptions()) : Promise<Attendee[]> {
@@ -161,7 +170,7 @@ export class Phase implements IPhase.Phase{
 		let entrants = nodes.map(node => node.entrant)
 		let participants = _.flatten(entrants.map(entrant => entrant.participants)).filter(participant => participant != null)
 		let attendees = participants.map(participant => Attendee.parse(participant))
-		return attendees
+		return _.uniqBy(attendees, 'id')
 	}
 
 	async getIncompleteSets(options: IGGSet.SetOptions = IGGSet.getDefaultSetOptions()) : Promise<GGSet[]> {
@@ -216,6 +225,14 @@ export namespace IPhase{
 
 	export interface DataEntrants{
 		event: PhaseEntrantData
+	}
+
+	export interface PaginatedPhaseGroupData{
+		phase:{
+			phaseGroups:{
+				nodes: IPhaseGroup.PhaseGroupData[]
+			}
+		}
 	}
 
 	export interface PhaseData{

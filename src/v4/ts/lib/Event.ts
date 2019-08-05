@@ -76,6 +76,10 @@ export class Event extends EventEmitter implements IEvent.Event{
 		)
 	}
 
+	static filterDuplicates(arr: IEvent.Event[]){
+		return _.uniqBy(arr, 'id')
+	}
+
 	static parseFull(data: IEvent.Data) : Event {
 		return Event.parse(data.event);
 	}
@@ -182,7 +186,7 @@ export class Event extends EventEmitter implements IEvent.Event{
 
 		let pgs: PhaseGroup[] = await this.getPhaseGroups()
 		let entrants: Entrant[] = await NI.clusterQuery(pgs, 'getEntrants', options)
-		return _.flatten(entrants);
+		return _.uniqBy(_.flatten(entrants), 'id')
 	}
 
 	async getAttendees(options: IAttendee.AttendeeOptions = IAttendee.getDefaultAttendeeOptions()) : Promise<Attendee[]> {
@@ -196,7 +200,7 @@ export class Event extends EventEmitter implements IEvent.Event{
 		let pgs: PhaseGroup[] = await this.getPhaseGroups();
 		let attendees: Attendee[] = await NI.clusterQuery(pgs, "getAttendees", options);
 		if(options.isVerified) attendees = attendees.filter(attendee => attendee.getVerified());
-		return _.flatten(attendees);
+		return _.uniqBy(_.flatten(attendees), 'id')
 	}
 
 	async getSets(options: IGGSet.SetOptions = IGGSet.getDefaultSetOptions()) : Promise<GGSet[]> {
@@ -204,7 +208,7 @@ export class Event extends EventEmitter implements IEvent.Event{
 
 		let pgs: PhaseGroup[] = await this.getPhaseGroups();
 		let sets: GGSet[] = await NI.clusterQuery(pgs, 'getSets', options);
-		return _.flatten(sets);
+		return _.uniqBy(_.flatten(sets), 'id')
 	}
 
 	async getEntrants2(options: IEntrant.EntrantOptions = IEntrant.getDefaultEntrantOptions()) : Promise<Entrant[]> {
@@ -216,7 +220,7 @@ export class Event extends EventEmitter implements IEvent.Event{
 		)
 		let entrantData = _.flatten(data.map(d => d.event.entrants.nodes))
 		let entrants: Entrant[] = entrantData.map(entrant => Entrant.parse(entrant))
-		return entrants
+		return _.uniqBy(entrants, 'id')
 	}
 
 	async getAttendees2(options: IAttendee.AttendeeOptions = IAttendee.getDefaultAttendeeOptions()) : Promise<Attendee[]> {
@@ -229,7 +233,7 @@ export class Event extends EventEmitter implements IEvent.Event{
 		let attendeeData = _.flatten(data.map(d => d.event.tournament.participants.nodes))
 		let attendees: Attendee[] = attendeeData.map(attendee => Attendee.parse(attendee))
 		if(options.isVerified) attendees = attendees.filter(attendee => attendee.getVerified())
-		return attendees
+		return _.uniqBy(attendees, 'id')
 	}
 
 	async getSets2(options: IGGSet.SetOptions = IGGSet.getDefaultSetOptions()) : Promise<GGSet[]> {
@@ -242,7 +246,7 @@ export class Event extends EventEmitter implements IEvent.Event{
 		let phaseGroups = _.flatten(data.map(d => d.event.phaseGroups))
 		let setData = _.flatten(phaseGroups.map(pg => pg.paginatedSets.nodes))
 		let sets: GGSet[] = setData.map(set => GGSet.parse(set))
-		return sets
+		return _.uniqBy(sets, 'id')
 	}
 
 	// need coverage

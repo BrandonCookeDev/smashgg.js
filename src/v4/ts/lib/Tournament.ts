@@ -189,7 +189,7 @@ export class Tournament implements ITournament.Tournament{
 		log.warn('Puilling Sets for large or massive Tournaments may lead to long execution times and lowered usability. It is recommended to pull from Event if you are targetting a single event\'s Sets')
 		let pgs = await this.getPhaseGroups()
 		let sets = await NI.clusterQuery(pgs, 'getSets', options)
-		return _.flatten(sets)
+		return _.uniqBy(_.flatten(sets), 'id')
 	}
 
 	async getEntrants(options: IEntrant.EntrantOptions = IEntrant.getDefaultEntrantOptions()) : Promise<Entrant[]> {
@@ -199,7 +199,7 @@ export class Tournament implements ITournament.Tournament{
 		let pgs = await this.getPhaseGroups()
 		let entrants = await NI.clusterQuery(pgs, 'getEntrants', options)
 		entrants = _.uniq(entrants)
-		return _.flatten(entrants)
+		return _.uniqBy(_.flatten(entrants), 'id')
 	}
 
 	async getAttendees2(options: IAttendee.AttendeeOptions = IAttendee.getDefaultAttendeeOptions()) : Promise<Attendee[]> {
@@ -213,7 +213,7 @@ export class Tournament implements ITournament.Tournament{
 		let pgs = await this.getPhaseGroups()
 		let attendees = await NI.clusterQuery(pgs, 'getAttendees', options)
 		attendees = _.uniqWith(attendees, (a1: Attendee, a2: Attendee) => Attendee.eq(a1, a2));
-		return _.flatten(attendees)
+		return _.uniqBy(_.flatten(attendees), 'id')
 	}
 
 	async searchAttendees(smashtag: string) : Promise<Attendee[] | null>{
@@ -227,7 +227,7 @@ export class Tournament implements ITournament.Tournament{
 				return null;
 
 			const matchingAttendees: Attendee[] = nodes.map((element: IAttendee.AttendeeData) => Attendee.parse(element));
-			return matchingAttendees;
+			return _.uniqBy(matchingAttendees, 'id')
 		} catch {
 			return null; // bad parse, no attendee
 		}
@@ -244,7 +244,7 @@ export class Tournament implements ITournament.Tournament{
 				return null;
 
 			const matchingAttendees: Attendee[] = nodes.map((element: IAttendee.AttendeeData) => Attendee.parse(element));
-			return matchingAttendees;
+			return _.uniqBy(matchingAttendees, 'id')
 		} catch {
 			return null; // bad parse, no attendee
 		}
@@ -309,7 +309,7 @@ export class Tournament implements ITournament.Tournament{
 		let tournaments = _.flatten(data.map(d => d.tournament))
 		let attendeeData: IAttendee.PaginatedData[] = _.flatten(tournaments.map(tournament => tournament.participants))
 		let attendees: Attendee[] = _.flatten(attendeeData.map(data => data.nodes.map(attendee => Attendee.parse(attendee))))
-		return attendees;
+		return _.uniqBy(attendees, 'id')
 	}
 	
 	

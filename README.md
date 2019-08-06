@@ -1080,8 +1080,6 @@ Attendee(
 * **getConnectedAccounts()**
     * get a list of connected accounts to this Attendee
     * returns object | null
-<<<<<<< HEAD
-=======
 * **async getUserAccount()**
     * get the corresponding smash.gg [User](#user) object associated with this Attendee
     * returns Promise resolving [User](#user)
@@ -1091,7 +1089,6 @@ Attendee(
 * **async getEnteredPhaseGroups()**
     * get list of Phase Groups that this Attendee entered
     * returns Promise resolving a list of [PhaseGroup](#phasegroup) objects
->>>>>>> de14b38cdac89a9e2aafe013f548910a403f9519
 
 ### AttendeeOptions
 ```js
@@ -1290,7 +1287,25 @@ Entrant(
 ## Standings
 A Standing is an individual entrant's placement in a given Event.
 
+### Properties
 
+* **id**
+    * number
+* **placement**
+    * number
+* **entrant**
+    * [Entrant](#entrant)
+
+### Methods
+
+* **getId()**
+    * Gets the current Standing's id property
+* **getPlacement()**
+    * Gets the current Standing's placement property
+* **getEntrant()**
+    * Gets the current Standing's entrant property
+* **getGamerTag()**
+    * Gets the current Standing's gamer tag for entrant 1
 
 ----
 

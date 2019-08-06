@@ -1,0 +1,142 @@
+import {IPlayerLite} from './IPlayerLite'
+import {IEntrantData} from './IEntrant'
+import {IAttendeeData} from './IAttendee'
+import {IGame, IGameData} from './IGame'
+
+export interface IGGSet{
+	
+	/*
+	id: number
+	eventId: number | null
+	phaseGroupId: number | null
+	displayScore: string  | null
+	fullRoundText: string  | null
+	round: number | null
+	startedAt: number | null
+	completedAt: number | null
+	winnerId: number | null
+	totalGames: number | null
+	state: number | null
+	player1: IGGSet.PlayerLite
+	player2: IGGSet.PlayerLite
+	score1: number | null
+	score2: number | null
+	*/
+	
+	getEventId(): number | null
+	getPhaseGroupId(): number | null
+	getStartedAt(): Date | null 
+	getCompletedAt(): Date | null 
+	getDisplayScore(): string | null
+	getFullRoundText(): string | null
+	getRound(): number | null
+	getState(): number | null
+	getPlayer1(): IPlayerLite | undefined | null
+	getPlayer1Tag(): string | undefined | null
+	getPlayer1PlayerId(): number | undefined | null
+	getPlayer1AttendeeIds(): number[] | undefined | null
+	getPlayer2(): IPlayerLite | undefined | null
+	getPlayer2Tag(): string | undefined | null
+	getPlayer2PlayerId(): number | undefined | null
+	getPlayer2AttendeeIds(): number[] | undefined | null
+	getWinnerId(): number | null
+	getLoserId(): number | null
+	getIsComplete(): boolean | null
+	getCompletedTime(): Date | null
+	getPlayer1Score(): number | null
+	getPlayer2Score(): number | null
+	getWinner(): IPlayerLite | undefined
+	getLoser(): IPlayerLite | undefined
+	getBestOfCount(): number | string
+	getWinnerScore(): number | string
+	getLoserScore(): number | string
+
+	// getBracketId() : number | string 
+	// getMidsizeRoundText() : string
+	// getWinnersTournamentPlacement() : number | string
+	// getLosersTournamentPlacement() : number | string
+
+	getGames(): Promise<IGame[]>
+}
+
+export interface IGGSetDataFull{
+	set: IGGSetData
+}
+
+export interface IGGSetDataWithGames{
+	set: {
+		games: IGameData[]
+	}
+}
+
+export interface IGGSetData{
+	id: string
+	eventId: number | null
+	phaseGroupId: number | null
+	displayScore: string | null
+	fullRoundText: string | null
+	round: number | null
+	startedAt: number | null
+	completedAt: number | null
+	winnerId: number | null
+	totalGames: number | null
+	state: number | null
+	slots: IGGSetSlots[]
+}
+
+export interface IGGSetSlots{
+	id: string
+	entrant: null | {
+		id: number
+		name: string
+		participants: Array<{
+			id: number
+		}>
+	}
+}
+
+export interface IGGSetSlotEntrantData{
+	set: {
+		slots: Array<{
+			entrant: IEntrantData | null
+		}>
+	}
+}
+
+export interface IGGSetSlotAttendeeEntrantData{
+	set: {
+		slots: Array<{
+			entrant: IGGSetSlotAttendeeData | null
+		}>
+	}
+}
+
+export interface IGGSetSlotAttendeeData{
+	participants: Array<IAttendeeData | null>
+}
+
+export interface IGGSetOptions{
+	filterDQs?: boolean,
+	filterByes?: boolean,
+	filterResets?: boolean,
+	page?: number | null,
+	perPage?: number | null,
+	sortBy?: null | 'NONE' | 'STANDARD' | 'RACE_SPECTATOR' | 'ADMIN',
+	filters?: null | {
+		entrantIds?: number[],
+		state?: number[],
+		stationIds?: number[],
+		phaseIds?: number[],
+		phaseGroupIds?: number[],
+		roundNumber?: number
+	}
+}
+
+export function getDefaultSetOptions(): IGGSetOptions{
+	return {
+		page: null,
+		perPage: null,
+		sortBy: null,
+		filters: null
+	}
+}

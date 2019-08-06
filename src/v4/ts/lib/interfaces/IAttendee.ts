@@ -112,13 +112,3 @@ export interface IAttendeeOptions{
 		}
 	}
 }
-
-export function getDefaultAttendeeOptions(): IAttendeeOptions{
-	return {
-		areSeedsPublished: true,
-		page: null,
-		perPage: 1,
-		sortBy: null,
-		filter: null
-	}
-}

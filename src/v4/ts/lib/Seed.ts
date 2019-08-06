@@ -1,4 +1,9 @@
-import {ISeed, ISeedData, ISeedDataFull} from './interfaces/ISeed'
+import {
+	ISeed,
+	ISeedData,
+	ISeedOptions,
+	ISeedDataFull
+} from './interfaces/ISeed'
 
 export class Seed implements ISeed{
 
@@ -16,6 +21,16 @@ export class Seed implements ISeed{
 	public static parseFull(data: ISeedDataFull): Seed[]{
 		return data.seed.map(seedData => Seed.parse(seedData))
 	}
+
+	public static getDefaultSeedOptions(): ISeedOptions{
+		return {
+			page: null,
+			perPage: 1,
+			sortBy: null,
+			filter: null
+		}
+	}
+	
 
 	private id: number
 	private entrantId: number

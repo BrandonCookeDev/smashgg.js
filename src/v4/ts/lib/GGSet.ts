@@ -15,6 +15,7 @@ import {PlayerLite} from './PlayerLite'
 import {
 	IGGSet, 
 	IGGSetData, 
+	IGGSetOptions,
 	IGGSetDataFull,
 	IGGSetSlotAttendeeData,
 	IGGSetSlotEntrantData
@@ -78,48 +79,48 @@ export class GGSet extends EventEmitter implements IGGSet{
 		return GGSet.parse(data.set)
 	}
 
-	public static filterOutDQs(sets: GGSet[]): IGGSet[]{
+	public static filterOutDQs(sets: IGGSet[]): IGGSet[]{
 		log.debug('GGSet.filterOutDQs called')
-		const displayScores = sets.map(set => set.displayScore)
+		const displayScores = sets.map(set => set.getDisplayScore())
 		return displayScores.includes('DQ') ? 
-			sets.filter(set => set.displayScore !== 'DQ') 
+			sets.filter(set => set.getDisplayScore() !== 'DQ') 
 			: 
 			sets
 	}
 
-	public static filterOutByes(sets: GGSet[]): IGGSet[]{
+	public static filterOutByes(sets: IGGSet[]): IGGSet[]{
 		log.debug('GGSet.filterOutByes called')
-		const displayScores = sets.map(set => set.displayScore)
+		const displayScores = sets.map(set => set.getDisplayScore())
 		return displayScores.includes('BYE') ? 
-			sets.filter(set => set.displayScore !== 'BYE') 
+			sets.filter(set => set.getDisplayScore() !== 'BYE') 
 			: 
 			sets
 	}
 
-	public static filterOutResets(sets: GGSet[]): IGGSet[]{
+	public static filterOutResets(sets: IGGSet[]): IGGSet[]{
 		log.debug('GGSet.filterOutResets called')
-		const fullRoundTexts = sets.map(set => set.fullRoundText)
+		const fullRoundTexts = sets.map(set => set.getFullRoundText())
 		return fullRoundTexts.includes('Grand Final Reset') ? 
-			sets.filter(set => set.fullRoundText !== 'Grand Final Reset') 
+			sets.filter(set => set.getFullRoundText() !== 'Grand Final Reset') 
 			: 
 			sets
 	}
 
-	public static filterForCompleteSets(sets: GGSet[]): IGGSet[]{
+	public static filterForCompleteSets(sets: IGGSet[]): IGGSet[]{
 		log.debug('GGSet.filterForCompleteSets called')
 		return sets.filter(set => set.getIsComplete())
 	}
 
-	public static filterForIncompleteSets(sets: GGSet[]): IGGSet[]{
+	public static filterForIncompleteSets(sets: IGGSet[]): IGGSet[]{
 		log.debug('GGSet.filterForCompleteSets called')
 		return sets.filter(set => !set.getIsComplete())
 	}
 
-	public static filterForXMinutesBack(sets: GGSet[], minutesBack: number): IGGSet[]{
+	public static filterForXMinutesBack(sets: IGGSet[], minutesBack: number): IGGSet[]{
 		log.debug('GGSet.filterForCompleteSets called')
 
 		const now = moment()
-		const filtered: GGSet[] = sets.filter(set => {
+		const filtered: IGGSet[] = sets.filter(set => {
 			const then = moment(set.getCompletedAt() as Date)
 			const diff = moment.duration(now.diff(then))
 
@@ -130,6 +131,15 @@ export class GGSet extends EventEmitter implements IGGSet{
 				return diffMinutes <= minutesBack && diffMinutes >= 0 && set.getIsComplete()
 		})
 		return filtered
+	}
+
+	public static getDefaultSetOptions(): IGGSetOptions{
+		return {
+			page: null,
+			perPage: null,
+			sortBy: null,
+			filters: null
+		}
 	}
 
 	public id: number 

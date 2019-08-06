@@ -48,11 +48,3 @@ export interface ISeedOptions{
 	}
 }
 
-export function getDefaultSeedOptions(): ISeedOptions{
-	return {
-		page: null,
-		perPage: 1,
-		sortBy: null,
-		filter: null
-	}
-}

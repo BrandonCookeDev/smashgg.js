@@ -6,9 +6,11 @@ import { PhaseGroup } from './PhaseGroup'
 import * as queries from './scripts/attendeeQueries'
 import NI from './util/NetworkInterface'
 
+import {IUser} from './interfaces/IUser'
 import {IContactInfo} from './interfaces/IContactInfo'
 import {IAttendee, 
 	IAttendeeData, 
+	IAttendeeOptions,
 	IAttendeeDataFull, 
 	IAttendeeWithPhasesData, 
 	IAttendeeWithPhaseGroupsData
@@ -43,6 +45,16 @@ export class Attendee implements IAttendee{
 		return a1.getGamerTag() === a2.getGamerTag() && 
 				a1.getSponsor() === a2.getSponsor() && 
 				a1.getPlayerId() === a2.getPlayerId()
+	}
+
+	public static getDefaultAttendeeOptions(): IAttendeeOptions{
+		return {
+			areSeedsPublished: true,
+			page: null,
+			perPage: 1,
+			sortBy: null,
+			filter: null
+		}
 	}
 	
 	private id: number
@@ -183,21 +195,21 @@ export class Attendee implements IAttendee{
 	}
 	*/
 
-	public async getUserAccount(): Promise<User> {
+	public async getUserAccount(): Promise<IUser> {
 		Log.info('Getting User account that Attendee %s (Participant %s) entered', this.gamerTag, this.id!)
 		return await User.getById(this.playerId!)
 	}
 
-	public async getEnteredPhases(): Promise<Phase[]> {
+	public async getEnteredPhases(): Promise<IPhase[]> {
 		Log.info('Getting Phases that Attendee %s (Participant %s) entered', this.gamerTag, this.id)
 		const data: IAttendeeWithPhasesData = await NI.query(queries.getAttendeePhases, {id: this.id})
 		const seedData = _.flatten(data.participant.entrants.map(entrant => entrant.seeds))
 		const phaseData: IPhaseData[] = _.flatten(seedData.map(seed => seed.phase))
-		const phases: Phase[] = phaseData.map(phase => Phase.parse(phase))
+		const phases: IPhase[] = phaseData.map(phase => Phase.parse(phase))
 		return phases
 	}
 
-	public async getEnteredPhaseGroups(): Promise<PhaseGroup[]> {
+	public async getEnteredPhaseGroups(): Promise<IPhaseGroup[]> {
 		Log.info('Getting Phase Groups that Attendee %s (Participant %s) entered', this.gamerTag, this.id)
 		const data: IAttendeeWithPhaseGroupsData = await NI.query(queries.getAttendeePhaseGroups, {id: this.id})
 		const seedData = _.flatten(data.participant.entrants.map(entrant => entrant.seeds))

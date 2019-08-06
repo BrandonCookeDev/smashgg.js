@@ -135,12 +135,3 @@ export interface IGGSetOptions{
 		roundNumber?: number
 	}
 }
-
-export function getDefaultSetOptions(): IGGSetOptions{
-	return {
-		page: null,
-		perPage: null,
-		sortBy: null,
-		filters: null
-	}
-}

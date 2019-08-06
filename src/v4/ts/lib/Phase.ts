@@ -2,23 +2,51 @@
 
 import _ from 'lodash'
 
+import {Seed} from './Seed'
+import {GGSet} from './GGSet'
+import {Attendee} from './Attendee'
+import {Entrant} from './Entrant'
+import {PhaseGroup} from './PhaseGroup' 
+
 import NI from './util/NetworkInterface'
 import * as queries from './scripts/phaseQueries'
-import {PhaseGroup} from './PhaseGroup' //TODO change this to internal
-import {GGSet, IGGSet} from './GGSet'
-import {Entrant, IEntrant} from './Entrant'
-import {Seed, ISeed} from './Seed'
-import {Attendee, IAttendee} from './Attendee'
-import Cache from './util/Cache'
 import log from './util/Logger'
 
-import { ICommon } from './util/Common'
-import { IPhaseGroup } from './PhaseGroup';
-import { phaseGroup } from './scripts/phaseGroupQueries';
-
-import {IPhase} from './interfaces/IPhase'
+import {
+	IPhase, 
+	IPhaseData, 
+	IPhaseDataFull,
+	IPhaseSeedData,
+	IPhaseEntrantData,
+	IPhaseAttendeeData,
+	IPhasePaginatedData
+} from './interfaces/IPhase'
+import {
+	IPhaseGroup, 
+	IPhaseGroupData,
+} from './interfaces/IPhaseGroup'
+import {IGGSet, IGGSetOptions, IGGSetData} from './interfaces/IGGSet'
+import {IAttendee, IAttendeeData, IAttendeeOptions} from './interfaces/IAttendee'
+import {IEntrant, IEntrantData, IEntrantOptions} from './interfaces/IEntrant'
+import {ISeed, ISeedData, ISeedOptions} from './interfaces/ISeed'
 
 export class Phase implements IPhase{
+
+	public static parse(data: IPhaseData, eventId: number = -1): IPhase {
+		return new Phase(
+			data.id,
+			eventId || -1,
+			data.name,
+			data.numSeeds,
+			data.groupCount
+		)
+	}
+
+	public static async get(theId: number, eventId: number): Promise<IPhase> {
+		log.info('Getting Phase with id %s and event id %s', theId, eventId)
+		const data: IPhaseDataFull = await NI.query(queries.phase, {id: theId})
+		return Phase.parse(data.phase, eventId)
+	}
 
 	private id: number
 	private eventId: number
@@ -40,150 +68,146 @@ export class Phase implements IPhase{
 		this.groupCount = groupCount
 	}
 
-	static parse(data: IPhase.PhaseData, eventId: number = -1) : Phase {
-		return new Phase(
-			data.id,
-			eventId || -1,
-			data.name,
-			data.numSeeds,
-			data.groupCount
-		)
-	}
-
-	static async get(id: number, eventId: number) : Promise<Phase> {
-		log.info('Getting Phase with id %s and event id %s', id, eventId)
-		let data: IPhase.Data = await NI.query(queries.phase, {id: id});
-		return Phase.parse(data.phase, eventId);
-	}
-	
-	getId(): number{
+	public getId(): number{
 		return this.id
 	}
 
-	getEventId(): number{
+	public getEventId(): number{
 		return this.eventId
 	}
 
-	getName(): string{
+	public getName(): string{
 		return this.name
 	}
 
-	getNumSeeds(): number{
+	public getNumSeeds(): number{
 		return this.numSeeds
 	}
 
-	getGroupCount(): number{
+	public getGroupCount(): number{
 		return this.groupCount
 	}
 
-	async getPhaseGroups2() : Promise<PhaseGroup[]> {
+	public async getPhaseGroups2(): Promise<IPhaseGroup[]> {
 		log.info('Getting phase groups for phase %s', this.id)
-		let data: IPhase.PhaseGroupData = await NI.query(queries.phasePhaseGroups2, {eventId: this.eventId})
-		let phaseGroupData: IPhaseGroup.PhaseGroupData[] = data.event.phaseGroups.filter(phaseGroupData => phaseGroupData.phaseId === this.id)
-		let phaseGroups: PhaseGroup[] = phaseGroupData.map(pg => PhaseGroup.parse(pg))
+		const data: IPhaseGroupData = await NI.query(queries.phasePhaseGroups2, {eventId: this.eventId})
+		const phaseGroupData: IPhaseGroupData[] = 
+			data.event.phaseGroups.filter(phaseGroupData => phaseGroupData.phaseId === this.id)
+		const phaseGroups: IPhaseGroup[] = phaseGroupData.map(pg => PhaseGroup.parse(pg))
 		return phaseGroups;
 	}
 
-	async getPhaseGroups(): Promise<PhaseGroup[]> {
+	public async getPhaseGroups(): Promise<IPhaseGroup[]> {
 		log.info('Getting phase groups for phase %s', this.id)
-		let data: IPhase.PaginatedPhaseGroupData = await NI.query(queries.phasePhaseGroups, {id: this.id})
-		let phaseGroupData: IPhaseGroup.PhaseGroupData[] = data.phase.phaseGroups.nodes.filter(phaseGroupData => phaseGroupData.phaseId === this.id)
-		let phaseGroups: PhaseGroup[] = phaseGroupData.map(pg => PhaseGroup.parse(pg))
+		const data: IPhasePaginatedData = await NI.query(queries.phasePhaseGroups, {id: this.id})
+		const phaseGroupData: IPhaseGroupData[] = 
+			data.phase.phaseGroups.nodes.filter(phaseGroupData => phaseGroupData.phaseId === this.id)
+		const phaseGroups: IPhaseGroup[] = phaseGroupData.map(pg => PhaseGroup.parse(pg))
 		return phaseGroups
 	}
 
-	async getSeeds(options: ISeed.SeedOptions) : Promise<Seed[]> {
+	public async getSeeds(options: ISeedOptions): Promise<ISeed[]> {
 		log.info('Getting seeds for phase %s', this.id)
 		log.verbose('Query variables: %s', JSON.stringify(options))
 
-		let pgs = await this.getPhaseGroups()
-		let seeds = await NI.clusterQuery(pgs, 'getSeeds', options)
+		const pgs = await this.getPhaseGroups()
+		const seeds = await NI.clusterQuery(pgs, 'getSeeds', options)
 		return _.uniqBy(_.flatten(seeds), 'id')
 	}
 
-	async getEntrants(options: IEntrant.EntrantOptions = IEntrant.getDefaultEntrantOptions()) : Promise<Entrant[]> {
+	public async getEntrants(options: IEntrantOptions = Entrant.getDefaultEntrantOptions()): Promise<IEntrant[]> {
 		log.info('Getting entrants for phase %s', this.id)
 		log.verbose('Query variables: %s', JSON.stringify(options))
 
-		let pgs = await this.getPhaseGroups()
-		let entrants = await NI.clusterQuery(pgs, 'getEntrants', options)
+		const pgs = await this.getPhaseGroups()
+		const entrants = await NI.clusterQuery(pgs, 'getEntrants', options)
 		return _.uniqBy(_.flatten(entrants), 'id')
 	}
 
-	async getAttendees(options: IAttendee.AttendeeOptions = IAttendee.getDefaultAttendeeOptions()) : Promise<Attendee[]> {
+	public async getAttendees(options: IAttendeeOptions = Attendee.getDefaultAttendeeOptions()): Promise<IAttendee[]> {
 		log.info('Getting attendees for phase %s', this.id)
 		log.verbose('Query variables: %s', JSON.stringify(options))
 
-		let pgs = await this.getPhaseGroups()
-		let attendees = await NI.clusterQuery(pgs, 'getAttendees', options)
+		const pgs = await this.getPhaseGroups()
+		const attendees = await NI.clusterQuery(pgs, 'getAttendees', options)
 		return _.uniqBy(_.flatten(attendees), 'id')
 	}
 
-	async getSets(options: IGGSet.SetOptions = IGGSet.getDefaultSetOptions()) : Promise<GGSet[]> {
+	public async getSets(options: IGGSetOptions = GGSet.getDefaultSetOptions()): Promise<IGGSet[]> {
 		log.info('Getting sets for phase %s', this.id)
 
 		// get all phase group objects, then promise all over the array pf phpase groups
 		// getting their respective sets for time efficiency
-		let pgs = await this.getPhaseGroups()
-		let pgSets = await NI.clusterQuery(pgs, 'getSets', options)
+		const pgs = await this.getPhaseGroups()
+		const pgSets = await NI.clusterQuery(pgs, 'getSets', options)
 		return _.uniqBy(_.flatten(pgSets), 'id')
 	}
 
 	// alternatives
-	async getSeeds2(options: ISeed.SeedOptions) : Promise<Seed[]> {
+	public async getSeeds2(options: ISeedOptions): Promise<ISeed[]> {
 		log.info('Getting seeds for phase %s', this.id)
 		log.verbose('Query variables: %s', JSON.stringify(options))
 
-		let data: IPhase.PhaseSeedData[] = await NI.paginatedQuery(
+		const data: IPhaseSeedData[] = await NI.paginatedQuery(
 			`Phase Seeds [${this.id}]`, 
 			queries.phaseSeeds, {id: this.id},
 			options, {}, 2
 		)
-		let seedData: ISeed.SeedData[] = _.flatten(data.map(results => results.phase.paginatedSeeds.nodes)).filter(seed => seed != null)
-		let seeds = seedData.map( (seedData: ISeed.SeedData) => Seed.parse(seedData) )
+		const seedData: ISeedData[] = 
+			_.flatten(data.map(results => results.phase.paginatedSeeds.nodes)).filter(seed => seed != null)
+		const seeds = seedData.map( (seedData: ISeedData) => Seed.parse(seedData) )
 		return _.uniqBy(seeds, 'id')
 	}
 
-	async getEntrants2(options: IEntrant.EntrantOptions = IEntrant.getDefaultEntrantOptions()) : Promise<Entrant[]> {
+	public async getEntrants2(
+		options: IEntrantOptions = Entrant.getDefaultEntrantOptions()
+	): Promise<IEntrant[]> {
 		log.info('Getting entrants for phase %s', this.id)
 		log.verbose('Query variables: %s', JSON.stringify(options))
 
-		let data: IPhase.PhaseEntrantData[] = await NI.paginatedQuery(
+		const data: IPhaseEntrantData[] = await NI.paginatedQuery(
 			`Phase Entrants [${this.id}]`, 
 			queries.phaseEntrants, {id: this.id}, 
 			options, {}, 2
 		)
-		let entrantData: IEntrant.Data[] = _.flatten(data.map(entrantData => entrantData.phase.paginatedSeeds.nodes )).filter(entrant => entrant != null)
-		let entrants: Entrant[] = entrantData.map(e => Entrant.parseFull(e)) as Entrant[];
+		const entrantData: IEntrantData[] = 
+			_.flatten(data.map(entrantData => entrantData.phase.paginatedSeeds.nodes )).filter(entrant => entrant != null)
+		const entrants: IEntrant[] = entrantData.map(e => Entrant.parseFull(e)) as IEntrant[]
 		return _.uniqBy(entrants, 'id')
 	}
 
-	async getAttendees2(options: IAttendee.AttendeeOptions = IAttendee.getDefaultAttendeeOptions()) : Promise<Attendee[]> {
+	public async getAttendees2(
+		options: IAttendeeOptions = Attendee.getDefaultAttendeeOptions()
+	): Promise<IAttendee[]> {
 		log.info('Getting attendees for phase %s', this.id)
 		log.verbose('Query variables: %s', JSON.stringify(options))
 
-		let data: IPhase.PhaseAttendeeData[] = await NI.paginatedQuery(
+		const data: IPhaseAttendeeData[] = await NI.paginatedQuery(
 			`Phase Attendees [${this.id}]`,
 			queries.phaseAttendees, {id: this.id},
 			options, {}, 3
 		)
-		let seeds = _.flatten(data.map(seed => seed.phase.paginatedSeeds))
-		let nodes = _.flatten(seeds.map(seed => seed.nodes))
-		let entrants = nodes.map(node => node.entrant)
-		let participants = _.flatten(entrants.map(entrant => entrant.participants)).filter(participant => participant != null)
-		let attendees = participants.map(participant => Attendee.parse(participant))
+		const seeds = _.flatten(data.map(seed => seed.phase.paginatedSeeds))
+		const nodes = _.flatten(seeds.map(seed => seed.nodes))
+		const entrants = nodes.map(node => node.entrant)
+		const participants = 
+			_.flatten(entrants.map(entrant => entrant.participants)).filter(participant => participant != null)
+		const attendees = participants.map(participant => Attendee.parse(participant))
 		return _.uniqBy(attendees, 'id')
 	}
 
-	async getIncompleteSets(options: IGGSet.SetOptions = IGGSet.getDefaultSetOptions()) : Promise<GGSet[]> {
+	public async getIncompleteSets(options: IGGSetOptions = GGSet.getDefaultSetOptions()): Promise<IGGSet[]> {
 		return GGSet.filterForIncompleteSets(await this.getSets(options))
 	}
 
-	async getCompleteSets(options: IGGSet.SetOptions = IGGSet.getDefaultSetOptions()) : Promise<GGSet[]> {
+	public async getCompleteSets(options: IGGSetOptions = GGSet.getDefaultSetOptions()): Promise<IGGSet[]> {
 		return GGSet.filterForCompleteSets(await this.getSets(options))
 	}
 
-	async getSetsXMinutesBack(minutesBack: number, options: IGGSet.SetOptions = IGGSet.getDefaultSetOptions()) : Promise<GGSet[]> {
+	public async getSetsXMinutesBack(
+		minutesBack: number,
+		options: IGGSetOptions = GGSet.getDefaultSetOptions()
+	): Promise<IGGSet[]> {
 		return GGSet.filterForXMinutesBack(await this.getSets(options), minutesBack)
 	}
 }

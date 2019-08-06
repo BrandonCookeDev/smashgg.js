@@ -61,13 +61,3 @@ export interface IEntrantOptions{
 		}
 	}
 }
-
-export function getDefaultEntrantOptions(): IEntrantOptions{
-	return {
-		areSeedsPublished: true,
-		page: null,
-		perPage: 1,
-		sortBy: null,
-		filter: null
-	}
-}

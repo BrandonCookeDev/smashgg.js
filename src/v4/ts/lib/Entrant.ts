@@ -1,5 +1,8 @@
-import {IEntrant, IEntrantData} from './interfaces/IEntrant'
-import {Attendee, IAttendee} from './Attendee' // TODO later change this to internal
+import {IContactInfo} from './interfaces/IContactInfo'
+import {IEntrant, IEntrantData, IEntrantOptions} from './interfaces/IEntrant'
+import {IAttendee} from './interfaces/IAttendee'
+
+import {Attendee} from './Attendee' // TODO later change this to internal
 
 export class Entrant implements IEntrant{
 	// Statics
@@ -18,19 +21,29 @@ export class Entrant implements IEntrant{
 	public static parseFull(data: IEntrantData): Entrant{
 		return Entrant.parse(data.entrant)
 	}
-	
+
+	public static getDefaultEntrantOptions(): IEntrantOptions{
+		return {
+			areSeedsPublished: true,
+			page: null,
+			perPage: 1,
+			sortBy: null,
+			filter: null
+		}
+	}
+
 	private id: number
 	private name: string
 	private eventId: number
 	private skill: number
-	private attendeeData: Attendee[]
+	private attendeeData: IAttendee[]
 
 	constructor(
 		id: number,
 		name: string,
 		eventId: number,
 		skill: number,
-		attendeeData: Attendee[]
+		attendeeData: IAttendee[]
 	){
 		this.id = id
 		this.name = name
@@ -55,11 +68,11 @@ export class Entrant implements IEntrant{
 		return this.skill
 	}
 
-	public getAttendeeData(): Attendee[]{
+	public getAttendeeData(): IAttendee[]{
 		return this.attendeeData
 	}
 
-	public getAttendee(position: number = 0): Attendee{
+	public getAttendee(position: number = 0): IAttendee{
 		return this.attendeeData[position]
 	}
 
@@ -79,7 +92,7 @@ export class Entrant implements IEntrant{
 		return this.attendeeData[position].getPhoneNumber()
 	}
 
-	public getContactInfo(position: number = 0): IAttendee.ContactInfo | null{
+	public getContactInfo(position: number = 0): IContactInfo | null{
 		return this.attendeeData[position].getContactInfo()
 	}
 

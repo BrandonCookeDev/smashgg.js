@@ -22,6 +22,8 @@
     "test": "./node_modules/.bin/mocha ./src/v4/js/test",
     "lint": "./node_modules/.bin/eslint .",
     "tsc": "tsc",
+    "tslint": "./node_modules/.bin/tslint --project ./src/v4/ts/lib",
+    "tslint-tests": "./node_modules/.bin/tslint --project ./src/v4/ts/test",
     "sandbox": "node ./sandbox/sandbox",
     "sample1": "node ./resources/samples/v4/sample1",
     "sample2": "node ./resources/samples/v4/sample2"

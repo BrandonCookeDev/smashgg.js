@@ -1,6 +1,7 @@
+import {IPhaseGroup, IPhaseGroupData} from './IPhaseGroup'
+import {IPhase, IPhaseData} from './IPhase'
 import {IContactInfo} from './IContactInfo'
 import {IUser} from './IUser'
-import {IPhaseGroup, IPhaseGroupData} from './IPhaseGroup'
 
 export interface IAttendee{
 	/*

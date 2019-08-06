@@ -16,13 +16,15 @@ import { ICommon } from './util/Common'
 import { IPhaseGroup } from './PhaseGroup';
 import { phaseGroup } from './scripts/phaseGroupQueries';
 
-export class Phase implements IPhase.Phase{
+import {IPhase} from './interfaces/IPhase'
 
-	id: number
-	eventId: number
-	name: string
-	numSeeds: number
-	groupCount: number
+export class Phase implements IPhase{
+
+	private id: number
+	private eventId: number
+	private name: string
+	private numSeeds: number
+	private groupCount: number
 
 	constructor(
 		id: number,
@@ -183,115 +185,5 @@ export class Phase implements IPhase.Phase{
 
 	async getSetsXMinutesBack(minutesBack: number, options: IGGSet.SetOptions = IGGSet.getDefaultSetOptions()) : Promise<GGSet[]> {
 		return GGSet.filterForXMinutesBack(await this.getSets(options), minutesBack)
-	}
-}
-
-export namespace IPhase{
-	export interface Phase{
-		
-		id: number
-		name: string
-		eventId: number
-		numSeeds: number
-		groupCount: number
-
-
-		getId(): number
-		getEventId(): number
-		getName(): string
-		getNumSeeds(): number
-		getGroupCount(): number	
-		getPhaseGroups() : Promise<PhaseGroup[]>
-		getSets(options: IGGSet.SetOptions) : Promise<GGSet[]>
-		getEntrants(options: IEntrant.EntrantOptions) : Promise<Entrant[]>
-		getIncompleteSets(options: IGGSet.SetOptions) : Promise<GGSet[]>
-		getCompleteSets(options: IGGSet.SetOptions) : Promise<GGSet[]>
-		getSetsXMinutesBack(minutesBack: number, options: IGGSet.SetOptions) : Promise<GGSet[]>
-
-	}
-
-
-	export interface Data{
-		phase: PhaseData 
-	}
-
-	export interface DataSeeds{
-		event: PhaseSeedData
-	}
-
-	export interface DataSets{
-		event: PhaseSetData
-	}
-
-	export interface DataEntrants{
-		event: PhaseEntrantData
-	}
-
-	export interface PaginatedPhaseGroupData{
-		phase:{
-			phaseGroups:{
-				nodes: IPhaseGroup.PhaseGroupData[]
-			}
-		}
-	}
-
-	export interface PhaseData{
-		id: number,
-		name: string,
-		numSeeds: number,
-		groupCount: number
-	}
-
-	export interface PhaseSeedData{
-		phase:{
-			paginatedSeeds: {
-				pageInfo?:{
-					totalPages: number
-				}
-				nodes: ISeed.SeedData[]
-			} 
-		}
-	}
-
-	export interface PhaseSetData{
-		id: number,
-		phaseGroups: {
-			paginatedSets: {
-				pageInfo?: { totalPages: number }
-				nodes: IGGSet.SetData[]
-			}
-		}
-	}
-
-	export interface PhaseEntrantData{
-		phase: {
-			paginatedSeeds:{
-				pageInfo?:{
-					totalPages: number
-				}
-				nodes: IEntrant.Data[]
-			} 
-		}
-	}
-
-	export interface PhaseGroupData{
-		event:{
-			phaseGroups: IPhaseGroup.PhaseGroupData[]
-		}
-	}
-
-	export interface PhaseAttendeeData{
-		phase:{
-			paginatedSeeds:{
-				pageInfo?:{
-					totalPages: number
-				}
-				nodes:{
-					entrant:{
-						participants: IAttendee.AttendeeData[]
-					}
-				}
-			}[]
-		}
 	}
 }

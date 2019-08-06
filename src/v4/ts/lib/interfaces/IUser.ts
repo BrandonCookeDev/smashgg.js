@@ -50,14 +50,14 @@ export interface IUserData{
 	gamerTagChangedAt: number | null
 }
 
-export interface IDataUserRankings{
+export interface IUserDataRankings{
 	player: {
 		id: number,
 		rankings: IPlayerRank[]
 	}
 }
 
-export interface IDataUserSets{
+export interface IUserDataSets{
 	player: {
 		id: number,
 		recentSets: IGGSetData[]

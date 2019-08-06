@@ -103,17 +103,21 @@ export interface IGGSetSlotEntrantData{
 	}
 }
 
-export interface IGGSetSlotAttendeeEntrantData{
+export interface IGGSetSlotAttendeeData{
 	set: {
 		slots: Array<{
-			entrant: IGGSetSlotAttendeeData | null
+			entrant: {
+				participants: Array<IAttendeeData | null>
+			}
 		}>
 	}
 }
 
+/*
 export interface IGGSetSlotAttendeeData{
 	participants: Array<IAttendeeData | null>
 }
+*/
 
 export interface IGGSetOptions{
 	filterDQs?: boolean,

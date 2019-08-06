@@ -1,11 +1,20 @@
 
 export interface ISeed{
+	/*
 	id: number,
 	entrantId: number,
 	placeholderName: string,
 	seedNumber: number,
 	placement: number,
 	isBye: boolean
+	*/
+
+	getId(): number,
+	getEntrantId(): number,
+	getPlaceholderName(): string,
+	getSeedNumber(): number,
+	getPlacement(): number,
+	getIsBye(): boolean
 }
 
 export interface ISeedDataFull{

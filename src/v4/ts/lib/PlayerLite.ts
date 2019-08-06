@@ -1,7 +1,9 @@
+import {IPlayerLite} from './interfaces/IPlayerLite'
+import {IGGSetSlots} from './interfaces/IGGSet'
 
-export class PlayerLite{
+export class PlayerLite implements IPlayerLite{
 	
-	static parse(tag: string | null, slot: Slots){
+	public static parse(tag: string | null, slot: IGGSetSlots){
 
 		const entrantId = slot.entrant ? slot.entrant.id : null
 		const attendeeIds = slot.entrant ? slot.entrant.participants.map(p => p.id) : []

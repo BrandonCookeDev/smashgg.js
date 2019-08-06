@@ -1,5 +1,9 @@
 /** Patch Notes **/
 
+/** 4.1.2 07/05/2019 **/
+* Added Standings documentation
+* Offloaded object documentation to Github Wiki 
+
 /** 4.1.0 07/05/2019 **/
 * Major improvement in all main paginated functions including attendees entrants and sets
 * Added functionality to pull the Standings of an event

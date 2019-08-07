@@ -20,7 +20,7 @@ export interface IStandingData{
 }
 
 export interface IStandingStats{
-	//score: IStandingScore
+	// score: IStandingScore
 
 	getScore(): IStandingScore
 }
@@ -47,4 +47,3 @@ export interface IStandingOptions{
 		}
 	}
 }
-

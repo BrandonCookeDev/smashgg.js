@@ -1,27 +1,12 @@
 import _ from 'lodash'
 
-export class Game implements IGame.Game{
-	id : number | string
-	state: number
-	winnerId : number
-	orderNumber : number
-	selections : Selections[]
+import {IGame, IGameData, IGameDataFull, ISelections} from './interfaces/IGame'
 
-	constructor(
-		id : number,
-		state: number,
-		winnerId : number,
-		orderNumber : number,
-		selections : Selections[]
-	){
-		this.id  = id 
-		this.state = state
-		this.winnerId  = winnerId 
-		this.orderNumber  = orderNumber 
-		this.selections  = selections
-	}
+import {Selections} from './Selections'
 
-	static parse(data: IGame.GameData) : Game{
+export class Game implements IGame{
+
+	public static parse(data: IGameData): IGame{
 		return new Game(
 			+data.id,
 			data.state,
@@ -31,84 +16,51 @@ export class Game implements IGame.Game{
 		)
 	}
 
-	static parseFull(data: IGame.Data) : Game[]{
+	public static parseFull(data: IGameDataFull): IGame[]{
 		return data.set.games.map(gameData => Game.parse(gameData))
 	}
 
-	getId() : number | string { 
+	private id: number | string
+	private state: number
+	private winnerId: number
+	private orderNumber: number
+	private selections: ISelections[]
+
+	constructor(
+		id: number,
+		state: number,
+		winnerId: number,
+		orderNumber: number,
+		selections: ISelections[]
+	){
+		this.id  = id 
+		this.state = state
+		this.winnerId  = winnerId 
+		this.orderNumber  = orderNumber 
+		this.selections  = selections
+	}
+
+	public getId(): number | string { 
 		return this.id
 	}
 
-	getState(): number { 
+	public getState(): number { 
 		return this.state
 	}
 
-	getWinnerId() : number { 
+	public getWinnerId(): number { 
 		return this.winnerId
 	}
 
-	getOrderNumber() : number { 
+	public getOrderNumber(): number { 
 		return this.orderNumber
 	}
 
-	getSelections() : Selections[] { 
+	public getSelections(): ISelections[] { 
 		return this.selections
 	}
 
-	getSelectionsForEntrantId(entrantId: number): Selections | undefined{
-		return _.find(this.selections, {entrantId: entrantId});
-	}
-}
-
-export class Selections implements ISelections.Selections{
-
-	selectionType: string
-	selectionValue: number
-	entrantId: number
-	attendeeId: number | null
-
-	constructor(
-		selectionType: string,
-		selectionValue: number,
-		entrantId: number,
-		participantId: number | null
-	){
-		this.selectionType = selectionType
-		this.selectionValue = selectionValue
-		this.entrantId = entrantId
-		this.attendeeId = participantId
-	}
-
-	static parse(data: ISelections.SelectionsData) : Selections{
-		return new Selections(
-			data.selectionType,
-			data.selectionValue,
-			data.entrantId,
-			data.participantId
-		)
-	}
-
-	static parseArray(data: ISelections.SelectionsData[]) : Selections[]{
-		return data.map(e => Selections.parse(e));
-	}
-
-	static parseFull(data: ISelections.Data) : Selections[]{
-		return data.selections.map(selectionsData => Selections.parse(selectionsData));
-	}
-
-	getSelectionType(): string{
-		return this.selectionType
-	}
-
-	getSelectionValue(): number{
-		return this.selectionValue
-	}
-
-	getEntrantId(): number{
-		return this.entrantId
-	}
-
-	getAttendeeId(): number | null{
-		return this.attendeeId
+	public getSelectionsForEntrantId(theEntrantId: number): ISelections | undefined{
+		return _.find(this.selections, {entrantId: theEntrantId})
 	}
 }

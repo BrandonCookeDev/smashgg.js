@@ -31,10 +31,10 @@ export interface IGameData{
 }
 
 export interface ISelections{
-	selectionType: string
-	selectionValue: number
-	entrantId: number
-	attendeeId: number | null
+	// selectionType: string
+	// selectionValue: number
+	// entrantId: number
+	// attendeeId: number | null
 
 	getSelectionType(): string
 	getSelectionValue(): number

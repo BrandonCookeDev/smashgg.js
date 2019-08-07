@@ -399,7 +399,7 @@ export class GGSet extends EventEmitter implements IGGSet{
 	// Aggregation
 	public async getGames(): Promise<IGame[]> {
 		log.info('Gettings Games for set (%s)', this.id)
-		const data: IGameData = await NI.query(queries.games, {id: this.id})
+		const data: IGameDataFull = await NI.query(queries.games, {id: this.id})
 		return Game.parseFull(data)
 	}
 

@@ -31,7 +31,6 @@ export class Seed implements ISeed{
 		}
 	}
 	
-
 	private id: number
 	private entrantId: number
 	private placeholderName: string

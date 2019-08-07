@@ -37,8 +37,6 @@ export class Standing implements IStanding {
 		this.entrant = entrant
 	}
 
-
-
 	public getId(): number | null {
 		return this.id
 	}

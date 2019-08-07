@@ -1,43 +1,36 @@
 import NI from './util/NetworkInterface'
 import * as queries from './scripts/tournamentQueries'
 
-export namespace IOrganizer{
-	export interface Organizer{
-		id: number | null
-		email: string | null
-		phone: string | null
-		twitter: string | null
-		info: string | null
+import {IOrganizer, IOrganizerData} from './interfaces/IOrganizer'
 
-		getId(): number | null
-		getEmail(): string | null
-		getPhone(): string | null
-		getTwitter(): string | null
-		getInfo(): string | null
+export class Organizer implements IOrganizer{
+
+	public static parse(data: IOrganizerData): IOrganizer{
+		const organizer = new Organizer(
+			data.data.tournament.ownerId, data.data.tournament.contactEmail, data.data.tournament.contactPhone,
+			data.data.tournament.contactTwitter, data.data.tournament.contactInfo
+		)
+		return organizer
 	}
-
-	export interface Data{
-		data:{
-			tournament:{
-				ownerId: number
-				contactEmail: string
-				contactPhone: string
-				contactTwitter: string
-				contactInfo: string
-			}
-		}
-	}
-}
-
-export class Organizer implements IOrganizer.Organizer{
 	
-	id: number | null
-	email: string | null
-	phone: string | null
-	twitter: string | null
-	info: string | null
+	public static async getByTournament(tournamentSlug: string): Promise<IOrganizer> {
+		const data = await NI.query(queries.tournamentOrganizer, {slug: tournamentSlug})
+		return Organizer.parse(data)
+	}
 
-	constructor(id: number | null, email: string | null, phone: string | null, twitter: string | null, info: string | null){
+	private id: number | null
+	private email: string | null
+	private phone: string | null
+	private twitter: string | null
+	private info: string | null
+
+	constructor(
+		id: number | null, 
+		email: string | null, 
+		phone: string | null, 
+		twitter: string | null, 
+		info: string | null
+	){
 		this.id = id
 		this.email = email
 		this.phone = phone
@@ -45,37 +38,24 @@ export class Organizer implements IOrganizer.Organizer{
 		this.info = info
 	}
 
-	getId() {
-	  return this.id
+	public getId() {
+		return this.id
 	}
 
-	getEmail() {
+	public getEmail() {
 		return this.email
 	}
 	
-	getPhone() {
-	  return this.phone
+	public getPhone() {
+		return this.phone
 	}
 	
-	getTwitter() {
+	public getTwitter() {
 		return this.twitter
 	}
 
-	getInfo() {
-	  return this.info
-	}
-
-	static parse(data: IOrganizer.Data) : Organizer{
-		let venue = new Organizer(
-			data.data.tournament.ownerId, data.data.tournament.contactEmail, data.data.tournament.contactPhone,
-			data.data.tournament.contactTwitter, data.data.tournament.contactInfo
-		)
-		return venue;
-	}
-	
-	static async getByTournament(tournamentSlug: string) : Promise<Organizer> {
-		let data = await NI.query(queries.tournamentOrganizer, {slug: tournamentSlug})
-		return Organizer.parse(data);
+	public getInfo() {
+		return this.info
 	}
 
 }

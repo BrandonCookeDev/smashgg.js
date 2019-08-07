@@ -1,5 +1,3 @@
-'use strict';
-
 import _ from 'lodash'
 
 import {Seed} from './Seed'
@@ -24,6 +22,7 @@ import {
 import {
 	IPhaseGroup, 
 	IPhaseGroupData,
+	IPhaseGroupEventData,
 } from './interfaces/IPhaseGroup'
 import {IGGSet, IGGSetOptions, IGGSetData} from './interfaces/IGGSet'
 import {IAttendee, IAttendeeData, IAttendeeOptions} from './interfaces/IAttendee'
@@ -90,18 +89,18 @@ export class Phase implements IPhase{
 
 	public async getPhaseGroups2(): Promise<IPhaseGroup[]> {
 		log.info('Getting phase groups for phase %s', this.id)
-		const data: IPhaseGroupData = await NI.query(queries.phasePhaseGroups2, {eventId: this.eventId})
+		const data: IPhaseGroupEventData = await NI.query(queries.phasePhaseGroups2, {eventId: this.eventId})
 		const phaseGroupData: IPhaseGroupData[] = 
-			data.event.phaseGroups.filter(phaseGroupData => phaseGroupData.phaseId === this.id)
+			data.event.phaseGroups.filter(pgData => pgData.phaseId === this.id)
 		const phaseGroups: IPhaseGroup[] = phaseGroupData.map(pg => PhaseGroup.parse(pg))
-		return phaseGroups;
+		return phaseGroups
 	}
 
 	public async getPhaseGroups(): Promise<IPhaseGroup[]> {
 		log.info('Getting phase groups for phase %s', this.id)
 		const data: IPhasePaginatedData = await NI.query(queries.phasePhaseGroups, {id: this.id})
 		const phaseGroupData: IPhaseGroupData[] = 
-			data.phase.phaseGroups.nodes.filter(phaseGroupData => phaseGroupData.phaseId === this.id)
+			data.phase.phaseGroups.nodes.filter(pgData => pgData.phaseId === this.id)
 		const phaseGroups: IPhaseGroup[] = phaseGroupData.map(pg => PhaseGroup.parse(pg))
 		return phaseGroups
 	}
@@ -155,7 +154,7 @@ export class Phase implements IPhase{
 		)
 		const seedData: ISeedData[] = 
 			_.flatten(data.map(results => results.phase.paginatedSeeds.nodes)).filter(seed => seed != null)
-		const seeds = seedData.map( (seedData: ISeedData) => Seed.parse(seedData) )
+		const seeds = seedData.map( (sData: ISeedData) => Seed.parse(sData) )
 		return _.uniqBy(seeds, 'id')
 	}
 
@@ -171,7 +170,7 @@ export class Phase implements IPhase{
 			options, {}, 2
 		)
 		const entrantData: IEntrantData[] = 
-			_.flatten(data.map(entrantData => entrantData.phase.paginatedSeeds.nodes )).filter(entrant => entrant != null)
+			_.flatten(data.map(eData => eData.phase.paginatedSeeds.nodes )).filter(entrant => entrant != null)
 		const entrants: IEntrant[] = entrantData.map(e => Entrant.parseFull(e)) as IEntrant[]
 		return _.uniqBy(entrants, 'id')
 	}

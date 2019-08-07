@@ -105,7 +105,7 @@ export class PhaseGroup implements IPhaseGroup{
 		return this.tiebreakOrder
 	}
 
-	public async getSeeds(options: ISeedOptions = ISeed.getDefaultSeedOptions()): Promise<ISeed[]> {
+	public async getSeeds(options: ISeedOptions = Seed.getDefaultSeedOptions()): Promise<ISeed[]> {
 		log.info('Getting Seeds for Phase Group [%s]', this.id)
 		log.verbose('Query variables: %s', JSON.stringify(options))
 		
@@ -121,7 +121,7 @@ export class PhaseGroup implements IPhaseGroup{
 		return _.uniqBy(seeds, 'id')
 	}
 
-	public async getEntrants(options: IEntrantOptions = IEntrant.getDefaultEntrantOptions()): Promise<IEntrant[]>{
+	public async getEntrants(options: IEntrantOptions = Entrant.getDefaultEntrantOptions()): Promise<IEntrant[]>{
 		log.info('Getting Entrants for Phase Group [%s]', this.id)
 		log.verbose('Query variables: %s', JSON.stringify(options))
 		const data: IPhaseGroupEntrantData[] = await NI.paginatedQuery(
@@ -129,12 +129,13 @@ export class PhaseGroup implements IPhaseGroup{
 			queries.phaseGroupEntrants, {id: this.id},
 			options, {}, 2
 		) 
-		const phaseGroups = data.map(pg => pg.phaseGroup);
-		const entrants: IEntrant[] = _.flatten(phaseGroups.map(pg => pg.paginatedSeeds.nodes.map(e => Entrant.parseFull(e)).filter(seed => seed != null)))
+		const phaseGroups = data.map(pg => pg.phaseGroup)
+		const entrants: IEntrant[] = 
+			_.flatten(phaseGroups.map(pg => pg.paginatedSeeds.nodes.map(e => Entrant.parseFull(e)).filter(seed => seed != null)))
 		return _.uniqBy(entrants, 'id')
 	}
 
-	public async getAttendees(options: IAttendeeOptions = IAttendee.getDefaultAttendeeOptions()): Promise<IAttendee[]>{
+	public async getAttendees(options: IAttendeeOptions = Attendee.getDefaultAttendeeOptions()): Promise<IAttendee[]>{
 		log.info('Getting Attendees for Phase Group [%s]', this.id)
 		log.verbose('Query variables: %s', JSON.stringify(options))
 		const data: IPhaseGroupAttendeeData[] = await NI.paginatedQuery(
@@ -149,7 +150,7 @@ export class PhaseGroup implements IPhaseGroup{
 		return _.uniqBy(attendees, 'id')
 	}
 
-	public async getSets(options: IGGSetOptions = IGGSet.getDefaultSetOptions()): Promise<IGGSet[]>{
+	public async getSets(options: IGGSetOptions = GGSet.getDefaultSetOptions()): Promise<IGGSet[]>{
 		log.info('Getting Sets for Phase Group [%s]', this.id)
 		log.verbose('Query variables: %s', JSON.stringify(options))
 		const data: IPhaseGroupSetData[] = await NI.paginatedQuery(
@@ -157,8 +158,10 @@ export class PhaseGroup implements IPhaseGroup{
 			queries.phaseGroupSets, {id: this.id},
 			options, {}, 2
 		)
-		const phaseGroups = data.map(pg => pg.phaseGroup);
-		const sets: IGGSet[] = _.flatten(phaseGroups.map(pg => pg.paginatedSets.nodes.map(set => GGSet.parse(set)).filter(set => set != null)))
+		const phaseGroups = data.map(pg => pg.phaseGroup)
+
+		let sets: IGGSet[] = 
+			_.flatten(phaseGroups.map(pg => pg.paginatedSets.nodes.map(set => GGSet.parse(set)).filter(set => set != null)))
 		
 		// optional filters
 		if(options.filterByes) sets = GGSet.filterOutDQs(sets)
@@ -168,19 +171,22 @@ export class PhaseGroup implements IPhaseGroup{
 		return _.uniqBy(sets, 'id')
 	}
 
-	public async getCompleteSets(options: IGGSetOptions = IGGSet.getDefaultSetOptions()): Promise<IGGSet[]>{
+	public async getCompleteSets(options: IGGSetOptions = GGSet.getDefaultSetOptions()): Promise<IGGSet[]>{
 		log.info('Getting Completed sets for Phase Group [%s]', this.id)
 		const sets = await this.getSets(options)
 		return GGSet.filterForCompleteSets(sets)
 	}
 
-	public async getIncompleteSets(options: IGGSetOptions = IGGSet.getDefaultSetOptions()): Promise<IGGSet[]>{
+	public async getIncompleteSets(options: IGGSetOptions = GGSet.getDefaultSetOptions()): Promise<IGGSet[]>{
 		log.info('Getting Incompleted sets for Phase Group [%s]', this.id)
 		const sets = await this.getSets(options)
 		return GGSet.filterForIncompleteSets(sets)
 	}
 
-	public async getSetsXMinutesBack(minutes: number, options: IGGSetOptions = IGGSet.getDefaultSetOptions()): Promise<GGSet[]>{
+	public async getSetsXMinutesBack(
+		minutes: number, 
+		options: IGGSetOptions = GGSet.getDefaultSetOptions()
+	): Promise<IGGSet[]>{
 		log.info('Getting sets completed %s minutes ago for Phase Group [%s]', minutes, this.id)
 		const sets = await this.getSets(options)
 		return GGSet.filterForXMinutesBack(sets, minutes)

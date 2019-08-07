@@ -1,62 +1,39 @@
 import NI from './util/NetworkInterface'
 import * as queries from './scripts/tournamentQueries'
 
-export namespace IVenue{
-	export interface Venue{
-		name: string | null
-		address: string | null
-		city: string | null
-		state: string | null
-		postalCode: string | null
-		countryCode: string | null
-		region: string | null
-		latitude: number | null
-		longitude: number | null
+import {IVenue, IVenueData} from './interfaces/IVenue'
 
-		getName(): string | null
-		getAddress(): string | null
-		getCity(): string | null
-		getState(): string | null
-		getPostalCode(): string | null
-		getCountryCode(): string | null
-		getRegion(): string | null
-		getLatitude(): number | null
-		getLongitude(): number | null
-	}
-
-	export interface Data{
-		data:{
-			tournament:{
-				venueName: string | null
-				venueAddress: string | null
-				city: string | null
-				addrState: string | null
-				countryCode: string | null
-				region: string | null
-				postalCode: string | null
-				lat: number | null
-				lng: number | null
-			}
-		}
-	}
-}
-
-export class Venue implements IVenue.Venue{
+export class Venue implements IVenue{
 	
-	name: string | null
-	address: string | null
-	city: string | null
-	state: string | null
-	postalCode: string | null
-	countryCode: string | null
-	region: string | null
-	latitude: number | null
-	longitude: number | null
+	public static parse(data: IVenueData): IVenue{
+		const venue = new Venue(
+			data.data.tournament.venueName, data.data.tournament.venueAddress, data.data.tournament.city,
+			data.data.tournament.addrState, data.data.tournament.countryCode, data.data.tournament.region, 
+			data.data.tournament.postalCode, data.data.tournament.lat, data.data.tournament.lng
+		)
+		return venue
+	}
+	
+	public static async getByTournament(tournamentSlug: string): Promise<IVenue>{
+		const data = await NI.query(queries.tournamentVenue, {slug: tournamentSlug})
+		return Venue.parse(data)
+	}
 
-	constructor(name: string | null, address: string | null, city: string | null, state: string | null, 
-				countryCode: string | null, region: string | null, postalCode: string | null, 
-				latitude: number | null, longitude: number | null){
-					
+	private name: string | null
+	private address: string | null
+	private city: string | null
+	private state: string | null
+	private postalCode: string | null
+	private countryCode: string | null
+	private region: string | null
+	private latitude: number | null
+	private longitude: number | null
+
+	constructor(
+		name: string | null, address: string | null, city: string | null, 
+		state: string | null, countryCode: string | null, region: string | null, 
+		postalCode: string | null, latitude: number | null, longitude: number | null
+	){				
 		this.name = name
 		this.address = address
 		this.city = city
@@ -68,55 +45,39 @@ export class Venue implements IVenue.Venue{
 		this.longitude = longitude
 	}
 
-	getName() {
-	  return this.name
+	public getName() {
+		return this.name
 	}
 
-	getAddress() {
-	  return this.address
+	public getAddress() {
+		return this.address
 	}
 
-	getState() {
-	  return this.state
+	public getState() {
+		return this.state
 	}
 	
-
-	getCity() {
-	  return this.city
+	public getCity() {
+		return this.city
 	}
 
-	getCountryCode() {
-	  return this.countryCode
+	public getCountryCode() {
+		return this.countryCode
 	}
 
-	getRegion() {
-	  return this.region
+	public getRegion() {
+		return this.region
 	}
 
-	getPostalCode() {
-	  return this.postalCode
+	public getPostalCode() {
+		return this.postalCode
 	}
 
-	getLatitude() {
-	  return this.latitude 
+	public getLatitude() {
+		return this.latitude 
 	}
 	
-	getLongitude() {
-	  return this.longitude
+	public getLongitude() {
+		return this.longitude
 	}
-
-	static parse(data: IVenue.Data) : Venue{
-		let venue = new Venue(
-			data.data.tournament.venueName, data.data.tournament.venueAddress, data.data.tournament.city,
-			data.data.tournament.addrState, data.data.tournament.countryCode, data.data.tournament.region, 
-			data.data.tournament.postalCode, data.data.tournament.lat, data.data.tournament.lng
-		)
-		return venue;
-	}
-	
-	static async getByTournament(tournamentSlug: string) : Promise<Venue>{
-		let data = await NI.query(queries.tournamentVenue, {slug: tournamentSlug})
-		return Venue.parse(data);
-	}
-
 }

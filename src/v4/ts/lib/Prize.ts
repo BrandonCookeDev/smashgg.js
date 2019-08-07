@@ -1,49 +1,42 @@
+import {IPrize, IPrizing, IPrizeData, IPrizeDataFull} from './interfaces/IPrize'
 
-export class Prize implements IPrize.Prize{
-    
-    markdown: string | null
-    payoutType: string | null
-    payoutTotal: string | null
-    prizing: [IPrize.Prizing] | null
+export class Prize implements IPrize{
+	
+	public static parse(data: IPrizing): Prize  | null{
+		return null
+	}
 
-    constructor(markdown: string | null, payoutType: string | null,
-        payoutTotal: string | null, prizing: [IPrize.Prizing] | null){
-            this.markdown = markdown;
-            this.payoutType = payoutType;
-            this.payoutTotal = payoutTotal;
-            this.prizing = prizing;
-    }
+	private markdown: string | null
+	private payoutType: string | null
+	private payoutTotal: string | null
+	private prizing: [IPrizing] | null
 
-    static parse(data: IPrize.Prizing) : Prize  | null{
-        return null
-    }
-}
+	constructor(
+		markdown: string | null, 
+		payoutType: string | null,
+		payoutTotal: string | null, 
+		prizing: [IPrizing] | null
+	){
+			this.markdown = markdown
+			this.payoutType = payoutType
+			this.payoutTotal = payoutTotal
+			this.prizing = prizing
+	}
+	
+	public getMarkdown(): string | null{
+		return this.markdown
+	}
 
-export namespace IPrize{
-    export interface Prize{
-        markdown: string | null
-        payoutType: string | null
-        payoutTotal: string | null
-        prizing: [IPrize.Prizing] | null
-    }
+	public getPayoutType(): string | null{
+		return this.payoutType
+	}
 
-    export interface Prizing{
-        id: number,
-        placement: number,
-        percent: number
-    }
+	public getPayoutTotal(): string | null{
+		return this.payoutTotal
+	}
 
-    export interface Data{
-        prize: {
-            markdown: string | null
-            payoutType: string | null
-            payoutTotal: string | null
-        }
-    }
+	public getPrizing(): [IPrizing] | null{
+		return this.prizing
+	}
 
-    export interface PrieData{
-        markdown: string | null
-        payoutType: string | null
-        payoutTotal: string | null
-    }
 }

@@ -3,23 +3,59 @@ import log from './util/Logger'
 import NI from './util/NetworkInterface'
 import * as queries from './scripts/streamQueries'
 
-export class Stream implements IStream.Stream{
+import {
+	IStream,
+	IStreamData,
+	IStreamDataFull
+} from './interfaces/IStream'
 
-	id: number
-	eventId: number | null
-	tournamentId: number | null
-	streamName: string
-	numSetups: number | null
-	streamSource: 'TWITCH' | 'HITBOX' | 'STREAMME' | 'MIXER' | null
-	streamType: number | null
-	streamTypeId: number | null
-	isOnline: boolean | null
-	enabled: boolean | null
-	followerCount: number | null
-	removesTasks: boolean | null
-	streamStatus: string | null
-	streamGame: string | null
-	streamLogo: string | null
+export class Stream implements IStream{
+
+	public static parseFull(data: IStreamDataFull): IStream {
+		return Stream.parse(data.stream)
+	}
+
+	public static async get(theId: number): Promise<IStream> {
+		log.info('Getting Stream with Id %s', theId)
+		const data: IStreamDataFull = await NI.query(queries.stream, {id: theId})
+		return Stream.parseFull(data)
+	}
+
+	public static parse(data: IStreamData): IStream {
+		return new Stream(
+			data.id,
+			data.eventId,
+			data.tournamentId,
+			data.streamName,
+			data.numSetups,
+			data.streamSource,
+			data.streamType,
+			data.streamTypeId,
+			data.isOnline,
+			data.enabled,
+			data.followerCount,
+			data.removesTasks,
+			data.streamStatus,
+			data.streamGame,
+			data.streamLogo
+		)
+	}
+
+	private id: number
+	private eventId: number | null
+	private tournamentId: number | null
+	private streamName: string
+	private numSetups: number | null
+	private streamSource: 'TWITCH' | 'HITBOX' | 'STREAMME' | 'MIXER' | null
+	private streamType: number | null
+	private streamTypeId: number | null
+	private isOnline: boolean | null
+	private enabled: boolean | null
+	private followerCount: number | null
+	private removesTasks: boolean | null
+	private streamStatus: string | null
+	private streamGame: string | null
+	private streamLogo: string | null
 
 	constructor(
 		id: number,
@@ -55,153 +91,63 @@ export class Stream implements IStream.Stream{
 		this.streamLogo = streamLogo
 	}
 
-	static parse(data: IStream.StreamData) : Stream {
-		return new Stream(
-			data.id,
-			data.eventId,
-			data.tournamentId,
-			data.streamName,
-			data.numSetups,
-			data.streamSource,
-			data.streamType,
-			data.streamTypeId,
-			data.isOnline,
-			data.enabled,
-			data.followerCount,
-			data.removesTasks,
-			data.streamStatus,
-			data.streamGame,
-			data.streamLogo
-		)
-	}
-
-	static parseFull(data: IStream.Data) : Stream {
-		return Stream.parse(data.stream)
-	}
-
-	static async get(id: number) : Promise<Stream> {
-		log.info('Getting Stream with Id %s', id);
-		let data: IStream.Data = await NI.query(queries.stream, {id: id})
-		return Stream.parseFull(data)
-	}
-	
-	getId() : number {
+	public getId(): number {
 		return this.id
 	}
 	
-	getEventId(): number | null{
+	public getEventId(): number | null{
 		return this.eventId
 	}
 
-	getTournamentId(): number | null{
+	public getTournamentId(): number | null{
 		return this.tournamentId
 	}
 
-	getStreamName(): string{
+	public getStreamName(): string{
 		return this.streamName
 	}
 
-	getNumSetups(): number | null{
+	public getNumSetups(): number | null{
 		return this.numSetups
 	}
 
-	getStreamSource(): 'TWITCH' | 'HITBOX' | 'STREAMME' | 'MIXER' | null{
+	public getStreamSource(): 'TWITCH' | 'HITBOX' | 'STREAMME' | 'MIXER' | null{
 		return this.streamSource
 	}
 
-	getStreamType(): number | null{
+	public getStreamType(): number | null{
 		return this.streamType
 	}
 
-	getStreamTypeId(): number | null{
+	public getStreamTypeId(): number | null{
 		return this.streamTypeId
 	}
 
-	getIsOnline(): boolean | null{
+	public getIsOnline(): boolean | null{
 		return this.isOnline
 	}
 
-	getEnabled(): boolean | null{
+	public getEnabled(): boolean | null{
 		return this.enabled
 	}
 
-	getFollowerCount(): number | null{
+	public getFollowerCount(): number | null{
 		return this.followerCount
 	}
 
-	getRemovesTasks(): boolean | null{
+	public getRemovesTasks(): boolean | null{
 		return this.removesTasks
 	}
 
-	getStreamStatus(): string | null{
+	public getStreamStatus(): string | null{
 		return this.streamStatus
 	}
 
-	getStreamGame(): string | null{
+	public getStreamGame(): string | null{
 		return this.streamGame
 	}
 
-	getStreamLogo(): string | null {
+	public getStreamLogo(): string | null {
 		return this.streamLogo
 	}
-}
-
-export namespace IStream{
-
-	export interface Stream{
-		id: number,
-		eventId: number | null,
-		tournamentId: number | null,
-		streamName: string,
-		numSetups: number | null,
-		streamSource: 'TWITCH' | 'HITBOX' | 'STREAMME' | 'MIXER' | null,
-		streamType: number | null,
-		streamTypeId: number | null,
-		isOnline: boolean | null,
-		enabled: boolean | null,
-		followerCount: number | null,
-		removesTasks: boolean | null,
-		streamStatus: string | null,
-		streamGame: string | null,
-		streamLogo: string | null
-
-		getId(): number,
-		getEventId(): number | null,
-		getTournamentId(): number | null,
-		getStreamName(): string,
-		getNumSetups(): number | null,
-		getStreamSource(): 'TWITCH' | 'HITBOX' | 'STREAMME' | 'MIXER' | null,
-		getStreamType(): number | null,
-		getStreamTypeId(): number | null,
-		getIsOnline(): boolean | null,
-		getEnabled(): boolean | null,
-		getFollowerCount(): number | null,
-		getRemovesTasks(): boolean | null,
-		getStreamStatus(): string | null,
-		getStreamGame(): string | null,
-		getStreamLogo(): string | null
-	}
-
-	export interface Data{
-		stream: StreamData
-	}
-
-	export interface StreamData{
-		id: number,
-		eventId: number | null,
-		tournamentId: number | null,
-		streamName: string,
-		numSetups: number | null,
-		streamSource: 'TWITCH' | 'HITBOX' | 'STREAMME' | 'MIXER' | null,
-		streamType: number | null,
-		streamTypeId: number | null,
-		isOnline: boolean | null,
-		enabled: boolean | null,
-		followerCount: number | null,
-		removesTasks: boolean | null,
-		streamStatus: string | null,
-		streamGame: string | null,
-		streamLogo: string | null
-	}
-
 }

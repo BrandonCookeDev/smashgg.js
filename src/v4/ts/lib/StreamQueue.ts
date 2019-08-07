@@ -3,70 +3,57 @@ import log from './util/Logger'
 import NI from './util/NetworkInterface'
 import * as queries from './scripts/streamQueueQueries'
 
-import {Stream, IStream} from './Stream'
-import {GGSet, IGGSet} from './GGSet'
+import {
+	IStreamQueue, 
+	IStreamQueueData,
+	IStreamQueueDataFull
+} from './interfaces/IStreamQueue'
+import {IGGSet} from './interfaces/IGGSet'
+import {IStream} from './interfaces/IStream'
 
-export class StreamQueue implements IStreamQueue.StreamQueue{
+import {Stream} from './Stream'
+import {GGSet} from './GGSet'
 
-	stream: Stream
-	sets: GGSet[]
+export class StreamQueue implements IStreamQueue{
+
+	public static parse(data: IStreamQueueData): IStreamQueue{
+		const stream: IStream = Stream.parse(data.stream)
+		const sets: IGGSet[] = data.sets.map(set => GGSet.parse(set))
+		return new StreamQueue(stream, sets)
+	}
+
+	public static parseFull(data: IStreamQueueDataFull): IStreamQueue[]{
+		return data.streamQueue.map(sq => StreamQueue.parse(sq))
+	}
+
+	public static async get(theTournamentId: number): Promise<IStreamQueue[] | null> {
+		log.info('Getting Stream Queues for Tournament with Id %s', theTournamentId)
+		const data: IStreamQueueDataFull = await NI.query(queries.streamQueue, {tournamentId: theTournamentId})
+
+		if(data.streamQueue)
+			return StreamQueue.parseFull(data)
+		else{
+			log.warn('Stream Queue for tournament %s is null', theTournamentId)
+			return null
+		}
+	}
+
+	private stream: IStream
+	private sets: IGGSet[]
 
 	constructor(
-		stream: Stream,
-		sets: GGSet[]
+		stream: IStream,
+		sets: IGGSet[]
 	){
 		this.stream = stream
 		this.sets = sets
 	}
 
-	static parse(data: IStreamQueue.StreamQueueData){
-		let stream = Stream.parse(data.stream)
-		let sets = data.sets.map(set => GGSet.parse(set))
-		return new StreamQueue(stream, sets);
-	}
-
-	static parseFull(data: IStreamQueue.Data) : StreamQueue[]{
-		return data.streamQueue.map(sq => StreamQueue.parse(sq))
-	}
-
-	static async get(tournamentId: number) : Promise<StreamQueue[] | null> {
-		log.info('Getting Stream Queues for Tournament with Id %s', tournamentId)
-		let data: IStreamQueue.Data = await NI.query(queries.streamQueue, {tournamentId: tournamentId})
-
-		if(data.streamQueue)
-			return StreamQueue.parseFull(data)
-		else{
-			log.warn('Stream Queue for tournament %s is null', tournamentId)
-			return null
-		}
-	}
-
-	getStream() : Stream{
+	public getStream(): IStream{
 		return this.stream
 	}
 
-	getSets() : GGSet[]{
+	public getSets(): IGGSet[]{
 		return this.sets
 	}
-}
-
-export namespace IStreamQueue{
-
-	export interface StreamQueue{
-		stream: Stream,
-		sets: GGSet[]
-
-		getStream(): Stream,
-		getSets(): GGSet[]
-	}
-
-	export interface Data{
-		streamQueue: StreamQueueData[]
-	}
-
-	export interface StreamQueueData{
-		stream: IStream.StreamData,
-		sets: IGGSet.SetData[]
-	}
-
 }

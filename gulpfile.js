@@ -1,4 +1,5 @@
 'use strict'
+require('colors')
 
 const fs = require('fs')
 const path = require('path')
@@ -6,6 +7,7 @@ const gulp = require('gulp')
 const ts = require('gulp-typescript')
 const mocha = require('gulp-mocha')
 const {exec} = require('child_process')
+const {format} = require('util')
 const readline = require('readline')
 
 const ROOT = __dirname
@@ -131,8 +133,11 @@ function getQueries(cb){
 }
 
 function deploymentWarningMessage(cb){
-	const message = 
-		'WARNING: Before deployment, please commit your code and make sure you are logged into git and npm'
+	const message = format(
+		'%s: %s', 
+		'WARNING'.red, 
+		'Before deployment, please commit your code and make sure you are logged into git and npm'
+	)
 	console.log(message)
 
 	const rl = readline.createInterface({
@@ -164,9 +169,15 @@ function updatePatch(cb){
 	cb()
 }
 
-function tagGit(cb){
+function gitTag(cb){
 	const version = getVersionFromPackageJson()
 	const cmd = `git tag ${version}`
+	exec(cmd, cb)
+}
+
+function gitCommit(cb){
+	const version = getVersionFromPackageJson()
+	const cmd = `git commit -m "${version}"`
 	exec(cmd, cb)
 }
 
@@ -240,10 +251,10 @@ exports.sandbox = gulp.series(tsc, sandbox)
 exports.getQueries = getQueries
 exports.publish = gulp.series(tsc, publish)
 
-exports.updateMajor = updateMajor
-exports.updateMinor = updateMinor
-exports.updatePatch = updatePatch
+// exports.updateMajor = updateMajor
+// exports.updateMinor = updateMinor
+// exports.updatePatch = updatePatch
 exports.preDeploy = gulp.series(deploymentWarningMessage, tsc, tscV1)
-exports.deployPatch = gulp.series(this.preDeploy, updatePatch, tagGit, npmPublish)
-exports.deployMinor = gulp.series(this.preDeploy, updateMinor, tagGit, npmPublish)
-exports.deployMajor = gulp.series(this.preDeploy, updateMajor, tagGit, npmPublish)
+exports.deployPatch = gulp.series(this.preDeploy, updatePatch, gitTag, gitCommit, npmPublish)
+exports.deployMinor = gulp.series(this.preDeploy, updateMinor, gitTag, gitCommit, npmPublish)
+exports.deployMajor = gulp.series(this.preDeploy, updateMajor, gitTag, gitCommit, npmPublish)

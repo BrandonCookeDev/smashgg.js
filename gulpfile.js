@@ -3,6 +3,7 @@
 const path = require('path')
 const gulp = require('gulp')
 const ts = require('gulp-typescript')
+const tslint = require('gulp-tslint')
 const mocha = require('gulp-mocha')
 const {exec} = require('child_process')
 
@@ -18,6 +19,12 @@ function tsc(){
 	return gulp.src(TS_DIR + '/**/*.ts')
 		.pipe(tsProd())
 		.pipe(gulp.dest(JS_DIR))
+}
+
+function tslinter(){
+	return gulp.src(TS_DIR + '/**/*.ts')
+		.pipe(tslint())
+		.pipe(tslint.report())
 }
 
 function createDTs(){
@@ -137,6 +144,7 @@ exports.testStreamQueue = gulp.series(tsc, testStreamQueue)
 exports.testV1 = testV1
 
 exports.tsc = tsc
+exports.tslint = tslinter
 exports.createDTs = createDTs
 exports.watch = watch
 exports.sandbox = gulp.series(tsc, sandbox)

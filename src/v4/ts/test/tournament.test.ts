@@ -36,7 +36,6 @@ const TOURNAMENT_SLUG_2 = 'tournament/21xx-cameron-s-birthday-bash-1'
 const TOURNAMENT_ID_3 = 1609
 const TOURNAMENT_SLUG_3 = 'tournament/ceo-2016'
 
-
 describe('smashgg Tournament', function() {
 	this.timeout(10000)
 
@@ -44,13 +43,13 @@ describe('smashgg Tournament', function() {
 		this.timeout(20000)
 
 		await Initializer(process.env.API_TOKEN!)
-		let ti1 = await Tournament.getById(TOURNAMENT_ID_1)
-		let ti2 = await Tournament.getById(TOURNAMENT_ID_2)
-		let ti3 = await Tournament.getById(TOURNAMENT_ID_3)
+		const ti1 = await Tournament.getById(TOURNAMENT_ID_1)
+		const ti2 = await Tournament.getById(TOURNAMENT_ID_2)
+		const ti3 = await Tournament.getById(TOURNAMENT_ID_3)
 
-		let ts1 = await Tournament.get(TOURNAMENT_SLUG_1)
-		let ts2 = await Tournament.get(TOURNAMENT_SLUG_2)
-		let ts3 = await Tournament.get(TOURNAMENT_SLUG_3)
+		const ts1 = await Tournament.get(TOURNAMENT_SLUG_1)
+		const ts2 = await Tournament.get(TOURNAMENT_SLUG_2)
+		const ts3 = await Tournament.get(TOURNAMENT_SLUG_3)
 
 		expect(ti1).to.deep.equal(ts1)
 		expect(ti2).to.deep.equal(ts2)
@@ -74,7 +73,6 @@ describe('smashgg Tournament', function() {
 		expect(tournament3.getId()).to.be.equal(testData.tournament3.id)
 	})
 
-
 	// name
 	it('should get the correct tournament name 1', () => {
 		expect(tournament1.getName()).to.be.equal(testData.tournament1.name)
@@ -85,7 +83,6 @@ describe('smashgg Tournament', function() {
 	it('should get the correct tournament name 3', () => {
 		expect(tournament3.getName()).to.be.equal(testData.tournament3.name)
 	})
-
 	
 	// slug
 	it('should get the correct tournament slug 1', () => {
@@ -97,7 +94,6 @@ describe('smashgg Tournament', function() {
 	it('should get the correct tournament slug 3', () => {
 		expect(tournament3.getSlug()).to.be.equal(testData.tournament3.slug)
 	})
-
 	
 	// timezone
 	it('should get the correct tournament timezone 1', () => {
@@ -109,7 +105,6 @@ describe('smashgg Tournament', function() {
 	it('should get the correct tournament timezone 3', () => {
 		expect(tournament3.getTimezone()).to.be.equal(testData.tournament3.timezone)
 	})
-
 
 	// start time
 	it('should get the correct tournament end time 1', () => {
@@ -133,7 +128,6 @@ describe('smashgg Tournament', function() {
 		expect(tournament3.getStartTimeString()).to.be.equal(String(moment.unix(testData.tournament3.startAt!).toDate()))
 	})
 
-
 	// end time
 	it('should get the correct tournament end time 1', () => {
 		expect(moment(tournament1.getEndTime()!).isSame(moment.unix(testData.tournament1.endAt!).toDate())).to.be.true
@@ -156,7 +150,6 @@ describe('smashgg Tournament', function() {
 		expect(tournament3.getEndTimeString()).to.be.equal(String(moment.unix(testData.tournament3.endAt!).toDate()))
 	})
 
-
 	// venue
 	it('should get the correct tournament venue 1', () => {
 		expect(tournament1.getVenue()).to.deep.equal(testData.venue1)
@@ -167,7 +160,6 @@ describe('smashgg Tournament', function() {
 	it('should get the correct tournament venue 3', () => {
 		expect(tournament3.getVenue()).to.deep.equal(testData.venue3)
 	})
-
 
 	// venue name
 	it('should get the correct tournament venue name 1', () => {
@@ -183,7 +175,6 @@ describe('smashgg Tournament', function() {
 		expect(tournament3.getVenueName()).to.be.equal(testData.venue3.getName())
 	})
 
-
 	// venue city
 	it('should get the correct tournament venue city 1', () => {
 		expect(tournament1.getCity()).to.be.equal(testData.tournament1.city)
@@ -197,7 +188,6 @@ describe('smashgg Tournament', function() {
 		expect(tournament3.getCity()).to.be.equal(testData.tournament3.city)
 		expect(tournament3.getCity()).to.be.equal(testData.venue3.getCity())
 	})
-
 
 	// address
 	it('should get the correct tournament venue address 1', () => {
@@ -227,7 +217,6 @@ describe('smashgg Tournament', function() {
 		expect(tournament3.getState()).to.be.equal(testData.venue3.getState())
 	})
 
-
 	// zip code
 	it('should get the correct tournament venue zip code 1', () => {
 		expect(tournament1.getZipCode()).to.be.equal(testData.tournament1.postalCode)
@@ -242,7 +231,6 @@ describe('smashgg Tournament', function() {
 		expect(tournament3.getZipCode()).to.be.equal(testData.venue3.getPostalCode())
 	})
 
-
 	// organizer
 	it('should get the correct tournament organizer 1', () => {
 		expect(tournament1.getOrganizer()).to.deep.equal(testData.organizer1)
@@ -253,7 +241,6 @@ describe('smashgg Tournament', function() {
 	it('should get the correct tournament organizer 3', () => {
 		expect(tournament3.getOrganizer()).to.deep.equal(testData.organizer3)
 	})
-
 
 	// organizer id
 	it('should get the correct tournament organizer id 1', () => {
@@ -269,7 +256,6 @@ describe('smashgg Tournament', function() {
 		expect(tournament3.getOwnerId()).to.be.equal(testData.organizer3.getId())
 	})
 
-
 	// organizer contact info
 	it('should get the correct tournament organizer contact info 1', () => {
 		expect(tournament1.getContactInfo()).to.be.equal(testData.tournament1.contactInfo)
@@ -284,7 +270,6 @@ describe('smashgg Tournament', function() {
 		expect(tournament3.getContactInfo()).to.be.equal(testData.organizer3.getInfo())
 	})
 
-
 	// organizer contact email
 	it('should get the correct tournament organizer contact email 1', () => {
 		expect(tournament1.getContactEmail()).to.be.equal(testData.tournament1.contactEmail)
@@ -298,7 +283,6 @@ describe('smashgg Tournament', function() {
 		expect(tournament3.getContactEmail()).to.be.equal(testData.tournament3.contactEmail)
 		expect(tournament3.getContactEmail()).to.be.equal(testData.organizer3.getEmail())
 	})
-
 
 	// organizer contact info
 	it('should get the correct tournament organizer contact twitter 1', () => {
@@ -411,7 +395,6 @@ describe('smashgg Tournament', function() {
 	})
 
 	// entrants
-
 
 	// attendees
 	*/

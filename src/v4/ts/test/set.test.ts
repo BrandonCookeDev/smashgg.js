@@ -95,15 +95,15 @@ describe('Smash GG Set', function() {
 
 	// completed at time date
 	it('should return the correct completed Datetime 1', () => {
-		let expected = moment.unix(testData.set1.completedAt!).toDate()
+		const expected = moment.unix(testData.set1.completedAt!).toDate()
 		expect(moment(set1.getCompletedAt()!).isSame(expected)).to.to.true
 	})
 	it('should return the correct completed Datetime 2', () => {
-		let expected = moment.unix(testData.set2.completedAt!).toDate()
+		const expected = moment.unix(testData.set2.completedAt!).toDate()
 		expect(moment(set2.getCompletedAt()!).isSame(expected)).to.to.true
 	})
 	it('should return the correct completed Datetime 3', () => {
-		let expected = moment.unix(testData.set3.completedAt!).toDate()
+		const expected = moment.unix(testData.set3.completedAt!).toDate()
 		expect(moment(set3.getCompletedAt()!).isSame(expected)).to.to.true
 	})
 
@@ -294,24 +294,22 @@ describe('Smash GG Set', function() {
 		expect(set3.getLoserScore()).to.be.equal(1)
 	})
 
-
 	// games
 	it('should get the list of games played in the set 1', async () => {
-		let expected = gameData.games1.map(gameData => Game.parse(gameData))
+		const expected = gameData.games1.map(data => Game.parse(data))
 		expect(await set1.getGames()).to.have.deep.members(expected)
 		return true
 	})
 	it('should get the list of games played in the set 2', async () => {
-		let expected = gameData.games2.map(gameData => Game.parse(gameData))
+		const expected = gameData.games2.map(data => Game.parse(data))
 		expect(await set2.getGames()).to.have.deep.members(expected)
 		return true
 	})
 	it('should get the list of games played in the set 3', async () => {
-		let expected = gameData.games3.map(gameData => Game.parse(gameData))
+		const expected = gameData.games3.map(data => Game.parse(data))
 		expect(await set3.getGames()).to.have.deep.members(expected)
 		return true		
 	})
-
 
 	// entrants
 	it('should get the correct entrants who played in the set 1', async () => {
@@ -323,7 +321,6 @@ describe('Smash GG Set', function() {
 	it('should get the correct entrants who played in the set 3', async () => {
 		await testGetEntrants(set3)
 	})
-
 	
 	// participants
 	it('should get the correct attendees who played in the set 1', async () => {
@@ -337,9 +334,9 @@ describe('Smash GG Set', function() {
 	})
 
 	xit('should give the correct Bracket ID', (done) => {
-		//expect(set1.getBracketId()).to.be.equal('58df119c60fbb')
-		//expect(set2.getBracketId()).to.be.equal('58df119c60fbb')
-		//expect(set3.getBracketId()).to.be.equal('58df119c60fbb')
+		// expect(set1.getBracketId()).to.be.equal('58df119c60fbb')
+		// expect(set2.getBracketId()).to.be.equal('58df119c60fbb')
+		// expect(set3.getBracketId()).to.be.equal('58df119c60fbb')
 		done()
 	})
 
@@ -403,7 +400,6 @@ describe('Smash GG Set', function() {
 		*/
 	})
 
-
 	xit('should give the correct Midsize Round Text', (done) => {
 		/*
 		expect(set1.getMidsizeRoundText()).to.be.equal('Winners 1')
@@ -415,7 +411,7 @@ describe('Smash GG Set', function() {
 })
 
 async function testGetEntrants(set: IGGSet){
-	let arr: IEntrant[] = await set.getEntrants()
+	const arr: IEntrant[] = await set.getEntrants()
 
 	arr.forEach(entrant => {
 		expect(entrant).to.be.an.instanceof(Entrant)
@@ -429,7 +425,7 @@ async function testGetEntrants(set: IGGSet){
 }
 
 async function testGetAttendees(set: IGGSet){
-	let arr: IAttendee[] = await set.getAttendees()
+	const arr: IAttendee[] = await set.getAttendees()
 
 	arr.forEach(attendee => {
 		expect(attendee).to.be.an.instanceof(Entrant)

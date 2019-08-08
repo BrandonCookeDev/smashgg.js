@@ -60,7 +60,6 @@ describe('smashgg Stream', function() {
 		expect(stream3.getEventId()).to.be.equal(testData.stream3.eventId)
 	})
 
-
 	// tournament id
 	it('should get the correct stream tournament id 1', () => {
 		expect(stream1.getTournamentId()).to.be.equal(testData.stream1.tournamentId)
@@ -170,7 +169,6 @@ describe('smashgg Stream', function() {
 	it('should get the correct stream removes tasks id 3', () => {
 		expect(stream3.getRemovesTasks()).to.be.equal(testData.stream3.removesTasks)
 	})
-
 
 	// stream status
 	it('should get the correct stream status id 1', () => {

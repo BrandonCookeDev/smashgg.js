@@ -8,15 +8,15 @@ import {IVideoGame} from '../lib/interfaces/IVideoGame'
 import { VideoGame } from '../lib/models/VideoGame'
 import Cache from '../lib/util/Cache'
 
-let expected = {
+const expected = {
 	Melee: {
 		id: 1,
 		data: {
-			abbrev: "Melee",
+			abbrev: 'Melee',
 			approved: true,
 			characterTerm: [null],
-			displayName: "Melee",
-			enabled: "1",
+			displayName: 'Melee',
+			enabled: '1',
 			expand: [],
 			gameTerm: [null],
 			id: 1,
@@ -29,10 +29,10 @@ let expected = {
 					id: 6180,
 					isOriginal: true,
 					ratio: 0.73,
-					type: "primary",
+					type: 'primary',
 					updatedAt: [null],
 					uploadedBy: [null],
-					url: "https://images.smash.gg/images/videogame/1/image-f26ab87b8de31d78597a664d225e1c71.jpg",
+					url: 'https://images.smash.gg/images/videogame/1/image-f26ab87b8de31d78597a664d225e1c71.jpg',
 					width: 138
 				},
 			],
@@ -40,8 +40,8 @@ let expected = {
 			isCardGame: [null],
 			maxPerEntry: 2,
 			minPerEntry: 1,
-			name: "Super Smash Bros. Melee",
-			slug: "melee",
+			name: 'Super Smash Bros. Melee',
+			slug: 'melee',
 			stageTerm: [null]
 		},
 		name: 'Super Smash Bros. Melee',
@@ -57,11 +57,11 @@ let expected = {
 	PM: {
 		id: 2,
 		data: {
-			abbrev: "pm",
+			abbrev: 'pm',
 			approved: true,
 			characterTerm: [null],
-			displayName: "PM",
-			enabled: "1",
+			displayName: 'PM',
+			enabled: '1',
 			expand: [],
 			gameTerm: [null],
 			id: 2,
@@ -74,10 +74,10 @@ let expected = {
 					id: 1330116,
 					isOriginal: true,
 					ratio: 0.73,
-					type: "primary",
+					type: 'primary',
 					updatedAt: [null],
 					uploadedBy: [null],
-					url: "https://images.smash.gg/images/videogame/2/image-11a8d11dbd2af24429b41b7e6a166f42.png",
+					url: 'https://images.smash.gg/images/videogame/2/image-11a8d11dbd2af24429b41b7e6a166f42.png',
 					width: 372,
 				},
 			],
@@ -85,8 +85,8 @@ let expected = {
 			isCardGame: [null],
 			maxPerEntry: [null],
 			minPerEntry: [null],
-			name: "Project M",
-			slug: "pm",
+			name: 'Project M',
+			slug: 'pm',
 			stageTerm: [null],
 		},
 		name: 'Project M',
@@ -121,7 +121,7 @@ describe('SmashGG VideoGame', () => {
 	})
 
 	it('should get all video games from api', async () => {
-		let videoGames = await VideoGame.getAll()
+		const videoGames = await VideoGame.getAll()
 		videoGames.forEach(e => {
 			expect(e).to.be.instanceof(VideoGame)
 		})
@@ -129,7 +129,7 @@ describe('SmashGG VideoGame', () => {
 	})
 
 	it('should get correct video game by id', async () => {
-		let vg1 = await VideoGame.getById(1)
+		const vg1 = await VideoGame.getById(1)
 
 		expect(eq(expected.Melee, vg1)).to.be.true
 
@@ -137,7 +137,7 @@ describe('SmashGG VideoGame', () => {
 	})
 
 	it('should get correct video game by id 2', async () => {
-		let vg2 = await VideoGame.getById(2)
+		const vg2 = await VideoGame.getById(2)
 
 		expect(eq(expected.PM, vg2)).to.be.true
 
@@ -145,10 +145,10 @@ describe('SmashGG VideoGame', () => {
 	})
 
 	it('should get correct video game by name', async () => {
-		let melee1 = await VideoGame.getByName('Super Smash Bros. Melee', { isCached: false })
-		let melee2 = await VideoGame.getByName('melee', { isCached: false })
-		let pm1 = await VideoGame.getByName('pm')
-		let pm2 = await VideoGame.getByName('Project M')
+		const melee1 = await VideoGame.getByName('Super Smash Bros. Melee', { isCached: false })
+		const melee2 = await VideoGame.getByName('melee', { isCached: false })
+		const pm1 = await VideoGame.getByName('pm')
+		const pm2 = await VideoGame.getByName('Project M')
 
 		expect(eq(expected.Melee, melee1)).to.be.true
 		expect(eq(expected.Melee, melee2)).to.be.true

@@ -18,12 +18,12 @@ const USER_ID_3 = 7802   // j00t
 const DAVEMON_RANKINGS = [
 	{
 		id: 294398,
-		title: "Tennessee: Spring 2018",
+		title: 'Tennessee: Spring 2018',
 		rank: 2
 	},
 	{
 		id: 317143,
-		title: "Tennessee: Fall 2018",
+		title: 'Tennessee: Fall 2018',
 		rank: 2
 	}
 ]

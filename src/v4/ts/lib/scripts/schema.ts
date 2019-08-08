@@ -49,7 +49,6 @@ phaseId
 waveId
 tiebreakOrder`
 
-
 // smash.gg participant
 export const attendeeContactInfo = `
 id
@@ -80,7 +79,6 @@ connectedAccounts
 events{
 	id	
 }`
-
 
 export const entrant = `
 id

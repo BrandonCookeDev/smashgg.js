@@ -1,7 +1,8 @@
 {
     "defaultSeverity": "error",
     "extends": [
-        "tslint:recommended"
+        "tslint:recommended",
+        "tslint-no-unused-expression-chai"
     ],
     "jsRules": {},
     "rules": {
@@ -19,5 +20,5 @@
         "one-variable-per-declaration": [false],
         "no-console": [false]
     },
-    "rulesDirectory": []
+    "rulesDirectory": [ ]
 }

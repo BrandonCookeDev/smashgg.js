@@ -31,7 +31,7 @@ export interface IEntrant{
 	getConnectedAccounts(): object | null
 }	
 
-export interface IEntrantData{
+export interface IEntrantDataFull{
 	entrant: IEntrantData
 }
 

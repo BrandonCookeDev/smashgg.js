@@ -214,7 +214,7 @@ export class Attendee implements IAttendee{
 		const data: IAttendeeWithPhaseGroupsData = await NI.query(queries.getAttendeePhaseGroups, {id: this.id})
 		const seedData = _.flatten(data.participant.entrants.map(entrant => entrant.seeds))
 		const groupData: IPhaseGroupData[] = _.flatten(seedData.map(seed => seed.phaseGroup))
-		const groups: PhaseGroup[] = groupData.map(group => PhaseGroup.parse(group))
+		const groups: IPhaseGroup[] = groupData.map(group => PhaseGroup.parse(group))
 		return groups
 	}
 }

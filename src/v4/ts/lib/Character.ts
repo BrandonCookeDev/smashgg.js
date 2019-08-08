@@ -2,6 +2,13 @@ import log from './util/Logger'
 import request from 'request-promise'
 import {format} from 'util'
 
+import {
+	ICharacter,
+	ICharacterData,
+	ICharacterEntity
+} from './interfaces/ICharacter'
+import {IVideoGame} from './interfaces/IVideoGame'
+
 import Cache from './util/Cache'
 import {VideoGame} from './VideoGame'
 import {ICommon} from './util/Common'
@@ -11,50 +18,21 @@ import parseOptions = ICommon.parseOptions
 
 const API_URL = 'https://api.smash.gg/characters'
 
-export class Character implements ICharacter.Character{
+export class Character implements ICharacter{
 
-	id: number = 0
-	name: string = ''
-	isCommon: boolean = true
-	videogameId: number = 1
-
-
-	constructor(id: number, name: string, isCommon: boolean, videogameId: number){
-		this.id = id
-		this.name = name
-		this.isCommon = isCommon
-		this.videogameId = videogameId
-	}
-
-	getId(){
-		return this.id
-	}
-
-	getName(){
-		return this.name
-	}
-
-	getIsCommon(){
-		return this.isCommon
-	}
-
-	getVideoGameId(){
-		return this.videogameId
-	}
-
-	static async getAll(options: Options={}) : Promise<Character[]>{
+	public static async getAll(options: Options={}): Promise<ICharacter[]>{
 		log.debug('getAll called')
 		try{
 			// parse options
 			options = parseOptions(options)
 
-			let cacheKey = 'character::all'
+			const cacheKey = 'character::all'
 			if(options.isCached){
-				let cached = await Cache.getInstance().get(cacheKey) as Character[]
+				const cached = await Cache.getInstance().get(cacheKey) as ICharacter[]
 				if(cached) return cached
 			}
 
-			let req = {
+			const req = {
 				uri: API_URL,
 				headers:{
 					'X-SOURCE': 'smashgg.js'
@@ -62,8 +40,8 @@ export class Character implements ICharacter.Character{
 				method: 'GET'
 			}
 
-			let data: ICharacter.Data = JSON.parse(await request(req))
-			let characters = data.entities.character.map(e => {
+			const data: ICharacterData = JSON.parse(await request(req))
+			const characters = data.entities.character.map((e: ICharacterEntity ) => {
 				return new Character(
 					e.id,
 					e.name,
@@ -80,21 +58,21 @@ export class Character implements ICharacter.Character{
 		}
 	}
 
-	static async getById(id: number, options: Options={}) : Promise<Character | undefined>{
+	public static async getById(id: number, options: Options={}): Promise<ICharacter | undefined>{
 		log.debug('Character.getById called')
 		try{
 			// parse options
 			options = parseOptions(options)
 
-			let cacheKey = format('character::id::%s', id)
+			const cacheKey = format('character::id::%s', id)
 			if(options.isCached){
-				let cached = await Cache.getInstance().get(cacheKey) as Character
+				const cached = await Cache.getInstance().get(cacheKey) as ICharacter
 				if(cached) return cached
 			}
 
-			let characters: Character[] = await Character.getAll(options)
-			let match = characters.filter(e => { return e.id === id; })
-			let character: Character | undefined = match.length > 0 ? match[0] : undefined
+			const characters: ICharacter[] = await Character.getAll(options)
+			const match = characters.filter((c: ICharacter) => c.getId() === id)
+			const character: ICharacter | undefined = match.length > 0 ? match[0] : undefined
 
 			if(options.isCached) await Cache.getInstance().set(cacheKey, characters)
 			return character
@@ -104,20 +82,20 @@ export class Character implements ICharacter.Character{
 		}
 	}
 
-	static async getByGameId(id: number, options: Options={}) : Promise<Character[]>{
+	public static async getByGameId(id: number, options: Options={}): Promise<ICharacter[]>{
 		log.debug('Character.getByGameId called')
 		try{
 			// parse options
 			options = parseOptions(options)
 
-			let cacheKey = format('character::videogameId::%s', id)
+			const cacheKey = format('character::videogameId::%s', id)
 			if(options.isCached){
-				let cached = await Cache.getInstance().get(cacheKey) as Character[]
+				const cached = await Cache.getInstance().get(cacheKey) as ICharacter[]
 				if(cached) return cached
 			}
 
-			let characters: Character[] = await Character.getAll(options)
-			characters = characters.filter(e => { return e.videogameId === id; })
+			let characters: ICharacter[] = await Character.getAll(options)
+			characters = characters.filter((c: ICharacter) =>  c.getVideoGameId() === id)
 
 			if(options.isCached) await Cache.getInstance().set(cacheKey, characters)
 			return characters
@@ -127,22 +105,23 @@ export class Character implements ICharacter.Character{
 		}
 	}
 
-	static async getByGameName(name: string, options: Options={}) : Promise<Character[]>{
+	public static async getByGameName(name: string, options: Options={}): Promise<ICharacter[]>{
 		log.debug('Character.getByGameName called')
 		try{
 			// parse options
 			options = parseOptions(options)
 
-			let cacheKey = format('character::videgameName::%s', name)
+			const cacheKey = format('character::videgameName::%s', name)
 			if(options.isCached){
-				let cached = await Cache.getInstance().get(cacheKey) as Character[]
+				const cached = await Cache.getInstance().get(cacheKey) as ICharacter[]
 				if(cached) return cached
 			}
 
-			let videoGame = await VideoGame.getByName(name, options)
+			const videoGame: IVideoGame = await VideoGame.getByName(name, options)
 			if(!videoGame) throw new Error('No game by the name ' + name)
+			else if(!videoGame.getId()) throw new Error('No game id found!')
 
-			let character: Character[] = await Character.getByGameId(videoGame.id , options)
+			const character: ICharacter[] = await Character.getByGameId(videoGame.getId()! , options)
 
 			if(options.isCached) await Cache.getInstance().set(cacheKey, character)
 			return character
@@ -152,21 +131,21 @@ export class Character implements ICharacter.Character{
 		}
 	}
 
-	static async getByName(name: string, options: Options={}) : Promise<Character[]>{
+	public static async getByName(name: string, options: Options={}): Promise<ICharacter[]>{
 		log.debug('Characters.getByName called')
 		try{
 			// parse options
 			options = parseOptions(options)
 
-			let cacheKey = format('characters::name::%s', name)
+			const cacheKey = format('characters::name::%s', name)
 			if(options.isCached){
-				let cached = await Cache.getInstance().get(cacheKey) as Character[]
+				const cached = await Cache.getInstance().get(cacheKey) as ICharacter[]
 				if(cached) return cached
 			}
 
-			let characters: Character[] = await Character.getAll(options)
-			characters = characters.filter(e => { 
-				return e.name.toLowerCase() === name.toLowerCase(); 
+			let characters: ICharacter[] = await Character.getAll(options)
+			characters = characters.filter((c: ICharacter) => { 
+				return c.getName().toLowerCase() === name.toLowerCase()
 			})
 
 			if(options.isCached) await Cache.getInstance().set(cacheKey, characters)
@@ -177,21 +156,22 @@ export class Character implements ICharacter.Character{
 		}
 	}
 
-	static async getByNameAndGameId(name: string, videogameId: number, options: Options={}) : Promise<Character | undefined>{
+	public static async getByNameAndGameId(
+		name: string, videogameId: number, options: Options={}): Promise<ICharacter | undefined>{
 		log.debug('Character.getByNameAndGame called')
 		try{
 			// parse options
 			options = parseOptions(options)
 
-			let cacheKey = format('characters::name::%s::videogameId::%s', name, videogameId)
+			const cacheKey = format('characters::name::%s::videogameId::%s', name, videogameId)
 			if(options.isCached){
-				let cached = await Cache.getInstance().get(cacheKey) as Character
+				const cached = await Cache.getInstance().get(cacheKey) as ICharacter
 				if(cached) return cached
 			}
 
-			let characters: Character[] = await Character.getByName(name, options)
-			let match = characters.filter(e => { return e.videogameId == videogameId; })
-			let character: Character | undefined = match.length > 0 ? match[0] : undefined
+			const characters: ICharacter[] = await Character.getByName(name, options)
+			const match = characters.filter((c: ICharacter) => c.getVideoGameId() === videogameId)
+			const character: ICharacter | undefined = match.length > 0 ? match[0] : undefined
 
 			if(options.isCached) await Cache.getInstance().set(cacheKey, character)
 			return character
@@ -201,22 +181,23 @@ export class Character implements ICharacter.Character{
 		}
 	}
 
-	static async getByNameAndGame(name: string, gameName: string, options: Options={}) : Promise<Character | undefined>{
+	public static async getByNameAndGame(
+		name: string, gameName: string, options: Options={}): Promise<ICharacter | undefined>{
 		log.debug('Character.getByNameAndGame called')
 		try{
 			// parse options
-			let isCached = options.isCached != undefined ? options.isCached == true : true
+			const isCached = options.isCached !== undefined ? options.isCached === true : true
 
-			let cacheKey = format('characters::name::%s::game::%s', name, gameName)
+			const cacheKey = format('characters::name::%s::game::%s', name, gameName)
 			if(isCached){
-				let cached = await Cache.getInstance().get(cacheKey) as Character
+				const cached = await Cache.getInstance().get(cacheKey) as ICharacter
 				if(cached) return cached
 			}
 
-			let characters: Character[] = await Character.getByName(name, options)
-			let videogame: VideoGame = await VideoGame.getByName(gameName, options)
-			let match = characters.filter(e => { return e.videogameId == videogame.id; })
-			let character: Character | undefined = match.length > 0 ? match[0] : undefined
+			const characters: ICharacter[] = await Character.getByName(name, options)
+			const videogame: IVideoGame = await VideoGame.getByName(gameName, options)
+			const match = characters.filter((c: ICharacter) => c.getVideoGameId() === videogame.getId())
+			const character: ICharacter | undefined = match.length > 0 ? match[0] : undefined
 
 			await Cache.getInstance().set(cacheKey, character)
 			return character
@@ -225,45 +206,41 @@ export class Character implements ICharacter.Character{
 			throw e
 		}
 	}
+
+	private id: number = 0
+	private name: string = ''
+	private isCommon: boolean = true
+	private videogameId: number = 1
+
+	constructor(id: number, name: string, isCommon: boolean, videogameId: number){
+		this.id = id
+		this.name = name
+		this.isCommon = isCommon
+		this.videogameId = videogameId
+	}
+
+	public getId(){
+		return this.id
+	}
+
+	public getName(){
+		return this.name
+	}
+
+	public getIsCommon(){
+		return this.isCommon
+	}
+
+	public getVideoGameId(){
+		return this.videogameId
+	}
+
 }
 
 Character.prototype.toString = function(){
 	return 'Character: ' + 
-		'\nName: ' + this.name + 
-		'\nID: ' + this.id + 
-		'\nVideoGame ID: ' + this.videogameId + 
-		'\nIs Common? ' + this.isCommon
-}
-
-export namespace ICharacter{
-
-	export interface Character{
-		id: number
-		name: string
-		isCommon: boolean
-		videogameId: number
-
-		getId(): number
-		getName(): string
-		getIsCommon(): boolean
-		getVideoGameId(): number
-	}
-
-	export interface Data{
-		entities: Entity,
-		[x: string]: any
-	}
-
-	export interface Entity{
-		character: [CharacterEntity],
-		[x: string]: any
-	}
-
-	export interface CharacterEntity{
-		id: number,
-		name: string, 
-		isCommon: boolean,
-		videogameId: number
-	}
-
+		'\nName: ' + this.getName() + 
+		'\nID: ' + this.getId() + 
+		'\nVideoGame ID: ' + this.getVideoGameId() + 
+		'\nIs Common? ' + this.getIsCommon()
 }

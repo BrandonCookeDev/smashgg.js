@@ -21,7 +21,7 @@ import {
 	IGGSetSlotEntrantData
 } from './interfaces/IGGSet'
 import {IPlayerLite} from './interfaces/IPlayerLite'
-import {IGame, IGameData} from './interfaces/IGame'
+import {IGame, IGameDataFull} from './interfaces/IGame'
 import {IAttendee} from './interfaces/IAttendee'
 import {IEntrant} from './interfaces/IEntrant'
 

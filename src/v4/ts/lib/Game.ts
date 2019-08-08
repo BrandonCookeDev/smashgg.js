@@ -61,6 +61,6 @@ export class Game implements IGame{
 	}
 
 	public getSelectionsForEntrantId(theEntrantId: number): ISelections | undefined{
-		return _.find(this.selections, {entrantId: theEntrantId})
+		return _.find(this.selections, {entrantId: theEntrantId}) as ISelections | undefined
 	}
 }

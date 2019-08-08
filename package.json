@@ -22,6 +22,7 @@
     "test": "./node_modules/.bin/mocha ./src/v4/js/test",
     "lint": "./node_modules/.bin/eslint .",
     "tsc": "tsc",
+    "tsc-v1": "tsc --project tsconfig.v1.json",
     "tslint": "./node_modules/.bin/tslint --project ./src/v4/ts/lib",
     "tslint-tests": "./node_modules/.bin/tslint --project ./src/v4/ts/test",
     "sandbox": "node ./sandbox/sandbox",

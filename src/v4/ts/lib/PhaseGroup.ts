@@ -1,14 +1,5 @@
 import _ from 'lodash'
 
-import { Attendee } from './Attendee'
-import { Entrant } from './Entrant' // TODO change this to internal
-import { GGSet } from './GGSet'
-import { Seed } from './Seed'
-import NI from './util/NetworkInterface'
-import log from './util/Logger'
-
-import * as queries from './scripts/phaseGroupQueries'
-
 import {IPhaseGroup, 
 	IPhaseGroupData, 
 	IPhaseGroupDataFull,
@@ -23,9 +14,18 @@ import {IEntrant, IEntrantData, IEntrantOptions} from './interfaces/IEntrant'
 import {IGGSet, IGGSetData, IGGSetOptions} from './interfaces/IGGSet'
 import {ISeed, ISeedData, ISeedOptions} from './interfaces/ISeed'
 
+import { Attendee } from './Attendee'
+import { Entrant } from './Entrant' // TODO change this to internal
+import { GGSet } from './GGSet'
+import { Seed } from './Seed'
+import NI from './util/NetworkInterface'
+import log from './util/Logger'
+
+import * as queries from './scripts/phaseGroupQueries'
+
 export class PhaseGroup implements IPhaseGroup{
 
-	public static parse(data: IPhaseGroupData): PhaseGroup{
+	public static parse(data: IPhaseGroupData): IPhaseGroup{
 		return new PhaseGroup(
 			data.id,
 			data.phaseId,
@@ -37,15 +37,15 @@ export class PhaseGroup implements IPhaseGroup{
 		)
 	}
 
-	public static parseFull(data: IPhaseGroupDataFull): PhaseGroup {
+	public static parseFull(data: IPhaseGroupDataFull): IPhaseGroup {
 		return PhaseGroup.parse(data.phaseGroup)
 	}
 
-	public static parseEventData(data: IPhaseGroupEventData): PhaseGroup[]{
+	public static parseEventData(data: IPhaseGroupEventData): IPhaseGroup[]{
 		return data.event.phaseGroups.map(pg => PhaseGroup.parse(pg))
 	}
 
-	public static async get(theId: number): Promise<PhaseGroup> {
+	public static async get(theId: number): Promise<IPhaseGroup> {
 		log.info('Getting Phase Group with id %s', theId)
 		const data: IPhaseGroupDataFull = await NI.query(queries.phaseGroup, {id: theId})
 		return PhaseGroup.parse(data.phaseGroup)

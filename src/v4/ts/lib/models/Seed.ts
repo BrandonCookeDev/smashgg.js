@@ -3,7 +3,7 @@ import {
 	ISeedData,
 	ISeedOptions,
 	ISeedDataFull
-} from './interfaces/ISeed'
+} from '../interfaces/ISeed'
 
 export class Seed implements ISeed{
 

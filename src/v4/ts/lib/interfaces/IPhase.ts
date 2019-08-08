@@ -1,7 +1,7 @@
+import {IAttendee, IAttendeeData, IAttendeeOptions} from './IAttendee'
 import {IEntrant, IEntrantOptions, IEntrantData} from './IEntrant'
 import {IGGSet, IGGSetOptions, IGGSetData} from './IGGSet'
 import {IPhaseGroup, IPhaseGroupData} from './IPhaseGroup'
-import {IAttendeeData} from './IAttendee'
 import {ISeedData} from './ISeed'
 
 export interface IPhase{
@@ -19,10 +19,11 @@ export interface IPhase{
 	getNumSeeds(): number
 	getGroupCount(): number	
 	getPhaseGroups(): Promise<IPhaseGroup[]>
-	getSets(options: IGGSetOptions): Promise<IGGSet[]>
-	getEntrants(options: IEntrantOptions): Promise<IEntrant[]>
-	getIncompleteSets(options: IGGSetOptions): Promise<IGGSet[]>
-	getCompleteSets(options: IGGSetOptions): Promise<IGGSet[]>
+	getSets(options?: IGGSetOptions): Promise<IGGSet[]>
+	getEntrants(options?: IEntrantOptions): Promise<IEntrant[]>
+	getAttendees(options?: IAttendeeOptions): Promise<IAttendee[]>
+	getIncompleteSets(options?: IGGSetOptions): Promise<IGGSet[]>
+	getCompleteSets(options?: IGGSetOptions): Promise<IGGSet[]>
 	getSetsXMinutesBack(minutesBack: number, options: IGGSetOptions): Promise<IGGSet[]>
 
 }

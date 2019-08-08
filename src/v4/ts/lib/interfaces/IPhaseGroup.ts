@@ -21,12 +21,12 @@ export interface IPhaseGroup{
 	getState(): number | null
 	getWaveId(): number | null
 	getTiebreakOrder(): object | null
-	getSeeds(options: ISeedOptions): Promise<ISeed[]>
-	getEntrants(options: IEntrantOptions): Promise<IEntrant[]>
-	getAttendees(options: IAttendeeOptions): Promise<IAttendee[]>
-	getSets(options: IGGSetOptions): Promise<IGGSet[]>
-	getCompleteSets(options: IGGSetOptions): Promise<IGGSet[]>
-	getIncompleteSets(options: IGGSetOptions): Promise<IGGSet[]>
+	getSeeds(options?: ISeedOptions): Promise<ISeed[]>
+	getEntrants(options?: IEntrantOptions): Promise<IEntrant[]>
+	getAttendees(options?: IAttendeeOptions): Promise<IAttendee[]>
+	getSets(options?: IGGSetOptions): Promise<IGGSet[]>
+	getCompleteSets(options?: IGGSetOptions): Promise<IGGSet[]>
+	getIncompleteSets(options?: IGGSetOptions): Promise<IGGSet[]>
 	getSetsXMinutesBack(minutes: number, options: IGGSetOptions): Promise<IGGSet[]>
 }
 

@@ -1,5 +1,5 @@
 import {IContactInfo} from '../interfaces/IContactInfo'
-import {IEntrant, IEntrantData, IEntrantOptions} from '../interfaces/IEntrant'
+import {IEntrant, IEntrantData, IEntrantOptions, IEntrantDataFull} from '../interfaces/IEntrant'
 import {IAttendee} from '../interfaces/IAttendee'
 
 import {Attendee} from './Attendee' // TODO later change this to internal
@@ -18,7 +18,7 @@ export class Entrant implements IEntrant{
 		)
 	}
 
-	public static parseFull(data: IEntrantData): Entrant{
+	public static parseFull(data: IEntrantDataFull): Entrant{
 		return Entrant.parse(data.entrant)
 	}
 

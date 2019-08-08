@@ -169,8 +169,13 @@ export class Phase implements IPhase{
 			options, {}, 2
 		)
 		const entrantData: IEntrantData[] = 
-			_.flatten(data.map(eData => eData.phase.paginatedSeeds.nodes )).filter(entrant => entrant != null)
-		const entrants: IEntrant[] = entrantData.map(e => Entrant.parseFull(e)) as IEntrant[]
+			_.flatten(
+				data.map(eData => eData.phase.paginatedSeeds.nodes )
+			).filter(entrant => entrant != null)
+		
+		const entrants: IEntrant[] = 
+			entrantData.map((e: IEntrantData) => Entrant.parse(e)) as IEntrant[]
+
 		return _.uniqBy(entrants, 'id')
 	}
 

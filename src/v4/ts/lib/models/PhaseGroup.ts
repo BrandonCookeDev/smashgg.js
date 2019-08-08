@@ -123,14 +123,17 @@ export class PhaseGroup implements IPhaseGroup{
 	public async getEntrants(options: IEntrantOptions = Entrant.getDefaultEntrantOptions()): Promise<IEntrant[]>{
 		log.info('Getting Entrants for Phase Group [%s]', this.id)
 		log.verbose('Query variables: %s', JSON.stringify(options))
-		const data: IPhaseGroupEntrantData[] = await NI.paginatedQuery(
+		const phaseGroupEntrantData: IPhaseGroupEntrantData[] = await NI.paginatedQuery(
 			`Phase Group Entrants [${this.id}]`, 
 			queries.phaseGroupEntrants, {id: this.id},
 			options, {}, 2
 		) 
-		const phaseGroups = data.map(pg => pg.phaseGroup)
+		const phaseGroups = phaseGroupEntrantData.map(groupData => groupData.phaseGroup)
 		const entrants: IEntrant[] = 
-			_.flatten(phaseGroups.map(pg => pg.paginatedSeeds.nodes.map(e => Entrant.parseFull(e)).filter(seed => seed != null)))
+			_.flatten(phaseGroups.map(
+				pg => pg.paginatedSeeds.nodes.map(
+					(e: IEntrantData) => Entrant.parse(e)
+				).filter(seed => seed != null)))
 		return _.uniqBy(entrants, 'id')
 	}
 

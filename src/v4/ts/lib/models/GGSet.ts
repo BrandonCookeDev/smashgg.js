@@ -193,6 +193,10 @@ export class GGSet extends EventEmitter implements IGGSet{
 	}
 
 	// simple
+	public getId(): number | null {
+		return this.id
+	}
+
 	public getEventId(): number | null { 
 		return this.eventId
 	}

@@ -23,7 +23,7 @@ import {IEntrant, IEntrantOptions} from '../interfaces/IEntrant'
 import {IAttendee, IAttendeeOptions, IAttendeeData, IAttendeePaginatedData} from '../interfaces/IAttendee'
 
 import {Venue} from './Venue'
-import {Organizer} from './Oraganizer'
+import {Organizer} from './Organizer'
 import {Event} from './Event'
 import {Phase} from './Phase'
 import {PhaseGroup} from './PhaseGroup'

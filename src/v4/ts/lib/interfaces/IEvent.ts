@@ -34,11 +34,11 @@ export interface IEvent{
 
 	getPhases(): Promise<IPhase[]>
 	getPhaseGroups(): Promise<IPhaseGroup[]>
-	getEntrants(options: IEntrantOptions): Promise<IEntrant[]>
-	getAttendees(options: IAttendeeOptions): Promise<IAttendee[]>
-	getSets(options: IGGSetOptions): Promise<IGGSet[]>
-	getIncompleteSets(options: IGGSetOptions): Promise<IGGSet[]>
-	getCompleteSets(options: IGGSetOptions): Promise<IGGSet[]>
+	getEntrants(options?: IEntrantOptions): Promise<IEntrant[]>
+	getAttendees(options?: IAttendeeOptions): Promise<IAttendee[]>
+	getSets(options?: IGGSetOptions): Promise<IGGSet[]>
+	getIncompleteSets(options?: IGGSetOptions): Promise<IGGSet[]>
+	getCompleteSets(options?: IGGSetOptions): Promise<IGGSet[]>
 	getSetsXMinutesBack(minutesBack: number, options: IGGSetOptions): Promise<IGGSet[]> 
 }
 

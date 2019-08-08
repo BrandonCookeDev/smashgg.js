@@ -23,6 +23,7 @@ export interface IGGSet{
 	score2: number | null
 	*/
 	
+	getId(): number | null
 	getEventId(): number | null
 	getPhaseGroupId(): number | null
 	getStartedAt(): Date | null 
@@ -50,6 +51,8 @@ export interface IGGSet{
 	getBestOfCount(): number | string
 	getWinnerScore(): number | string
 	getLoserScore(): number | string
+	getStartedAtTimestamp(): number | null
+	getCompletedAtTimestamp(): number | null
 
 	// getBracketId() : number | string 
 	// getMidsizeRoundText() : string
@@ -57,6 +60,7 @@ export interface IGGSet{
 	// getLosersTournamentPlacement() : number | string
 
 	getGames(): Promise<IGame[]>
+	
 }
 
 export interface IGGSetDataFull{

@@ -6,6 +6,7 @@ const gulp = require('gulp')
 const ts = require('gulp-typescript')
 const mocha = require('gulp-mocha')
 const {exec} = require('child_process')
+const readline = require('readline')
 
 const ROOT = __dirname
 const SRC_DIR = path.join(ROOT, 'src', 'v4')
@@ -129,6 +130,25 @@ function getQueries(cb){
 	cb(null)
 }
 
+function deploymentWarningMessage(cb){
+	const message = 
+		'WARNING: Before deployment, please commit your code and make sure you are logged into git and npm'
+	console.log(message)
+
+	const rl = readline.createInterface({
+		input: process.stdin,
+		output: process.stdout
+	})
+
+	rl.question('Do you wish to proceed? [y]', (answer) => {
+		rl.close()
+		if(answer != null && answer.toString().toLowerCase() == 'y')
+			cb()
+		else
+			cb(new Error('Deployment Cancelled'))
+	})
+}
+
 function updateMajor(cb){
 	updatePackageJsonVersion(1)
 	cb()
@@ -223,7 +243,7 @@ exports.publish = gulp.series(tsc, publish)
 exports.updateMajor = updateMajor
 exports.updateMinor = updateMinor
 exports.updatePatch = updatePatch
-exports.preDeploy = gulp.series(tsc, tscV1)
+exports.preDeploy = gulp.series(deploymentWarningMessage, tsc, tscV1)
 exports.deployPatch = gulp.series(this.preDeploy, updatePatch, tagGit, npmPublish)
 exports.deployMinor = gulp.series(this.preDeploy, updateMinor, tagGit, npmPublish)
 exports.deployMajor = gulp.series(this.preDeploy, updateMajor, tagGit, npmPublish)

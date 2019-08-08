@@ -181,6 +181,11 @@ function gitCommit(cb){
 	exec(cmd, cb)
 }
 
+function gitPush(cb){
+	const cmd = 'git push && git push --tags'
+	exec(cmd, cb)
+}
+
 function npmPublish(cb){
 	const cmd = 'npm publish'
 	exec(cmd, cb)
@@ -255,6 +260,6 @@ exports.publish = gulp.series(tsc, publish)
 // exports.updateMinor = updateMinor
 // exports.updatePatch = updatePatch
 exports.preDeploy = gulp.series(deploymentWarningMessage, tsc, tscV1)
-exports.deployPatch = gulp.series(this.preDeploy, updatePatch, gitTag, gitCommit, npmPublish)
-exports.deployMinor = gulp.series(this.preDeploy, updateMinor, gitTag, gitCommit, npmPublish)
-exports.deployMajor = gulp.series(this.preDeploy, updateMajor, gitTag, gitCommit, npmPublish)
+exports.deployPatch = gulp.series(this.preDeploy, updatePatch, gitTag, gitCommit, gitPush, npmPublish)
+exports.deployMinor = gulp.series(this.preDeploy, updateMinor, gitTag, gitCommit, gitPush, npmPublish)
+exports.deployMajor = gulp.series(this.preDeploy, updateMajor, gitTag, gitCommit, gitPush, npmPublish)

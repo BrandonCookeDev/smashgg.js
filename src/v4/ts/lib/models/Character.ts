@@ -1,4 +1,4 @@
-import log from './util/Logger'
+import log from '../util/Logger'
 import request from 'request-promise'
 import {format} from 'util'
 
@@ -6,21 +6,20 @@ import {
 	ICharacter,
 	ICharacterData,
 	ICharacterEntity
-} from './interfaces/ICharacter'
-import {IVideoGame} from './interfaces/IVideoGame'
+} from '../interfaces/ICharacter'
+import {IVideoGame} from '../interfaces/IVideoGame'
 
-import Cache from './util/Cache'
+import {ICommonOptions} from '../interfaces/ICommon'
+
+import Cache from '../util/Cache'
 import {VideoGame} from './VideoGame'
-import {ICommon} from './util/Common'
-
-import Options = ICommon.Options
-import parseOptions = ICommon.parseOptions
+import {parseOptions} from '../util/Common'
 
 const API_URL = 'https://api.smash.gg/characters'
 
 export class Character implements ICharacter{
 
-	public static async getAll(options: Options={}): Promise<ICharacter[]>{
+	public static async getAll(options: ICommonOptions={}): Promise<ICharacter[]>{
 		log.debug('getAll called')
 		try{
 			// parse options
@@ -58,7 +57,7 @@ export class Character implements ICharacter{
 		}
 	}
 
-	public static async getById(id: number, options: Options={}): Promise<ICharacter | undefined>{
+	public static async getById(id: number, options: ICommonOptions={}): Promise<ICharacter | undefined>{
 		log.debug('Character.getById called')
 		try{
 			// parse options
@@ -82,7 +81,7 @@ export class Character implements ICharacter{
 		}
 	}
 
-	public static async getByGameId(id: number, options: Options={}): Promise<ICharacter[]>{
+	public static async getByGameId(id: number, options: ICommonOptions={}): Promise<ICharacter[]>{
 		log.debug('Character.getByGameId called')
 		try{
 			// parse options
@@ -105,7 +104,7 @@ export class Character implements ICharacter{
 		}
 	}
 
-	public static async getByGameName(name: string, options: Options={}): Promise<ICharacter[]>{
+	public static async getByGameName(name: string, options: ICommonOptions={}): Promise<ICharacter[]>{
 		log.debug('Character.getByGameName called')
 		try{
 			// parse options
@@ -131,7 +130,7 @@ export class Character implements ICharacter{
 		}
 	}
 
-	public static async getByName(name: string, options: Options={}): Promise<ICharacter[]>{
+	public static async getByName(name: string, options: ICommonOptions={}): Promise<ICharacter[]>{
 		log.debug('Characters.getByName called')
 		try{
 			// parse options
@@ -157,7 +156,7 @@ export class Character implements ICharacter{
 	}
 
 	public static async getByNameAndGameId(
-		name: string, videogameId: number, options: Options={}): Promise<ICharacter | undefined>{
+		name: string, videogameId: number, options: ICommonOptions={}): Promise<ICharacter | undefined>{
 		log.debug('Character.getByNameAndGame called')
 		try{
 			// parse options
@@ -182,7 +181,7 @@ export class Character implements ICharacter{
 	}
 
 	public static async getByNameAndGame(
-		name: string, gameName: string, options: Options={}): Promise<ICharacter | undefined>{
+		name: string, gameName: string, options: ICommonOptions={}): Promise<ICharacter | undefined>{
 		log.debug('Character.getByNameAndGame called')
 		try{
 			// parse options

@@ -3,7 +3,7 @@ const ROOT = path.join(__dirname, '..', '..', '..', '..', '.env')
 import {config} from 'dotenv'
 config({path: ROOT})
 
-import '../lib/models/util/ErrorHandler'
+import '../lib/util/ErrorHandler'
 import * as log from '../lib/util/Logger'
 
 import _ from 'lodash'
@@ -13,17 +13,19 @@ import cap from 'chai-as-promised'
 chai.use(cap)
 const {expect} = chai
 
+import {IStream} from '../lib/interfaces/IStream'
+
 import Initializer from '../lib/util/Initializer'
 import {Stream} from '../lib/models/Stream'
 import * as testData from './data/stream.testData'
 
-let stream1: Stream, stream2: Stream, stream3: Stream
+let stream1: IStream, stream2: IStream, stream3: IStream
 
 const STREAM_ID_1 = 10493
 const STREAM_ID_2 = 574
 const STREAM_ID_3 = 40210
 
-describe('smashgg Stream', () => {
+describe('smashgg Stream', function() {
 	this.timeout(10000)
 	
 	before(async () => {
@@ -70,7 +72,6 @@ describe('smashgg Stream', () => {
 		expect(stream3.getTournamentId()).to.be.equal(testData.stream3.tournamentId)
 	})
 
-
 	// stream name
 	it('should get the correct stream name id 1', () => {
 		expect(stream1.getStreamName()).to.be.equal(testData.stream1.streamName)
@@ -81,7 +82,6 @@ describe('smashgg Stream', () => {
 	it('should get the correct stream name id 3', () => {
 		expect(stream3.getStreamName()).to.be.equal(testData.stream3.streamName)
 	})
-
 
 	// num setups
 	it('should get the correct num setups id 1', () => {
@@ -105,7 +105,6 @@ describe('smashgg Stream', () => {
 		expect(stream3.getStreamSource()).to.be.equal(testData.stream3.streamSource)
 	})
 
-
 	// stream type
 	it('should get the correct stream type id 1', () => {
 		expect(stream1.getStreamType()).to.be.equal(testData.stream1.streamType)
@@ -116,7 +115,6 @@ describe('smashgg Stream', () => {
 	it('should get the correct stream type id 3', () => {
 		expect(stream3.getStreamType()).to.be.equal(testData.stream3.streamType)
 	})
-
 
 	// stream type id
 	it('should get the correct stream type id id 1', () => {
@@ -129,7 +127,6 @@ describe('smashgg Stream', () => {
 		expect(stream3.getStreamTypeId()).to.be.equal(testData.stream3.streamTypeId)
 	})
 
-
 	// is online
 	it('should get the correct stream is online status id 1', () => {
 		expect(stream1.getIsOnline()).to.be.equal(testData.stream1.isOnline)
@@ -140,7 +137,6 @@ describe('smashgg Stream', () => {
 	it('should get the correct stream is online status id 3', () => {
 		expect(stream3.getIsOnline()).to.be.equal(testData.stream3.isOnline)
 	})
-
 
 	// enabled
 	it('should get the correct stream enabled id 1', () => {
@@ -153,7 +149,6 @@ describe('smashgg Stream', () => {
 		expect(stream3.getEnabled()).to.be.equal(testData.stream3.enabled)
 	})
 
-
 	// follower count
 	it('should get the correct stream follower count id 1', () => {
 		expect(stream1.getFollowerCount()).to.be.equal(testData.stream1.followerCount)
@@ -164,7 +159,6 @@ describe('smashgg Stream', () => {
 	it('should get the correct stream follower count id 3', () => {
 		expect(stream3.getFollowerCount()).to.be.equal(testData.stream3.followerCount)
 	})
-
 
 	// removesTasks
 	it('should get the correct stream removes tasks id 1', () => {
@@ -189,7 +183,6 @@ describe('smashgg Stream', () => {
 		expect(stream3.getStreamStatus()).to.be.equal(testData.stream3.streamStatus)
 	})
 
-
 	// stream game
 	it('should get the correct stream game id 1', () => {
 		expect(stream1.getStreamGame()).to.be.equal(testData.stream1.streamGame)
@@ -200,7 +193,6 @@ describe('smashgg Stream', () => {
 	it('should get the correct stream game id 3', () => {
 		expect(stream3.getStreamGame()).to.be.equal(testData.stream3.streamGame)
 	})
-
 
 	// stream logo
 	it('should get the correct stream logo id 1', () => {

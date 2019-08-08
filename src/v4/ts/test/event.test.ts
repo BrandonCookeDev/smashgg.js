@@ -3,7 +3,7 @@ const ROOT = path.join(__dirname, '..', '..', '..', '..', '.env')
 import {config} from 'dotenv'
 config({path: ROOT})
 
-import '../lib/models/util/ErrorHandler'
+import '../lib/util/ErrorHandler'
 import * as log from '../lib/util/Logger'
 
 import _ from 'lodash'

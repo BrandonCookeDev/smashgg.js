@@ -3,7 +3,7 @@ const ROOT = path.join(__dirname, '..', '..', '..', '..', '.env')
 import {config} from 'dotenv'
 config({path: ROOT})
 
-import '../lib/models/util/ErrorHandler'
+import '../lib/util/ErrorHandler'
 import * as log from '../lib/util/Logger'
 
 import _ from 'lodash'
@@ -13,13 +13,15 @@ import cap from 'chai-as-promised'
 chai.use(cap)
 const {expect} = chai
 
+import {IStreamQueue} from '../lib/interfaces/IStreamQueue'
+
 import Initializer from '../lib/util/Initializer'
 import {StreamQueue} from '../lib/models/StreamQueue'
 import {Stream} from '../lib/models/Stream'
 import {GGSet} from '../lib/models/GGSet'
 import * as testData from './data/streamQueue.testData'
 
-let streamQueue1: StreamQueue[] | null
+let streamQueue1: IStreamQueue[] | null
 
 const STREAM_QUEUE_TOURNAMENT_ID_1 = 6620
 

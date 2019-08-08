@@ -3,7 +3,7 @@ const ROOT = path.join(__dirname, '..', '..', '..', '..', '.env')
 import {config} from 'dotenv'
 config({path: ROOT})
 
-import '../lib/models/util/ErrorHandler'
+import '../lib/util/ErrorHandler'
 
 import _ from 'lodash'
 import moment from 'moment'
@@ -14,6 +14,8 @@ const {expect} = chai
 
 import { IGGSet } from '../lib/interfaces/IGGSet'
 import { IGame } from '../lib/interfaces/IGame'
+import {IEntrant} from '../lib/interfaces/IEntrant'
+import {IAttendee} from '../lib/interfaces/IAttendee'
 
 import {GGSet} from '../lib/models/GGSet'
 import {Game} from '../lib/models/Game'
@@ -71,82 +73,82 @@ describe('Smash GG Set', function() {
 
 	// started at time
 	it('should return the correct starting timestamp 1', () => {
-		expect(set1.getStartedAtTimestamp()).to.be.equal(set1.startedAt)
+		expect(set1.getStartedAtTimestamp()).to.be.equal(testData.set1.startedAt)
 	})
 	it('should return the correct starting timestamp 2 ', () => {
-		expect(set2.getStartedAtTimestamp()).to.be.equal(set2.startedAt)
+		expect(set2.getStartedAtTimestamp()).to.be.equal(testData.set2.startedAt)
 	})
 	it('should return the correct starting timestamp 3', () => {
-		expect(set3.getStartedAtTimestamp()).to.be.equal(set3.startedAt)
+		expect(set3.getStartedAtTimestamp()).to.be.equal(testData.set3.startedAt)
 	})
 
 	// completed at time
 	it('should return the correct completed timestamp 1', () => {
-		expect(set1.getCompletedAtTimestamp()).to.be.equal(set1.completedAt)
+		expect(set1.getCompletedAtTimestamp()).to.be.equal(testData.set1.completedAt)
 	})
 	it('should return the correct completed timestamp 2', () => {
-		expect(set2.getCompletedAtTimestamp()).to.be.equal(set2.completedAt)
+		expect(set2.getCompletedAtTimestamp()).to.be.equal(testData.set2.completedAt)
 	})
 	it('should return the correct completed timestamp 3', () => {
-		expect(set3.getCompletedAtTimestamp()).to.be.equal(set3.completedAt)
+		expect(set3.getCompletedAtTimestamp()).to.be.equal(testData.set3.completedAt)
 	})
 
 	// completed at time date
 	it('should return the correct completed Datetime 1', () => {
-		let expected = moment.unix(set1.completedAt!).toDate()
+		let expected = moment.unix(testData.set1.completedAt!).toDate()
 		expect(moment(set1.getCompletedAt()!).isSame(expected)).to.to.true
 	})
 	it('should return the correct completed Datetime 2', () => {
-		let expected = moment.unix(set2.completedAt!).toDate()
+		let expected = moment.unix(testData.set2.completedAt!).toDate()
 		expect(moment(set2.getCompletedAt()!).isSame(expected)).to.to.true
 	})
 	it('should return the correct completed Datetime 3', () => {
-		let expected = moment.unix(set3.completedAt!).toDate()
+		let expected = moment.unix(testData.set3.completedAt!).toDate()
 		expect(moment(set3.getCompletedAt()!).isSame(expected)).to.to.true
 	})
 
 	// display score
 	it('should return the correct display score string 1', () => {
-		expect(set1.getDisplayScore()).to.be.equal(set1.displayScore)
+		expect(set1.getDisplayScore()).to.be.equal(testData.set1.displayScore)
 	})
 	it('should return the correct display score string 2', () => {
-		expect(set2.getDisplayScore()).to.be.equal(set2.displayScore)
+		expect(set2.getDisplayScore()).to.be.equal(testData.set2.displayScore)
 	})
 	it('should return the correct display score string 3', () => {
-		expect(set3.getDisplayScore()).to.be.equal(set3.displayScore)
+		expect(set3.getDisplayScore()).to.be.equal(testData.set3.displayScore)
 	})
 
 	// full round text
 	it('should return the full round text 1', () => {
-		expect(set1.getFullRoundText()).to.be.equal(set1.fullRoundText)
+		expect(set1.getFullRoundText()).to.be.equal(testData.set1.fullRoundText)
 	})
 	it('should return the full round text 2', () => {
-		expect(set2.getFullRoundText()).to.be.equal(set2.fullRoundText)
+		expect(set2.getFullRoundText()).to.be.equal(testData.set2.fullRoundText)
 	})
 	it('should return the full round text 3', () => {
-		expect(set3.getFullRoundText()).to.be.equal(set3.fullRoundText)
+		expect(set3.getFullRoundText()).to.be.equal(testData.set3.fullRoundText)
 	})
 
 	// round
 	it('should return the round 1', () => {
-		expect(set1.getRound()).to.be.equal(set1.round)
+		expect(set1.getRound()).to.be.equal(testData.set1.round)
 	})
 	it('should return the round 2', () => {
-		expect(set2.getRound()).to.be.equal(set2.round)
+		expect(set2.getRound()).to.be.equal(testData.set2.round)
 	})
 	it('should return the round 3', () => {
-		expect(set3.getRound()).to.be.equal(set3.round)
+		expect(set3.getRound()).to.be.equal(testData.set3.round)
 	})
 
 	// state
 	it('should return the state 1', () => {
-		expect(set1.getState()).to.be.equal(set1.state)
+		expect(set1.getState()).to.be.equal(testData.set1.state)
 	})
 	it('should return the state 2', () => {
-		expect(set2.getState()).to.be.equal(set2.state)
+		expect(set2.getState()).to.be.equal(testData.set2.state)
 	})
 	it('should return the state 3', () => {
-		expect(set3.getState()).to.be.equal(set3.state)
+		expect(set3.getState()).to.be.equal(testData.set3.state)
 	})
 
 	// player 1
@@ -313,85 +315,25 @@ describe('Smash GG Set', function() {
 
 	// entrants
 	it('should get the correct entrants who played in the set 1', async () => {
-		let entrants = await set1.getEntrants()
-
-		var hasDuplicates = function(a: Entrant[]) {
-			return _.uniq(a).length !== a.length
-		}
-		expect(hasDuplicates(entrants)).to.be.false
-		entrants.forEach(entrant => {
-			expect(entrant).to.be.an.instanceof(Entrant)
-		})
-		expect(entrants.length).to.be.equal(2)
-		return true
+		await testGetEntrants(set1)
 	})
 	it('should get the correct entrants who played in the set 2', async () => {
-		let entrants = await set2.getEntrants()
-
-		var hasDuplicates = function(a: Entrant[]) {
-			return _.uniq(a).length !== a.length
-		}
-		expect(hasDuplicates(entrants)).to.be.false
-		entrants.forEach(entrant => {
-			expect(entrant).to.be.an.instanceof(Entrant)
-		})
-		expect(entrants.length).to.be.equal(2)
-		return true
+		await testGetEntrants(set2)
 	})
 	it('should get the correct entrants who played in the set 3', async () => {
-		let entrants = await set3.getEntrants()
-
-		var hasDuplicates = function(a: Entrant[]) {
-			return _.uniq(a).length !== a.length
-		}
-		expect(hasDuplicates(entrants)).to.be.false
-		entrants.forEach(entrant => {
-			expect(entrant).to.be.an.instanceof(Entrant)
-		})
-		expect(entrants.length).to.be.equal(2)
-		return true
+		await testGetEntrants(set3)
 	})
 
 	
 	// participants
 	it('should get the correct attendees who played in the set 1', async () => {
-		let attendees = await set1.getAttendees()
-
-		var hasDuplicates = function(a: Attendee[]) {
-			return _.uniq(a).length !== a.length
-		}
-		expect(hasDuplicates(attendees)).to.be.false
-		attendees.forEach(attendee => {
-			expect(attendee).to.be.an.instanceof(Attendee)
-		})
-		expect(attendees.length).to.be.equal(2)
-		return true
+		await testGetAttendees(set1)
 	})
 	it('should get the correct attendees who played in the set 2', async () => {
-		let attendees = await set2.getAttendees()
-
-		var hasDuplicates = function(a: Attendee[]) {
-			return _.uniq(a).length !== a.length
-		}
-		expect(hasDuplicates(attendees)).to.be.false
-		attendees.forEach(attendee => {
-			expect(attendee).to.be.an.instanceof(Attendee)
-		})
-		expect(attendees.length).to.be.equal(2)
-		return true
+		await testGetAttendees(set2)
 	})
 	it('should get the correct participants who played in the set 3', async () => {
-		let attendees = await set3.getAttendees()
-
-		var hasDuplicates = function(a: Attendee[]) {
-			return _.uniq(a).length !== a.length
-		}
-		expect(hasDuplicates(attendees)).to.be.false
-		attendees.forEach(attendee => {
-			expect(attendee).to.be.an.instanceof(Attendee)
-		})
-		expect(attendees.length).to.be.equal(2)
-		return true
+		await testGetAttendees(set3)
 	})
 
 	xit('should give the correct Bracket ID', (done) => {
@@ -471,3 +413,31 @@ describe('Smash GG Set', function() {
 		*/
 	})
 })
+
+async function testGetEntrants(set: IGGSet){
+	let arr: IEntrant[] = await set.getEntrants()
+
+	arr.forEach(entrant => {
+		expect(entrant).to.be.an.instanceof(Entrant)
+		expect(
+			arr.filter(x => x.getId() === entrant.getId()).length,
+			'Phase Group array must not have duplicates! Found: ' + entrant.getId()
+		).to.be.equal(1)
+	})
+	expect(arr.length).to.be.equal(2)
+	return true
+}
+
+async function testGetAttendees(set: IGGSet){
+	let arr: IAttendee[] = await set.getAttendees()
+
+	arr.forEach(attendee => {
+		expect(attendee).to.be.an.instanceof(Entrant)
+		expect(
+			arr.filter(x => x.getId() === attendee.getId()).length,
+			'Phase Group array must not have duplicates! Found: ' + attendee.getId()
+		).to.be.equal(1)
+	})
+	expect(arr.length).to.be.equal(2)
+	return true
+}

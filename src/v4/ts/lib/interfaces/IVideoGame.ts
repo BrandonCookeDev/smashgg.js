@@ -24,6 +24,7 @@ export interface IVideoGame{
 	getApproved(): boolean | undefined
 	getSlug(): string | undefined
 	getIsCardGame(): boolean | undefined
+	getRawEncoding(): string | undefined
 }
 
 export interface IVideoGameDataFull {

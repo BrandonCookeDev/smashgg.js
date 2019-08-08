@@ -1,14 +1,14 @@
 import request from 'request-promise'
 import { format } from 'util'
-import Cache from './util/Cache'
+import Cache from '../util/Cache'
 
 import {
 	IVideoGame,
 	IVideoGameData,
 	IVideoGameDataFull,
 	IVideoGameOptions
-} from './interfaces/IVideoGame'
-import log from './util/Logger'
+} from '../interfaces/IVideoGame'
+import log from '../util/Logger'
 
 const API_URL = 'https://api.smash.gg/public/videogames'
 // const LEGAL_ENCODINGS = ['json', 'utf8', 'base64']
@@ -198,4 +198,7 @@ export class VideoGame implements IVideoGame{
 		return this.isCardGame
 	}
 
+	public getRawEncoding(): string | undefined{
+		return this.rawEncoding
+	}
 }

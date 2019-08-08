@@ -42,6 +42,7 @@ export interface ITournament{
 	getPhases(): Promise<IPhase[]>
 	getPhaseGroups(): Promise<IPhaseGroup[]>
 	searchAttendees(smashtag: string): Promise<IAttendee[] | null>
+	searchAttendeesBySponsorTag(sponsorTag: string): Promise<IAttendee[] | null>
 
 	/*
 	getSets(options: IGGSet.SetOptions) : Promise<GGSet[]>

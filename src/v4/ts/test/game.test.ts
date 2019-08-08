@@ -5,7 +5,7 @@ config({path: ROOT})
 import {expect, assert} from 'chai'
 import sinon from 'sinon'
 
-import '../lib/models/util/ErrorHandler'
+import '../lib/util/ErrorHandler'
 
 import {IGame, ISelections} from '../lib/interfaces/IGame'
 

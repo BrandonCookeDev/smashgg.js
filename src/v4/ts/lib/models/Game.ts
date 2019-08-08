@@ -1,6 +1,6 @@
 import _ from 'lodash'
 
-import {IGame, IGameData, IGameDataFull, ISelections} from './interfaces/IGame'
+import {IGame, IGameData, IGameDataFull, ISelections} from '../interfaces/IGame'
 
 import {Selections} from './Selections'
 

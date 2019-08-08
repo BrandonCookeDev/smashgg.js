@@ -3,6 +3,7 @@ import Encoder from './Encoder'
 import _ from 'lodash'
 import log from './Logger'
 
+import {ICommonOptions} from '../interfaces/ICommon'
 import {IGGSet} from '../interfaces/IGGSet'
 
 import { GGSet } from '../models/GGSet'
@@ -111,15 +112,13 @@ export function orderTop8(sets: IGGSet[]): IGGSet[]{
 	return ordered
 }
 
-/*
-export function parseOptions(options: Options): Options {
+export function parseOptions(options: ICommonOptions): ICommonOptions {
 	return {
 		isCached: options.isCached !== undefined ? options.isCached === true : true,
 		concurrency: options.concurrency || DEFAULT_CONCURRENCY,
 		rawEncoding: Encoder.determineEncoding(options.rawEncoding)
 	}
 }
-*/
 
 // todo remove theabove and below non-null expectations
 

@@ -1,6 +1,6 @@
 import {IPlayerLite} from './IPlayerLite'
-import {IEntrantData} from './IEntrant'
-import {IAttendeeData} from './IAttendee'
+import {IEntrant, IEntrantData} from './IEntrant'
+import {IAttendee, IAttendeeData} from './IAttendee'
 import {IGame, IGameData} from './IGame'
 
 export interface IGGSet{
@@ -53,14 +53,14 @@ export interface IGGSet{
 	getLoserScore(): number | string
 	getStartedAtTimestamp(): number | null
 	getCompletedAtTimestamp(): number | null
+	getGames(): Promise<IGame[]>
+	getEntrants(): Promise<IEntrant[]> 
+	getAttendees(): Promise<IAttendee[]> 
 
 	// getBracketId() : number | string 
 	// getMidsizeRoundText() : string
 	// getWinnersTournamentPlacement() : number | string
 	// getLosersTournamentPlacement() : number | string
-
-	getGames(): Promise<IGame[]>
-	
 }
 
 export interface IGGSetDataFull{

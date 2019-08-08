@@ -1,8 +1,9 @@
-/* eslint-disable */
-import '../lib/models/util/ErrorHandler'
+import '../lib/util/ErrorHandler'
 
 import chai from 'chai'
 const { expect } = chai
+
+import {IVideoGame} from '../lib/interfaces/IVideoGame'
 
 import { VideoGame } from '../lib/models/VideoGame'
 import Cache from '../lib/util/Cache'
@@ -100,17 +101,17 @@ let expected = {
 	}
 }
 
-function eq(original: any, other: VideoGame): boolean {
-	return other.id === original.id &&
-		other.name === original.name &&
-		other.abbrev === original.abbrev &&
-		other.displayName === original.displayName &&
-		other.minPerEntry === original.minPerEntry &&
-		other.maxPerEntry === original.maxPerEntry &&
-		other.approved === original.approved &&
-		other.slug === original.slug &&
-		other.rawEncoding === original.rawEncoding &&
-		other.isCardGame === original.isCardGame
+function eq(original: any, other: IVideoGame): boolean {
+	return other.getId() === original.id &&
+		other.getName() === original.name &&
+		other.getAbbreviation() === original.abbrev &&
+		other.getDisplayName() === original.displayName &&
+		other.getMinPerEntry() === original.minPerEntry &&
+		other.getMaxPerEntry() === original.maxPerEntry &&
+		other.getApproved() === original.approved &&
+		other.getSlug() === original.slug &&
+		other.getRawEncoding() === original.rawEncoding &&
+		other.getIsCardGame() === original.isCardGame
 }
 
 describe('SmashGG VideoGame', () => {

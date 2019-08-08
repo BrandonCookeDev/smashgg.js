@@ -218,7 +218,7 @@ function updatePackageJsonVersion(cb, majorIncrement=0, minorIncrement=0, patchI
 
 	const packageJsonPath = path.join(__dirname, 'package.json')
 	const packageJsonContent = fs.readFileSync(packageJsonPath, 'utf8')
-	const versionRegex = new RegExp(/("version"[\s]*:[\s]*"([0-9]+.[0-9]+.[0-9])")/)
+	const versionRegex = new RegExp(/("version"[\s]*:[\s]*"([0-9]+.[0-9]+.[0-9]+)")/)
 	const majMinPatchRegex = new RegExp(/([0-9]+).([0-9]+).([0-9]+)/)
 
 	if(!versionRegex.test(packageJsonContent))

@@ -177,7 +177,7 @@ function gitTag(cb){
 
 function gitCommit(cb){
 	const version = getVersionFromPackageJson()
-	const cmd = `git commit -m "${version}"`
+	const cmd = `git add . && git commit -m "${version}"`
 	exec(cmd, cb)
 }
 

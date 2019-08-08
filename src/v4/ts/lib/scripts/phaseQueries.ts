@@ -46,7 +46,14 @@ query PhaseGroupsQuery($id:ID!){
 `
 
 export const phaseSets = `
-query PhaseSets($eventId:Int, $page: Int, $perPage: Int, $sortType: SetSortType, $filters: SetFilters, $hasPermissions: Boolean){
+query PhaseSets(
+	$eventId:Int, 
+	$page: Int, 
+	$perPage: Int, 
+	$sortType: SetSortType, 
+	$filters: SetFilters, 
+	$hasPermissions: Boolean){
+
 	event(id: $eventId){
 	  phaseGroups{
 			paginatedSets(

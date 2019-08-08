@@ -1,0 +1,24 @@
+{
+    "defaultSeverity": "error",
+    "extends": [
+        "tslint:recommended",
+        "tslint-no-unused-expression-chai"
+    ],
+    "jsRules": {},
+    "rules": {
+        "quotemark": [true, "single"],
+        "indent": [true, "tabs"],
+        "semicolon": [true, "never"],
+        "trailing-comma": [false],
+        "one-line": [false],
+        "arrow-parens": [false],
+        "no-trailing-whitespace": [false],
+        "object-literal-sort-keys": [false],
+        "ordered-imports": [false],
+        "curly": [false],
+        "whitespace": [false],
+        "one-variable-per-declaration": [false],
+        "no-console": [false]
+    },
+    "rulesDirectory": [ ]
+}

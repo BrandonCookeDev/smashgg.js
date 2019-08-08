@@ -1,19 +1,23 @@
 export {default as initialize} from './lib/util/Initializer'
 
+export {GGSet} from './lib/models/GGSet'
+export {Event} from './lib/models/Event'
+export {Phase} from './lib/models/Phase'
+export {Entrant} from './lib/models/Entrant'
+export {Attendee} from './lib/models/Attendee'
+export {Organizer} from './lib/models/Organizer'
+export {Venue} from './lib/models/Venue'
+export {Stream} from './lib/models/Stream'
+export {StreamQueue} from './lib/models/StreamQueue'
+export {Tournament} from './lib/models/Tournament'
+export {PhaseGroup} from './lib/models/PhaseGroup'
+export {VideoGame} from './lib/models/VideoGame'
+export {Character} from './lib/models/Character'
 
-export {GGSet, IGGSet} from './lib/GGSet'
-export {Event, IEvent} from './lib/Event'
-export {Phase, IPhase} from './lib/Phase'
-export {Entrant, IEntrant} from './lib/Entrant'
-export {Attendee, IAttendee} from './lib/Attendee'
-export {Organizer, IOrganizer} from './lib/Oraganizer'
-export {Venue, IVenue} from './lib/Venue'
-export {Stream, IStream} from './lib/Stream'
-export {StreamQueue} from './lib/StreamQueue'
-export {Tournament, ITournament} from './lib/Tournament'
-export {PhaseGroup, IPhaseGroup} from './lib/PhaseGroup'
-export {VideoGame, IVideoGame} from './lib/VideoGame'
-export {Character, ICharacter} from './lib/Character'
-
-export {default as Log, setLogLevel, addLog, disableLog, enableLog} 
-	from './lib/util/Logger'
+export {
+	default as Log, 
+	setLogLevel, 
+	addLog,
+	disableLog, 
+	enableLog
+} from './lib/util/Logger'

@@ -6,14 +6,14 @@ const API_URL = process.env.ApiUrl || 'https://api.smash.gg/gql/alpha'
 
 export default class GQLClient{
 
-	static instance: GraphQLClient
+	public static instance: GraphQLClient
 
-	static getApiUrl(){
+	public static getApiUrl(){
 		return API_URL
 	}
 
-	static getHeaders(){
-		let token = TokenHandler.getToken()
+	public static getHeaders(){
+		const token = TokenHandler.getToken()
 		if(!token) throw new Error('Cannot initialize without a token for smash.gg')
 		
 		return { 
@@ -25,11 +25,11 @@ export default class GQLClient{
 		}
 	}
 
-	static getInstance(){
+	public static getInstance(){
 		if(!GQLClient.instance){
 			GQLClient.instance = new GraphQLClient(API_URL, GQLClient.getHeaders())
 		}
-		return GQLClient.instance;
+		return GQLClient.instance
 	}
 
 }

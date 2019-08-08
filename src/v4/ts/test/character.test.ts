@@ -1,10 +1,7 @@
-/* eslint-disable */
-'use strict'
-
 import chai from 'chai'
 const {expect} = chai
 
-import {Character} from '../lib/Character'
+import {Character} from '../lib/models/Character'
 import Cache from '../lib/util/Cache'
 
 const MELEE_CHAR_COUNT = 27
@@ -14,17 +11,17 @@ const MELEE_ID = 1
 const WOLF_ID = 116
 const PM_ID = 2
 
-describe('Smashgg Character', function(){
+describe('Smashgg Character', () => {
 
-	beforeEach(async function(){
+	beforeEach(async () => {
 		await Cache.getInstance().flushAll()
 	})
 
-	it('should get all characters', async function(){
+	it('should get all characters', async function() {
 		this.timeout(10000)
 
-		let characters = await Character.getAll()
-		expect(characters.length > 0).to.be.true
+		const characters = await Character.getAll()
+		expect(characters.length > 0).to.be.equal(true)
 
 		characters.forEach(character => {
 			expect(character).to.be.instanceof(Character)
@@ -33,11 +30,11 @@ describe('Smashgg Character', function(){
 		return true
 	})
 
-	it('should get a character by id number', async function(){
+	it('should get a character by id number', async function() {
 		this.timeout(10000)
 
-		let bowser: Character = await Character.getById(BOWSER_ID) as Character
-		let wolf: Character = await Character.getById(WOLF_ID) as Character
+		const bowser: Character = await Character.getById(BOWSER_ID) as Character
+		const wolf: Character = await Character.getById(WOLF_ID) as Character
 
 		expect(bowser).to.be.instanceof(Character)
 		expect(wolf).to.be.instanceof(Character)
@@ -48,11 +45,11 @@ describe('Smashgg Character', function(){
 		return true
 	})
 
-	it('should get all characters for a game by game id', async function(){
+	it('should get all characters for a game by game id', async function() {
 		this.timeout(10000)
 
-		let meleeCharacters = await Character.getByGameId(MELEE_ID)
-		let pmCharacters = await Character.getByGameId(PM_ID)
+		const meleeCharacters = await Character.getByGameId(MELEE_ID)
+		const pmCharacters = await Character.getByGameId(PM_ID)
 
 		expect(meleeCharacters.length).to.be.equal(MELEE_CHAR_COUNT)
 		expect(pmCharacters.length).to.be.equal(PM_CHAR_COUNT)
@@ -68,11 +65,11 @@ describe('Smashgg Character', function(){
 		return true
 	})
 
-	it('should get all characters for a game by game name', async function(){
+	it('should get all characters for a game by game name', async function() {
 		this.timeout(10000)
 
-		let meleeCharacters = await Character.getByGameName('melee')
-		let pmCharacters = await Character.getByGameName('pm')
+		const meleeCharacters = await Character.getByGameName('melee')
+		const pmCharacters = await Character.getByGameName('pm')
 
 		expect(meleeCharacters.length).to.be.equal(MELEE_CHAR_COUNT)
 		expect(pmCharacters.length).to.be.equal(PM_CHAR_COUNT)
@@ -88,11 +85,11 @@ describe('Smashgg Character', function(){
 		return true
 	})
 
-	it('should get characters by their name', async function(){
+	it('should get characters by their name', async function() {
 		this.timeout(10000)
 
-		let bowser = await Character.getByName('bowser')
-		let wolf = await Character.getByName('wolf')
+		const bowser = await Character.getByName('bowser')
+		const wolf = await Character.getByName('wolf')
 
 		expect(bowser.length).to.be.equal(6)
 		expect(wolf.length).to.be.equal(2)
@@ -104,47 +101,47 @@ describe('Smashgg Character', function(){
 			expect(character).to.be.instanceof(Character)
 		})
 
-		expect(bowser[0].id).to.be.equal(BOWSER_ID)
-		expect(bowser[0].videogameId).to.be.equal(MELEE_ID)
+		expect(bowser[0].getId()).to.be.equal(BOWSER_ID)
+		expect(bowser[0].getVideoGameId()).to.be.equal(MELEE_ID)
 
-		expect(wolf[0].id).to.be.equal(WOLF_ID)
-		expect(wolf[0].videogameId).to.be.equal(PM_ID)
-
-		return true
-	})
-
-	it('should get characters by their name and their game name', async function(){
-		this.timeout(10000)
-
-		let bowser: Character = await Character.getByNameAndGame('bowser', 'melee') as Character
-		let wolf: Character = await Character.getByNameAndGame('wolf', 'pm') as Character
-
-		expect(bowser).to.be.instanceof(Character)
-		expect(wolf).to.be.instanceof(Character)
-
-		expect(bowser.id).to.be.equal(BOWSER_ID)
-		expect(bowser.videogameId).to.be.equal(MELEE_ID)
-
-		expect(wolf.id).to.be.equal(WOLF_ID)
-		expect(wolf.videogameId).to.be.equal(PM_ID)
+		expect(wolf[0].getId()).to.be.equal(WOLF_ID)
+		expect(wolf[0].getVideoGameId()).to.be.equal(PM_ID)
 
 		return true
 	})
 
-	it('should get characters by their name and their game id', async function(){
+	it('should get characters by their name and their game name', async function() {
 		this.timeout(10000)
 
-		let bowser: Character = await Character.getByNameAndGameId('bowser', MELEE_ID) as Character
-		let wolf: Character = await Character.getByNameAndGameId('wolf', PM_ID) as Character
+		const bowser: Character = await Character.getByNameAndGame('bowser', 'melee') as Character
+		const wolf: Character = await Character.getByNameAndGame('wolf', 'pm') as Character
 
 		expect(bowser).to.be.instanceof(Character)
 		expect(wolf).to.be.instanceof(Character)
 
-		expect(bowser.id).to.be.equal(BOWSER_ID)
-		expect(bowser.videogameId).to.be.equal(MELEE_ID)
+		expect(bowser.getId()).to.be.equal(BOWSER_ID)
+		expect(bowser.getVideoGameId()).to.be.equal(MELEE_ID)
 
-		expect(wolf.id).to.be.equal(WOLF_ID)
-		expect(wolf.videogameId).to.be.equal(PM_ID)
+		expect(wolf.getId()).to.be.equal(WOLF_ID)
+		expect(wolf.getVideoGameId()).to.be.equal(PM_ID)
+
+		return true
+	})
+
+	it('should get characters by their name and their game id', async function() {
+		this.timeout(10000)
+
+		const bowser: Character = await Character.getByNameAndGameId('bowser', MELEE_ID) as Character
+		const wolf: Character = await Character.getByNameAndGameId('wolf', PM_ID) as Character
+
+		expect(bowser).to.be.instanceof(Character)
+		expect(wolf).to.be.instanceof(Character)
+
+		expect(bowser.getId()).to.be.equal(BOWSER_ID)
+		expect(bowser.getVideoGameId()).to.be.equal(MELEE_ID)
+
+		expect(wolf.getId()).to.be.equal(WOLF_ID)
+		expect(wolf.getVideoGameId()).to.be.equal(PM_ID)
 
 		return true
 	})

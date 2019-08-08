@@ -5,6 +5,7 @@ const fs = require('fs')
 const path = require('path')
 const gulp = require('gulp')
 const ts = require('gulp-typescript')
+const tslint = require('gulp-tslint')
 const mocha = require('gulp-mocha')
 const {exec} = require('child_process')
 const {format} = require('util')
@@ -25,6 +26,12 @@ function tsc(){
 	return gulp.src(TS_DIR + '/**/*.ts')
 		.pipe(tsProd())
 		.pipe(gulp.dest(JS_DIR))
+}
+
+function tslinter(){
+	return gulp.src(TS_DIR + '/**/*.ts')
+		.pipe(tslint())
+		.pipe(tslint.report())
 }
 
 function tscV1(cb){
@@ -72,6 +79,10 @@ function testCache(){
 }
 function testUser(){
 	return gulp.src(path.join(TEST_DIR, 'user.test.js'))
+		.pipe(mocha())
+}
+function testEntrant(){
+	return gulp.src(path.join(TEST_DIR, 'entrant.test.js'))
 		.pipe(mocha())
 }
 function testAttendee(){
@@ -230,8 +241,6 @@ function updatePackageJsonVersion(majorIncrement=0, minorIncrement=0, patchIncre
 	fs.writeFileSync(packageJsonPath, newContent, 'utf8')
 }
 
-
-
 exports.test = gulp.series(tsc, test)
 exports.testTournament = gulp.series(tsc, testTournament)
 exports.testEvent = gulp.series(tsc, testEvent)
@@ -242,6 +251,7 @@ exports.testPlayer = gulp.series(tsc, testPlayer)
 exports.testSet = gulp.series(tsc, testSet)
 exports.testGame = gulp.series(tsc, testGame)
 exports.testUser = gulp.series(tsc, testUser)
+exports.testEntrant = gulp.series(tsc, testEntrant)
 exports.testAttendee = gulp.series(tsc, testAttendee)
 exports.testPlayer = gulp.series(tsc, testPlayer)
 exports.testStream = gulp.series(tsc, testStream)
@@ -249,6 +259,7 @@ exports.testStreamQueue = gulp.series(tsc, testStreamQueue)
 exports.testV1 = testV1
 
 exports.tsc = tsc
+exports.tslint = tslinter
 exports.tscV1 = tscV1
 exports.createDTs = createDTs
 exports.watch = watch
@@ -259,7 +270,7 @@ exports.publish = gulp.series(tsc, publish)
 // exports.updateMajor = updateMajor
 // exports.updateMinor = updateMinor
 // exports.updatePatch = updatePatch
-exports.preDeploy = gulp.series(deploymentWarningMessage, tsc, tscV1)
+exports.preDeploy = gulp.series(deploymentWarningMessage, tslint, tsc, tscV1)
 exports.deployPatch = gulp.series(this.preDeploy, updatePatch, gitCommit, gitTag, gitPush, npmPublish)
 exports.deployMinor = gulp.series(this.preDeploy, updateMinor, gitCommit, gitTag, gitPush, npmPublish)
 exports.deployMajor = gulp.series(this.preDeploy, updateMajor, gitCommit, gitTag, gitPush, npmPublish)

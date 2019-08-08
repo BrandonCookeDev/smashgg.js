@@ -1,5 +1,6 @@
 'use strict'
 
+const fs = require('fs')
 const path = require('path')
 const gulp = require('gulp')
 const ts = require('gulp-typescript')
@@ -11,13 +12,21 @@ const SRC_DIR = path.join(ROOT, 'src', 'v4')
 const TS_DIR = path.join(SRC_DIR, 'ts')
 const JS_DIR = path.join(SRC_DIR, 'js')
 const TEST_DIR = path.join(JS_DIR, 'test')
+const V1_DIR = path.join(ROOT, 'src', 'v1')
+// const V1_JS_DIR = path.join(V1_DIR, 'js')
 
 const tsProd = ts.createProject('tsconfig.json')
+// const tsV1 = ts.createProject(path.join(V1_DIR, 'tsconfig.json'))
 
 function tsc(){
 	return gulp.src(TS_DIR + '/**/*.ts')
 		.pipe(tsProd())
 		.pipe(gulp.dest(JS_DIR))
+}
+
+function tscV1(cb){
+	const cmd = `cd ${V1_DIR} && tsc`
+	exec(cmd, cb)
 }
 
 function createDTs(){
@@ -120,6 +129,73 @@ function getQueries(cb){
 	cb(null)
 }
 
+function updateMajor(cb){
+	updatePackageJsonVersion(1)
+	cb()
+}
+
+function updateMinor(cb){
+	updatePackageJsonVersion(0, 1)
+	cb()
+}
+
+function updatePatch(cb){
+	updatePackageJsonVersion(0, 0, 1)
+	cb()
+}
+
+function tagGit(cb){
+	const version = getVersionFromPackageJson()
+	const cmd = `git tag ${version}`
+	exec(cmd, cb)
+}
+
+function npmPublish(cb){
+	const cmd = 'npm publish'
+	exec(cmd, cb)
+}
+
+
+function getVersionFromPackageJson(){
+	const packageJsonPath = path.join(__dirname, 'package.json')
+	const packageJsonContent = fs.readFileSync(packageJsonPath, 'utf8')
+	const versionRegex = new RegExp(/("version"[\s]*:[\s]*"([0-9]+.[0-9]+.[0-9])")/)
+
+	if(!versionRegex.test(packageJsonContent))
+		throw new Error('No version property in package json')
+
+	const currentVersionMatch = versionRegex.exec(packageJsonContent)
+	return currentVersionMatch[2]
+}
+
+function updatePackageJsonVersion(majorIncrement=0, minorIncrement=0, patchIncrement=0){
+	if(majorIncrement == 0 && minorIncrement == 0 && patchIncrement == 0)
+		throw new Error('must have at least one incremented version number')
+
+	const packageJsonPath = path.join(__dirname, 'package.json')
+	const packageJsonContent = fs.readFileSync(packageJsonPath, 'utf8')
+	const versionRegex = new RegExp(/("version"[\s]*:[\s]*"([0-9]+.[0-9]+.[0-9])")/)
+	const majMinPatchRegex = new RegExp(/([0-9]+).([0-9]+).([0-9]+)/)
+
+	if(!versionRegex.test(packageJsonContent))
+		throw new Error('No version property in package json')
+
+	const currentVersionMatch = versionRegex.exec(packageJsonContent)
+	const currentVersion = majMinPatchRegex.exec(currentVersionMatch[2])
+
+	let major = parseInt(currentVersion[1]) + majorIncrement
+	let minor = parseInt(currentVersion[2]) + minorIncrement
+	let patch = parseInt(currentVersion[3]) + patchIncrement
+
+	const newVersion = `${major}.${minor}.${patch}`
+	const replacement = `"version": "${newVersion}"`
+	const newContent = packageJsonContent.replace(versionRegex, replacement)
+
+	fs.writeFileSync(packageJsonPath, newContent, 'utf8')
+}
+
+
+
 exports.test = gulp.series(tsc, test)
 exports.testTournament = gulp.series(tsc, testTournament)
 exports.testEvent = gulp.series(tsc, testEvent)
@@ -137,8 +213,17 @@ exports.testStreamQueue = gulp.series(tsc, testStreamQueue)
 exports.testV1 = testV1
 
 exports.tsc = tsc
+exports.tscV1 = tscV1
 exports.createDTs = createDTs
 exports.watch = watch
 exports.sandbox = gulp.series(tsc, sandbox)
 exports.getQueries = getQueries
 exports.publish = gulp.series(tsc, publish)
+
+exports.updateMajor = updateMajor
+exports.updateMinor = updateMinor
+exports.updatePatch = updatePatch
+exports.preDeploy = gulp.series(tsc, tscV1)
+exports.deployPatch = gulp.series(this.preDeploy, updatePatch, tagGit, npmPublish)
+exports.deployMinor = gulp.series(this.preDeploy, updateMinor, tagGit, npmPublish)
+exports.deployMajor = gulp.series(this.preDeploy, updateMajor, tagGit, npmPublish)

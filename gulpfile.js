@@ -166,18 +166,15 @@ function deploymentWarningMessage(cb){
 }
 
 function updateMajor(cb){
-	updatePackageJsonVersion(1)
-	cb()
+	updatePackageJsonVersion(cb, 1)
 }
 
 function updateMinor(cb){
-	updatePackageJsonVersion(0, 1)
-	cb()
+	updatePackageJsonVersion(cb, 0, 1)
 }
 
 function updatePatch(cb){
-	updatePackageJsonVersion(0, 0, 1)
-	cb()
+	updatePackageJsonVersion(cb, 0, 0, 1)
 }
 
 function gitTag(cb){
@@ -215,7 +212,7 @@ function getVersionFromPackageJson(){
 	return currentVersionMatch[2]
 }
 
-function updatePackageJsonVersion(majorIncrement=0, minorIncrement=0, patchIncrement=0){
+function updatePackageJsonVersion(cb, majorIncrement=0, minorIncrement=0, patchIncrement=0){
 	if(majorIncrement == 0 && minorIncrement == 0 && patchIncrement == 0)
 		throw new Error('must have at least one incremented version number')
 
@@ -238,7 +235,8 @@ function updatePackageJsonVersion(majorIncrement=0, minorIncrement=0, patchIncre
 	const replacement = `"version": "${newVersion}"`
 	const newContent = packageJsonContent.replace(versionRegex, replacement)
 
-	fs.writeFileSync(packageJsonPath, newContent, 'utf8')
+	//fs.writeFileSync(packageJsonPath, newContent, 'utf8')
+	fs.writeFile(packageJsonPath, newContent, 'utf8', cb)
 }
 
 exports.test = gulp.series(tsc, test)

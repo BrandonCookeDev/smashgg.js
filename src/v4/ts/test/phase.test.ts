@@ -3,7 +3,7 @@ const ROOT = path.join(__dirname, '..', '..', '..', '..', '.env')
 import {config} from 'dotenv'
 config({path: ROOT})
 
-import '../lib/models/util/ErrorHandler'
+import '../lib/util/ErrorHandler'
 import * as log from '../lib/util/Logger'
 
 import _ from 'lodash'
@@ -119,70 +119,70 @@ describe('Smash GG Phase', function() {
 	})
 
 	// sets
-	it('should correctly get all sets 1', async () => {
+	it('should correctly get all sets 1', async function() {
 		this.timeout(60000)
 		await testSets(phase1, PHASE_1_SET_COUNT)
 		return true
 	})
 
-	xit('should correctly get all sets 2', async () => {
+	xit('should correctly get all sets 2', async function() {
 		this.timeout(120000)
 		await testSets(phase2, PHASE_2_SET_COUNT)
 		return true
 	})
 
-	xit('should correctly get all sets 3', async () => {
+	xit('should correctly get all sets 3', async function() {
 		this.timeout(60000)
 		await testSets(phase3, PHASE_3_SET_COUNT)
 		return true
 	})
 
 	// entrants
-	it('should correctly get all entrants 1', async () => {
+	it('should correctly get all entrants 1', async function() {
 		this.timeout(60000)
 		await testEntrants(phase1, PHASE_1_ENTRANT_COUNT)
 		return true
 	})
-	xit('should correctly get all entrants 2', async () => {
+	xit('should correctly get all entrants 2', async function() {
 		this.timeout(30000)
 		await testEntrants(phase2, PHASE_2_ENTRANT_COUNT)
 		return true
 	})
-	it('should correctly get all entrants 3', async () => {
+	it('should correctly get all entrants 3', async function() {
 		this.timeout(30000)
 		await testEntrants(phase3, PHASE_3_ENTRANT_COUNT)
 		return true
 	})
 	
 	// attendee
-	it('should correctly get all attendees 1', async () => {
+	it('should correctly get all attendees 1', async function() {
 		this.timeout(30000)
 		await testAttendees(phase1, PHASE_1_ATTENDEE_COUNT)
 		return true
 	})
-	xit('should correctly get all attendees 2', async () => {
+	xit('should correctly get all attendees 2', async function() {
 		this.timeout(30000)
 		await testAttendees(phase2, PHASE_2_ATTENDEE_COUNT)
 		return true
 	})
-	it('should correctly get all attendees 3', async () => {
+	it('should correctly get all attendees 3', async function() {
 		this.timeout(60000)
 		await testAttendees(phase3, PHASE_3_ATTENDEE_COUNT)
 		return true
 	})
 
 	// phase groups
-	it('should correctly get all phase groups 1', async () => {
+	it('should correctly get all phase groups 1', async function() {
 		this.timeout(30000)
 		await testPhaseGroups(phase1, PHASE_1_PG_COUNT)
 		return true
 	})
-	it('should correctly get all phase groups 2', async () => {
+	it('should correctly get all phase groups 2', async function() {
 		this.timeout(30000)
 		await testPhaseGroups(phase2, PHASE_2_PG_COUNT)
 		return true
 	})
-	it('should correctly get all phase groups 3', async () => {
+	it('should correctly get all phase groups 3', async function() {
 		this.timeout(30000)
 		await testPhaseGroups(phase3, PHASE_3_PG_COUNT)
 		return true

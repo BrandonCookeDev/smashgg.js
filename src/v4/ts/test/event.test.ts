@@ -70,7 +70,7 @@ const GRAND_FINAL_RESET_TOKEN = 'Grand Final Reset'
 describe('smashgg Event', function() {
 	this.timeout(10000)
 
-	before(async () => {
+	before(async function() {
 		this.timeout(20000)
 		await Initializer(process.env.API_TOKEN!)
 
@@ -222,80 +222,80 @@ describe('smashgg Event', function() {
 	})
 
 	// phases
-	it('should return the correct list of Phases in the Event 1', async () => {
+	it('should return the correct list of Phases in the Event 1', async function() {
 		this.timeout(30000)
 		await testPhases(event1, EVENT_1_PHASE_COUNT)
 		return true
 	})
-	it('should return the correct list of Phases in the Event 2', async () => {
+	it('should return the correct list of Phases in the Event 2', async function() {
 		this.timeout(30000)
 		await testPhases(event2, EVENT_2_PHASE_COUNT)
 		return true
 	})
-	it('should return the correct list of Phases in the Event 3', async () => {
+	it('should return the correct list of Phases in the Event 3', async function() {
 		this.timeout(30000)
 		await testPhases(event3, EVENT_3_PHASE_COUNT)
 		return true
 	})
 
 	// phase groups
-	it('should return the correct list of Phase Groups in the Event 1', async () => {
+	it('should return the correct list of Phase Groups in the Event 1', async function() {
 		this.timeout(30000)
 		await testPhaseGroups(event1, EVENT_1_PHASE_GROUP_COUNT)
 		return true
 	})
-	it('should return the correct list of Phase Groups in the Event 2', async () => {
+	it('should return the correct list of Phase Groups in the Event 2', async function() {
 		this.timeout(30000)
 		await testPhaseGroups(event2, EVENT_2_PHASE_GROUP_COUNT)
 		return true
 	})
-	it('should return the correct list of Phase Groups in the Event 3', async () => {
+	it('should return the correct list of Phase Groups in the Event 3', async function() {
 		this.timeout(30000)
 		await testPhaseGroups(event3, EVENT_3_PHASE_GROUP_COUNT)
 		return true
 	})
 
 	// entrants
-	it('should return the correct list of Entrants in the Event 1', async () => {
+	it('should return the correct list of Entrants in the Event 1', async function() {
 		this.timeout(30000)
 		await testEntrants(event1, EVENT_1_ENTRANT_COUNT)
 		return true
 	})
-	it('should return the correct list of Entrants in the Event 2', async () => {
+	it('should return the correct list of Entrants in the Event 2', async function() {
 		this.timeout(30000)
 		await testEntrants(event2, EVENT_2_ENTRANT_COUNT)
 		return true
 	})
-	xit('should return the correct list of Entrants in the Event 3', async () => {
+	xit('should return the correct list of Entrants in the Event 3', async function() {
 		this.timeout(60000)
 		await testEntrants(event3, EVENT_3_ENTRANT_COUNT)
 		return true
 	})
 
 	// attendee
-	it('should return the correct list of Attendees in the Event 1', async () => {
+	it('should return the correct list of Attendees in the Event 1', async function() {
 		this.timeout(30000)
 		await testAttendees(event1, EVENT_1_ATTENDEE_COUNT)
 		return true
 	})
-	it('should return the correct list of Attendees in the Event 2', async () => {
+	it('should return the correct list of Attendees in the Event 2', async function() {
 		this.timeout(30000)
 		await testAttendees(event2, EVENT_2_ATTENDEE_COUNT)
 		return true
 	})
-	xit('should return the correct list of Attendees in the Event 3', async () => {
+	xit('should return the correct list of Attendees in the Event 3', async function() {
 		this.timeout(60000)
 		await testAttendees(event3, EVENT_3_ATTENDEE_COUNT)
 		return true
 	})
 
 	// sets
-	it('should return the correct list of Sets in the Event 1', async () => {
+	it('should return the correct list of Sets in the Event 1', async function() {
 		this.timeout(30000)
 		await testSets(event1, EVENT_1_SET_COUNT)
 		return true
 	})
-	it('should return the correct list of Sets in the Event 2', async () => {
+	it('should return the correct list of Sets in the Event 2', async function() {
 		this.timeout(60000)
 		await testSets(event2, EVENT_2_SET_COUNT)
 		return true

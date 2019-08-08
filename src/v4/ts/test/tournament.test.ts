@@ -39,7 +39,7 @@ const TOURNAMENT_SLUG_3 = 'tournament/ceo-2016'
 describe('smashgg Tournament', function() {
 	this.timeout(10000)
 
-	before(async () => {
+	before(async function() {
 		this.timeout(20000)
 
 		await Initializer(process.env.API_TOKEN!)

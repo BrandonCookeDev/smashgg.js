@@ -203,7 +203,7 @@ function npmPublish(cb){
 function getVersionFromPackageJson(){
 	const packageJsonPath = path.join(__dirname, 'package.json')
 	const packageJsonContent = fs.readFileSync(packageJsonPath, 'utf8')
-	const versionRegex = new RegExp(/("version"[\s]*:[\s]*"([0-9]+.[0-9]+.[0-9])")/)
+	const versionRegex = new RegExp(/("version"[\s]*:[\s]*"([0-9]+.[0-9]+.[0-9]+)")/)
 
 	if(!versionRegex.test(packageJsonContent))
 		throw new Error('No version property in package json')

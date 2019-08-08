@@ -2,7 +2,7 @@
 import _ from 'lodash'
 import {format} from 'util'
 import { EventEmitter } from 'events'
-import log from './util/Logger'
+import log from '../util/Logger'
 
 import {
 	IEvent,
@@ -14,13 +14,13 @@ import {
 	IEventEntrantData,
 	IEventAttendeeData,
 	IEventSetData
-} from './interfaces/IEvent'
-import {IPhase} from './interfaces/IPhase'
-import {IPhaseGroup} from './interfaces/IPhaseGroup'
-import {IGGSet, IGGSetOptions} from './interfaces/IGGSet'
-import {IStanding, IStandingOptions} from './interfaces/IStanding'
-import {IEntrant, IEntrantOptions} from './interfaces/IEntrant'
-import {IAttendee, IAttendeeOptions} from './interfaces/IAttendee'
+} from '../interfaces/IEvent'
+import {IPhase} from '../interfaces/IPhase'
+import {IPhaseGroup} from '../interfaces/IPhaseGroup'
+import {IGGSet, IGGSetOptions} from '../interfaces/IGGSet'
+import {IStanding, IStandingOptions} from '../interfaces/IStanding'
+import {IEntrant, IEntrantOptions} from '../interfaces/IEntrant'
+import {IAttendee, IAttendeeOptions} from '../interfaces/IAttendee'
 
 import {Phase} from './Phase'
 import {PhaseGroup} from './PhaseGroup'
@@ -29,8 +29,8 @@ import {Entrant} from './Entrant'
 import {Attendee} from './Attendee'
 import {Standing} from './Standing'
 
-import NI from './util/NetworkInterface'
-import * as queries from './scripts/eventQueries'
+import NI from '../util/NetworkInterface'
+import * as queries from '../scripts/eventQueries'
 
 export class Event extends EventEmitter implements IEvent{
 

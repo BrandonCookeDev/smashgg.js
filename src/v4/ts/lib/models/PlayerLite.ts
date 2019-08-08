@@ -1,5 +1,5 @@
-import {IPlayerLite} from './interfaces/IPlayerLite'
-import {IGGSetSlots} from './interfaces/IGGSet'
+import {IPlayerLite} from '../interfaces/IPlayerLite'
+import {IGGSetSlots} from '../interfaces/IGGSet'
 
 export class PlayerLite implements IPlayerLite{
 	

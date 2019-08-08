@@ -1,14 +1,7 @@
 import _ from 'lodash'
-
-import {Seed} from './Seed'
-import {GGSet} from './GGSet'
-import {Attendee} from './Attendee'
-import {Entrant} from './Entrant'
-import {PhaseGroup} from './PhaseGroup' 
-
-import NI from './util/NetworkInterface'
-import * as queries from './scripts/phaseQueries'
-import log from './util/Logger'
+import log from '../util/Logger'
+import NI from '../util/NetworkInterface'
+import * as queries from '../scripts/phaseQueries'
 
 import {
 	IPhase, 
@@ -18,16 +11,22 @@ import {
 	IPhaseEntrantData,
 	IPhaseAttendeeData,
 	IPhasePaginatedData
-} from './interfaces/IPhase'
+} from '../interfaces/IPhase'
 import {
 	IPhaseGroup, 
 	IPhaseGroupData,
 	IPhaseGroupEventData,
-} from './interfaces/IPhaseGroup'
-import {IGGSet, IGGSetOptions, IGGSetData} from './interfaces/IGGSet'
-import {IAttendee, IAttendeeData, IAttendeeOptions} from './interfaces/IAttendee'
-import {IEntrant, IEntrantData, IEntrantOptions} from './interfaces/IEntrant'
-import {ISeed, ISeedData, ISeedOptions} from './interfaces/ISeed'
+} from '../interfaces/IPhaseGroup'
+import {IGGSet, IGGSetOptions, IGGSetData} from '../interfaces/IGGSet'
+import {IAttendee, IAttendeeData, IAttendeeOptions} from '../interfaces/IAttendee'
+import {IEntrant, IEntrantData, IEntrantOptions} from '../interfaces/IEntrant'
+import {ISeed, ISeedData, ISeedOptions} from '../interfaces/ISeed'
+
+import {Seed} from './Seed'
+import {GGSet} from './GGSet'
+import {Attendee} from './Attendee'
+import {Entrant} from './Entrant'
+import {PhaseGroup} from './PhaseGroup' 
 
 export class Phase implements IPhase{
 

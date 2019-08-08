@@ -1,10 +1,13 @@
 import { format } from 'util'
-import { GGSet } from '../GGSet'
 import Encoder from './Encoder'
 import _ from 'lodash'
 import log from './Logger'
 
-const DEFAULT_CONCURRENCY = 4;
+import {IGGSet} from '../interfaces/IGGSet'
+
+import { GGSet } from '../models/GGSet'
+
+const DEFAULT_CONCURRENCY = 4
 
 const TOP_8_LABELS = [
 	'Losers Quarter-Final', 'Losers Semi-Final', 
@@ -21,25 +24,31 @@ const TOP_8_LABELS_STANDALONE = [
 
 const losersRoundRegex = new RegExp(/Losers Round ([0-9])/)
 
-import Options = ICommon.Options
-
 export function merge(target: string, obj: any): string{
 	let ret = _.clone(target)
-	for(let prop in obj){
-		let regex = new RegExp(`{${prop}}`, 'g')
-		ret = ret.replace(regex, obj[prop])
+
+	for (const prop in obj) {
+		if(prop){
+			const regex = new RegExp(`{${prop}}`, 'g')
+			ret = ret.replace(regex, obj[prop])
+		}
 	}
+
 	return ret
 }
 
 export function mergeQuery(target: string, obj: any): string{
 	let ret: string = _.clone(target)
-	for(let prop in obj){
-		let regex = new RegExp(`{${prop}}`, 'g')
-		ret = ret.replace(regex, obj[prop])
+
+	for (const prop in obj) {
+		if(prop){
+			const regex = new RegExp(`{${prop}}`, 'g')
+			ret = ret.replace(regex, obj[prop])
+		}
 	}
-	let orphanedVarsRegex = new RegExp(/\{[\S]*\}/, 'g')
-	let orphanedVars = orphanedVarsRegex.exec(ret);
+
+	const orphanedVarsRegex = new RegExp(/\{[\S]*\}/, 'g')
+	const orphanedVars = orphanedVarsRegex.exec(ret)
 	if(orphanedVars){
 		log.warn('Variables orphaned by this query: [%s]', orphanedVars.join(','))
 		log.warn('Replacing orphans with null')
@@ -49,38 +58,42 @@ export function mergeQuery(target: string, obj: any): string{
 	return ret
 }
 
-export function determineComplexity(...objects: any[]) : number{
-	let complexity = 0;
-	let objs = []
-	for(let i in objects){
-		let obj = objects[i]
-		for(let key in obj) {
-			if(typeof obj[key] === 'object'){
-				complexity++
-				objs.push(obj[key])
+export function determineComplexity(...objects: any[]): number{
+	let complexity = 0
+	const objs = []
+
+	for (const i in objects) {
+		if(i){
+			const obj = objects[i]
+			for (const key in obj) {
+				if (typeof obj[key] === 'object') {
+					complexity++
+					objs.push(obj[key])
+				}
 			}
 		}
 	}
-	if(complexity == 0) return 0
+
+	if(complexity === 0) return 0
 	else return complexity + determineComplexity(objs)
 }
 
-export function sleep(ms: number) : Promise<null | undefined>{
-	return new Promise(function(resolve){
+export function sleep(ms: number): Promise<null | undefined>{
+	return new Promise((resolve) => {
 		setTimeout(resolve, ms)
 	})
 }
 
-export function orderTop8(sets: GGSet[]) : GGSet[]{
-	let ordered: GGSet[] = [];
+export function orderTop8(sets: IGGSet[]): IGGSet[]{
+	let ordered: IGGSet[] = []
 	const fn = (roundName: string) => {
 		ordered = ordered.concat(_.find(sets, set => {
-			return set.getFullRoundText() == roundName;
-		}) as GGSet)
+			return set.getFullRoundText() === roundName
+		}) as IGGSet)
 	}
 
-	let hasReset = _.find(sets, set => {
-		return set.getFullRoundText() === 'Grand Final Reset';
+	const hasReset = _.find(sets, set => {
+		return set.getFullRoundText() === 'Grand Final Reset'
 	})
 	if(hasReset) fn('Grand Final Reset')
 
@@ -91,74 +104,50 @@ export function orderTop8(sets: GGSet[]) : GGSet[]{
 	fn('Losers Quarter-Final')
 	fn('Winners Semi-Final')
 
-
-	let roundNames = sets.map(set => set.getFullRoundText())
-	let losersRoundName = roundNames.filter(name => losersRoundRegex.test(name!))[0]
+	const roundNames = sets.map(set => set.getFullRoundText())
+	const losersRoundName = roundNames.filter(name => losersRoundRegex.test(name!))[0]
 	fn(losersRoundName!)
 
 	return ordered
 }
 
-export function parseOptions(options: Options) : Options {
+/*
+export function parseOptions(options: Options): Options {
 	return {
-		isCached: options.isCached != undefined ? options.isCached === true : true,
+		isCached: options.isCached !== undefined ? options.isCached === true : true,
 		concurrency: options.concurrency || DEFAULT_CONCURRENCY,
 		rawEncoding: Encoder.determineEncoding(options.rawEncoding)
 	}
 }
+*/
 
 // todo remove theabove and below non-null expectations
 
-export function getHighestLevelLosersRound(sets: GGSet[]) : string {
-	let loserRounds = sets.filter(set => losersRoundRegex.test(set.getFullRoundText()!))
-	let loserRoundNumbers = loserRounds.map(set => (losersRoundRegex.exec(set.getFullRoundText()!) as any[])[1])
-	let highestLoserRoundNumber = Math.max.apply(null, loserRoundNumbers)
+export function getHighestLevelLosersRound(sets: IGGSet[]): string {
+	const loserRounds = sets.filter(set => losersRoundRegex.test(set.getFullRoundText()!))
+	const loserRoundNumbers = loserRounds.map(set => (losersRoundRegex.exec(set.getFullRoundText()!) as any[])[1])
+	const highestLoserRoundNumber = Math.max.apply(null, loserRoundNumbers)
 	return `Losers Round ${highestLoserRoundNumber}`
 }
 
-export function filterForTop8Sets(sets: GGSet[]) : GGSet[] {
-	let highestLoserRound = getHighestLevelLosersRound(sets)
-	let targetLabels = TOP_8_LABELS.concat([highestLoserRound])
-	let topSets = sets.filter(set => targetLabels.includes(set.getFullRoundText()!))
-	return orderTop8(topSets);
+export function filterForTop8Sets(sets: IGGSet[]): IGGSet[] {
+	const highestLoserRound = getHighestLevelLosersRound(sets)
+	const targetLabels = TOP_8_LABELS.concat([highestLoserRound])
+	const topSets = sets.filter(set => targetLabels.includes(set.getFullRoundText()!))
+	return orderTop8(topSets)
 }
 
-export function createExpandsString(expands: any) : string{
-	let expandsString: string = '';
-    for(let property in expands){
-		if(expands.hasOwnProperty(property))
-			expandsString += format('expand[]=%s&', property);
+export function createExpandsString(expands: any): string{
+	let expandsString: string = ''
+	for (const property in expands) {
+		if (expands.hasOwnProperty(property))
+			expandsString += format('expand[]=%s&', property)
 	}
-	return expandsString;
+	return expandsString
 }
 
-export function convertEpochToDate(epoch: number) : Date{
-	let d = new Date(0)
+export function convertEpochToDate(epoch: number): Date{
+	const d = new Date(0)
 	d.setUTCSeconds(epoch)
-	return d;
-}
-
-export namespace ICommon{
-	export interface Options{
-		isCached?: boolean, 
-		rawEncoding?: string,
-		concurrency?: number    
-	}
-	
-	export interface Entity{
-		id: number,
-		[x: string]: any
-	}
-	
-	export interface Data{
-		[x: string]: any
-	}
-
-	export function parseOptions(options: Options) : Options{
-		return {
-			isCached: options.isCached != undefined ? options.isCached === true : true,
-			concurrency: options.concurrency || 4,
-			rawEncoding: Encoder.determineEncoding(options.rawEncoding)
-		}
-	}
+	return d
 }

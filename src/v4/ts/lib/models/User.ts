@@ -1,12 +1,19 @@
-import NI from './util/NetworkInterface'
-import {GGSet} from './GGSet'
-import * as Common from './util/Common'
-import * as queries from './scripts/userQueries'
-import Log from './util/Logger'
+import NI from '../util/NetworkInterface'
+import * as Common from '../util/Common'
+import * as queries from '../scripts/userQueries'
+import Log from '../util/Logger'
 
-import {IUser, IUserData, IUserDataFull, IUserDataSets, IUserDataRankings} from './interfaces/IUser'
-import {IPlayerRank} from './interfaces/IPlayerRank'
-import {IGGSet} from './interfaces/IGGSet'
+import {
+	IUser, 
+	IUserData, 
+	IUserDataFull, 
+	IUserDataSets, 
+	IUserDataRankings
+} from '../interfaces/IUser'
+import {IPlayerRank} from '../interfaces/IPlayerRank'
+import {IGGSet} from '../interfaces/IGGSet'
+
+import {GGSet} from './GGSet'
 
 export class User implements IUser{
 

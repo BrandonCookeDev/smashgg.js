@@ -1,4 +1,7 @@
 import _ from 'lodash'
+import log from '../util/Logger'
+import NI from '../util/NetworkInterface'
+import * as queries from '../scripts/phaseGroupQueries'
 
 import {IPhaseGroup, 
 	IPhaseGroupData, 
@@ -8,20 +11,16 @@ import {IPhaseGroup,
 	IPhaseGroupAttendeeData,
 	IPhaseGroupEntrantData,
 	IPhaseGroupSetData	
-} from './interfaces/IPhaseGroup'
-import {IAttendee, IAttendeeData,IAttendeeOptions} from './interfaces/IAttendee'
-import {IEntrant, IEntrantData, IEntrantOptions} from './interfaces/IEntrant'
-import {IGGSet, IGGSetData, IGGSetOptions} from './interfaces/IGGSet'
-import {ISeed, ISeedData, ISeedOptions} from './interfaces/ISeed'
+} from '../interfaces/IPhaseGroup'
+import {IAttendee, IAttendeeData,IAttendeeOptions} from '../interfaces/IAttendee'
+import {IEntrant, IEntrantData, IEntrantOptions} from '../interfaces/IEntrant'
+import {IGGSet, IGGSetData, IGGSetOptions} from '../interfaces/IGGSet'
+import {ISeed, ISeedData, ISeedOptions} from '../interfaces/ISeed'
 
 import { Attendee } from './Attendee'
 import { Entrant } from './Entrant' // TODO change this to internal
 import { GGSet } from './GGSet'
 import { Seed } from './Seed'
-import NI from './util/NetworkInterface'
-import log from './util/Logger'
-
-import * as queries from './scripts/phaseGroupQueries'
 
 export class PhaseGroup implements IPhaseGroup{
 

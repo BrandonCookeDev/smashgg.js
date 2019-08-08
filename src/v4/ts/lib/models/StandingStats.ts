@@ -1,5 +1,5 @@
 
-import {IStandingStats, IStandingScore} from './interfaces/IStanding'
+import {IStandingStats, IStandingScore} from '../interfaces/IStanding'
 
 export class StandingStats implements IStandingStats{
 

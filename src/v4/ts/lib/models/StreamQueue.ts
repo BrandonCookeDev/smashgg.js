@@ -1,15 +1,15 @@
 
-import log from './util/Logger'
-import NI from './util/NetworkInterface'
-import * as queries from './scripts/streamQueueQueries'
+import log from '../util/Logger'
+import NI from '../util/NetworkInterface'
+import * as queries from '../scripts/streamQueueQueries'
 
 import {
 	IStreamQueue, 
 	IStreamQueueData,
 	IStreamQueueDataFull
-} from './interfaces/IStreamQueue'
-import {IGGSet} from './interfaces/IGGSet'
-import {IStream} from './interfaces/IStream'
+} from '../interfaces/IStreamQueue'
+import {IGGSet} from '../interfaces/IGGSet'
+import {IStream} from '../interfaces/IStream'
 
 import {Stream} from './Stream'
 import {GGSet} from './GGSet'

@@ -1,6 +1,6 @@
-import {IContactInfo} from './interfaces/IContactInfo'
-import {IEntrant, IEntrantData, IEntrantOptions} from './interfaces/IEntrant'
-import {IAttendee} from './interfaces/IAttendee'
+import {IContactInfo} from '../interfaces/IContactInfo'
+import {IEntrant, IEntrantData, IEntrantOptions} from '../interfaces/IEntrant'
+import {IAttendee} from '../interfaces/IAttendee'
 
 import {Attendee} from './Attendee' // TODO later change this to internal
 

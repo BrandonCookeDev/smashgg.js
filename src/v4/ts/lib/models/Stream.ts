@@ -1,13 +1,13 @@
 
-import log from './util/Logger'
-import NI from './util/NetworkInterface'
-import * as queries from './scripts/streamQueries'
+import log from '../util/Logger'
+import NI from '../util/NetworkInterface'
+import * as queries from '../scripts/streamQueries'
 
 import {
 	IStream,
 	IStreamData,
 	IStreamDataFull
-} from './interfaces/IStream'
+} from '../interfaces/IStream'
 
 export class Stream implements IStream{
 

@@ -16,7 +16,8 @@
         "ordered-imports": [false],
         "curly": [false],
         "whitespace": [false],
-        "one-variable-per-declaration": [false]
+        "one-variable-per-declaration": [false],
+        "no-console": [false]
     },
     "rulesDirectory": []
 }

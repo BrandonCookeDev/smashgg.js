@@ -3,7 +3,7 @@ import {
 	ISelections,
 	ISelectionsData,
 	ISelectionsDataFull
-} from './interfaces/IGame'
+} from '../interfaces/IGame'
 
 export class Selections implements ISelections{
 

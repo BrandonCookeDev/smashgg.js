@@ -1,22 +1,23 @@
 import _ from 'lodash'
-import Log from './util/Logger'
-import {User} from './User' // TODO change to internal later
-import { Phase } from './Phase'
-import { PhaseGroup } from './PhaseGroup'
-import * as queries from './scripts/attendeeQueries'
-import NI from './util/NetworkInterface'
+import Log from '../util/Logger'
+import * as queries from '../scripts/attendeeQueries'
+import NI from '../util/NetworkInterface'
 
-import {IUser} from './interfaces/IUser'
-import {IContactInfo} from './interfaces/IContactInfo'
+import {IUser} from '../interfaces/IUser'
+import {IContactInfo} from '../interfaces/IContactInfo'
 import {IAttendee, 
 	IAttendeeData, 
 	IAttendeeOptions,
 	IAttendeeDataFull, 
 	IAttendeeWithPhasesData, 
 	IAttendeeWithPhaseGroupsData
-} from './interfaces/IAttendee'
-import {IPhaseGroup, IPhaseGroupData} from './interfaces/IPhaseGroup'
-import {IPhase, IPhaseData} from './interfaces/IPhase'
+} from '../interfaces/IAttendee'
+import {IPhaseGroup, IPhaseGroupData} from '../interfaces/IPhaseGroup'
+import {IPhase, IPhaseData} from '../interfaces/IPhase'
+
+import {User} from './User' // TODO change to internal later
+import { Phase } from './Phase'
+import { PhaseGroup } from './PhaseGroup'
 
 export class Attendee implements IAttendee{
 	public static parse(data: IAttendeeData): IAttendee {

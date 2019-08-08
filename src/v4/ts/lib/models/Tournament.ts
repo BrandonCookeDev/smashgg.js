@@ -1,6 +1,8 @@
 import _ from 'lodash'
 import moment from 'moment'
-import log from './util/Logger'
+import log from '../util/Logger'
+import NI from '../util/NetworkInterface'
+import * as queries from '../scripts/tournamentQueries'
 
 import {
 	ITournament,
@@ -10,15 +12,15 @@ import {
 	ITournamentPhaseData,
 	ITournamentPhaseGroupData,
 	ITournamentAttendeeData
-} from './interfaces/ITournament'
-import {IVenue} from './interfaces/IVenue'
-import {IOrganizer} from './interfaces/IOrganizer'
-import {IEvent} from './interfaces/IEvent'
-import {IPhase} from './interfaces/IPhase'
-import {IPhaseGroup} from './interfaces/IPhaseGroup'
-import {IGGSet, IGGSetOptions} from './interfaces/IGGSet'
-import {IEntrant, IEntrantOptions} from './interfaces/IEntrant'
-import {IAttendee, IAttendeeOptions, IAttendeeData, IAttendeePaginatedData} from './interfaces/IAttendee'
+} from '../interfaces/ITournament'
+import {IVenue} from '../interfaces/IVenue'
+import {IOrganizer} from '../interfaces/IOrganizer'
+import {IEvent} from '../interfaces/IEvent'
+import {IPhase} from '../interfaces/IPhase'
+import {IPhaseGroup} from '../interfaces/IPhaseGroup'
+import {IGGSet, IGGSetOptions} from '../interfaces/IGGSet'
+import {IEntrant, IEntrantOptions} from '../interfaces/IEntrant'
+import {IAttendee, IAttendeeOptions, IAttendeeData, IAttendeePaginatedData} from '../interfaces/IAttendee'
 
 import {Venue} from './Venue'
 import {Organizer} from './Oraganizer'
@@ -29,9 +31,6 @@ import {User} from './User'
 import {Entrant} from './Entrant'
 import {Attendee} from './Attendee'
 import {GGSet} from './GGSet'
-
-import NI from './util/NetworkInterface'
-import * as queries from './scripts/tournamentQueries'
 
 export class Tournament implements ITournament{
 	

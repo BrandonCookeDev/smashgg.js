@@ -1,16 +1,9 @@
 import _ from 'lodash'
 import moment from 'moment-timezone'
 import {EventEmitter} from 'events'
-
-import {Game} from './Game' // TODO change to internal later 
-import log from './util/Logger'
-
-import NI from './util/NetworkInterface'
-import * as queries from './scripts/setQueries'
-
-import {Attendee} from './Attendee'
-import {Entrant} from './Entrant'
-import {PlayerLite} from './PlayerLite'
+import log from '../util/Logger'
+import NI from '../util/NetworkInterface'
+import * as queries from '../scripts/setQueries'
 
 import {
 	IGGSet, 
@@ -19,13 +12,18 @@ import {
 	IGGSetDataFull,
 	IGGSetSlotAttendeeData,
 	IGGSetSlotEntrantData
-} from './interfaces/IGGSet'
-import {IPlayerLite} from './interfaces/IPlayerLite'
-import {IGame, IGameDataFull} from './interfaces/IGame'
-import {IAttendee} from './interfaces/IAttendee'
-import {IEntrant} from './interfaces/IEntrant'
+} from '../interfaces/IGGSet'
+import {IPlayerLite} from '../interfaces/IPlayerLite'
+import {IGame, IGameDataFull} from '../interfaces/IGame'
+import {IAttendee} from '../interfaces/IAttendee'
+import {IEntrant} from '../interfaces/IEntrant'
 
-const DISPLAY_SCORE_REGEX = new RegExp(/^([\S\s]*) ([0-9]{1,3}) - ([\S\s]*) ([0-9]{1,3})$/);
+import {Game} from './Game'
+import {Attendee} from './Attendee'
+import {Entrant} from './Entrant'
+import {PlayerLite} from './PlayerLite'
+
+const DISPLAY_SCORE_REGEX = new RegExp(/^([\S\s]*) ([0-9]{1,3}) - ([\S\s]*) ([0-9]{1,3})$/)
 
 export class GGSet extends EventEmitter implements IGGSet{
 

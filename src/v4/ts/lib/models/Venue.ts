@@ -1,7 +1,7 @@
-import NI from './util/NetworkInterface'
-import * as queries from './scripts/tournamentQueries'
+import NI from '../util/NetworkInterface'
+import * as queries from '../scripts/tournamentQueries'
 
-import {IVenue, IVenueData} from './interfaces/IVenue'
+import {IVenue, IVenueData} from '../interfaces/IVenue'
 
 export class Venue implements IVenue{
 	

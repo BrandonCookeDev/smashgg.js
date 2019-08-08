@@ -7,24 +7,18 @@ import {EventEmitter} from 'events'
 const RATE_LIMIT_MS_TIME = process.env.SRQRateLimitMsTime || 1100
 const RETRY_RATE = process.env.SRQRetryRate || 3
 
-export default class StaggeredRequestQueue extends EventEmitter implements ISRQ.SRQ{
+export default class StaggeredRequestQueue extends EventEmitter {
 
-	queue: Array<Function> = []
-	static initialized: boolean = false
-	static processing: boolean = false
-	static instance: StaggeredRequestQueue
+	public static initialized: boolean = false
+	public static processing: boolean = false
+	public static instance: StaggeredRequestQueue
 
-	constructor(){
-		super()
-		this.queue = []
-	}
-
-	static init(){
+	public static init(){
 		if(!StaggeredRequestQueue.initialized){
 			StaggeredRequestQueue.instance = new StaggeredRequestQueue()
 			StaggeredRequestQueue.processing = false
 
-			StaggeredRequestQueue.instance.on('add', async function(){
+			StaggeredRequestQueue.instance.on('add', async () => {
 				if(!StaggeredRequestQueue.processing)
 					StaggeredRequestQueue.getInstance().processQueue()
 			})
@@ -38,11 +32,18 @@ export default class StaggeredRequestQueue extends EventEmitter implements ISRQ.
 	 * 
 	 * returns the singleton instance of StaggeredRequestQueue
 	 */
-	static getInstance(){
+	public static getInstance(){
 		if(!StaggeredRequestQueue.initialized)
 			throw new Error('StaggeredRequestQueue not initialized!')
 
 		return StaggeredRequestQueue.instance
+	}
+
+	public queue: Array<() => any> = []
+
+	constructor(){
+		super()
+		this.queue = []
 	}
 
 	/**
@@ -52,13 +53,13 @@ export default class StaggeredRequestQueue extends EventEmitter implements ISRQ.
 	 * continuously runs function elements staggered by a standard milisecond
 	 * rate limit set by smashgg.
 	 */
-	async processQueue(){
+	public async processQueue(){
 		if(!StaggeredRequestQueue.processing){
 			StaggeredRequestQueue.processing = true
 
 			while(StaggeredRequestQueue.getInstance().getLength() > 0){
 				let retryCount = 0
-				let requestFcn: Function = StaggeredRequestQueue.getInstance().pop()
+				const requestFcn: () => any = StaggeredRequestQueue.getInstance().pop()
 
 				// retry attempts
 				while(retryCount < RETRY_RATE){
@@ -79,43 +80,31 @@ export default class StaggeredRequestQueue extends EventEmitter implements ISRQ.
 	}
 
 	// TODO enforce strict type on element being added
-	add(element: Function) : void{
-		if(element.constructor.name != 'Function')
+	public add(element: () => any): void{
+		if(element.constructor.name !== 'Function')
 			throw new Error('SRQ Error: Elements added must be a function wrapping around a promise')
 
 		this.queue.push(element)
 		this.emitAddEvent()
 	}
 
-	pop() : Function {
+	public pop(): () => any {
 		if(this.queue.length > 0)
-			return this.queue.shift() as Function
+			return this.queue.shift() as () => any
 		else 
 			throw new Error('Cannot pop an empty Queue')
 	}
 
-	getLength() : number{
+	public getLength(): number{
 		return this.queue.length
 	}
 
-	emitAddEvent(element?: Function) : void{
+	public emitAddEvent(element?: () => any): void {
 		this.emit('add', element)
 	}
 
-	emitEmptyEvent() : void{
+	public emitEmptyEvent(): void{
 		this.emit('empty')
 	}
 
 }
-
-namespace ISRQ{
-	export interface SRQ{
-		add(element: Function) : void
-		pop() : Function 
-		getLength() : number
-		emitAddEvent(element?: Function) : void
-		emitEmptyEvent() : void
-	}
-}
-
-module.exports = StaggeredRequestQueue

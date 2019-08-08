@@ -1,7 +1,7 @@
-import NI from './util/NetworkInterface'
-import * as queries from './scripts/tournamentQueries'
+import NI from '../util/NetworkInterface'
+import * as queries from '../scripts/tournamentQueries'
 
-import {IOrganizer, IOrganizerData} from './interfaces/IOrganizer'
+import {IOrganizer, IOrganizerData} from '../interfaces/IOrganizer'
 
 export class Organizer implements IOrganizer{
 

@@ -1,6 +1,6 @@
 
-import { IStanding, IStandingData } from './interfaces/IStanding'
-import { IEntrant } from './interfaces/IEntrant'
+import { IStanding, IStandingData } from '../interfaces/IStanding'
+import { IEntrant } from '../interfaces/IEntrant'
 
 import { Entrant } from './Entrant'
 

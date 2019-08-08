@@ -3,7 +3,9 @@ old/
 test/
 .vscode/
 src/v1/ts/
+src/v1/js/test
 src/v4/ts/
+src/v4/js/test
 sandbox/
 resources/
 patchnotes/

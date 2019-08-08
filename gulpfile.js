@@ -1,19 +1,26 @@
 'use strict'
+require('colors')
 
+const fs = require('fs')
 const path = require('path')
 const gulp = require('gulp')
 const ts = require('gulp-typescript')
 const tslint = require('gulp-tslint')
 const mocha = require('gulp-mocha')
 const {exec} = require('child_process')
+const {format} = require('util')
+const readline = require('readline')
 
 const ROOT = __dirname
 const SRC_DIR = path.join(ROOT, 'src', 'v4')
 const TS_DIR = path.join(SRC_DIR, 'ts')
 const JS_DIR = path.join(SRC_DIR, 'js')
 const TEST_DIR = path.join(JS_DIR, 'test')
+const V1_DIR = path.join(ROOT, 'src', 'v1')
+// const V1_JS_DIR = path.join(V1_DIR, 'js')
 
 const tsProd = ts.createProject('tsconfig.json')
+// const tsV1 = ts.createProject(path.join(V1_DIR, 'tsconfig.json'))
 
 function tsc(){
 	return gulp.src(TS_DIR + '/**/*.ts')
@@ -25,6 +32,11 @@ function tslinter(){
 	return gulp.src(TS_DIR + '/**/*.ts')
 		.pipe(tslint())
 		.pipe(tslint.report())
+}
+
+function tscV1(cb){
+	const cmd = `cd ${V1_DIR} && tsc`
+	exec(cmd, cb)
 }
 
 function createDTs(){
@@ -127,6 +139,104 @@ function getQueries(cb){
 	cb(null)
 }
 
+function deploymentWarningMessage(cb){
+	const message = format(
+		'%s: %s', 
+		'WARNING'.red, 
+		'Before deployment, please commit your code and make sure you are logged into git and npm'
+	)
+	console.log(message)
+
+	const rl = readline.createInterface({
+		input: process.stdin,
+		output: process.stdout
+	})
+
+	rl.question('Do you wish to proceed? [y]', (answer) => {
+		rl.close()
+		if(answer != null && answer.toString().toLowerCase() == 'y')
+			cb()
+		else
+			cb(new Error('Deployment Cancelled'))
+	})
+}
+
+function updateMajor(cb){
+	updatePackageJsonVersion(1)
+	cb()
+}
+
+function updateMinor(cb){
+	updatePackageJsonVersion(0, 1)
+	cb()
+}
+
+function updatePatch(cb){
+	updatePackageJsonVersion(0, 0, 1)
+	cb()
+}
+
+function gitTag(cb){
+	const version = getVersionFromPackageJson()
+	const cmd = `git tag ${version}`
+	exec(cmd, cb)
+}
+
+function gitCommit(cb){
+	const version = getVersionFromPackageJson()
+	const cmd = `git add . && git commit -m "${version}"`
+	exec(cmd, cb)
+}
+
+function gitPush(cb){
+	const cmd = 'git push && git push --tags'
+	exec(cmd, cb)
+}
+
+function npmPublish(cb){
+	const cmd = 'npm publish'
+	exec(cmd, cb)
+}
+
+
+function getVersionFromPackageJson(){
+	const packageJsonPath = path.join(__dirname, 'package.json')
+	const packageJsonContent = fs.readFileSync(packageJsonPath, 'utf8')
+	const versionRegex = new RegExp(/("version"[\s]*:[\s]*"([0-9]+.[0-9]+.[0-9])")/)
+
+	if(!versionRegex.test(packageJsonContent))
+		throw new Error('No version property in package json')
+
+	const currentVersionMatch = versionRegex.exec(packageJsonContent)
+	return currentVersionMatch[2]
+}
+
+function updatePackageJsonVersion(majorIncrement=0, minorIncrement=0, patchIncrement=0){
+	if(majorIncrement == 0 && minorIncrement == 0 && patchIncrement == 0)
+		throw new Error('must have at least one incremented version number')
+
+	const packageJsonPath = path.join(__dirname, 'package.json')
+	const packageJsonContent = fs.readFileSync(packageJsonPath, 'utf8')
+	const versionRegex = new RegExp(/("version"[\s]*:[\s]*"([0-9]+.[0-9]+.[0-9])")/)
+	const majMinPatchRegex = new RegExp(/([0-9]+).([0-9]+).([0-9]+)/)
+
+	if(!versionRegex.test(packageJsonContent))
+		throw new Error('No version property in package json')
+
+	const currentVersionMatch = versionRegex.exec(packageJsonContent)
+	const currentVersion = majMinPatchRegex.exec(currentVersionMatch[2])
+
+	let major = parseInt(currentVersion[1]) + majorIncrement
+	let minor = parseInt(currentVersion[2]) + minorIncrement
+	let patch = parseInt(currentVersion[3]) + patchIncrement
+
+	const newVersion = `${major}.${minor}.${patch}`
+	const replacement = `"version": "${newVersion}"`
+	const newContent = packageJsonContent.replace(versionRegex, replacement)
+
+	fs.writeFileSync(packageJsonPath, newContent, 'utf8')
+}
+
 exports.test = gulp.series(tsc, test)
 exports.testTournament = gulp.series(tsc, testTournament)
 exports.testEvent = gulp.series(tsc, testEvent)
@@ -145,8 +255,18 @@ exports.testV1 = testV1
 
 exports.tsc = tsc
 exports.tslint = tslinter
+exports.tscV1 = tscV1
 exports.createDTs = createDTs
 exports.watch = watch
 exports.sandbox = gulp.series(tsc, sandbox)
 exports.getQueries = getQueries
 exports.publish = gulp.series(tsc, publish)
+
+// exports.updateMajor = updateMajor
+// exports.updateMinor = updateMinor
+// exports.updatePatch = updatePatch
+exports.preDeploy = gulp.series(deploymentWarningMessage, tslint, tsc, tscV1)
+exports.deployPatch = gulp.series(this.preDeploy, updatePatch, gitCommit, gitTag, gitPush, npmPublish)
+exports.deployMinor = gulp.series(this.preDeploy, updateMinor, gitCommit, gitTag, gitPush, npmPublish)
+exports.deployMajor = gulp.series(this.preDeploy, updateMajor, gitCommit, gitTag, gitPush, npmPublish)
+exports.deploy = this.deployPatch

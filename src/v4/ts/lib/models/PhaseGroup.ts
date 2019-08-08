@@ -13,7 +13,7 @@ import {IPhaseGroup,
 	IPhaseGroupSetData	
 } from '../interfaces/IPhaseGroup'
 import {IAttendee, IAttendeeData,IAttendeeOptions} from '../interfaces/IAttendee'
-import {IEntrant, IEntrantData, IEntrantOptions} from '../interfaces/IEntrant'
+import {IEntrant, IEntrantData, IEntrantDataFull, IEntrantOptions} from '../interfaces/IEntrant'
 import {IGGSet, IGGSetData, IGGSetOptions} from '../interfaces/IGGSet'
 import {ISeed, ISeedData, ISeedOptions} from '../interfaces/ISeed'
 
@@ -132,7 +132,7 @@ export class PhaseGroup implements IPhaseGroup{
 		const entrants: IEntrant[] = 
 			_.flatten(phaseGroups.map(
 				pg => pg.paginatedSeeds.nodes.map(
-					(e: IEntrantData) => Entrant.parse(e)
+					(e: IEntrantDataFull) => Entrant.parseFull(e)
 				).filter(seed => seed != null)))
 		return _.uniqBy(entrants, 'id')
 	}

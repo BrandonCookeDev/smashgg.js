@@ -81,6 +81,10 @@ function testUser(){
 	return gulp.src(path.join(TEST_DIR, 'user.test.js'))
 		.pipe(mocha())
 }
+function testEntrant(){
+	return gulp.src(path.join(TEST_DIR, 'entrant.test.js'))
+		.pipe(mocha())
+}
 function testAttendee(){
 	return gulp.src(path.join(TEST_DIR, 'attendee.test.js'))
 		.pipe(mocha())
@@ -247,6 +251,7 @@ exports.testPlayer = gulp.series(tsc, testPlayer)
 exports.testSet = gulp.series(tsc, testSet)
 exports.testGame = gulp.series(tsc, testGame)
 exports.testUser = gulp.series(tsc, testUser)
+exports.testEntrant = gulp.series(tsc, testEntrant)
 exports.testAttendee = gulp.series(tsc, testAttendee)
 exports.testPlayer = gulp.series(tsc, testPlayer)
 exports.testStream = gulp.series(tsc, testStream)

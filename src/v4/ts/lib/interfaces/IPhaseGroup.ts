@@ -1,4 +1,4 @@
-import {IEntrant, IEntrantData, IEntrantOptions} from './IEntrant'
+import {IEntrant, IEntrantData, IEntrantDataFull, IEntrantOptions} from './IEntrant'
 import {IAttendee, IAttendeeData, IAttendeeOptions} from './IAttendee'
 import {IGGSet, IGGSetData, IGGSetOptions} from './IGGSet'
 import {ISeed, ISeedData, ISeedOptions} from './ISeed'
@@ -56,7 +56,7 @@ export interface IPhaseGroupEntrantData{
 			pageInfo?: {
 				totalPages: number
 			},
-			nodes: IEntrantData[]
+			nodes: IEntrantDataFull[]
 		}
 	}
 }

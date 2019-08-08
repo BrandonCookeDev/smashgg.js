@@ -428,7 +428,7 @@ async function testGetAttendees(set: IGGSet){
 	const arr: IAttendee[] = await set.getAttendees()
 
 	arr.forEach(attendee => {
-		expect(attendee).to.be.an.instanceof(Entrant)
+		expect(attendee).to.be.an.instanceof(Attendee)
 		expect(
 			arr.filter(x => x.getId() === attendee.getId()).length,
 			'Phase Group array must not have duplicates! Found: ' + attendee.getId()

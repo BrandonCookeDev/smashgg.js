@@ -4,20 +4,11 @@ import {IOrganizer} from './IOrganizer'
 import {IEvent, IEventData} from './IEvent'
 import {IPhase, IPhaseData} from './IPhase'
 import {IPhaseGroup, IPhaseGroupData} from './IPhaseGroup'
-import {IEntrant, IEntrantData} from './IEntrant'
-import {IAttendee, IAttendeePaginatedData} from './IAttendee'
-import {IGGSet, IGGSetData} from './IGGSet'
+import {IEntrant, IEntrantOptions, IEntrantData} from './IEntrant'
+import {IAttendee, IAttendeeOptions, IAttendeePaginatedData} from './IAttendee'
+import {IGGSet, IGGSetOptions, IGGSetData} from './IGGSet'
 
-export interface ITournament{
-	// id: number
-	// name: string
-	// slug: string
-	// startTime: Date | null
-	// endTime: Date | null
-	// timezone: string | null
-	// venue: Venue
-	// organizer: Organizer
-	
+export interface ITournament{	
 	getId(): number
 	getName(): string 
 	getSlug(): string
@@ -41,17 +32,11 @@ export interface ITournament{
 	getEvents(): Promise<IEvent[]>
 	getPhases(): Promise<IPhase[]>
 	getPhaseGroups(): Promise<IPhaseGroup[]>
+	getSets(options?: IGGSetOptions): Promise<IGGSet[]>
+	getEntrants(options?: IEntrantOptions): Promise<IEntrant[]>
+	getAttendees(options?: IAttendeeOptions): Promise<IAttendee[]>
 	searchAttendees(smashtag: string): Promise<IAttendee[] | null>
 	searchAttendeesBySponsorTag(sponsorTag: string): Promise<IAttendee[] | null>
-
-	/*
-	getSets(options: IGGSet.SetOptions) : Promise<GGSet[]>
-	getIncompleteSets(options: IGGSet.SetOptions) : Promise<GGSet[]>
-	getCompletedSets(options: IGGSet.SetOptions) : Promise<GGSet[]>
-	getSetsXMinutesBack(minutesBack: number, options: IGGSet.SetOptions) : Promise<GGSet[]>
-	getEntrants(options: IEntrant.EntrantOptions) : Promise<Entrant[]>
-	getAttendees(options: IAttendee.AttendeeOptions) : Promise<Attendee[]> 
-	*/
 }
 
 export interface ITournamentDataFull{

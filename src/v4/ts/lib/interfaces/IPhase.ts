@@ -2,23 +2,17 @@ import {IAttendee, IAttendeeData, IAttendeeOptions} from './IAttendee'
 import {IEntrant, IEntrantOptions, IEntrantData} from './IEntrant'
 import {IGGSet, IGGSetOptions, IGGSetData} from './IGGSet'
 import {IPhaseGroup, IPhaseGroupData} from './IPhaseGroup'
-import {ISeedData} from './ISeed'
+import {ISeed, ISeedOptions, ISeedData} from './ISeed'
 
 export interface IPhase{
-	/*
-	id: number
-	name: string
-	eventId: number
-	numSeeds: number
-	groupCount: number
-	*/
-
 	getId(): number
 	getEventId(): number
 	getName(): string
 	getNumSeeds(): number
 	getGroupCount(): number	
+
 	getPhaseGroups(): Promise<IPhaseGroup[]>
+	getSeeds(options?: ISeedOptions): Promise<ISeed[]>
 	getSets(options?: IGGSetOptions): Promise<IGGSet[]>
 	getEntrants(options?: IEntrantOptions): Promise<IEntrant[]>
 	getAttendees(options?: IAttendeeOptions): Promise<IAttendee[]>

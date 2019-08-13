@@ -31,6 +31,7 @@ import {Standing} from './Standing'
 
 import NI from '../util/NetworkInterface'
 import * as queries from '../scripts/eventQueries'
+import * as Strings from '../util/Strings'
 
 export class Event extends EventEmitter implements IEvent{
 
@@ -168,12 +169,18 @@ export class Event extends EventEmitter implements IEvent{
 
 	// aggregation
 	public async getPhases(): Promise<IPhase[]> {
+		if(!this.id)
+			throw new Error(Strings.eventCantGetPhasesWithNullId)
+
 		log.info('Getting Phases for Event [%s :: %s]', this.id, this.name)
 		const data: IEventPhaseData = await NI.query(queries.eventPhases, {id: this.id})
 		return data.event.phases.map(phaseData => Phase.parse(phaseData, this.id))
 	}
 
 	public async getPhaseGroups(): Promise<IPhaseGroup[]> {
+		if(!this.id)
+			throw new Error(Strings.eventCantGetPhaseGroupsWithNullId)
+
 		log.info('Getting Phase Groups for Event [%s :: %s]', this.id, this.name)
 		const data: IEventPhaseGroupData = await NI.query(queries.eventPhaseGroups, {id: this.id})
 		return data.event.phaseGroups.map(phaseGroupData => PhaseGroup.parse(phaseGroupData))
@@ -182,8 +189,10 @@ export class Event extends EventEmitter implements IEvent{
 	public async getStandings(
 		options: IStandingOptions = Standing.getDefaultOptions()
 	): Promise<IStanding[]> {
+		if(!this.id)
+			throw new Error(Strings.eventCantGetStandingsWithNullId)
+
 		log.info('Getting Standings for Event [%s :: %s]', this.id, this.name)
-		
 		const data: IEventStandings[] = await NI.paginatedQuery(
 			`Event Standings: [${this.id} :: ${this.name}]`, queries.eventStandings,
 			{id: this.id}, options, {}, 3)
@@ -201,8 +210,10 @@ export class Event extends EventEmitter implements IEvent{
 	public async getEntrants(
 		options: IEntrantOptions = Entrant.getDefaultEntrantOptions()
 	): Promise<IEntrant[]> {
-		log.info('Getting Entrants for Event [%s :: %s]', this.id, this.name)
+		if(!this.id)
+			throw new Error(Strings.eventCantGetEntrantsWithNullId)
 
+		log.info('Getting Entrants for Event [%s :: %s]', this.id, this.name)
 		if(!options.areSeedsPublished)
 			return this.getEntrants2(options)
 
@@ -214,8 +225,10 @@ export class Event extends EventEmitter implements IEvent{
 	public async getAttendees(
 		options: IAttendeeOptions = Attendee.getDefaultAttendeeOptions()
 	): Promise<IAttendee[]> {
-		log.info('Getting Attendees for Event [%s :: %s]', this.id, this.name)
+		if(!this.id)
+			throw new Error(Strings.eventCantGetAttendeesWithNullId)
 
+		log.info('Getting Attendees for Event [%s :: %s]', this.id, this.name)
 		if(!options.areSeedsPublished){
 			log.verbose('seeds are not published, getting attendees from pagination')
 			return this.getAttendees2(options)
@@ -231,8 +244,10 @@ export class Event extends EventEmitter implements IEvent{
 	public async getSets(
 		options: IGGSetOptions = GGSet.getDefaultSetOptions()
 	): Promise<IGGSet[]> {
-		log.info('Getting Sets for Event [%s :: %s]', this.id, this.name)
+		if(!this.id)
+			throw new Error(Strings.eventCantGetSetsWithNullId)
 
+		log.info('Getting Sets for Event [%s :: %s]', this.id, this.name)
 		const pgs: IPhaseGroup[] = await this.getPhaseGroups()
 		const sets: IGGSet[] = await NI.clusterQuery(pgs, 'getSets', options)
 		return _.uniqBy(_.flatten(sets), 'id')
@@ -241,6 +256,9 @@ export class Event extends EventEmitter implements IEvent{
 	public async getEntrants2(
 		options: IEntrantOptions = Entrant.getDefaultEntrantOptions()
 	): Promise<IEntrant[]> {
+		if(!this.id)
+			throw new Error(Strings.eventCantGetEntrantsWithNullId)
+		
 		log.info('Getting Entrants for Event [%s :: %s]', this.id, this.name)
 		const data: IEventEntrantData[] = await NI.paginatedQuery(
 			`Event Entrants [${this.id} :: ${this.name}]`,
@@ -255,6 +273,9 @@ export class Event extends EventEmitter implements IEvent{
 	public async getAttendees2(
 		options: IAttendeeOptions = Attendee.getDefaultAttendeeOptions()
 	): Promise<IAttendee[]> {
+		if(!this.id)
+			throw new Error(Strings.eventCantGetAttendeesWithNullId)
+		
 		log.info('Getting Attendees for Event [%s :: %s]', this.id, this.name)
 		const data: IEventAttendeeData[] = await NI.paginatedQuery(
 			`Event Attendees [${this.id} :: ${this.name}]`,
@@ -271,6 +292,9 @@ export class Event extends EventEmitter implements IEvent{
 	public async getSets2(
 		options: IGGSetOptions = GGSet.getDefaultSetOptions()
 	): Promise<IGGSet[]> {
+		if(!this.id)
+			throw new Error(Strings.eventCantGetSetsWithNullId)
+		
 		log.info('Getting Sets for Event [%s :: %s]', this.id, this.name)
 		const data: IEventSetData[] = await NI.paginatedQuery(
 			`Event Sets [${this.id} :: ${this.name}]`,

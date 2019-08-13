@@ -1,8 +1,10 @@
 import _ from 'lodash'
 import Log from '../util/Logger'
 import * as queries from '../scripts/attendeeQueries'
+import * as Strings from '../util/Strings'
 import NI from '../util/NetworkInterface'
 
+import {IEvent} from '../interfaces/IEvent'
 import {IUser} from '../interfaces/IUser'
 import {IContactInfo} from '../interfaces/IContactInfo'
 import {IAttendee, 
@@ -16,6 +18,7 @@ import {IPhaseGroup, IPhaseGroupData} from '../interfaces/IPhaseGroup'
 import {IPhase, IPhaseData} from '../interfaces/IPhase'
 
 import {User} from './User' // TODO change to internal later
+import {Event} from './Event'
 import { Phase } from './Phase'
 import { PhaseGroup } from './PhaseGroup'
 
@@ -189,19 +192,30 @@ export class Attendee implements IAttendee{
 		return this.connectedAccounts
 	}
 
-	/* TODO implement
-	async getEvents() : Promise<Event[]> {
-		Log.info('Getting Events that Attendee %s (Participant %s) entered', this.gamerTag, this.id);
-		return Event.getByIds();
+	public getEventIds(): number[] | null {
+		return this.eventIds
 	}
-	*/
+
+	public async getEvents(): Promise<IEvent[]> {
+		if(!this.eventIds)
+			throw new Error(Strings.attendeeCantGetEventsWithNullArray)
+
+		Log.info('Getting Events that Attendee %s (Participant %s) entered', this.gamerTag, this.id);
+		return await Promise.all(this.eventIds!.map(async (id) => await Event.getById(id) ))
+	}
 
 	public async getUserAccount(): Promise<IUser> {
+		if(!this.playerId)
+			throw new Error(Strings.attendeeCantGetUserWithNullId)
+
 		Log.info('Getting User account that Attendee %s (Participant %s) entered', this.gamerTag, this.id!)
 		return await User.getById(this.playerId!)
 	}
 
 	public async getEnteredPhases(): Promise<IPhase[]> {
+		if(!this.id)
+			throw new Error(Strings.attendeeCantGetEnteredPhasesWithNullId)
+
 		Log.info('Getting Phases that Attendee %s (Participant %s) entered', this.gamerTag, this.id)
 		const data: IAttendeeWithPhasesData = await NI.query(queries.getAttendeePhases, {id: this.id})
 		const seedData = _.flatten(data.participant.entrants.map(entrant => entrant.seeds))
@@ -211,6 +225,9 @@ export class Attendee implements IAttendee{
 	}
 
 	public async getEnteredPhaseGroups(): Promise<IPhaseGroup[]> {
+		if(!this.id)
+			throw new Error(Strings.attendeeCantGetEnteredPhaseGroupsWithNullId)
+
 		Log.info('Getting Phase Groups that Attendee %s (Participant %s) entered', this.gamerTag, this.id)
 		const data: IAttendeeWithPhaseGroupsData = await NI.query(queries.getAttendeePhaseGroups, {id: this.id})
 		const seedData = _.flatten(data.participant.entrants.map(entrant => entrant.seeds))

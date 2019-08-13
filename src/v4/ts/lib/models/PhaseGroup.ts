@@ -2,6 +2,7 @@ import _ from 'lodash'
 import log from '../util/Logger'
 import NI from '../util/NetworkInterface'
 import * as queries from '../scripts/phaseGroupQueries'
+import * as Strings from '../util/Strings'
 
 import {IPhaseGroup, 
 	IPhaseGroupData, 
@@ -105,6 +106,9 @@ export class PhaseGroup implements IPhaseGroup{
 	}
 
 	public async getSeeds(options: ISeedOptions = Seed.getDefaultSeedOptions()): Promise<ISeed[]> {
+		if(!this.id)
+			throw new Error(Strings.phaseGroupCantGetSeedsWithNullId)
+		
 		log.info('Getting Seeds for Phase Group [%s]', this.id)
 		log.verbose('Query variables: %s', JSON.stringify(options))
 		
@@ -121,6 +125,9 @@ export class PhaseGroup implements IPhaseGroup{
 	}
 
 	public async getEntrants(options: IEntrantOptions = Entrant.getDefaultEntrantOptions()): Promise<IEntrant[]>{
+		if(!this.id)
+			throw new Error(Strings.phaseGroupCantGetEntrantsWithNullId)
+
 		log.info('Getting Entrants for Phase Group [%s]', this.id)
 		log.verbose('Query variables: %s', JSON.stringify(options))
 		const phaseGroupEntrantData: IPhaseGroupEntrantData[] = await NI.paginatedQuery(
@@ -138,6 +145,9 @@ export class PhaseGroup implements IPhaseGroup{
 	}
 
 	public async getAttendees(options: IAttendeeOptions = Attendee.getDefaultAttendeeOptions()): Promise<IAttendee[]>{
+		if(!this.id)
+			throw new Error(Strings.phaseGroupCantGetAttendeesWithNullId)
+
 		log.info('Getting Attendees for Phase Group [%s]', this.id)
 		log.verbose('Query variables: %s', JSON.stringify(options))
 		const data: IPhaseGroupAttendeeData[] = await NI.paginatedQuery(
@@ -153,6 +163,9 @@ export class PhaseGroup implements IPhaseGroup{
 	}
 
 	public async getSets(options: IGGSetOptions = GGSet.getDefaultSetOptions()): Promise<IGGSet[]>{
+		if(!this.id)
+			throw new Error(Strings.phaseGroupCantGetSetsWithNullId)
+
 		log.info('Getting Sets for Phase Group [%s]', this.id)
 		log.verbose('Query variables: %s', JSON.stringify(options))
 		const data: IPhaseGroupSetData[] = await NI.paginatedQuery(

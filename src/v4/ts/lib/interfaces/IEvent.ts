@@ -4,22 +4,9 @@ import {IPhaseGroup, IPhaseGroupData} from './IPhaseGroup'
 import {IGGSet, IGGSetOptions, IGGSetData} from './IGGSet'
 import {IEntrant, IEntrantOptions, IEntrantData} from './IEntrant'
 import {IAttendee, IAttendeeOptions, IAttendeeData} from './IAttendee'
-import {IStanding, IStandingData} from './IStanding'
+import {IStanding, IStandingOptions, IStandingData} from './IStanding'
 
 export interface IEvent{
-	// id: number 
-	// name: string
-	// slug: string
-	// state: string | null
-	// startAt: number | null
-	// numEntrants: number | null
-	// checkInBuffer: number | null
-	// checkInDuration: number | null
-	// checkInEnabled: boolean | null
-	// isOnline: boolean | null
-	// teamNameAllowed: boolean | null
-	// teamManagementDeadline: number | null
-
 	getId(): number
 	getName(): string
 	getSlug(): string
@@ -36,6 +23,7 @@ export interface IEvent{
 	getPhaseGroups(): Promise<IPhaseGroup[]>
 	getEntrants(options?: IEntrantOptions): Promise<IEntrant[]>
 	getAttendees(options?: IAttendeeOptions): Promise<IAttendee[]>
+	getStandings(options?: IStandingOptions): Promise<IStanding[]>
 	getSets(options?: IGGSetOptions): Promise<IGGSet[]>
 	getIncompleteSets(options?: IGGSetOptions): Promise<IGGSet[]>
 	getCompleteSets(options?: IGGSetOptions): Promise<IGGSet[]>

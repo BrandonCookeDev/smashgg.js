@@ -3,6 +3,7 @@ import moment from 'moment'
 import log from '../util/Logger'
 import NI from '../util/NetworkInterface'
 import * as queries from '../scripts/tournamentQueries'
+import * as Strings from '../util/Strings'
 
 import {
 	ITournament,
@@ -178,6 +179,9 @@ export class Tournament implements ITournament{
 	}
 
 	public async getEvents(): Promise<IEvent[]> {
+		if(!this.id)
+			throw new Error(Strings.tournamentCantGetEventsWithNullId)
+
 		log.info('Getting Events for Tournament [%s :: %s]', this.id, this.name)
 		const data: ITournamentEventData = await NI.query(queries.tournamentEvents, {id: this.id})
 		const events = data.tournament.events.map(event => Event.parse(event))
@@ -185,6 +189,9 @@ export class Tournament implements ITournament{
 	}
 
 	public async getPhases(): Promise<IPhase[]> {
+		if(!this.id)
+			throw new Error(Strings.tournamentCantGetPhasesWithNullId)
+
 		log.info('Getting Phases for Tournament [%s :: %s]', this.id, this.name)
 		const data: ITournamentPhaseData = await NI.query(queries.tournamentPhases, {id: this.id})
 		const events = data.tournament.events
@@ -193,6 +200,9 @@ export class Tournament implements ITournament{
 	}
 
 	public async getPhaseGroups(): Promise<IPhaseGroup[]> {
+		if(!this.id)
+			throw new Error(Strings.tournamentCantGetPhaseGroupsWithNullId)
+
 		log.info('Getting Phase Groups for Tournament [%s :: %s]', this.id, this.name)
 		const data: ITournamentPhaseGroupData = await NI.query(queries.tournamentPhaseGroups, {id: this.id})
 		const events = data.tournament.events
@@ -204,8 +214,10 @@ export class Tournament implements ITournament{
 	public async getSets(
 		options: IGGSetOptions = GGSet.getDefaultSetOptions()
 	): Promise<IGGSet[]> {
-		log.info('Getting Sets for Tournament [%s :: %s]', this.id, this.name)
+		if(!this.id)
+			throw new Error(Strings.tournamentCantGetSetsWithNullId)
 
+		log.info('Getting Sets for Tournament [%s :: %s]', this.id, this.name)
 		log.warn(
 			'Puilling Sets for large or massive Tournaments may ' +
 			'lead to long execution times and lowered usability. It ' +
@@ -220,8 +232,10 @@ export class Tournament implements ITournament{
 	public async getEntrants(
 		options: IEntrantOptions = Entrant.getDefaultEntrantOptions()
 	): Promise<IEntrant[]> {
-		log.info('Getting Entrants for Tournament [%s :: %s]', this.id, this.name)
+		if(!this.id)
+			throw new Error(Strings.tournamentCantGetEntrantsWithNullId)
 
+		log.info('Getting Entrants for Tournament [%s :: %s]', this.id, this.name)
 		log.warn(
 			'Puilling Entrants for large or massive Tournaments may ' +
 			'lead to long execution times and lowered usability. It is ' + 
@@ -238,8 +252,10 @@ export class Tournament implements ITournament{
 	public async getAttendees2(
 		options: IAttendeeOptions = Attendee.getDefaultAttendeeOptions()
 	): Promise<IAttendee[]> {
-		log.info('Getting Attendees for Tournament [%s :: %s]', this.id, this.name)
+		if(!this.id)
+			throw new Error(Strings.tournamentCantGetAttendeesWithNullId)
 
+		log.info('Getting Attendees for Tournament [%s :: %s]', this.id, this.name)
 		log.warn(
 			'Puilling Attendees for large or massive Tournaments may ' +
 			'lead to long execution times and lowered usability. It is ' +
@@ -257,6 +273,9 @@ export class Tournament implements ITournament{
 	}
 
 	public async searchAttendees(theSmashtag: string): Promise<IAttendee[] | null>{
+		if(!theSmashtag)
+			throw new Error(Strings.tournamentMissingSmashtagFromSearchAttendees)
+
 		log.info('Searching Tournament [%s :: %s] with smashtag: %s', this.id, this.name, theSmashtag)
 
 		const results = await NI.query(queries.tournamentAttendeeSearch, {id: this.id, smashtag: theSmashtag})
@@ -274,6 +293,9 @@ export class Tournament implements ITournament{
 	}
 
 	public async searchAttendeesBySponsorTag(sponsorTag: string): Promise<IAttendee[] | null>{
+		if(!sponsorTag)
+			throw new Error(Strings.tournamentMissingSponsorTagFromSearchAttendee)
+
 		log.info('Searching Tournament [%s :: %s] with smashtag: %s', this.id, this.name, sponsorTag)
 
 		const results = 
@@ -351,6 +373,8 @@ export class Tournament implements ITournament{
 			queries.tournamentAttendees, {id: this.id},
 			options, {}, 3
 		)
+		if(!this.id)
+			throw new Error(Strings.tournamentCantGetAttendeesWithNullId)
 		
 		const tournaments = _.flatten(data.map(d => d.tournament))
 		const attendeeData: IAttendeePaginatedData[] = _.flatten(tournaments.map(tournament => tournament.participants))

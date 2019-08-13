@@ -4,16 +4,6 @@ import {IGGSet, IGGSetData, IGGSetOptions} from './IGGSet'
 import {ISeed, ISeedData, ISeedOptions} from './ISeed'
 
 export interface IPhaseGroup{
-	/*
-	id: number
-	phaseId: number
-	displayIdentifier: string | null
-	firstRoundTime: number | null
-	state: number | null
-	waveId: number | null
-	tiebreakOrder: object | null
-	*/
-
 	getId(): number
 	getPhaseId(): number
 	getDisplayIdentifier(): string | null
@@ -21,6 +11,7 @@ export interface IPhaseGroup{
 	getState(): number | null
 	getWaveId(): number | null
 	getTiebreakOrder(): object | null
+	
 	getSeeds(options?: ISeedOptions): Promise<ISeed[]>
 	getEntrants(options?: IEntrantOptions): Promise<IEntrant[]>
 	getAttendees(options?: IAttendeeOptions): Promise<IAttendee[]>

@@ -2,21 +2,9 @@ import {IPhaseGroup, IPhaseGroupData} from './IPhaseGroup'
 import {IPhase, IPhaseData} from './IPhase'
 import {IContactInfo} from './IContactInfo'
 import {IUser} from './IUser'
+import {IEvent} from './IEvent'
 
 export interface IAttendee{
-	/*
-	id: number
-	gamerTag: string,
-	prefix: string | null
-	createdAt: number | null
-	claimed: boolean | null
-	verified: boolean | null
-	playerId: number | null
-	phoneNumber: number | null
-	contactInfo: ContactInfo | null
-	connectedAccounts: object | null
-	*/
-	
 	getId(): number
 	getGamerTag(): string
 	getSponsor(): string | null
@@ -36,8 +24,9 @@ export interface IAttendee{
 	getLastName(): string | null
 	getZipcode(): string | null
 	getConnectedAccounts(): object | null
+	getEventIds(): number[] | null
 
-	// getEvents(): Promise<IEvent[]>
+	getEvents(): Promise<IEvent[]>
 	getUserAccount(): Promise<IUser>
 	getEnteredPhases(): Promise<IPhase[]>
 	getEnteredPhaseGroups(): Promise<IPhaseGroup[]>

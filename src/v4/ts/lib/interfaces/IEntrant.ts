@@ -1,15 +1,7 @@
 import {IAttendee, IAttendeeData} from './IAttendee'
 import {IContactInfo} from './IContactInfo'
 
-export interface IEntrant{
-	/*
-	id: number,
-	name: string, 
-	eventId: number,
-	skill: number,
-	attendeeData: Attendee[]
-	*/
-	
+export interface IEntrant{	
 	getId(): number
 	getName(position: number): string | null
 	getEventId(): number

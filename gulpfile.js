@@ -269,6 +269,7 @@ exports.publish = gulp.series(tsc, publish)
 // exports.updateMinor = updateMinor
 // exports.updatePatch = updatePatch
 exports.preDeploy = gulp.series(deploymentWarningMessage, tslinter, tsc, tscV1)
+exports.preDeployRaw = gulp.series(tslinter, tsc, tscV1)
 exports.preDeployYeahYeahDadIKnowWhatImDoing = gulp.series(tslinter, tsc, tscV1)
 exports.deployPatch = gulp.series(this.preDeploy, updatePatch, gitCommit, gitTag, gitPush, npmPublish)
 exports.deployMinor = gulp.series(this.preDeploy, updateMinor, gitCommit, gitTag, gitPush, npmPublish)

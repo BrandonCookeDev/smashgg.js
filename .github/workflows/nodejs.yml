@@ -44,7 +44,7 @@ jobs:
     
     - name: Publish to npm
       uses: pascalgn/npm-publish-action@1.0.0
-      with:
+      env:
         NPM_AUTH_TOKEN: d91b08fb-3479-4995-8c6d-7c5b205c60a4
      
     

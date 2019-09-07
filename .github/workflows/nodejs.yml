@@ -31,7 +31,7 @@ jobs:
     - name: run pre deploy
       run: |
         gulp --tasks
-        gulp preDeployYeahYeahDadIKnowWhatImDoing
+        gulp preDeployRaw
     
     - name: increment patch version
       run: gulp updatePatch

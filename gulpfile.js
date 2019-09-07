@@ -258,6 +258,7 @@ exports.deployPatch = gulp.series(this.preDeploy, updatePatch, gitCommit, gitTag
 exports.deployMinor = gulp.series(this.preDeploy, updateMinor, gitCommit, gitTag, gitPush, npmPublish)
 exports.deployMajor = gulp.series(this.preDeploy, updateMajor, gitCommit, gitTag, gitPush, npmPublish)
 exports.deploy = this.deployPatch
+exports.getPackageVersion = getVersionFromPackageJson
 
 exports.test = gulp.series(tsc, test)
 exports.testTournament = gulp.series(tsc, testTournament)

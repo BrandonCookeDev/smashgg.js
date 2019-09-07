@@ -30,8 +30,6 @@ jobs:
     
     - name: run pre deploy
       run: |
-        pwd
-        ls
         gulp --tasks
         gulp preDeployYeahYeahDadIKnowWhatImDoing
     
@@ -39,7 +37,7 @@ jobs:
       run: gulp updatePatch
     
     - name: npm publish
-      run: npm publish
+      run: npm publish 
      
     
         

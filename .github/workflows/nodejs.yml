@@ -30,14 +30,14 @@ jobs:
         npm i -g gulp gulp-cli
         gulp --version
       
-    - name: run typescript compile
+    - name: tslint check
+      run: gulp tslint
+      
+    - name: typescript compile
       run: gulp tsc
       
-    - name: list gulp tasks
-      run: gulp --tasks
-    
-    - name: run pre deploy
-      run: gulp preDeploy
+    - name: typescript compile V1 code
+      run: gulp tscV1
     
     - name: increment patch version
       run: gulp updatePatch

@@ -39,8 +39,6 @@ jobs:
     - name: typescript compile V1 code
       run: gulp tscV1
     
-    - name: increment patch version
-      run: gulp updatePatch
     
     - name: Publish to npm
       uses: pascalgn/npm-publish-action@1.0.0

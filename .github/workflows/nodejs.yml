@@ -27,6 +27,9 @@ jobs:
       
     - name: npm install gulp
       run: npm i -g gulp gulp-cli
+      
+    - name: list gulp tasks
+      run: gulp --tasks
     
     - name: run pre deploy
       run: gulp preDeploy

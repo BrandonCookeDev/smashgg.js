@@ -32,6 +32,7 @@ jobs:
       run: |
         pwd
         ls
+        gulp --tasks
         gulp preDeployYeahYeahDadIKnowWhatImDoing
     
     - name: increment patch version

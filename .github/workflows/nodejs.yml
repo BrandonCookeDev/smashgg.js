@@ -28,7 +28,10 @@ jobs:
       run: npm i -g gulp gulp-cli
     
     - name: run pre deploy
-      run: gulp preDeployYeahYeahDadIKnowWhatImDoing
+      run: |
+        pwd
+        ls
+        gulp preDeployYeahYeahDadIKnowWhatImDoing
     
     - name: increment patch version
       run: gulp updatePatch

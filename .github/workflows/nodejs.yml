@@ -26,10 +26,15 @@ jobs:
       run: npm i
       
     - name: npm install gulp
-      run: npm i -g gulp gulp-cli
+      run: | 
+        npm i -g gulp gulp-cli
+        gulp --version
+      
+    - name: read gulp file
+      run: cat gulpfile.js
       
     - name: list gulp tasks
-      run: cat gulpfile.js
+      run: gulp --tasks
     
     - name: run pre deploy
       run: gulp preDeploy

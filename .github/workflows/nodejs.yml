@@ -41,7 +41,9 @@ jobs:
     
     
     - name: Publish to npm
-      run: npm publish
+      run: |
+        echo ${NPM_AUTH_TOKEN}
+        npm publish
       env:
         NPM_AUTH_TOKEN: d91b08fb-3479-4995-8c6d-7c5b205c60a4
      

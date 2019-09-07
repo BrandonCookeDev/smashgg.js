@@ -30,8 +30,8 @@ jobs:
         npm i -g gulp gulp-cli
         gulp --version
       
-    - name: read gulp file
-      run: cat gulpfile.js
+    - name: run typescript compile
+      run: gulp tsc
       
     - name: list gulp tasks
       run: gulp --tasks

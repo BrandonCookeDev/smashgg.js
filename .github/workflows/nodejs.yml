@@ -1,4 +1,4 @@
-name: Node CI
+name: Publish Update
 
 on: 
   push:
@@ -22,7 +22,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
-    - name: npm install    
+    - name: npm install
       run: npm i
       
     - name: npm install gulp
@@ -42,8 +42,8 @@ jobs:
     - name: increment patch version
       run: gulp updatePatch
     
-    - name: npm publish
-      run: npm publish 
+    - name: Publish to npm
+      uses: pascalgn/npm-publish-action@1.0.0
      
     
         

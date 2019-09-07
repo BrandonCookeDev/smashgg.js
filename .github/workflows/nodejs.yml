@@ -39,13 +39,20 @@ jobs:
     - name: typescript compile V1 code
       run: gulp tscV1
     
-    
     - name: Publish to npm
       run: |
-        echo ${NPM_AUTH_TOKEN}
+        echo Using Auth Token ${NPM_AUTH_TOKEN}
+        npm adduser
+        npm whoami
         npm publish
       env:
         NPM_AUTH_TOKEN: d91b08fb-3479-4995-8c6d-7c5b205c60a4
      
+    - name: Commit Updated Version
+      run: |
+        git add .
+        version=$(gulp getPackageVersion)
+        git commit -m $version
+        git push origin master
     
         

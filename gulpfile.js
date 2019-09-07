@@ -239,6 +239,26 @@ function updatePackageJsonVersion(cb, majorIncrement=0, minorIncrement=0, patchI
 	fs.writeFile(packageJsonPath, newContent, 'utf8', cb)
 }
 
+exports.tsc = tsc
+exports.tslint = tslinter
+exports.tscV1 = tscV1
+exports.createDTs = createDTs
+exports.watch = watch
+exports.sandbox = gulp.series(tsc, sandbox)
+exports.getQueries = getQueries
+exports.publish = gulp.series(tsc, publish)
+
+exports.updateMajor = updateMajor
+exports.updateMinor = updateMinor
+exports.updatePatch = updatePatch
+exports.preDeploy = gulp.series(deploymentWarningMessage, tslinter, tsc, tscV1)
+exports.preDeployRaw = gulp.series(tslinter, tsc, tscV1)
+exports.preDeployYeahYeahDadIKnowWhatImDoing = gulp.series(tslinter, tsc, tscV1)
+exports.deployPatch = gulp.series(this.preDeploy, updatePatch, gitCommit, gitTag, gitPush, npmPublish)
+exports.deployMinor = gulp.series(this.preDeploy, updateMinor, gitCommit, gitTag, gitPush, npmPublish)
+exports.deployMajor = gulp.series(this.preDeploy, updateMajor, gitCommit, gitTag, gitPush, npmPublish)
+exports.deploy = this.deployPatch
+
 exports.test = gulp.series(tsc, test)
 exports.testTournament = gulp.series(tsc, testTournament)
 exports.testEvent = gulp.series(tsc, testEvent)
@@ -255,23 +275,3 @@ exports.testPlayer = gulp.series(tsc, testPlayer)
 exports.testStream = gulp.series(tsc, testStream)
 exports.testStreamQueue = gulp.series(tsc, testStreamQueue)
 exports.testV1 = testV1
-
-exports.tsc = tsc
-exports.tslint = tslinter
-exports.tscV1 = tscV1
-exports.createDTs = createDTs
-exports.watch = watch
-exports.sandbox = gulp.series(tsc, sandbox)
-exports.getQueries = getQueries
-exports.publish = gulp.series(tsc, publish)
-
-// exports.updateMajor = updateMajor
-// exports.updateMinor = updateMinor
-// exports.updatePatch = updatePatch
-exports.preDeploy = gulp.series(deploymentWarningMessage, tslinter, tsc, tscV1)
-exports.preDeployRaw = gulp.series(tslinter, tsc, tscV1)
-exports.preDeployYeahYeahDadIKnowWhatImDoing = gulp.series(tslinter, tsc, tscV1)
-exports.deployPatch = gulp.series(this.preDeploy, updatePatch, gitCommit, gitTag, gitPush, npmPublish)
-exports.deployMinor = gulp.series(this.preDeploy, updateMinor, gitCommit, gitTag, gitPush, npmPublish)
-exports.deployMajor = gulp.series(this.preDeploy, updateMajor, gitCommit, gitTag, gitPush, npmPublish)
-exports.deploy = this.deployPatch

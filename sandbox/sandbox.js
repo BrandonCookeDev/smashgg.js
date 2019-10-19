@@ -12,7 +12,6 @@ const phaseSlugRegex = new RegExp(/(http|https):\/\/api.smash.gg\/tournament\/([
 const phaseGroupSlugRegex = new RegExp(/(http|https):\/\/api.smash.gg\/tournament\/([\S]*)\/events\/([\S]*)\/brackets\/([0-9]*)\/([0-9]*)\/?/);
 
 (async function(){
-
     let e = await Event.get('tipped-off-12-presented-by-the-lab-gaming-center', 'melee-singles')
     let standings = await e.getStandings();
     //console.log(standings)

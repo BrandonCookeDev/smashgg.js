@@ -77,34 +77,42 @@ function testCache(){
 	return gulp.src(path.join(TEST_DIR, 'testZCache.js'))
 		.pipe(mocha())
 }
+
 function testUser(){
 	return gulp.src(path.join(TEST_DIR, 'user.test.js'))
 		.pipe(mocha())
 }
+
 function testEntrant(){
 	return gulp.src(path.join(TEST_DIR, 'entrant.test.js'))
 		.pipe(mocha())
 }
+
 function testAttendee(){
 	return gulp.src(path.join(TEST_DIR, 'attendee.test.js'))
 		.pipe(mocha())
 }
+
 function testPlayer(){
 	return gulp.src(path.join(TEST_DIR, 'player.test.js'))
 		.pipe(mocha())
 }
+
 function testSet(){
 	return gulp.src(path.join(TEST_DIR, 'set.test.js'))
 		.pipe(mocha())
 }
+
 function testGame(){
 	return gulp.src(path.join(TEST_DIR, 'game.test.js'))
 		.pipe(mocha())
 }
+
 function testStream(){
 	return gulp.src(path.join(TEST_DIR, 'stream.test.js'))
 		.pipe(mocha())
 }
+
 function testStreamQueue(){
 	return gulp.src(path.join(TEST_DIR, 'streamQueue.test.js'))
 		.pipe(mocha())
@@ -198,7 +206,6 @@ function npmPublish(cb){
 	const cmd = 'npm publish'
 	exec(cmd, cb)
 }
-
 
 function getVersionFromPackageJson(){
 	const packageJsonPath = path.join(__dirname, 'package.json')

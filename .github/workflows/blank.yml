@@ -44,16 +44,11 @@ jobs:
     - name: Update Patch Version
       run: gulp updatePatch
     
-    - name: Extract branch name
-      shell: bash
-      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
-      id: extract_branch
-    
     - name: Commit files
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git pull origin ${{ steps.extract_branch.outputs.branch }}
+        git pull origin ${{ github.ref }}
         git status
         git add .
         git commit -m "Add changes" 
@@ -61,7 +56,7 @@ jobs:
     - name: Push changes
       uses: ad-m/github-push-action@master
       with:
-        branch: ${{ steps.extract_branch.outputs.branch }}
+        branch: ${{ github.ref }}
         github_token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: NPM Publish

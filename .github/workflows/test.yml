@@ -29,6 +29,6 @@ jobs:
       run: npm run tsc
     
     - name: Run Linter
-      run: gulp tslint
+      run: npm run tslint
 
     

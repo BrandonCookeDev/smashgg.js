@@ -10,7 +10,7 @@
 
 Node.js SDK for the public Smash.gg API, which is rich
 with data about tournament brackets that have occurred on their platform.
-
+ 
 ```js
 require('colors');
 const smashgg = require('smashgg.js');

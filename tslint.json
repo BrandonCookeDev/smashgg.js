@@ -18,7 +18,8 @@
         "curly": [false],
         "whitespace": [false],
         "one-variable-per-declaration": [false],
-        "no-console": [false]
+        "no-console": [false],
+        "radix": [false]
     },
     "rulesDirectory": [ ]
 }

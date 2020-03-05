@@ -10,7 +10,7 @@ export default function setup(sandbox: SinonSandbox){
 }
 
 function queryMock(q: string, a: object): Promise<object>{
-	const parsed: queryArgs = a as queryArgs
+	const parsed: IQueryArgs = a as IQueryArgs
 	const id = parsed.id
 
 	let ret: any = null
@@ -35,6 +35,6 @@ function queryMock(q: string, a: object): Promise<object>{
 	return Promise.resolve(ret)
 }
 
-interface queryArgs{
+interface IQueryArgs {
 	id: number | string
 }

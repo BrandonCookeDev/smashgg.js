@@ -1,3 +1,4 @@
+import { Event } from '../../lib/models/Event'
 import {
 	IEvent,
 	IEventData,

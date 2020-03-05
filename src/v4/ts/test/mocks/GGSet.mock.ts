@@ -1,6 +1,7 @@
 import sinon, { SinonSandbox } from 'sinon'
 import * as data from '../data/sets.testData'
 import * as gameData from '../data/games.testData'
+import * as attendeeData from '../data/attendee.testData'
 import NI from '../../lib/util/NetworkInterface'
 import * as queries from '../../lib/scripts/setQueries'
 
@@ -23,7 +24,11 @@ function queryMock(q: string, a: object): Promise<object>{
 			}
 			break
 		case queries.attendees:
-			
+			switch(id){
+				case parseInt(data.set1.id):
+					ret = attendeeData.slotAttendees1
+					break
+			}
 			break
 		case queries.entrants:
 

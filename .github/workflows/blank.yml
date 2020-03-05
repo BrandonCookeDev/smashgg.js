@@ -48,7 +48,7 @@ jobs:
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git pull origin ${{ github.ref }}
+        git pull origin ${GITHUB_REF##*/}
         git status
         git add .
         git commit -m "Add changes" 
@@ -56,7 +56,7 @@ jobs:
     - name: Push changes
       uses: ad-m/github-push-action@master
       with:
-        branch: ${{ github.ref }}
+        branch: ${GITHUB_REF##*/}
         github_token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: NPM Publish

@@ -22,7 +22,6 @@ export default class Cache{
 		}
 	}
 	
-
 	public static getInstance(): NodeCache{
 		if(!Cache.instance) {
 			Cache.instance = new NodeCache({

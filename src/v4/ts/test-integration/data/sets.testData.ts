@@ -1,11 +1,12 @@
-import { GGSet } from '../../lib/models/GGSet'
 import { 
 	IGGSetData,
 	IGGSetDataFull,
 	IGGSetDataWithGames
 } from '../../lib/interfaces/IGGSet'
 import {IPlayerLite} from '../../lib/interfaces/IPlayerLite'
+
 import {PlayerLite} from '../../lib/models/PlayerLite'
+
 import * as gameData from './games.testData'
 
 // 11186682
@@ -129,23 +130,21 @@ export const set3: IGGSetData = {
 	]
 }
 
-export const sets: IGGSetData[] = [set1, set2, set3]
-
 export const set1WithGames: IGGSetDataWithGames = {
 		set: {
-			games: gameData.games1Data
+			games: gameData.games1
 		}
 	}
 
 export const set2WithGames: IGGSetDataWithGames = {
 	set: {
-		games: gameData.games2Data
+		games: gameData.games2
 	}
 }
 
 export const set3WithGames: IGGSetDataWithGames = {
 	set: {
-		games: gameData.games3Data
+		games: gameData.games3
 	}
 }
 
@@ -202,57 +201,3 @@ export const parsedDisplayScore3 = {
 	score1: 3,
 	score2: 1
 }
-
-export const ggSet1 = new GGSet(
-	parseInt(set1.id),
-	set1.eventId,
-	set1.phaseGroupId,
-	set1.displayScore,
-	set1.fullRoundText,
-	set1.round,
-	set1.startedAt,
-	set1.completedAt,
-	set1.winnerId,
-	set1.totalGames,
-	set1.state,
-	p1,
-	p2,
-	parsedDisplayScore1.score1,
-	parsedDisplayScore1.score2
-)
-
-export const ggSet2 = new GGSet(
-	parseInt(set2.id),
-	set2.eventId,
-	set2.phaseGroupId,
-	set2.displayScore,
-	set2.fullRoundText,
-	set2.round,
-	set2.startedAt,
-	set2.completedAt,
-	set2.winnerId,
-	set2.totalGames,
-	set2.state,
-	p3,
-	p4,
-	parsedDisplayScore2.score1,
-	parsedDisplayScore2.score2
-)
-
-export const ggSet3 = new GGSet(
-	parseInt(set3.id),
-	set3.eventId,
-	set3.phaseGroupId,
-	set3.displayScore,
-	set3.fullRoundText,
-	set3.round,
-	set3.startedAt,
-	set3.completedAt,
-	set3.winnerId,
-	set3.totalGames,
-	set3.state,
-	p5,
-	p6,
-	parsedDisplayScore3.score1,
-	parsedDisplayScore3.score2
-)

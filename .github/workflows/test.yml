@@ -31,3 +31,6 @@ jobs:
     
     - name: Run Linter
       run: npm run tslint
+    
+    - name: Run Unit Tests
+      run: npm run test

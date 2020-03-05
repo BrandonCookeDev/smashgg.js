@@ -102,7 +102,7 @@ export const tournamentAttendeeSearchByPrefix =
 
 export const tournamentEvents = `query TournamentEvents($id: ID!){
     tournament(id: $id){
-        events:{
+        events{
             ${Schema.event}
         }
     }

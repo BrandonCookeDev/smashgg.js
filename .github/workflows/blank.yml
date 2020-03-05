@@ -39,7 +39,7 @@ jobs:
       run: npm run tsc
     
     - name: Install GulpJS
-      run: npm i -g gulp gulp-cli
+      run: sudo npm i -g gulp gulp-cli
     
     - name: Update Patch Version
       run: gulp updatePatch

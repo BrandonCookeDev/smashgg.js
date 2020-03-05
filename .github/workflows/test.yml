@@ -22,32 +22,13 @@ jobs:
     - name: NPM Install
       run: npm i
     
-    - name: TypeScript Compilation
-      run: npm run tsc
-    
     - name: Install GulpJS
       run: sudo npm i -g gulp gulp-cli
     
-    - name: Update Patch Version
-      run: gulp updatePatch
+    - name: TypeScript Compilation
+      run: npm run tsc
     
-    - name: Commit files
-      run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git pull origin ${{ github.ref }}
-        git status
-        git add .
-        git commit -m "Add changes" 
-        
-    - name: Push changes
-      uses: ad-m/github-push-action@master
-      with:
-        branch: ${{ github.ref }}
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Run Linter
+      run: gulp tslint
 
-    - name: NPM Publish
-      uses: JS-DevTools/npm-publish@v1
-      with:
-        token: ${{ secrets.NPM_TOKEN }}
-      
+    

@@ -6,7 +6,7 @@ import {
 	IAttendeeDataFull
 } from '../../lib/interfaces/IAttendee'
 
-export const participant1Data: IAttendeeData = {
+export const attendee1Data: IAttendeeData = {
 	id: 1148324,
 	gamerTag: 'Mew2King',
 	prefix: 'MVG FOX',
@@ -47,7 +47,7 @@ export const participant1Data: IAttendeeData = {
 	]
 }
 
-export const participant2Data: IAttendeeData = {
+export const attendee2Data: IAttendeeData = {
 	id: 928500,
 	gamerTag: 'NIX',
 	prefix: 'OeS',
@@ -79,7 +79,7 @@ export const participant2Data: IAttendeeData = {
 	]
 }
 
-export const participant3Data: IAttendeeData = {
+export const attendee3Data: IAttendeeData = {
 	id: 1170540,
 	gamerTag: 'bobby big ballz',
 	prefix: null,
@@ -111,68 +111,68 @@ export const participant3Data: IAttendeeData = {
 	]
 }
 
-export const attendee1Data: IAttendeeDataFull = {
-	participant: participant1Data
+export const attendee1DataFull: IAttendeeDataFull = {
+	participant: attendee1Data
 }
 
-export const attendee2Data: IAttendeeDataFull = {
-	participant: participant2Data
+export const attendee2DataFull: IAttendeeDataFull = {
+	participant: attendee2Data
 }
 
-export const attendee3Data: IAttendeeDataFull = {
-	participant: participant3Data
+export const attendee3DataFull: IAttendeeDataFull = {
+	participant: attendee3Data
 }
 
 export const slotAttendees1: IGGSetSlotAttendeeData = {
 	set: {
 		slots: [{
 			entrant: {
-				participants: [ participant1Data, participant2Data, participant3Data ]
+				participants: [ attendee1Data, attendee2Data, attendee3Data ]
 			}
 		}]
 	}
 }
 
 export const attendee1: IAttendee = new Attendee(
-	participant1Data.id,
-	participant1Data.gamerTag,
-	participant1Data.prefix,
-	participant1Data.createdAt,
-	participant1Data.claimed,
-	participant1Data.verified,
-	participant1Data.playerId,
-	participant1Data.phoneNumber,
-	participant1Data.connectedAccounts,
-	participant1Data.contactInfo,
-	participant1Data.events.map(e => e.id),
+	attendee1Data.id,
+	attendee1Data.gamerTag,
+	attendee1Data.prefix,
+	attendee1Data.createdAt,
+	attendee1Data.claimed,
+	attendee1Data.verified,
+	attendee1Data.playerId,
+	attendee1Data.phoneNumber,
+	attendee1Data.connectedAccounts,
+	attendee1Data.contactInfo,
+	attendee1Data.events.map(e => e.id),
 )
 
 export const attendee2: IAttendee = new Attendee(
-	participant2Data.id,
-	participant2Data.gamerTag,
-	participant2Data.prefix,
-	participant2Data.createdAt,
-	participant2Data.claimed,
-	participant2Data.verified,
-	participant2Data.playerId,
-	participant2Data.phoneNumber,
-	participant2Data.connectedAccounts,
-	participant2Data.contactInfo,
-	participant2Data.events.map(e => e.id),
+	attendee2Data.id,
+	attendee2Data.gamerTag,
+	attendee2Data.prefix,
+	attendee2Data.createdAt,
+	attendee2Data.claimed,
+	attendee2Data.verified,
+	attendee2Data.playerId,
+	attendee2Data.phoneNumber,
+	attendee2Data.connectedAccounts,
+	attendee2Data.contactInfo,
+	attendee2Data.events.map(e => e.id),
 )
 
 export const attendee3: IAttendee = new Attendee(
-	participant3Data.id,
-	participant3Data.gamerTag,
-	participant3Data.prefix,
-	participant3Data.createdAt,
-	participant3Data.claimed,
-	participant3Data.verified,
-	participant3Data.playerId,
-	participant3Data.phoneNumber,
-	participant3Data.connectedAccounts,
-	participant3Data.contactInfo,
-	participant3Data.events.map(e => e.id),
+	attendee3Data.id,
+	attendee3Data.gamerTag,
+	attendee3Data.prefix,
+	attendee3Data.createdAt,
+	attendee3Data.claimed,
+	attendee3Data.verified,
+	attendee3Data.playerId,
+	attendee3Data.phoneNumber,
+	attendee3Data.connectedAccounts,
+	attendee3Data.contactInfo,
+	attendee3Data.events.map(e => e.id),
 )
 
 export const attendees: IAttendee[] = [

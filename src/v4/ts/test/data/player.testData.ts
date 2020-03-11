@@ -6,7 +6,7 @@ export const player1Data: IEntrantData = {
 	name: 'MVG FOX | Mew2King',
 	eventId: 23596,
 	skill: 10,
-	participants: [AttendeeData.participant1Data]
+	participants: [AttendeeData.attendee1Data]
 }
 
 export const player2Data: IEntrantData = {
@@ -14,7 +14,7 @@ export const player2Data: IEntrantData = {
 	name: 'OeS | NIX',
 	eventId: 23596,
 	skill: 8,
-	participants: [AttendeeData.participant2Data]
+	participants: [AttendeeData.attendee2Data]
 }
 
 export const player3Data: IEntrantData = {
@@ -22,7 +22,7 @@ export const player3Data: IEntrantData = {
 	name: 'bobby big ballz',
 	eventId: 23596,
 	skill: 6,
-	participants: [AttendeeData.participant3Data]
+	participants: [AttendeeData.attendee3Data]
 }
 
 export const entrant1: IEntrantDataFull = {

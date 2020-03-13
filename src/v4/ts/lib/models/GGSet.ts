@@ -27,7 +27,14 @@ const DISPLAY_SCORE_REGEX = new RegExp(/^([\S\s]*) ([0-9]{1,3}) - ([\S\s]*) ([0-
 
 export class GGSet extends EventEmitter implements IGGSet{
 
-	public static parseDisplayScore(displayScore: string){
+	public static parseDisplayScore(displayScore: string): 
+		{
+			tag1: string | null,
+			tag2: string | null,
+			score1: number,
+			score2: number
+		}
+	{
 		const parsed = DISPLAY_SCORE_REGEX.exec(displayScore)
 		let tag1, score1, tag2, score2
 		if(parsed){

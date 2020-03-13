@@ -5,6 +5,7 @@ import * as gameData from './data/games.testData'
 import * as entrantData from './data/entrant.testData'
 import * as attendeeData from './data/attendee.testData'
 import GGSetMock from './mocks/GGSet.mock'
+import GGSetRandomizer from './randomizers/GGSet.randomizer'
 
 const sandbox: SinonSandbox = sinon.createSandbox()
 let mockSets: GGSetMock | null = null
@@ -13,6 +14,9 @@ describe('GGSet Unit Tests', () => {
 	beforeEach(() => {
 		mockSets = new GGSetMock(sandbox)
 		mockSets.mockQueries()
+		const randomizer = new GGSetRandomizer()
+		console.log(randomizer.randomize())
+		console.log(randomizer.randomize())
 	})
 
 	afterEach(() => {

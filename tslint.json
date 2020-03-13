@@ -19,7 +19,12 @@
         "whitespace": [false],
         "one-variable-per-declaration": [false],
         "no-console": [false],
-        "radix": [false]
+        "radix": [false],
+        "typedef": [
+            true,
+            "call-signature",
+            "parameter"
+        ]
     },
     "rulesDirectory": [ ]
 }

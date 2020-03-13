@@ -17,6 +17,9 @@ describe('Phase Group Unit Tests', () => {
 	beforeEach(() => {
 		mockSets = new GGSetMock(sandbox)
 		mockPhaseGroups = new PhaseGroupMock(sandbox)
+		
+		mockSets.mock()
+		mockPhaseGroups.mockQueries()
 	})
 
 	afterEach(() => {

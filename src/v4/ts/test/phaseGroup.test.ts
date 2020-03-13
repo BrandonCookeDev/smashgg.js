@@ -1,39 +1,39 @@
 import sinon, { SinonSandbox } from 'sinon'
 import {expect} from 'chai'
-import mockSets from './mocks/GGSet.mock'
-import * as data from './data/sets.testData'
+import * as data from './data/phaseGroup.testData'
+import * as setData from './data/sets.testData'
 import * as gameData from './data/games.testData'
 import * as entrantData from './data/entrant.testData'
 import * as attendeeData from './data/attendee.testData'
+import GGSetMock from './mocks/GGSet.mock'
+import PhaseGroupMock from './mocks/PhaseGroup.mock'
 
 const sandbox: SinonSandbox = sinon.createSandbox()
+let mockPhaseGroups: PhaseGroupMock | null
+let mockSets: GGSetMock | null
 
 describe('Phase Group Unit Tests', () => {
+
 	beforeEach(() => {
-		mockSets(sandbox)
+		mockSets = new GGSetMock(sandbox)
+		mockPhaseGroups = new PhaseGroupMock(sandbox)
 	})
 
 	afterEach(() => {
 		sandbox.restore()
+		mockSets = null
+		mockPhaseGroups = null
 	})
 
-	it('should get the games of a set correctly', async () => {
-		const expected = gameData.games1
-		const actual = await data.ggSet1.getGames()
-
-		expect(actual).to.have.deep.members(expected)
+	// Getters
+	it('should get the id from its getter', () => {
+		expect(data.phaseGroup1.getId()).to.be.equal(data.phaseGroupData1.phaseGroup.id)
 	})
 
-	it('should get the attendees of a set correctly', async () => {
+	// Aggregation
+	it('should parse the set of attendees in the phase group', async () => {
 		const expected = attendeeData.attendees
-		const actual = await data.ggSet1.getAttendees()
-
-		expect(actual).to.have.deep.members(expected)
-	})
-
-	it('should get the entrants of a set correctly', async () => {
-		const expected = [entrantData.entrant1]
-		const actual = await data.ggSet1.getEntrants()
+		const actual = await data.phaseGroup1.getAttendees()
 
 		expect(actual).to.have.deep.members(expected)
 	})

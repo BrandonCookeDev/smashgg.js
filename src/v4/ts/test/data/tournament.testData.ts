@@ -15,7 +15,6 @@ export const tournament1: ITournamentData = {
 	postalCode: '30339',
 	addrState: 'GA',
 	countryCode: 'US',
-	region: '11',
 	venueAddress: '2 Galleria Pkwy SE, Atlanta, GA 30339, USA',
 	venueName: 'The Cobb Galleria',
 	gettingThere: null,
@@ -23,12 +22,7 @@ export const tournament1: ITournamentData = {
 	lng: -84.4655017,
 	timezone: 'America/New_York',
 	startAt: 1510401600,
-	endAt: 1510549140,
-	contactInfo: null,
-	contactEmail: 'thelabgaminginc@gmail.com',
-	contactTwitter: 'TheLabGamingCtr',
-	contactPhone: '404-368-5274',
-	ownerId: 11259
+	endAt: 1510549140
 }
 
 export const tournament2: ITournamentData = {
@@ -39,7 +33,6 @@ export const tournament2: ITournamentData = {
 	postalCode: '30062',
 	addrState: 'GA',
 	countryCode: 'US',
-	region: '11',
 	venueAddress: '2860 Meadow Dr, Marietta, GA 30062, USA',
 	venueName: null,
 	gettingThere: '',
@@ -47,12 +40,7 @@ export const tournament2: ITournamentData = {
 	lng: -84.445532,
 	timezone: 'America/New_York',
 	startAt: 1532210400,
-	endAt: 1532231940,
-	contactInfo: null,
-	contactEmail: null,
-	contactTwitter: 'dontcallmeslips',
-	contactPhone: null,
-	ownerId: 91767
+	endAt: 1532231940
 }
 
 export const tournament3: ITournamentData = {
@@ -63,24 +51,13 @@ export const tournament3: ITournamentData = {
 	postalCode: '32819',
 	addrState: 'FL',
 	countryCode: 'US',
-	region: '10',
 	venueAddress: '8001 International Dr, Orlando, FL 32819, USA',
 	venueName: 'Wyndham Orlando Resort',
-	gettingThere: 
-		'For information on how to get to the venue, food options and more please ' +
-		'visit http://www.ceogaming.org/ceohotel\n\nCEO at the Wyndham Orlando Resort ' +
-		'is located less than 20 minutes from the Orlando International Airport (MCO). ' +
-		'\n\nHotel Rooms will sell out fast for CEO 2016 at the Wyndham Orlando Resort so book now!',
 	lat: 28.448578,
 	lng: -81.4682618,
 	timezone: 'America/New_York',
 	startAt: 1466740800,
-	endAt: 1467000000,
-	contactInfo: 'For Media inquiries or Sponsorship/Partnership Opportunities please contact CEOGaming@gmail.com',
-	contactEmail: 'ceogaming@gmail.com',
-	contactTwitter: 'ceogaming',
-	contactPhone: null,
-	ownerId: 3431
+	endAt: 1467000000
 }
 
 export const tournamentData1 = {

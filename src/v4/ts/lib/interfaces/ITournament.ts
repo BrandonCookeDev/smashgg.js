@@ -16,7 +16,6 @@ export interface ITournament{
 	// endTime: Date | null
 	// timezone: string | null
 	// venue: Venue
-	// organizer: Organizer
 	
 	getId(): number
 	getName(): string 
@@ -32,11 +31,6 @@ export interface ITournament{
 	getState(): string | null
 	getAddress(): string | null
 	getZipCode(): string | null
-	getOrganizer(): IOrganizer
-	getContactInfo(): string | null
-	getContactEmail(): string | null
-	getContactTwitter(): string | null
-	getOwnerId(): number | null
 
 	getEvents(): Promise<IEvent[]>
 	getPhases(): Promise<IPhase[]>
@@ -66,20 +60,13 @@ export interface ITournamentData{
 	postalCode: string | null
 	addrState: string | null
 	countryCode: string | null
-	region: string | null
 	venueAddress: string | null
 	venueName: string | null
-	gettingThere: string | null
 	lat: number | null
 	lng: number | null
 	timezone: string | null
 	startAt: number | null
 	endAt: number | null
-	contactInfo: string | null
-	contactEmail: string | null
-	contactTwitter: string | null
-	contactPhone: string | null
-	ownerId: number | null
 }
 
 export interface ITournamentEventData{

@@ -18,7 +18,6 @@ export interface IVenue{
 	getState(): string | null
 	getPostalCode(): string | null
 	getCountryCode(): string | null
-	getRegion(): string | null
 	getLatitude(): number | null
 	getLongitude(): number | null
 }
@@ -31,7 +30,6 @@ export interface IVenueData{
 			city: string | null
 			addrState: string | null
 			countryCode: string | null
-			region: string | null
 			postalCode: string | null
 			lat: number | null
 			lng: number | null

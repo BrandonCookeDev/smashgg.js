@@ -40,19 +40,14 @@ export class Tournament implements ITournament{
 
 		const venue = new Venue(
 			data.venueName, data.venueAddress, data.city,
-			data.addrState, data.countryCode, data.region,
+			data.addrState, data.countryCode,
 			data.postalCode, data.lat, data.lng
-		)
-		
-		const organizer = new Organizer(
-			data.ownerId, data.contactEmail, data.contactPhone,
-			data.contactTwitter, data.contactInfo
 		)
 
 		return new Tournament(
 			data.id, data.name, data.slug,
 			startTimeDate, endTimeDate, data.timezone,
-			venue, organizer
+			venue
 		)
 	}
 
@@ -79,7 +74,6 @@ export class Tournament implements ITournament{
 	private endTime: Date | null
 	private timezone: string | null
 	private venue: IVenue
-	private organizer: IOrganizer
 
 	constructor(
 		id: number,
@@ -88,8 +82,7 @@ export class Tournament implements ITournament{
 		startTime: Date | null,
 		endTime: Date | null,
 		timezone: string | null,
-		venue: IVenue,
-		organizer: IOrganizer
+		venue: IVenue
 	){
 		this.id = id
 		this.name = name
@@ -98,7 +91,6 @@ export class Tournament implements ITournament{
 		this.endTime = endTime
 		this.timezone = timezone
 		this.venue = venue
-		this.organizer = organizer
 	}
 
 	public getId(): number {
@@ -155,26 +147,6 @@ export class Tournament implements ITournament{
 
 	public getZipCode(): string | null {
 		return this.venue.getPostalCode()
-	}
-
-	public getOrganizer(): IOrganizer {
-		return this.organizer
-	}
-
-	public getContactInfo(): string | null {
-		return this.organizer.getInfo()
-	}
-
-	public getContactEmail(): string | null {
-		return this.organizer.getEmail()
-	}
-
-	public getContactTwitter(): string | null {
-		return this.organizer.getTwitter()
-	}
-
-	public getOwnerId(): number | null {
-		return this.organizer.getId()
 	}
 
 	public async getEvents(): Promise<IEvent[]> {

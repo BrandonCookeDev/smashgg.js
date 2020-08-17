@@ -99,39 +99,20 @@ export const tournamentData3 = {
 export const venue1: IVenue = new Venue(
 	tournament1.venueName, tournament1.venueAddress,
 	tournament1.city, tournament1.addrState,
-	tournament1.countryCode, tournament1.region,
+	tournament1.countryCode,
 	tournament1.postalCode, tournament1.lat, tournament1.lng
 )
 
 export const venue2: IVenue = new Venue(
 	tournament2.venueName, tournament2.venueAddress,
 	tournament2.city, tournament2.addrState,
-	tournament2.countryCode, tournament2.region,
+	tournament2.countryCode,
 	tournament2.postalCode, tournament2.lat, tournament2.lng
 )
 
 export const venue3: IVenue = new Venue(
 	tournament3.venueName, tournament3.venueAddress,
 	tournament3.city, tournament3.addrState,
-	tournament3.countryCode, tournament3.region,
+	tournament3.countryCode,
 	tournament3.postalCode, tournament3.lat, tournament3.lng
-)
-
-// organizers
-export const organizer1: IOrganizer = new Organizer(
-	tournament1.ownerId, tournament1.contactEmail,
-	tournament1.contactPhone, tournament1.contactTwitter,
-	tournament1.contactInfo
-)
-
-export const organizer2: IOrganizer = new Organizer(
-	tournament2.ownerId, tournament2.contactEmail,
-	tournament2.contactPhone, tournament2.contactTwitter,
-	tournament2.contactInfo
-)
-
-export const organizer3: IOrganizer = new Organizer(
-	tournament3.ownerId, tournament3.contactEmail,
-	tournament3.contactPhone, tournament3.contactTwitter,
-	tournament3.contactInfo
 )

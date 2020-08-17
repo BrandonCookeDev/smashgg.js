@@ -8,7 +8,7 @@ export class Venue implements IVenue{
 	public static parse(data: IVenueData): IVenue{
 		const venue = new Venue(
 			data.data.tournament.venueName, data.data.tournament.venueAddress, data.data.tournament.city,
-			data.data.tournament.addrState, data.data.tournament.countryCode, data.data.tournament.region, 
+			data.data.tournament.addrState, data.data.tournament.countryCode,
 			data.data.tournament.postalCode, data.data.tournament.lat, data.data.tournament.lng
 		)
 		return venue

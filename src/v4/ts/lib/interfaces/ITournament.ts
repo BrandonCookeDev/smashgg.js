@@ -62,7 +62,6 @@ export interface ITournamentData{
 	countryCode: string | null
 	venueAddress: string | null
 	venueName: string | null
-	gettingThere: string | null
 	lat: number | null
 	lng: number | null
 	timezone: string | null

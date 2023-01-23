@@ -1,12 +1,12 @@
 {
-  "name": "smashgg.js",
+  "name": "startgg.js",
   "author": {
     "name": "Brandon L Cooke",
     "email": "brandoncookedev@gmail.com",
     "url": "http://linkedin.com/in/BrandonCookeDev"
   },
   "version": "4.1.17",
-  "description": "Node.JS wrapper for the Smash.gg public API Edit",
+  "description": "Node.JS wrapper for the start.gg public API",
   "main": "index.js",
   "engines": {
     "node": ">=7.0.0"
@@ -29,12 +29,13 @@
     "sample2": "node ./resources/samples/v4/sample2"
   },
   "keywords": [
-    "smashgg",
-    "smash.gg",
+    "startgg",
+    "start.gg",
     "SDK",
     "development",
     "kit",
     "super",
+    "start",
     "smash",
     "bros",
     "brothers",

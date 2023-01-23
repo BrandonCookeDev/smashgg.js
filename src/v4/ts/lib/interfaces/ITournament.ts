@@ -16,32 +16,26 @@ export interface ITournament{
 	// endTime: Date | null
 	// timezone: string | null
 	// venue: Venue
-	// organizer: Organizer
 	
-	getId(): number
-	getName(): string 
-	getSlug(): string
-	getTimezone(): string | null
-	getStartTime(): Date | null
-	getStartTimeString(): string | null
-	getEndTime(): Date | null
-	getEndTimeString(): string | null
-	getVenue(): IVenue
-	getVenueName(): string | null
-	getCity(): string | null
-	getState(): string | null
-	getAddress(): string | null
-	getZipCode(): string | null
-	getOrganizer(): IOrganizer
-	getContactInfo(): string | null
-	getContactEmail(): string | null
-	getContactTwitter(): string | null
-	getOwnerId(): number | null
+	getId(): number,
+	getName(): string ,
+	getSlug(): string,
+	getTimezone(): string | null,
+	getStartTime(): Date | null,
+	getStartTimeString(): string | null,
+	getEndTime(): Date | null,
+	getEndTimeString(): string | null,
+	getVenue(): IVenue,
+	getVenueName(): string | null,
+	getCity(): string | null,
+	getState(): string | null,
+	getAddress(): string | null,
+	getZipCode(): string | null,
 
-	getEvents(): Promise<IEvent[]>
-	getPhases(): Promise<IPhase[]>
-	getPhaseGroups(): Promise<IPhaseGroup[]>
-	searchAttendees(smashtag: string): Promise<IAttendee[] | null>
+	getEvents(): Promise<IEvent[]>,
+	getPhases(): Promise<IPhase[]>,
+	getPhaseGroups(): Promise<IPhaseGroup[]>,
+	searchAttendees(smashtag: string): Promise<IAttendee[] | null>,
 	searchAttendeesBySponsorTag(sponsorTag: string): Promise<IAttendee[] | null>
 
 	/*
@@ -66,20 +60,13 @@ export interface ITournamentData{
 	postalCode: string | null
 	addrState: string | null
 	countryCode: string | null
-	region: string | null
 	venueAddress: string | null
 	venueName: string | null
-	gettingThere: string | null
 	lat: number | null
 	lng: number | null
 	timezone: string | null
 	startAt: number | null
 	endAt: number | null
-	contactInfo: string | null
-	contactEmail: string | null
-	contactTwitter: string | null
-	contactPhone: string | null
-	ownerId: number | null
 }
 
 export interface ITournamentEventData{

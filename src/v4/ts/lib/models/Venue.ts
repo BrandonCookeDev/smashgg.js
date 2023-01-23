@@ -8,7 +8,7 @@ export class Venue implements IVenue{
 	public static parse(data: IVenueData): IVenue{
 		const venue = new Venue(
 			data.data.tournament.venueName, data.data.tournament.venueAddress, data.data.tournament.city,
-			data.data.tournament.addrState, data.data.tournament.countryCode, data.data.tournament.region, 
+			data.data.tournament.addrState, data.data.tournament.countryCode,
 			data.data.tournament.postalCode, data.data.tournament.lat, data.data.tournament.lng
 		)
 		return venue
@@ -25,13 +25,12 @@ export class Venue implements IVenue{
 	private state: string | null
 	private postalCode: string | null
 	private countryCode: string | null
-	private region: string | null
 	private latitude: number | null
 	private longitude: number | null
 
 	constructor(
 		name: string | null, address: string | null, city: string | null, 
-		state: string | null, countryCode: string | null, region: string | null, 
+		state: string | null, countryCode: string | null,
 		postalCode: string | null, latitude: number | null, longitude: number | null
 	){				
 		this.name = name
@@ -39,7 +38,6 @@ export class Venue implements IVenue{
 		this.city = city
 		this.state = state
 		this.countryCode = countryCode
-		this.region = region
 		this.postalCode = postalCode
 		this.latitude = latitude
 		this.longitude = longitude
@@ -63,10 +61,6 @@ export class Venue implements IVenue{
 
 	public getCountryCode() {
 		return this.countryCode
-	}
-
-	public getRegion() {
-		return this.region
 	}
 
 	public getPostalCode() {

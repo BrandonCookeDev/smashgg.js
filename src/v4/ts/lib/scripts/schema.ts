@@ -1,18 +1,31 @@
 export const tournament = `
 id
-name
-slug
-city
-postalCode
 addrState
+city
 countryCode
-venueAddress
-venueName
+endAt
+isRegistrationOpen
 lat
 lng
-timezone
+name
+numAttendees
+owner{
+    id
+    discriminator
+    email
+    name
+}
+postalCode
+streams{
+    id
+    streamName
+}
+slug
 startAt
-endAt`
+timezone
+venueAddress
+venueName
+`
 
 export const event = `
 id
@@ -30,71 +43,88 @@ teamManagementDeadline`
 
 export const phase = `
 id
+event{
+    id
+    name
+    slug
+}
+groupCount
 name
 numSeeds
-groupCount`
+waves{
+    id
+    identifier
+    startAt
+}
+`
 
 export const phaseGroup = `
 id
 displayIdentifier
 firstRoundTime
+phase{
+    ${phase}
+}
 state
-phaseId
-waveId
-tiebreakOrder`
+tiebreakOrder
+wave{
+    id
+    identifier
+    startAt
+}
+`
 
-// smash.gg participant
+export const user = `
+id
+bio
+discriminator
+email
+name
+player
+slug
+`
+
+// start.gg participant
 export const attendeeContactInfo = `
 id
 city
-state
-stateId
 country
 countryId
 name
 nameFirst
 nameLast
+state
+stateId
 zipcode`
 
-// smash.gg participant
+// start.gg participant
 export const attendee = `
 id
-gamerTag
-prefix
-createdAt
-claimed
-verified
-playerId
-phoneNumber
+checkedIn
+connectedAccounts
 contactInfo{
 	${attendeeContactInfo}
 }
-connectedAccounts
 events{
-	id	
-}`
+	id
+}
+gamerTag
+prefix
+user{
+    ${user}
+}
+verified
+`
 
 export const entrant = `
 id
-name
 eventId
-skill
+name
 participants{
 	${attendee}	
-}`
-
-export const user = `
-id
-gamerTag
-prefix
-color
-twitchStream
-twitterHandle
-youtube
-region
-state
-country
-gamerTagChangedAt`
+}
+skill
+`
 
 export const setSlots = `
 slots(includeByes:false){
@@ -106,49 +136,60 @@ slots(includeByes:false){
 			id
 		}
 	}
+    seed
+    slotIndex
 }`
 
 export const set = `
 id
-eventId
-phaseGroupId
-displayScore  
-fullRoundText
-round
-startedAt
 completedAt
-winnerId
-totalGames
-state
+displayScore  
+eventId
+fullRoundText
+phaseGroupId
+round
 ${setSlots}
+startedAt
+state
+totalGames
+winnerId
 `
 
 export const game = `
 id
-state
-winnerId
 orderNum
 selections{
+    id
 	selectionType
 	selectionValue
-	entrantId
-	participantId
-}`
+}
+state
+winnerId
+`
 
 export const seeds = `
 id
 entrantId
-placeholderName
-seedNum
-placement
 isBye
+placeholderName
+placement
 players{
 	id
-}`
+    gamerTag
+}
+seedNum
+standings(containerType:null){
+    id
+    placement
+}
+`
 
 export const standings = `
 id
-entrantId
+entrant{
+    id
+    name
+}
 placeholderName
 seedNum
 placement
@@ -179,19 +220,17 @@ contactTwitter
 contactPhone
 contactInfo`
 
-export const stream = `
+export const streams = `
 id
-eventId
-tournamentId
-streamName
+enabled
+followerCount
+isOnline
 numSetups
+streamGame
+streamName
+streamLogo
+streamStatus
 streamSource
 streamType
 streamTypeId
-isOnline
-enabled
-followerCount
-removesTasks
-streamStatus
-streamGame
-streamLogo`
+`

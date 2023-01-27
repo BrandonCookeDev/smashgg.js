@@ -1,11 +1,13 @@
 {
   "name": "startgg.js",
   "author": {
-    "name": "Brandon L Cooke",
-    "email": "brandoncookedev@gmail.com",
-    "url": "http://linkedin.com/in/BrandonCookeDev"
+    "name": "Ricardo Maury",
+    "url": "www.linkedin.com/in/RicardoMauryDev"
   },
-  "version": "4.1.17",
+  "contributors": [
+       "Brandon L Cooke <brandoncookedev@gmail.com> (http://linkedin.com/in/BrandonCookeDev)"
+  ],
+  "version": "0.0.1",
   "description": "Node.JS wrapper for the start.gg public API",
   "main": "index.js",
   "engines": {
@@ -55,7 +57,7 @@
     "bluebird": "^3.5.1",
     "colors": "^1.3.3",
     "dotenv": "^6.2.0",
-    "graphql-request": "^1.8.2",
+    "graphql-request": "^5.1.0",
     "lodash": "^4.17.11",
     "moment": "^2.23.0",
     "moment-timezone": "^0.5.23",
@@ -80,17 +82,16 @@
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
     "chalk": "^2.4.1",
-    "eslint": "^5.14.1",
-    "gulp": "^4.0.0",
+    "eslint": "^8.32.0",
+    "gulp": "^3.9.1",
     "gulp-cli": "^2.0.1",
-    "gulp-mocha": "^6.0.0",
+    "gulp-mocha": "^5.0.0",
     "gulp-tslint": "^8.1.4",
-    "gulp-typescript": "^5.0.0",
-    "mocha": "^5.2.0",
+    "gulp-typescript": "^2.12.2",
+    "mocha": "^10.2.0",
     "sinon": "^6.1.4",
-    "tslint": "^5.20.1",
     "tslint-no-unused-expression-chai": "^0.1.4",
-    "typescript": "^3.3.3333",
+    "typescript": "^4.9.4",
     "typescript-eslint-parser": "^21.0.2"
   }
 }

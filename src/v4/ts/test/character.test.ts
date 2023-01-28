@@ -91,8 +91,8 @@ describe('Smashgg Character', () => {
 		const bowser = await Character.getByName('bowser')
 		const wolf = await Character.getByName('wolf')
 
-		expect(bowser.length).to.be.equal(6)
-		expect(wolf.length).to.be.equal(2)
+		expect(bowser.length).to.be.equal(7)
+		expect(wolf.length).to.be.equal(3)
 
 		bowser.forEach(character => {
 			expect(character).to.be.instanceof(Character)

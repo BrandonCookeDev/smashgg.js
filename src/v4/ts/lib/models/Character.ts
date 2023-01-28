@@ -15,7 +15,7 @@ import Cache from '../util/Cache'
 import {VideoGame} from './VideoGame'
 import {parseOptions} from '../util/Common'
 
-const API_URL = 'https://api.smash.gg/characters'
+const API_URL = 'https://api.start.gg/characters'
 
 export class Character implements ICharacter{
 

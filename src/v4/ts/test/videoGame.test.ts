@@ -46,7 +46,7 @@ const expected = {
 		},
 		name: 'Super Smash Bros. Melee',
 		displayName: 'Melee',
-		slug: 'melee',
+		slug: 'game\/melee',
 		rawEncoding: 'json'
 	},
 	PM: {
@@ -81,17 +81,27 @@ const expected = {
 			maxPerEntry: [null],
 			minPerEntry: [null],
 			name: 'Project M',
-			slug: 'pm',
+			slug: 'project-m-remix-edition',
 			stageTerm: [null],
 		},
 		name: 'Project M',
 		displayName: 'PM',
-		slug: 'pm',
+		slug: 'game\/pm',
 		rawEncoding: 'json'
 	}
 }
 
 function eq(original: any, other: IVideoGame): boolean {
+    console.log("OK: " + other.getId() + ", " +
+            other.getName() + ", " + 
+            other.getDisplayName() + ", " + 
+            other.getSlug())
+             
+    console.log("NO: " + original.id + ", " +
+            original.name + ", " + 
+            original.displayName + ", " + 
+            original.slug)
+    
 	return other.getId() === original.id &&
 		other.getName() === original.name &&
 		other.getDisplayName() === original.displayName &&

@@ -10,7 +10,7 @@ import {
 } from '../interfaces/IVideoGame'
 import log from '../util/Logger'
 
-const API_URL = 'https://api.smash.gg/public/videogames'
+const API_URL = 'https://api.start.gg/public/videogames'
 // const LEGAL_ENCODINGS = ['json', 'utf8', 'base64']
 // const DEFAULT_ENCODING = 'json'
 
@@ -19,6 +19,7 @@ export class VideoGame implements IVideoGame{
 	public static resolve(data: IVideoGameData): IVideoGame {
 		const vg = new VideoGame(
 			data.id,
+            data.abbrev,
 			data.name,
 			data.displayName,
 			data.slug,
@@ -90,9 +91,10 @@ export class VideoGame implements IVideoGame{
 
 			const data = await VideoGame.getAll()
 			const videoGames = data.filter((vg: IVideoGame) => {
-				return vg.getName() === name || 
-					vg.getSlug() === name ||
-					vg.getDisplayName() === name
+				return vg.getName()?.toLowerCase() === name?.toLowerCase() || 
+				vg.getSlug()?.toLowerCase() === name?.toLowerCase() ||
+				vg.getDisplayName()?.toLowerCase() === name?.toLowerCase() ||
+                vg.getAbbrev()?.toLowerCase() === name?.toLowerCase()
 			})
 			
 			if(videoGames.length <= 0) throw new Error('No video game with name ' + name)
@@ -113,6 +115,7 @@ export class VideoGame implements IVideoGame{
 	}
 
 	private id: number = 0
+    private abbrev: string
 	private data: IVideoGameData | string = ''
 	private name: string
 	private displayName: string
@@ -121,11 +124,13 @@ export class VideoGame implements IVideoGame{
 
 	constructor(
 		id: number, 
+        abbrev: string,
         name: string, 
         displayName: string, 
         slug: string
 	){
 		this.id = id
+        this.abbrev = abbrev
 		this.name = name
 		this.displayName = displayName
 		this.slug = slug
@@ -151,6 +156,10 @@ export class VideoGame implements IVideoGame{
 	public getId(): number | undefined{
 		return this.id
 	}
+                
+    public getAbbrev(): string | undefined {
+        return this.abbrev
+    }
 
 	public getName(): string | undefined{
 		return this.name

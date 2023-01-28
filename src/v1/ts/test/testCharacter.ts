@@ -90,15 +90,15 @@ describe('Smashgg Character', function(){
 
 	it('should get characters by their name', async function(){
 		this.timeout(10000)
-
+        
 		let bowser = await Character.getByName('bowser')
 		let wolf = await Character.getByName('wolf')
 
-		expect(bowser.length).to.be.equal(6)
+        expect(bowser.length).to.be.equal(1)
 		expect(wolf.length).to.be.equal(2)
 
 		bowser.forEach(character => {
-			expect(character).to.be.instanceof(Character)
+            expect(character).to.be.instanceof(Character)
 		})
 		wolf.forEach(character => {
 			expect(character).to.be.instanceof(Character)

@@ -20,13 +20,8 @@ export class VideoGame implements IVideoGame{
 		const vg = new VideoGame(
 			data.id,
 			data.name,
-			data.abbrev,
 			data.displayName,
-			data.minPerEntry,
-			data.maxPerEntry,
-			data.approved,
 			data.slug,
-			data.isCardGame
 		)
 		vg.loadData(data, 'json')
 		return vg
@@ -96,7 +91,6 @@ export class VideoGame implements IVideoGame{
 			const data = await VideoGame.getAll()
 			const videoGames = data.filter((vg: IVideoGame) => {
 				return vg.getName() === name || 
-					vg.getAbbreviation() === name ||
 					vg.getSlug() === name ||
 					vg.getDisplayName() === name
 			})
@@ -121,29 +115,21 @@ export class VideoGame implements IVideoGame{
 	private id: number = 0
 	private data: IVideoGameData | string = ''
 	private name: string
-	private abbrev: string
 	private displayName: string
-	private minPerEntry: number
-	private maxPerEntry: number
-	private approved: boolean
 	private slug: string 
-	private isCardGame: boolean
 	private rawEncoding: string = 'json'
 
 	constructor(
-		id: number, name: string, abbrev: string, displayName: string, minPerEntry: number, 
-		maxPerEntry: number, approved: boolean, slug: string, isCardGame: boolean
+		id: number, 
+        name: string, 
+        displayName: string, 
+        slug: string
 	){
 		this.id = id
 		this.name = name
-		this.abbrev = abbrev
 		this.displayName = displayName
-		this.minPerEntry = minPerEntry
-		this.maxPerEntry = maxPerEntry
-		this.approved = approved
 		this.slug = slug
-		this.isCardGame = isCardGame
-	}
+    }
 
 	public loadData(data: IVideoGameData, encoding: string): IVideoGameData | string{
 		const encoded = encoding === 'json' ? 
@@ -170,32 +156,12 @@ export class VideoGame implements IVideoGame{
 		return this.name
 	}
 
-	public getAbbreviation(): string | undefined{
-		return this.abbrev
-	}
-
 	public getDisplayName(): string | undefined{
 		return this.displayName
 	}
 
-	public getMinPerEntry(): number | undefined{
-		return this.minPerEntry
-	}
-
-	public getMaxPerEntry(): number | undefined{
-		return this.maxPerEntry
-	}
-
-	public getApproved(): boolean | undefined{
-		return this.approved
-	}
-
 	public getSlug(): string | undefined{
 		return this.slug
-	}
-
-	public getIsCardGame(): boolean | undefined{
-		return this.isCardGame
 	}
 
 	public getRawEncoding(): string | undefined{

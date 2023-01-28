@@ -51,11 +51,6 @@ export const tournament3: ITournamentData = {
 	countryCode: 'US',
 	venueAddress: '8001 International Dr, Orlando, FL 32819, USA',
 	venueName: 'Wyndham Orlando Resort',
-	gettingThere: 
-		'For information on how to get to the venue, food options and more please ' +
-		'visit http://www.ceogaming.org/ceohotel\n\nCEO at the Wyndham Orlando Resort ' +
-		'is located less than 20 minutes from the Orlando International Airport (MCO). ' +
-		'\n\nHotel Rooms will sell out fast for CEO 2016 at the Wyndham Orlando Resort so book now!',
 	lat: 28.448578,
 	lng: -81.4682618,
 	timezone: 'America/New_York',

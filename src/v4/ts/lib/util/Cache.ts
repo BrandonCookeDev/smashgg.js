@@ -9,15 +9,16 @@ export default class Cache{
 
 	public static instance: NodeCache
 	public static initialized: boolean = false
+    public static enableLegacyCallbacks: boolean = true
 
 	public static init(){
 		if(!Cache.initialized){
-			Cache.instance = promisifyAll(
-				new NodeCache({
+//			Cache.instance = promisifyAll(
+				Cache.instance = new NodeCache({
 					stdTTL: +TTL,
-					checkperiod: +CHECK_PERIOD 
+					checkperiod: +CHECK_PERIOD
 				})
-			)
+//			)
 			Cache.initialized = true
 		}
 	}
@@ -35,35 +36,44 @@ export default class Cache{
 	public static get(key: string): Promise<any>{
 		return new Promise((resolve, reject) => {
 			log.debug('Fetching (%s) from cache', key)
-			Cache.getInstance().get(key, (err, value) => {
-				if(err) return reject(err)
-				else return resolve(value)
-			})
+            try{
+                var result = Cache.getInstance().get(key)
+                resolve(result)
+            }
+            catch(err){
+                log.debug('Error found: [%s]', err.message)
+                reject(err)
+            }
 		})
 	}
 
 	public static set(key: string, val: any): Promise<boolean> {
 		return new Promise((resolve, reject) => {
 			log.debug('Setting (%s) to value [%s]', key, val)
-			Cache.getInstance().set(key, val, (err, success) => {
-				if(success) return resolve(success)
-				else return reject(new Error('Error setting cache value'))
-			})
+			try{
+                var result = Cache.getInstance().set(key, val)
+                resolve(result)
+            }
+            catch(err){
+                log.debug('Error found: [%s]', err.message)
+                reject(err)
+            }
 		})
 	}
 
 	public static keys(): Promise<string[]> {
 		return new Promise((resolve, reject) => {
 			log.debug('returning keys')
-			Cache.getInstance().keys((err,keys) => {
-				if(err) {
-					log.error('Console.keys: ' + err)
-					return reject(err)
-				}
-				else resolve(keys)
-			})
-		})
-	}
+            try{
+                var result = Cache.getInstance().keys()
+                resolve(result)
+            }
+            catch(err){
+                log.debug('Error found: [%s]', err.message)
+                reject(err)
+            }
+	   })
+    }
 
 	public static flush(): void{
 		log.debug('flushing cache')

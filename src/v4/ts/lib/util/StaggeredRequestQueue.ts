@@ -67,7 +67,7 @@ export default class StaggeredRequestQueue extends EventEmitter {
 						await Common.sleep(+RATE_LIMIT_MS_TIME)
 						await requestFcn()
 						break
-					} catch(e){
+					} catch(e: any){
 						console.error('SRQ error: ' + e.message.red)
 						retryCount++
 					}

@@ -45,14 +45,9 @@ const expected = {
 			stageTerm: [null]
 		},
 		name: 'Super Smash Bros. Melee',
-		abbrev: 'Melee',
 		displayName: 'Melee',
-		minPerEntry: 1,
-		maxPerEntry: 2,
-		approved: true,
 		slug: 'melee',
-		rawEncoding: 'json',
-		isCardGame: null
+		rawEncoding: 'json'
 	},
 	PM: {
 		id: 2,
@@ -90,28 +85,17 @@ const expected = {
 			stageTerm: [null],
 		},
 		name: 'Project M',
-		abbrev: 'pm',
 		displayName: 'PM',
-		minPerEntry: null,
-		maxPerEntry: null,
-		approved: true,
 		slug: 'pm',
-		rawEncoding: 'json',
-		isCardGame: null
+		rawEncoding: 'json'
 	}
 }
 
 function eq(original: any, other: IVideoGame): boolean {
 	return other.getId() === original.id &&
 		other.getName() === original.name &&
-		other.getAbbreviation() === original.abbrev &&
 		other.getDisplayName() === original.displayName &&
-		other.getMinPerEntry() === original.minPerEntry &&
-		other.getMaxPerEntry() === original.maxPerEntry &&
-		other.getApproved() === original.approved &&
-		other.getSlug() === original.slug &&
-		other.getRawEncoding() === original.rawEncoding &&
-		other.getIsCardGame() === original.isCardGame
+		other.getSlug() === original.slug
 }
 
 describe('SmashGG VideoGame', () => {

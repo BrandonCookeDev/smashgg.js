@@ -1,4 +1,4 @@
-
+import {IEntrantData} from '../interfaces/IEntrant'
 export interface ISeed{
 	/*
 	id: number,
@@ -10,11 +10,11 @@ export interface ISeed{
 	*/
 
 	getId(): number,
-	getEntrantId(): number,
-	getPlaceholderName(): string,
-	getSeedNumber(): number,
-	getPlacement(): number,
-	getIsBye(): boolean
+	getEntrant(): IEntrantData | null,
+	getIsBye(): boolean | null,
+	getPlaceholderName(): string | null,
+	getPlacement(): number | null,
+	getSeedNum(): number | null
 }
 
 export interface ISeedDataFull{
@@ -23,11 +23,11 @@ export interface ISeedDataFull{
 
 export interface ISeedData{
 	id: number,
-	entrantId: number,
-	placeholderName: string,
-	seedNumber: number,
-	placement: number,
-	isBye: boolean
+	entrant: IEntrantData | null,
+	isBye: boolean | null,
+	placeholderName: string | null,
+	placement: number | null,
+	seedNum: number | null
 }
 
 export interface ISeedOptions{

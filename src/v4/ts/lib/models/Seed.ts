@@ -5,16 +5,18 @@ import {
 	ISeedDataFull
 } from '../interfaces/ISeed'
 
+import {IEntrantData} from '../interfaces/IEntrant'
+
 export class Seed implements ISeed{
 
 	public static parse(data: ISeedData): Seed {
 		return new Seed(
 			data.id,
-			data.entrantId,
+			data.entrant,
+			data.isBye,
 			data.placeholderName,
-			data.seedNumber,
 			data.placement,
-			data.isBye
+			data.seedNum
 		)
 	}
 
@@ -32,50 +34,50 @@ export class Seed implements ISeed{
 	}
 	
 	private id: number
-	private entrantId: number
-	private placeholderName: string
-	private seedNumber: number
-	private placement: number
-	private isBye: boolean
+	private entrant: IEntrantData | null
+	private placeholderName: string | null
+	private seedNum: number | null
+	private placement: number | null
+	private isBye: boolean | null
 
 	constructor(
 		id: number,
-		entrantId: number,
-		placeholderName: string,
-		seedNumber: number,
-		placement: number,
-		isBye: boolean
+		entrant: IEntrantData | null,
+		isBye: boolean | null,
+		placeholderName: string | null,
+		placement: number | null,
+		seedNum: number | null
 	){
 		this.id = id
-		this.entrantId = entrantId
-		this.placeholderName = placeholderName
-		this.seedNumber = seedNumber
-		this.placement = placement
 		this.isBye = isBye
+		this.entrant = entrant
+		this.placeholderName = placeholderName
+		this.placement = placement
+		this.seedNum = seedNum
 	}
 
 	public getId(): number {
 		return this.id
 	}
 
-	public getEntrantId(): number {
-		return this.entrantId
+	public getEntrant(): IEntrantData | null {
+		return this.entrant
 	}
 
-	public getPlaceholderName(): string {
+	public getIsBye(): boolean | null{
+		return this.isBye
+	}
+
+	public getPlaceholderName(): string | null{
 		return this.placeholderName
 	}
 
-	public getSeedNumber(): number {
-		return this.seedNumber
-	}
-
-	public getPlacement(): number {
+	public getPlacement(): number | null{
 		return this.placement
 	}
 
-	public getIsBye(): boolean {
-		return this.isBye
+	public getSeedNum(): number | null{
+		return this.seedNum
 	}
 
 	// TODO get entrant.... somehow

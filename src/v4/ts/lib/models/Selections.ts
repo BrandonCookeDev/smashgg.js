@@ -27,7 +27,7 @@ export class Selections implements ISelections{
 	private selectionType: string
 	private selectionValue: number
 	private entrantId: number
-	private attendeeId: number | null
+	private participantId: number | null
 
 	constructor(
 		selectionType: string,
@@ -38,7 +38,7 @@ export class Selections implements ISelections{
 		this.selectionType = selectionType
 		this.selectionValue = selectionValue
 		this.entrantId = entrantId
-		this.attendeeId = participantId
+		this.participantId = participantId
 	}
 
 	public getSelectionType(): string{
@@ -53,7 +53,7 @@ export class Selections implements ISelections{
 		return this.entrantId
 	}
 
-	public getAttendeeId(): number | null{
-		return this.attendeeId
+	public getParticipantId(): number | null{
+		return this.participantId
 	}
 }

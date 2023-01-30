@@ -9,11 +9,11 @@ export interface IGame{
 	*/
 	
 	getId(): number | string
-	getState(): number
-	getWinnerId(): number
-	getOrderNumber(): number
+	getOrderNum(): number
 	getSelections(): ISelections[]
 	getSelectionsForEntrantId(entrantId: number): ISelections | undefined
+	getState(): number
+	getWinnerId(): number
 }
 
 export interface IGameDataFull{
@@ -24,10 +24,10 @@ export interface IGameDataFull{
 
 export interface IGameData{
 	id: string
-	state: number,
-	winnerId: number
 	orderNum: number
 	selections: ISelectionsData[]
+	state: number,
+	winnerId: number
 }
 
 export interface ISelections{
@@ -36,10 +36,10 @@ export interface ISelections{
 	// entrantId: number
 	// attendeeId: number | null
 
+	getParticipantId(): number | null
+	getEntrantId(): number
 	getSelectionType(): string
 	getSelectionValue(): number
-	getEntrantId(): number
-	getAttendeeId(): number | null
 }
 
 export interface ISelectionsDataFull{

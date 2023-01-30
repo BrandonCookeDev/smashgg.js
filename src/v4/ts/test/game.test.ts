@@ -93,19 +93,19 @@ describe('startgg Game', () => {
 	it('should return the order number of a game 1', () => {
 		for(let i = 0; i < games1.length; i++){
 			const game = games1[i]
-			expect(game.getOrderNumber()).to.be.equal(testData.games1[i].orderNum)
+			expect(game.getOrderNum()).to.be.equal(testData.games1[i].orderNum)
 		}
 	})
 	it('should return the order number of a game 2', () => {
 		for(let i = 0; i < games2.length; i++){
 			const game = games2[i]
-			expect(game.getOrderNumber()).to.be.equal(testData.games2[i].orderNum)
+			expect(game.getOrderNum()).to.be.equal(testData.games2[i].orderNum)
 		}
 	})
 	it('should return the order number of a game 3', () => {
 		for(let i = 0; i < games3.length; i++){
 			const game = games3[i]
-			expect(game.getOrderNumber()).to.be.equal(testData.games3[i].orderNum)
+			expect(game.getOrderNum()).to.be.equal(testData.games3[i].orderNum)
 		}
 	})
 
@@ -175,12 +175,12 @@ describe('startgg Game', () => {
 
 	// participant id
 	it('should return the correct attendeeId for a selection 1', () => {
-		expect(selections1.getAttendeeId()).to.be.equal(testData.selectionsS1G1P2.participantId)
+		expect(selections1.getParticipantId()).to.be.equal(testData.selectionsS1G1P2.participantId)
 	})
 	it('should return the correct attendeeId for a selection 2', () => {
-		expect(selections2.getAttendeeId()).to.be.equal(testData.selectionsS1G2P2.participantId)
+		expect(selections2.getParticipantId()).to.be.equal(testData.selectionsS1G2P2.participantId)
 	})
 	it('should return the correct attendeeId for a selection 3', () => {
-		expect(selections3.getAttendeeId()).to.be.equal(testData.selectionsS1G3P2.participantId)
+		expect(selections3.getParticipantId()).to.be.equal(testData.selectionsS1G3P2.participantId)
 	})
 })

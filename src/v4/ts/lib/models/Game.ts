@@ -23,20 +23,20 @@ export class Game implements IGame{
 	private id: number | string
 	private state: number
 	private winnerId: number
-	private orderNumber: number
+	private orderNum: number
 	private selections: ISelections[]
 
 	constructor(
 		id: number,
 		state: number,
 		winnerId: number,
-		orderNumber: number,
+		orderNum: number,
 		selections: ISelections[]
 	){
 		this.id  = id 
 		this.state = state
 		this.winnerId  = winnerId 
-		this.orderNumber  = orderNumber 
+		this.orderNum  = orderNum
 		this.selections  = selections
 	}
 
@@ -52,8 +52,8 @@ export class Game implements IGame{
 		return this.winnerId
 	}
 
-	public getOrderNumber(): number { 
-		return this.orderNumber
+	public getOrderNum(): number {
+		return this.orderNum
 	}
 
 	public getSelections(): ISelections[] { 

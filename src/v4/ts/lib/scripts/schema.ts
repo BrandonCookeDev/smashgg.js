@@ -63,7 +63,8 @@ id
 displayIdentifier
 firstRoundTime
 phase{
-    ${phase}
+    id
+    name
 }
 state
 tiebreakOrder

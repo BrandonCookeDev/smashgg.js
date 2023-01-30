@@ -17,7 +17,7 @@ import * as testData from './data/games.testData'
 let games1: IGame[], games2: IGame[], games3: IGame[]
 let selections1: ISelections, selections2: ISelections, selections3: ISelections
 
-describe('smash.gg Game', () => {
+describe('startgg Game', () => {
 	before(async () => {
 		await Initializer(process.env.API_TOKEN!)
 		games1 = Game.parseFull(testData.games1Full)

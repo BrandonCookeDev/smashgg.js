@@ -9,15 +9,15 @@ import {
 	IStreamQueueDataFull
 } from '../interfaces/IStreamQueue'
 import {IGGSet} from '../interfaces/IGGSet'
-import {IStream} from '../interfaces/IStream'
+import {IStreams} from '../interfaces/IStreams'
 
-import {Stream} from './Stream'
+import {Streams} from './Streams'
 import {GGSet} from './GGSet'
 
 export class StreamQueue implements IStreamQueue{
 
 	public static parse(data: IStreamQueueData): IStreamQueue{
-		const stream: IStream = Stream.parse(data.stream)
+		const stream: IStreams = Streams.parse(data.stream)
 		const sets: IGGSet[] = data.sets.map(set => GGSet.parse(set))
 		return new StreamQueue(stream, sets)
 	}
@@ -38,18 +38,18 @@ export class StreamQueue implements IStreamQueue{
 		}
 	}
 
-	private stream: IStream
+	private stream: IStreams
 	private sets: IGGSet[]
 
 	constructor(
-		stream: IStream,
+		stream: IStreams,
 		sets: IGGSet[]
 	){
 		this.stream = stream
 		this.sets = sets
 	}
 
-	public getStream(): IStream{
+	public getStream(): IStreams{
 		return this.stream
 	}
 

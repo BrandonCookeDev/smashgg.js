@@ -227,11 +227,13 @@ enabled
 followerCount
 isOnline
 numSetups
+parentStreamId
 streamGame
-streamName
+streamId
 streamLogo
-streamStatus
+streamName
 streamSource
+streamStatus
 streamType
 streamTypeId
 `

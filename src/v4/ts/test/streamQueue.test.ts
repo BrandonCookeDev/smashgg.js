@@ -17,7 +17,7 @@ import {IStreamQueue} from '../lib/interfaces/IStreamQueue'
 
 import Initializer from '../lib/util/Initializer'
 import {StreamQueue} from '../lib/models/StreamQueue'
-import {Stream} from '../lib/models/Stream'
+import {Streams} from '../lib/models/Streams'
 import {GGSet} from '../lib/models/GGSet'
 import * as testData from './data/streamQueue.testData'
 
@@ -35,7 +35,7 @@ describe('smashgg Stream Queue', () => {
 	})
 	
 	it('should get the correct Stream 1', () => {
-		expect(streamQueue1![0].getStream()).to.deep.equal(Stream.parse(testData.streamQueue1[0].stream))
+		expect(streamQueue1![0].getStream()).to.deep.equal(Streams.parse(testData.streamQueue1[0].stream))
 	})
 
 	it('should get the correct Sets 1', () => {

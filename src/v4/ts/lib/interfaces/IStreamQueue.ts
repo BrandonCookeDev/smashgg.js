@@ -1,5 +1,5 @@
 import {IGGSet, IGGSetData} from './IGGSet'
-import {IStream, IStreamData} from './IStream'
+import {IStreams, IStreamsData} from './IStreams'
 
 export interface IStreamQueue{
 	/*
@@ -7,7 +7,7 @@ export interface IStreamQueue{
 	sets: IGGSet[]
 	*/
 	
-	getStream(): IStream,
+	getStream(): IStreams,
 	getSets(): IGGSet[]
 }
 
@@ -16,6 +16,6 @@ export interface IStreamQueueDataFull{
 }
 
 export interface IStreamQueueData{
-	stream: IStreamData,
+	stream: IStreamsData,
 	sets: IGGSetData[]
 }

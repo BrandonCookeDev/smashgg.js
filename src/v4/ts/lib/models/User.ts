@@ -19,22 +19,20 @@ export class User implements IUser{
 
 	public static parse(data: IUserData): User{
 		return new User(
-			data.id, 
-			data.gamerTag,
-			data.prefix,
-			data.color,
-			data.twitchStream,
-			data.twitterHandle,
-			data.youtube,
-			data.region,
-			data.state,
-			data.country,
-			data.gamerTagChangedAt
+			data.id,
+	        data.bio,
+	        data.discriminator,
+	        data.email,
+	        data.genderPronoun,
+	        data.name,
+	        data.player.id,
+	        data.player.gamerTag,
+	        data.player.prefix
 		)
 	}
 
 	public static parseFull(data: IUserDataFull): User{
-		return User.parse(data.player)
+		return User.parse(data.user)
 	}
 
 	public static async getById(theId: number): Promise<User>{
@@ -43,97 +41,83 @@ export class User implements IUser{
 		return User.parseFull(data)
 	}
 
-	private id: number
-	private gamerTag: string
-	private prefix: string | null
-	private color: string | null
-	private twitchStream: string | null
-	private twitterHandle: string | null
-	private youtube: string | null
-	private region: string | null
-	private state: string | null
-	private country: string | null
-	private gamerTagChangedAt: number | null
+	private id: number | null
+    private bio: string | null
+    private discriminator: string | null
+    private email: string | null
+    private genderPronoun: string | null
+    private name: string | null
+    private playerId: number | null
+    private playerGamertag: string | null
+    private playerPrefix: string | null
 		
 	constructor(
-		id: number,
-		gamerTag: string,
-		prefix: string | null,
-		color: string | null,
-		twitchStream: string | null,
-		twitterHandle: string | null,
-		youtube: string | null,
-		region: string | null,
-		state: string | null,
-		country: string | null,
-		gamerTagChangedAt: number | null
+		id: number | null,
+        bio: string | null,
+        discriminator: string | null,
+        email: string | null,
+        genderPronoun: string | null,
+        name: string | null,
+        playerId: number | null,
+        playerGamertag: string | null,
+        playerPrefix: string | null
 	){
-		this.id = id
-		this.gamerTag = gamerTag
-		this.prefix = prefix
-		this.color = color
-		this.twitchStream = twitchStream
-		this.twitterHandle = twitterHandle
-		this.youtube = youtube
-		this.region = region
-		this.state = state
-		this.country = country
-		this.gamerTagChangedAt = gamerTagChangedAt  
+		this.id = id,
+        this.bio = bio,
+        this.discriminator = discriminator,
+        this.email = email,
+        this.genderPronoun = genderPronoun,
+        this.name = name,
+        this.playerId = playerId,
+        this.playerGamertag = playerGamertag,
+        this.playerPrefix = playerPrefix
 	}
 
 	public getId() {
 		return this.id
 	}
 
-	public getGamerTag() {
-		return this.gamerTag
+	public getBio() {
+		return this.bio
 	}
+
+	public getDiscriminator() {
+        return this.discriminator
+    }
+
+    public getEmail() {
+        return this.email
+    }
+
+    public getGenderPronoun() {
+        return this.genderPronoun
+    }
+
+    public getName() {
+        return this.name
+    }
+
+    public getPlayerId() {
+        return this.playerId
+    }
+
+    public getPlayerGamertag() {
+        return this.playerGamertag
+    }
 
 	public getSponsor() {
-		return this.prefix
-	}
-
-	public getColor(): string | null {
-		return this.color
-	}
-
-	public getTwitchStream(): string | null {
-		return this.twitchStream
-	}
-
-	public getTwitterHandle(): string | null {
-		return this.twitterHandle
-	}
-
-	public getYoutube(): string | null {
-		return this.youtube
-	}
-
-	public getRegion(): string | null {
-		return this.region
-	}
-
-	public getState(): string | null {
-		return this.state
-	}
-
-	public getCountry(): string | null {
-		return this.country
-	}
-
-	public getGamerTagChangedAt(): Date | null {
-		return this.gamerTagChangedAt ? Common.convertEpochToDate(this.gamerTagChangedAt) : null
+		return this.playerPrefix
 	}
 
 	public async getRecentSets(): Promise<IGGSet[]> {
-		Log.info('Getting Sets for %s (User: %s)', this.gamerTag, this.id)
+		Log.info('Getting Sets for %s (User: %s)', this.playerGamertag, this.id)
 		const data: IUserDataSets = await NI.query(queries.userRecentGGSets, {id: this.id})
 		const sets: IGGSet[] = data.player.recentSets.map(setData => GGSet.parse(setData))
 		return sets
 	}
 
 	public async getRankings(): Promise<IPlayerRank[]> {
-		Log.info('Getting Rankings for %s (User: %s)', this.gamerTag, this.id)
+		Log.info('Getting Rankings for %s (User: %s)', this.playerGamertag, this.id)
 		const data: IUserDataRankings = await NI.query(queries.userRankings, {id: this.id})
 		const rankings: IPlayerRank[] = data.player.rankings
 		return rankings

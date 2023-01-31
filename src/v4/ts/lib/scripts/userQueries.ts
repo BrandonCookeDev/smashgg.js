@@ -1,7 +1,7 @@
 import * as Schema from './schema'
 export const user = `query UserQuery($id: ID!) {
-	player(id:$id){
-		${Schema.user}
+	user(id:$id){
+	    ${Schema.user}
 	}
 }`
 

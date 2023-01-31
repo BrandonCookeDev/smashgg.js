@@ -63,18 +63,18 @@ describe('smashgg User', () => {
 		expect(user3.getId()).to.be.equal(USER_ID_3)
 	})
 
-	// gamertag
-	it('should get the correct gamer tag 1', function() {
+	// player gamertag
+	it('should get the correct player  gamer tag 1', function() {
 		this.timeout(5000)
-		expect(user1.getGamerTag()).to.be.equal('Davemon')
+		expect(user1.getPlayerGamertag()).to.be.equal('Davemon')
 	})
-	it('should get the correct gamer tag 2', function() {
+	it('should get the correct player  gamer tag 2', function() {
 		this.timeout(5000)
-		expect(user2.getGamerTag()).to.be.equal('Mike G')
+		expect(user2.getPlayerGamertag()).to.be.equal('Mike G')
 	})
-	it('should get the correct gamer tag 3', function() {
+	it('should get the correct player  gamer tag 3', function() {
 		this.timeout(5000)
-		expect(user3.getGamerTag()).to.be.equal('j00t')
+		expect(user3.getPlayerGamertag()).to.be.equal('j00t')
 	})
 	
 	// prefix
@@ -89,104 +89,6 @@ describe('smashgg User', () => {
 	it('should get the correct sponsor 3', function() {
 		this.timeout(5000)
 		expect(user3.getSponsor()).to.be.null
-	})
-
-	// color
-	it('should get the correct color 1', function() {
-		this.timeout(5000)
-		expect(user1.getColor()).to.be.equal('#7185AD')
-	})
-	it('should get the correct color 2', function() {
-		this.timeout(5000)
-		expect(user2.getColor()).to.be.null
-	})
-	it('should get the correct color 3', function() {
-		this.timeout(5000)
-		expect(user3.getColor()).to.be.null
-	})
-
-	// twitch stream
-	it('should get the correct twitch stream 1', function() {
-		this.timeout(5000)
-		expect(user1.getTwitchStream()).to.be.equal('xdavemon')
-	})
-	it('should get the correct twitch stream 2', function() {
-		this.timeout(5000)
-		expect(user2.getTwitchStream()).to.be.equal('mikegz')
-	})
-	it('should get the correct twitch stream 3', function() {
-		this.timeout(5000)
-		expect(user3.getTwitchStream()).to.be.null
-	})
-
-	// twitter handle
-	it('should get the correct twitter handle 1', function() {
-		this.timeout(5000)
-		expect(user1.getTwitterHandle()).to.be.equal('Davemonlol')
-	})
-	it('should get the correct twitter handle 2', function() {
-		this.timeout(5000)
-		expect(user2.getTwitterHandle()).to.be.equal('xMikeGeezy')
-	})
-	it('should get the correct twitter handle 3', function() {
-		this.timeout(5000)
-		expect(user3.getTwitterHandle()).to.be.null
-	})
-
-	// youtube
-	it('should get the correct youtube 1', function() {
-		this.timeout(5000)
-		expect(user1.getYoutube()).to.be.null
-	})
-	it('should get the correct youtube 2', function() {
-		this.timeout(5000)
-		expect(user2.getYoutube()).to.be.null
-	})
-	it('should get the correct youtube 3', function() {
-		this.timeout(5000)
-		expect(user3.getYoutube()).to.be.null
-	})
-
-	// region 
-	it('should get the correct region 1', function() {
-		this.timeout(5000)
-		expect(user1.getRegion()).to.be.null
-	})
-	it('should get the correct region 2', function() {
-		this.timeout(5000)
-		expect(user2.getRegion()).to.be.null
-	})
-	it('should get the correct region 3', function() {
-		this.timeout(5000)
-		expect(user3.getRegion()).to.be.null
-	})
-
-	// state 
-	it('should get the correct state 1', function() {
-		this.timeout(5000)
-		expect(user1.getState()).to.be.equal('TN')
-	})
-	it('should get the correct state 2', function() {
-		this.timeout(5000)
-		expect(user2.getState()).to.be.equal('GA')
-	})
-	it('should get the correct state 3', function() {
-		this.timeout(5000)
-		expect(user3.getState()).to.be.equal('AL')
-	})
-
-	// gamer tag last changed 
-	it('should get the correct gamer tag changed at 1', function() {
-		this.timeout(5000)
-		expect(user1.getGamerTagChangedAt()).to.be.null
-	})
-	it('should get the correct gamer tag changed at 2', function() {
-		this.timeout(5000)
-		expect(user2.getGamerTagChangedAt()).to.be.null
-	})
-	it('should get the correct gamer tag changed at 3', function() {
-		this.timeout(5000)
-		expect(user3.getGamerTagChangedAt()).to.be.null
 	})
 
 	// rankings

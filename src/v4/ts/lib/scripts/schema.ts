@@ -80,9 +80,13 @@ id
 bio
 discriminator
 email
+genderPronoun
 name
-player
-slug
+player{
+id
+gamerTag
+prefix
+}
 `
 
 // start.gg participant

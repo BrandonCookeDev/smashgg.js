@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/BrandonCookeDev/smashgg.js"
+    "url": "https://github.com/rmaur012/smashgg.js"
   },
   "scripts": {
     "setupDebug": "node resources/scripts/setupDebug",

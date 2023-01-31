@@ -196,7 +196,7 @@ export class Attendee implements IAttendee{
 	}
 	*/
 
-	public async getUserAccount(): Promise<IUser> {
+	public async getUserAccount(): Promise<User> {
 		Log.info('Getting User account that Attendee %s (Participant %s) entered', this.gamerTag, this.id!)
 		return await User.getById(this.playerId!)
 	}

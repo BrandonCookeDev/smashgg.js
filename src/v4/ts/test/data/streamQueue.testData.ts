@@ -23,16 +23,20 @@ export const stream1: IStreamsData = {
 export const sets1: IGGSetData[] = [
 	{
 		id: '11186473',
-		eventId: 23596,
-		phaseGroupId: 453051,
+		completedAt: null,
 		displayScore: null,
+		event: {
+		    id: 23596,
+		},
 		fullRoundText: 'Grand Final Reset',
+		identifier: "E",
+		phaseGroup: {
+		    id: 453051,
+		},
 		round: 3,
 		startedAt: null,
-		completedAt: null,
-		winnerId: null,
-		totalGames: 5,
 		state: 5,
+		totalGames: 5,
 		slots: [
 			{
 				id: '11186473-0',
@@ -42,11 +46,13 @@ export const sets1: IGGSetData[] = [
 				id: '11186473-1',
 				entrant: null
 			}
-		]
+		],
+		winnerId: null
 	}
 ]
 
 export const streamQueue1: IStreamQueueData[] = [{
+    id: "6620",
 	stream: stream1,
 	sets: sets1
 }]

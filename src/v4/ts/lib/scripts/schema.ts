@@ -141,19 +141,29 @@ slots(includeByes:false){
 			id
 		}
 	}
-    seed
+    seed{
+        id
+        placement
+        seedNum
+     }
     slotIndex
-}`
+    standing
+}
+`
 
 export const set = `
 id
 completedAt
 displayScore  
-eventId
+event{
+    id
+}
 fullRoundText
-phaseGroupId
+identifier
+phaseGroup{
+    id
+}
 round
-${setSlots}
 startedAt
 state
 totalGames

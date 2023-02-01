@@ -16,6 +16,7 @@ export interface IStreamQueueDataFull{
 }
 
 export interface IStreamQueueData{
+    id: string,
 	stream: IStreamsData,
 	sets: IGGSetData[]
 }

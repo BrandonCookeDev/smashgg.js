@@ -46,7 +46,7 @@ export interface IUser{
 // 	getGamerTagChangedAt(): Date | null
 
 	getRecentSets(): Promise<IGGSet[]>
-	getRankings(): Promise<IPlayerRank[]>
+	getRecentStandings(): Promise<IPlayerRank[]>
 }
 
 export interface IUserDataFull{
@@ -70,7 +70,7 @@ export interface IUserData{
 export interface IUserDataRankings{
 	player: {
 		id: number,
-		rankings: IPlayerRank[]
+		recentStandings: IPlayerRank[]
 	}
 }
 

@@ -5,16 +5,24 @@ export const user = `query UserQuery($id: ID!) {
 	}
 }`
 
-export const userRankings = `query UserRankings($id: ID!) {
+export const userRecentStandings = `query UserRankings($id: ID!) {
 	player(id:$id){
 		id
-		rankings{
-			id
-			title
-			rank
-		}
-	}
-}`
+        recentStandings{
+            placement
+            container{
+                ... on Event{
+                      id
+                     name
+                    tournament{
+                        name
+                    }
+                }
+            }
+        }
+    }
+}
+`
 
 export const userRecentGGSets = `query UserRecentSets($id: ID!) {
 	player(id:$id){

@@ -12,23 +12,109 @@ import Initializer from '../lib/util/Initializer'
 import * as testData from './data/user.testData'
 
 let user1: User, user2: User, user3: User
-const USER_ID_1 = 159429 // Davemon
-const USER_ID_2 = 34475  // Mike G
-const USER_ID_3 = 7802   // j00t
-const DAVEMON_RANKINGS = [
-	{
-		id: 294398,
-		title: 'Tennessee: Spring 2018',
-		rank: 2
-	},
-	{
-		id: 317143,
-		title: 'Tennessee: Fall 2018',
-		rank: 2
-	}
-]
+const USER_ID_1 = 95277 // Davemon
+const USER_ID_2 = 25927  // Mike G
+const USER_ID_3 = 4027   // j00t
+const DAVID_MONSTER_PLACEMENTS = [
+        {
+          "placement": 5,
+          "container": {
+            "id": 590520,
+            "name": "Melee singles",
+            "tournament": {
+              "name": "Phaze Kraze Smash Weekly #2 6/30"
+            }
+          }
+        },
+        {
+          "placement": 4,
+          "container": {
+            "id": 366003,
+            "name": "Melee Singles",
+            "tournament": {
+              "name": "Anchor Down Smash #13"
+            }
+          }
+        },
+        {
+          "placement": 129,
+          "container": {
+            "id": 317251,
+            "name": "Melee - 1v1 Singles",
+            "tournament": {
+              "name": "Super Smash Con 2019"
+            }
+          }
+        }
+      ]
 
-describe('smashgg User', () => {
+const MIKE_G_PLACEMENTS = [
+        {
+          "placement": 25,
+          "container": {
+            "id": 433931,
+            "name": "Tekken 7",
+            "tournament": {
+              "name": "4o4 FIGHT NIGHT X"
+            }
+          }
+        },
+        {
+          "placement": 65,
+          "container": {
+            "id": 23596,
+            "name": "Melee Singles",
+            "tournament": {
+              "name": "Tipped Off 12 , Presented by The Lab Gaming Center!"
+            }
+          }
+        },
+        {
+          "placement": 33,
+          "container": {
+            "id": 23597,
+            "name": "Melee Doubles",
+            "tournament": {
+              "name": "Tipped Off 12 , Presented by The Lab Gaming Center!"
+            }
+          }
+        }
+      ]
+
+const J00T_PLACEMENTS = [
+        {
+          "placement": 97,
+          "container": {
+            "id": 36506,
+            "name": "Melee Singles",
+            "tournament": {
+              "name": "Function(3) - Recursion Series"
+            }
+          }
+        },
+        {
+          "placement": 1025,
+          "container": {
+            "id": 12830,
+            "name": "Melee Singles",
+            "tournament": {
+              "name": "The Big House 6"
+            }
+          }
+        },
+        {
+          "placement": 33,
+          "container": {
+            "id": 10949,
+            "name": "Melee Singles",
+            "tournament": {
+              "name": "WTFox 2"
+            }
+          }
+        }
+      ]
+
+describe('startgg User', () => {
 	before(async function() {
 		this.timeout(15000)
 		await Initializer(process.env.API_TOKEN!)
@@ -64,15 +150,15 @@ describe('smashgg User', () => {
 	})
 
 	// player gamertag
-	it('should get the correct player  gamer tag 1', function() {
+	it('should get the correct player gamer tag 1', function() {
 		this.timeout(5000)
-		expect(user1.getPlayerGamertag()).to.be.equal('Davemon')
+		expect(user1.getPlayerGamertag()).to.be.equal('David Monster')
 	})
-	it('should get the correct player  gamer tag 2', function() {
+	it('should get the correct player gamer tag 2', function() {
 		this.timeout(5000)
 		expect(user2.getPlayerGamertag()).to.be.equal('Mike G')
 	})
-	it('should get the correct player  gamer tag 3', function() {
+	it('should get the correct player gamer tag 3', function() {
 		this.timeout(5000)
 		expect(user3.getPlayerGamertag()).to.be.equal('j00t')
 	})
@@ -91,20 +177,20 @@ describe('smashgg User', () => {
 		expect(user3.getSponsor()).to.be.null
 	})
 
-	// rankings
-	it('should get the correct rankings back 1', async function() {
+	// rankings (Deprecated)
+	it('should get the most recent standings back 1', async function() {
 		this.timeout(5000)
-		expect(await user1.getRankings()).to.have.deep.members(DAVEMON_RANKINGS)
+		expect(await user1.getRecentStandings()).to.have.deep.members(DAVID_MONSTER_PLACEMENTS)
 		return true
 	})
-	it('should get the correct rankings back 2', async function() {
+	it('should get the most recent standings back 2', async function() {
 		this.timeout(5000)
-		expect(await user2.getRankings()).to.be.null
+		expect(await user2.getRecentStandings()).to.have.deep.members(MIKE_G_PLACEMENTS)
 		return true
 	})
-	it('should get the correct rankings back 3', async function() {
+	it('should get the most recent standings back 3', async function() {
 		this.timeout(5000)
-		expect(await user3.getRankings()).to.be.null
+		expect(await user3.getRecentStandings()).to.have.deep.members(J00T_PLACEMENTS)
 		return true
 	})
 

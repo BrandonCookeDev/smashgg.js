@@ -25,7 +25,7 @@ const STREAM_ID_1 = 10493
 const STREAM_ID_2 = 574
 const STREAM_ID_3 = 40210
 
-describe('smashgg Stream', function() {
+describe('startgg Stream', function() {
 	this.timeout(10000)
 	
 	before(async () => {

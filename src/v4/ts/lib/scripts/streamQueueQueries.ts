@@ -9,4 +9,5 @@ export const streamQueue = `query StreamQueueQuery($tournamentId: ID!, $includeP
 			${Schema.set}
 		}
 	}
-}`
+}
+`

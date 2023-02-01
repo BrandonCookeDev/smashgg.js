@@ -9,6 +9,7 @@ import {
 	IGGSet, 
 	IGGSetData, 
 	IGGSetOptions,
+	IGGSetSlots,
 	IGGSetDataFull,
 	IGGSetSlotAttendeeData,
 	IGGSetSlotEntrantData
@@ -56,16 +57,18 @@ export class GGSet extends EventEmitter implements IGGSet{
 		const p2 = PlayerLite.parse(displayScoreParsed.tag2, data.slots[1])
 		return new GGSet(
 			+data.id,
-			data.eventId,
-			data.phaseGroupId,
+			data.completedAt,
 			data.displayScore,
+			data.event,
 			data.fullRoundText,
+			data.identifier,
+			data.phaseGroup,
 			data.round,
 			data.startedAt,
-			data.completedAt,
-			data.winnerId,
-			data.totalGames,
+			data.slots,
 			data.state,
+			data.totalGames,
+			data.winnerId,
 			p1,
 			p2,
 			displayScoreParsed.score1,
@@ -141,16 +144,22 @@ export class GGSet extends EventEmitter implements IGGSet{
 	}
 
 	public id: number 
-	public eventId: number | null
-	public phaseGroupId: number | null
-	public displayScore: string | null 
+	public completedAt: number | null
+	public displayScore: string | null
+	public event: {
+	    id: number | null
+	}
 	public fullRoundText: string | null
+	public identifier: string | null
+	public phaseGroup:{
+	    id: number | null
+	}
 	public round: number | null
 	public startedAt: number | null
-	public completedAt: number | null
-	public winnerId: number | null
-	public totalGames: number | null
+	public slots: IGGSetSlots[]
 	public state: number | null
+	public totalGames: number | null
+	public winnerId: number | null
 	public player1: IPlayerLite
 	public player2: IPlayerLite
 	public score1: number | null
@@ -158,16 +167,22 @@ export class GGSet extends EventEmitter implements IGGSet{
 
 	constructor(
 		id: number,
-		eventId: number | null,
-		phaseGroupId: number | null,
-		displayScore: string | null,
-		fullRoundText: string | null,
-		round: number | null,
-		startedAt: number | null,
 		completedAt: number | null,
-		winnerId: number | null,
-		totalGames: number | null,
-		state: number | null,
+		displayScore: string | null,
+		event: {
+        	    id: number | null
+        	},
+		fullRoundText: string | null,
+        identifier: string | null,
+        phaseGroup:{
+            id: number | null
+        },
+        round: number | null,
+        startedAt: number | null,
+        slots: IGGSetSlots[],
+        state: number | null,
+        totalGames: number | null,
+        winnerId: number | null,
 		player1: IPlayerLite,
 		player2: IPlayerLite,
 		score1: number | null,
@@ -176,16 +191,18 @@ export class GGSet extends EventEmitter implements IGGSet{
 		super()
 
 		this.id =id 
-		this.eventId = eventId 
-		this.phaseGroupId = phaseGroupId
-		this.displayScore =	displayScore 
-		this.fullRoundText = fullRoundText 
-		this.round = round 
-		this.startedAt = startedAt 
-		this.completedAt = completedAt 
-		this.winnerId =	winnerId 
+		this.completedAt = completedAt
+		this.displayScore =	displayScore
+		this.event = event
+		this.fullRoundText = fullRoundText
+		this.identifier = identifier
+		this.phaseGroup = phaseGroup
+		this.round = round
+		this.startedAt = startedAt
+		this.slots = slots
+		this.state = state
 		this.totalGames = totalGames
-		this.state = state 
+		this.winnerId =	winnerId
 		this.player1 = player1
 		this.player2 = player2
 		this.score1 = score1 
@@ -198,11 +215,11 @@ export class GGSet extends EventEmitter implements IGGSet{
 	}
 
 	public getEventId(): number | null { 
-		return this.eventId
+		return this.event.id
 	}
 
 	public getPhaseGroupId(): number | null {
-		return this.phaseGroupId
+		return this.phaseGroup.id
 	}
 
 	public getDisplayScore(): string | null{

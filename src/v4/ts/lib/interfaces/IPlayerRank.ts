@@ -1,6 +1,12 @@
 
 export interface IPlayerRank{
-	id: number,
-	title: string,
-	rank: number
+	placement: number
+	container: {  // Probably returning an Event
+	    id: number,
+	    name: string,
+	    tournament: {
+	        id: number,
+            name: string
+	    }
+    }
 }

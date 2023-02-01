@@ -51,24 +51,24 @@ describe('Smash GG Set', function() {
 
 	// event id
 	it('should return the correct event id 1', () => {
-		expect(set1.getEventId()).to.be.equal(testData.set1.eventId)
+		expect(set1.getEventId()).to.be.equal(testData.set1.event.id)
 	})
 	it('should return the correct event id 2', () => {
-		expect(set2.getEventId()).to.be.equal(testData.set2.eventId)
+		expect(set2.getEventId()).to.be.equal(testData.set2.event.id)
 	})
 	it('should return the correct event id 3', () => {
-		expect(set3.getEventId()).to.be.equal(testData.set3.eventId)
+		expect(set3.getEventId()).to.be.equal(testData.set3.event.id)
 	})
 
 	// phase group id
 	it('should return the correct phase group 1', () => {
-		expect(set1.getPhaseGroupId()).to.be.equal(testData.set1.phaseGroupId)
+		expect(set1.getPhaseGroupId()).to.be.equal(testData.set1.phaseGroup.id)
 	})
 	it('should return the correct phase group 2', () => {
-		expect(set2.getPhaseGroupId()).to.be.equal(testData.set2.phaseGroupId)
+		expect(set2.getPhaseGroupId()).to.be.equal(testData.set2.phaseGroup.id)
 	})
 	it('should return the correct phase group 3', () => {
-		expect(set3.getPhaseGroupId()).to.be.equal(testData.set3.phaseGroupId)
+		expect(set3.getPhaseGroupId()).to.be.equal(testData.set3.phaseGroup.id)
 	})
 
 	// started at time

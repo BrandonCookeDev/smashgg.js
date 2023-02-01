@@ -116,10 +116,10 @@ export class User implements IUser{
 		return sets
 	}
 
-	public async getRankings(): Promise<IPlayerRank[]> {
-		Log.info('Getting Rankings for %s (User: %s)', this.playerGamertag, this.id)
-		const data: IUserDataRankings = await NI.query(queries.userRankings, {id: this.id})
-		const rankings: IPlayerRank[] = data.player.rankings
+	public async getRecentStandings(): Promise<IPlayerRank[]> {
+		Log.info('Getting Rankings for %s (User: %s)', this.playerGamertag, this.playerId)
+		const data: IUserDataRankings = await NI.query(queries.userRecentStandings, {id: this.playerId})
+		const rankings: IPlayerRank[] = data.player.recentStandings
 		return rankings
 	}
 }

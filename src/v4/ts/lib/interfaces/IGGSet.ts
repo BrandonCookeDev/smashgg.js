@@ -75,17 +75,22 @@ export interface IGGSetDataWithGames{
 
 export interface IGGSetData{
 	id: string
-	eventId: number | null
-	phaseGroupId: number | null
+	completedAt: number | null
 	displayScore: string | null
+	event: {
+	    id: number | null
+	}
 	fullRoundText: string | null
+	identifier: string | null
+	phaseGroup: {
+	    id: number | null
+	}
 	round: number | null
 	startedAt: number | null
-	completedAt: number | null
-	winnerId: number | null
-	totalGames: number | null
-	state: number | null
 	slots: IGGSetSlots[]
+	state: number | null
+	totalGames: number | null
+	winnerId: number | null
 }
 
 export interface IGGSetSlots{

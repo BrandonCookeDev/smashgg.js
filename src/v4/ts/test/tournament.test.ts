@@ -42,11 +42,12 @@ describe('smashgg Tournament', function() {
 	before(async function() {
 		this.timeout(20000)
 
-		await Initializer(process.env.API_TOKEN!)
+		await Initializer("09cebeefa7f7609b0e4f362f388f247c")
+		console.log("Getting tourneys by id...")
 		const ti1 = await Tournament.getById(TOURNAMENT_ID_1)
 		const ti2 = await Tournament.getById(TOURNAMENT_ID_2)
 		const ti3 = await Tournament.getById(TOURNAMENT_ID_3)
-
+		console.log("Getting tourneys by slug...")
 		const ts1 = await Tournament.get(TOURNAMENT_SLUG_1)
 		const ts2 = await Tournament.get(TOURNAMENT_SLUG_2)
 		const ts3 = await Tournament.get(TOURNAMENT_SLUG_3)

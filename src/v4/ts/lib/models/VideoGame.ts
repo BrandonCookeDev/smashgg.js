@@ -19,9 +19,8 @@ export class VideoGame implements IVideoGame{
 	public static resolve(data: IVideoGameData): IVideoGame {
 		const vg = new VideoGame(
 			data.id,
-            data.abbrev,
-			data.name,
 			data.displayName,
+			data.name,
 			data.slug,
 		)
 		vg.loadData(data, 'json')
@@ -93,8 +92,7 @@ export class VideoGame implements IVideoGame{
 			const videoGames = data.filter((vg: IVideoGame) => {
 				return vg.getName()?.toLowerCase() === name?.toLowerCase() || 
 				vg.getSlug()?.toLowerCase() === name?.toLowerCase() ||
-				vg.getDisplayName()?.toLowerCase() === name?.toLowerCase() ||
-                vg.getAbbrev()?.toLowerCase() === name?.toLowerCase()
+				vg.getDisplayName()?.toLowerCase() === name?.toLowerCase()
 			})
 			
 			if(videoGames.length <= 0) throw new Error('No video game with name ' + name)
@@ -115,24 +113,21 @@ export class VideoGame implements IVideoGame{
 	}
 
 	private id: number = 0
-    private abbrev: string
-	private data: IVideoGameData | string = ''
-	private name: string
 	private displayName: string
-	private slug: string 
+	private name: string
+	private slug: string
+	private data: IVideoGameData | string = ''
 	private rawEncoding: string = 'json'
 
 	constructor(
-		id: number, 
-        abbrev: string,
-        name: string, 
-        displayName: string, 
+		id: number,
+        displayName: string,
+        name: string,
         slug: string
 	){
 		this.id = id
-        this.abbrev = abbrev
-		this.name = name
 		this.displayName = displayName
+		this.name = name
 		this.slug = slug
     }
 
@@ -156,10 +151,6 @@ export class VideoGame implements IVideoGame{
 	public getId(): number | undefined{
 		return this.id
 	}
-                
-    public getAbbrev(): string | undefined {
-        return this.abbrev
-    }
 
 	public getName(): string | undefined{
 		return this.name

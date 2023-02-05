@@ -7,7 +7,6 @@ export interface IVideoGame{
 	getData(data: IVideoGameData, encoding: string): IVideoGameData,
 
 	getId(): number | undefined,
-	getAbbrev(): string | undefined,
     getName(): string | undefined,
 	getDisplayName(): string | undefined,
 	getSlug(): string | undefined,
@@ -21,7 +20,6 @@ export interface IVideoGameDataFull {
 
 export interface IVideoGameData{
 	id: number
-    abbrev: string 
 	name: string
     displayName: string
 	slug: string

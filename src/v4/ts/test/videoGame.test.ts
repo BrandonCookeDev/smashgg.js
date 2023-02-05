@@ -92,15 +92,15 @@ const expected = {
 }
 
 function eq(original: any, other: IVideoGame): boolean {
-    console.log("OK: " + other.getId() + ", " +
-            other.getName() + ", " + 
-            other.getDisplayName() + ", " + 
-            other.getSlug())
-             
-    console.log("NO: " + original.id + ", " +
-            original.name + ", " + 
-            original.displayName + ", " + 
-            original.slug)
+//     console.log("OK: " + other.getId() + ", " +
+//             other.getName() + ", " +
+//             other.getDisplayName() + ", " +
+//             other.getSlug())
+//
+//     console.log("NO: " + original.id + ", " +
+//             original.name + ", " +
+//             original.displayName + ", " +
+//             original.slug)
     
 	return other.getId() === original.id &&
 		other.getName() === original.name &&
@@ -108,7 +108,7 @@ function eq(original: any, other: IVideoGame): boolean {
 		other.getSlug() === original.slug
 }
 
-describe('SmashGG VideoGame', () => {
+describe('StartGG VideoGame', () => {
 
 	before(async () => {
 		Cache.flush()

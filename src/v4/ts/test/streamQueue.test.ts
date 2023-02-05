@@ -25,7 +25,7 @@ let streamQueue1: IStreamQueue[] | null
 
 const STREAM_QUEUE_TOURNAMENT_ID_1 = 6620
 
-describe('smashgg Stream Queue', () => {
+describe('startgg StreamQueue', () => {
 
 	before(async () => {
 		await Initializer(process.env.API_TOKEN!)

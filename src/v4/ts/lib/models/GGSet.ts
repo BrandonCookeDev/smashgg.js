@@ -77,7 +77,7 @@ export class GGSet extends EventEmitter implements IGGSet{
 	}
 
 	public static parseFull(data: IGGSetDataFull): IGGSet {
-		return GGSet.parse(data.set)
+	    return GGSet.parse(data.set)
 	}
 
 	public static filterOutDQs(sets: IGGSet[]): IGGSet[]{

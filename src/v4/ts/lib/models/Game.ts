@@ -20,7 +20,7 @@ export class Game implements IGame{
 		return data.set.games.map(gameData => Game.parse(gameData))
 	}
 
-	private id: number | string
+	private id: number
 	private state: number
 	private winnerId: number
 	private orderNum: number
@@ -40,7 +40,7 @@ export class Game implements IGame{
 		this.selections  = selections
 	}
 
-	public getId(): number | string { 
+	public getId(): number {
 		return this.id
 	}
 

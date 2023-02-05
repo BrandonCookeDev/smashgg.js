@@ -22,7 +22,7 @@ export const stream1: IStreamsData = {
 
 export const sets1: IGGSetData[] = [
 	{
-		id: '11186473',
+		id: 11186473,
 		completedAt: null,
 		displayScore: null,
 		event: {

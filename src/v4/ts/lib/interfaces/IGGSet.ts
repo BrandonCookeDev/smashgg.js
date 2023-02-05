@@ -74,7 +74,7 @@ export interface IGGSetDataWithGames{
 }
 
 export interface IGGSetData{
-	id: string
+	id: number
 	completedAt: number | null
 	displayScore: string | null
 	event: {

@@ -1,20 +1,22 @@
 import * as Schema from './schema'
 
-export const set = `query SetQuery($id: String!){
+export const set = `query SetQuery($id: ID!){
 	set(id:$id){
 		${Schema.set}
 	}
-}`
+}
+`
 
-export const games = `query SetQuery($id: String!){
+export const games = `query SetQuery($id: ID!){
 	set(id:$id){
 		games{
 			${Schema.game}
 		}
 	}
-}`
+}
+`
 
-export const entrants = `query SetParticipants($id: String!){
+export const entrants = `query SetParticipants($id: ID!){
 	set(id: $id){
 		slots{
 			entrant{
@@ -22,9 +24,10 @@ export const entrants = `query SetParticipants($id: String!){
 			}
 		}
 	}
-}`
+}
+`
 
-export const attendees = `query SetParticipants($id: String!){
+export const attendees = `query SetParticipants($id: ID!){
 	set(id: $id){
 		slots{
 			entrant{

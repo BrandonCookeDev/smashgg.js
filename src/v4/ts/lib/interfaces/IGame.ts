@@ -23,7 +23,7 @@ export interface IGameDataFull{
 }
 
 export interface IGameData{
-	id: string
+	id: number
 	orderNum: number
 	selections: ISelectionsData[]
 	state: number,
@@ -37,7 +37,7 @@ export interface ISelections{
 	// attendeeId: number | null
 
 	getParticipantId(): number | null
-	getEntrantId(): number
+	getEntrantId(): number | null
 	getSelectionType(): string
 	getSelectionValue(): number
 }
@@ -47,8 +47,13 @@ export interface ISelectionsDataFull{
 }
 
 export interface ISelectionsData{
+    id: number
 	selectionType: string
 	selectionValue: number
-	entrantId: number
-	participantId: number | null
+	entrant: {
+	    id: number
+	} | null
+	participant: {
+	    id: number | null
+	} | null
 }

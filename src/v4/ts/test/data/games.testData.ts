@@ -1,235 +1,382 @@
 import { IGameData, IGameDataFull, ISelectionsData } from '../../lib/interfaces/IGame'
 
 export const selectionsS1G1P2: ISelectionsData = {
-	selectionType: 'CHARACTER',
-	selectionValue: 23,
-	entrantId: 1106474,
-	participantId: null
+    id: 20784933,
+    selectionType: "CHARACTER",
+    selectionValue: 1279,
+    entrant: {
+        id: 10895582
+    },
+    participant: null
 }
 
 export const selectionsS1G2P2: ISelectionsData = {
-	selectionType: 'CHARACTER',
-	selectionValue: 23,
-	entrantId: 1106474,
-	participantId: null
+    id: 20784945,
+    selectionType: "CHARACTER",
+    selectionValue: 1302,
+    entrant: {
+        id: 11345520
+    },
+    participant: null
 }
 
 export const selectionsS1G3P2: ISelectionsData = {
-	selectionType: 'CHARACTER',
-	selectionValue: 23,
-	entrantId: 1106474,
-	participantId: null
+    id: 20784970,
+    selectionType: "CHARACTER",
+    selectionValue: 1279,
+    entrant: {
+        id: 10895582
+    },
+    participant: null
 }
 
 // set id 11186682
 export const games1: IGameData[] = [
-	{
-		id: '783150',
-		state: 3,
-		winnerId: 1106474,
-		orderNum: 1,
-		selections: [
-			{
-				selectionType: 'CHARACTER',
-				selectionValue: 5,
-				entrantId: 784069,
-				participantId: null
-			},
-			{
-				selectionType: 'CHARACTER',
-				selectionValue: 23,
-				entrantId: 1106474,
-				participantId: null
-			}
-		]
-	},
-	{
-		id: '783151',
-		state: 3,
-		winnerId: 1106474,
-		orderNum: 2,
-		selections: [
-			{
-				selectionType: 'CHARACTER',
-				selectionValue: 5,
-				entrantId: 784069,
-				participantId: null
-			},
-			{
-				selectionType: 'CHARACTER',
-				selectionValue: 23,
-				entrantId: 1106474,
-				participantId: null
-			}
-		]
-	},
-	{
-		id: '783152',
-		state: 3,
-		winnerId: 1106474,
-		orderNum: 3,
-		selections: [
-			{
-				selectionType: 'CHARACTER',
-				selectionValue: 5,
-				entrantId: 784069,
-				participantId: null
-			},
-			{
-				selectionType: 'CHARACTER',
-				selectionValue: 23,
-				entrantId: 1106474,
-				participantId: null
-			}
-		]
-	}
-]
+        {
+          id: 14802311,
+          orderNum: 1,
+          selections: [
+            {
+              id: 20784932,
+              selectionType: "CHARACTER",
+              selectionValue: 1279,
+              entrant: {
+                id: 10895582
+              },
+              participant: null
+            },
+            {
+              id: 20784933,
+              selectionType: "CHARACTER",
+              selectionValue: 1302,
+              entrant: {
+                id: 11345520
+              },
+              participant: null
+            }
+          ],
+          state: 3,
+          winnerId: 10895582
+        },
+        {
+          id: 14802320,
+          orderNum: 2,
+          selections: [
+            {
+              id: 20784944,
+              selectionType: "CHARACTER",
+              selectionValue: 1279,
+              entrant: {
+                id: 10895582
+              },
+              participant: null
+            },
+            {
+              id: 20784945,
+              selectionType: "CHARACTER",
+              selectionValue: 1302,
+              entrant: {
+                id: 11345520
+              },
+              participant: null
+            }
+          ],
+          state: 3,
+          winnerId: 11345520
+        },
+        {
+          id: 14802333,
+          orderNum: 3,
+          selections: [
+            {
+              id: 20784970,
+              selectionType: "CHARACTER",
+              selectionValue: 1279,
+              entrant: {
+                id: 10895582
+              },
+              participant: null
+            },
+            {
+              id: 20784971,
+              selectionType: "CHARACTER",
+              selectionValue: 1302,
+              entrant: {
+                id: 11345520
+              },
+              participant: null
+            }
+          ],
+          state: 3,
+          winnerId: 10895582
+        },
+        {
+          id: 14802348,
+          orderNum: 4,
+          selections: [
+            {
+              id: 20784996,
+              selectionType: "CHARACTER",
+              selectionValue: 1279,
+              entrant: {
+                id: 10895582
+              },
+              participant: null
+            },
+            {
+              id: 20784997,
+              selectionType: "CHARACTER",
+              selectionValue: 1302,
+              entrant: {
+                id: 11345520
+              },
+              participant: null
+            }
+          ],
+          state: 3,
+          winnerId: 11345520
+        },
+        {
+          id: 14802359,
+          orderNum: 5,
+          selections: [
+            {
+              id: 20785014,
+              selectionType: "CHARACTER",
+              selectionValue: 1279,
+              entrant: {
+                id: 10895582
+              },
+              participant: null
+            },
+            {
+              id: 20785015,
+              selectionType: "CHARACTER",
+              selectionValue: 1302,
+              entrant: {
+                id: 11345520
+              },
+              participant: null
+            }
+          ],
+          state: 3,
+          winnerId: 10895582
+        }
+      ]
 
 export const games2: IGameData[] = [
-	{
-		id: '783147',
-		state: 3,
-		winnerId: 1171874,
-		orderNum: 1,
-		selections: [
-			{
-				selectionType: 'CHARACTER',
-				selectionValue: 2,
-				entrantId: 757871,
-				participantId: null
-			},
-			{
-				selectionType: 'CHARACTER',
-				selectionValue: 6,
-				entrantId: 1171874,
-				participantId: null
-			}
-		]
-	},
-	{
-		id: '783148',
-		state: 3,
-		winnerId: 1171874,
-		orderNum: 2,
-		selections: [
-			{
-				selectionType: 'CHARACTER',
-				selectionValue: 2,
-				entrantId: 757871,
-				participantId: null
-			},
-			{
-				selectionType: 'CHARACTER',
-				selectionValue: 6,
-				entrantId: 1171874,
-				participantId: null
-			}
-		]
-	},
-	{
-		id: '783149',
-		state: 3,
-		winnerId: 1171874,
-		orderNum: 3,
-		selections: [
-			{
-				selectionType: 'CHARACTER',
-				selectionValue: 2,
-				entrantId: 757871,
-				participantId: null
-			},
-			{
-				selectionType: 'CHARACTER',
-				selectionValue: 6,
-				entrantId: 1171874,
-				participantId: null
-			}
-		]
-	}
-]
+        {
+          "id": 13786918,
+          "orderNum": 1,
+          "selections": [
+            {
+              "id": 19205800,
+              "selectionType": "CHARACTER",
+              "selectionValue": 1323,
+              "entrant": {
+                "id": 8910571
+              },
+              "participant": null
+            },
+            {
+              "id": 19205801,
+              "selectionType": "CHARACTER",
+              "selectionValue": 1323,
+              "entrant": {
+                "id": 10728063
+              },
+              "participant": null
+            }
+          ],
+          "state": 3,
+          "winnerId": 10728063
+        },
+        {
+          "id": 13786919,
+          "orderNum": 2,
+          "selections": [
+            {
+              "id": 19205802,
+              "selectionType": "CHARACTER",
+              "selectionValue": 1323,
+              "entrant": {
+                "id": 8910571
+              },
+              "participant": null
+            },
+            {
+              "id": 19205803,
+              "selectionType": "CHARACTER",
+              "selectionValue": 1323,
+              "entrant": {
+                "id": 10728063
+              },
+              "participant": null
+            }
+          ],
+          "state": 3,
+          "winnerId": 8910571
+        },
+        {
+          "id": 13786920,
+          "orderNum": 3,
+          "selections": [
+            {
+              "id": 19205804,
+              "selectionType": "CHARACTER",
+              "selectionValue": 1323,
+              "entrant": {
+                "id": 8910571
+              },
+              "participant": null
+            },
+            {
+              "id": 19205805,
+              "selectionType": "CHARACTER",
+              "selectionValue": 1323,
+              "entrant": {
+                "id": 10728063
+              },
+              "participant": null
+            }
+          ],
+          "state": 3,
+          "winnerId": 10728063
+        },
+        {
+          "id": 13786921,
+          "orderNum": 4,
+          "selections": [
+            {
+              "id": 19205806,
+              "selectionType": "CHARACTER",
+              "selectionValue": 1323,
+              "entrant": {
+                "id": 8910571
+              },
+              "participant": null
+            },
+            {
+              "id": 19205807,
+              "selectionType": "CHARACTER",
+              "selectionValue": 1323,
+              "entrant": {
+                "id": 10728063
+              },
+              "participant": null
+            }
+          ],
+          "state": 3,
+          "winnerId": 10728063
+        }
+      ]
 
 export const games3: IGameData[] = [
-	{
-		id: '470116',
-		state: 3,
-		winnerId: 767565,
-		orderNum: 1,
-		selections: [
-			{
-				selectionType: 'CHARACTER',
-				selectionValue: 23,
-				entrantId: 767565,
-				participantId: null
-			},
-			{
-				selectionType: 'CHARACTER',
-				selectionValue: 6,
-				entrantId: 789171,
-				participantId: null
-			}
-		]
-	},
-	{
-		id: '470117',
-		state: 3,
-		winnerId: 789171,
-		orderNum: 2,
-		selections: [
-			{
-				selectionType: 'CHARACTER',
-				selectionValue: 23,
-				entrantId: 767565,
-				participantId: null
-			},
-			{
-				selectionType: 'CHARACTER',
-				selectionValue: 6,
-				entrantId: 789171,
-				participantId: null
-			}
-		]
-	},
-	{
-		id: '470118',
-		state: 3,
-		winnerId: 789171,
-		orderNum: 3,
-		selections: [
-			{
-				selectionType: 'CHARACTER',
-				selectionValue: 23,
-				entrantId: 767565,
-				participantId: null
-			},
-			{
-				selectionType: 'CHARACTER',
-				selectionValue: 6,
-				entrantId: 789171,
-				participantId: null
-			}
-		]
-	},
-	{
-		id: '470119',
-		state: 3,
-		winnerId: 789171,
-		orderNum: 4,
-		selections: [
-			{
-				selectionType: 'CHARACTER',
-				selectionValue: 23,
-				entrantId: 767565,
-				participantId: null
-			},
-			{
-				selectionType: 'CHARACTER',
-				selectionValue: 6,
-				entrantId: 789171,
-				participantId: null
-			}
-		]
-	}
-]
+        {
+          id: 15505421,
+          orderNum: 1,
+          selections: [
+            {
+              id: 21874643,
+              selectionType: "CHARACTER",
+              selectionValue: 1317,
+              entrant: {
+                id: 11230457
+              },
+              participant: null
+            },
+            {
+              id: 21874644,
+              selectionType: "CHARACTER",
+              selectionValue: 1453,
+              entrant: {
+                id: 11947203
+              },
+              participant: null
+            }
+          ],
+          state: 3,
+          winnerId: 11947203
+        },
+        {
+          id: 15505425,
+          orderNum: 2,
+          selections: [
+            {
+              id: 21874651,
+              selectionType: "CHARACTER",
+              selectionValue: 1317,
+              entrant: {
+                id: 11230457
+              },
+              participant: null
+            },
+            {
+              id: 21874652,
+              selectionType: "CHARACTER",
+              selectionValue: 1453,
+              entrant: {
+                id: 11947203
+              },
+              participant: null
+            }
+          ],
+          state: 3,
+          winnerId: 11947203
+        },
+        {
+          id: 15505426,
+          orderNum: 3,
+          selections: [
+            {
+              id: 21874653,
+              selectionType: "CHARACTER",
+              selectionValue: 1317,
+              entrant: {
+                id: 11230457
+              },
+              participant: null
+            },
+            {
+              id: 21874654,
+              selectionType: "CHARACTER",
+              selectionValue: 1453,
+              entrant: {
+                id: 11947203
+              },
+              participant: null
+            }
+          ],
+          state: 3,
+          winnerId: 11230457
+        },
+        {
+          id: 15505427,
+          orderNum: 4,
+          selections: [
+            {
+              id: 21874655,
+              selectionType: "CHARACTER",
+              selectionValue: 1317,
+              entrant: {
+                id: 11230457
+              },
+              participant: null
+            },
+            {
+              id: 21874656,
+              selectionType: "CHARACTER",
+              selectionValue: 1453,
+              entrant: {
+                id: 11947203
+              },
+              participant: null
+            }
+          ],
+          state: 3,
+          winnerId: 11947203
+        }
+      ]
 
 export const games1Full: IGameDataFull = {
 	set: {

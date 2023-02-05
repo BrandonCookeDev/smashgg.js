@@ -9,54 +9,53 @@ import {PlayerLite} from '../../lib/models/PlayerLite'
 
 import * as gameData from './games.testData'
 
-// 11186682
 export const set1: IGGSetData = {
-      id: "55692853",
-      completedAt: 1673234312,
-      displayScore: "TSM | Tweek 3 - FaZe | Sparg0 2",
+      id: 54170233,
+      completedAt: 1668401938,
+      displayScore: "TSM FTX | Tweek 3 - PAR | Kurama 2",
       event: {
-        id: 728892
+        id: 757796
       },
-      fullRoundText: "Grand Final",
-      identifier: "H",
+      fullRoundText: "Grand Final Reset",
+      identifier: "E",
       phaseGroup: {
-        id: 1764699
+        id: 1909775
       },
-      round: 4,
-      startedAt: 1673232762,
-      state: 3,
-      totalGames: 5,
+      round: 3,
+      startedAt: 1668400680,
       slots: [
         {
-          id: "55692853-0",
+          id: "54170233-0",
           entrant: {
-            id: 11836261,
-            name: "TSM | Tweek",
+            id: 10895582,
+            name: "TSM FTX | Tweek",
             participants: [
               {
-                id: 11213829
+                id: 10376033
               }
             ]
           }
         },
         {
-          id: "55692853-1",
+          id: "54170233-1",
           entrant: {
-            id: 11848155,
-            name: "FaZe | Sparg0",
+            id: 11345520,
+            name: "PAR | Kurama",
             participants: [
               {
-                id: 11224301
+                id: 10779782
               }
             ]
           }
         }
       ],
-      winnerId: 11836261
+      state: 3,
+      totalGames: 5,
+      winnerId: 10895582
     }
 
 export const set2: IGGSetData = {
-      id: "51002303",
+      id: 51002303,
       completedAt: 1661139951,
       displayScore: "SSG | Zomba 1 - CM | Anathema 3",
       event: {
@@ -101,7 +100,7 @@ export const set2: IGGSetData = {
     }
 
 export const set3: IGGSetData = {
-      id: "56194829",
+      id: 56194829,
       completedAt: 1674458741,
       displayScore: "26R | MuteAce 1 - T1 | MkLeo 3",
       event: {
@@ -174,45 +173,45 @@ export const set3Full: IGGSetDataFull = {
 }
 
 export const p1: IPlayerLite = new PlayerLite(
-	'MVG FOX | Mew2King', 1106474, [1148324]
+	'TSM FTX | Tweek', 10895582, [10376033]
 )
 
 export const p2: IPlayerLite = new PlayerLite(
-	'Ginger', 784069, [863946]
+	'PAR | Kurama', 11345520, [10779782]
 )
 
 export const p3: IPlayerLite = new PlayerLite(
-	'SS | Colbol', 1171874, [1207468]
+	'SSG | Zomba', 8910571, [8549579]
 )
 
 export const p4: IPlayerLite = new PlayerLite(
-	'Balance | Druggedfox', 757871, [840037]
+	'CM | Anathema', 10728063, [10224540]
 )
 
 export const p5: IPlayerLite = new PlayerLite(
-	'Balance | Druggedfox',	789171, [868742]
+	'26R | MuteAce', 11230457, [10675799]
 )
 
 export const p6: IPlayerLite = new PlayerLite(
-	'RNG | Swedish Delight', 767565,[849572]
+	'T1 | MkLeo', 11947203, [11311646]
 )
 
 export const parsedDisplayScore1 = {
-	tag1: 'MVG FOX | Mew2King',
-	tag2: 'Ginger',
+	tag1: 'TSM FTX | Tweek',
+	tag2: 'PAR | Kurama',
 	score1: 3,
-	score2: 0
+	score2: 2
 }
 
 export const parsedDisplayScore2 = {
-	tag1: 'SS | Colbol',
-	tag2: 'Balance | Druggedfox',
-	score1: 3,
-	score2: 0
+	tag1: 'SSG | Zomba',
+	tag2: 'CM | Anathema',
+	score1: 1,
+	score2: 3
 }
 export const parsedDisplayScore3 = {
-	tag1: 'Balance | Druggedfox',
-	tag2: 'RNG | Swedish Delight',
-	score1: 3,
-	score2: 1
+	tag1: '26R | MuteAce',
+	tag2: 'T1 | MkLeo',
+	score1: 1,
+	score2: 3
 }

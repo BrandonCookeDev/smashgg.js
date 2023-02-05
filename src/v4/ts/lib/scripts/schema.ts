@@ -123,7 +123,9 @@ verified
 
 export const entrant = `
 id
-eventId
+event{
+    id
+}
 name
 participants{
 	${attendee}	
@@ -165,6 +167,16 @@ phaseGroup{
 }
 round
 startedAt
+slots{
+         id
+         entrant {
+             id
+             name
+             participants {
+                 id
+             }
+         }
+     }
 state
 totalGames
 winnerId
@@ -177,6 +189,12 @@ selections{
     id
 	selectionType
 	selectionValue
+	entrant {
+	    id
+	}
+	participant {
+	    id
+	}
 }
 state
 winnerId

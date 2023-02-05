@@ -27,9 +27,9 @@ import * as gameData from './data/games.testData'
 import Initializer from '../lib/util/Initializer'
 
 let set1: IGGSet, set2: IGGSet, set3: IGGSet
-const SET_ID_1 = +'11186682'
-const SET_ID_2 = +'11186683'
-const SET_ID_3 = +'8798920'
+const SET_ID_1 = +'54170233'
+const SET_ID_2 = +'51002303'
+const SET_ID_3 = +'56194829'
 
 describe('Smash GG Set', function() {
 	this.timeout(10000)
@@ -42,7 +42,7 @@ describe('Smash GG Set', function() {
 		expect(GGSet.parseDisplayScore(testData.set2.displayScore!)).to.deep.equal(testData.parsedDisplayScore2)
 		expect(GGSet.parseDisplayScore(testData.set3.displayScore!)).to.deep.equal(testData.parsedDisplayScore3)
 		console.log('Success!')
-
+        console.log('Retrieving sets...')
 		set1 = await GGSet.get(SET_ID_1)
 		set2 = await GGSet.get(SET_ID_2)
 		set3 = await GGSet.get(SET_ID_3)
@@ -233,10 +233,11 @@ describe('Smash GG Set', function() {
 		expect(set1.getLoserId()).to.deep.equal(testData.p2.entrantId)
 	})
 	it('should give the correct Loser ID 2', () => {
-		expect(set2.getLoserId()).to.deep.equal(testData.p4.entrantId)
+	    console.log("--" + set2.getLoserId() + " and " + testData.p3.entrantId)
+		expect(set2.getLoserId()).to.deep.equal(testData.p3.entrantId)
 	})
 	it('should give the correct Loser ID 3', () => {
-		expect(set3.getLoserId()).to.deep.equal(testData.p6.entrantId)
+		expect(set3.getLoserId()).to.deep.equal(testData.p5.entrantId)
 	})
 
 	// getting winner
@@ -244,10 +245,10 @@ describe('Smash GG Set', function() {
 		expect(set1.getWinner()).to.deep.equal(testData.p1)
 	})
 	it('should give the correct Winner 2', () => {
-		expect(set2.getWinner()).to.deep.equal(testData.p3)
+		expect(set2.getWinner()).to.deep.equal(testData.p4)
 	})
 	it('should give the correct Winner 3', () => {
-		expect(set3.getWinner()).to.deep.equal(testData.p5)
+		expect(set3.getWinner()).to.deep.equal(testData.p6)
 	})
 
 	// getting loser
@@ -255,10 +256,10 @@ describe('Smash GG Set', function() {
 		expect(set1.getLoser()).to.deep.equal(testData.p2)
 	})
 	it('should give the correct Loser 2', () => {
-		expect(set2.getLoser()).to.deep.equal(testData.p4)
+		expect(set2.getLoser()).to.deep.equal(testData.p3)
 	})
 	it('should give the correct Loser 3', () => {
-		expect(set3.getLoser()).to.deep.equal(testData.p6)
+		expect(set3.getLoser()).to.deep.equal(testData.p5)
 	})
 
 	// total games
@@ -285,10 +286,10 @@ describe('Smash GG Set', function() {
 
 	// Loser score
 	it('should give the correct Loser score 1', () => {
-		expect(set1.getLoserScore()).to.be.equal(0)
+		expect(set1.getLoserScore()).to.be.equal(2)
 	})
 	it('should give the correct Loser score 2', () => {
-		expect(set2.getLoserScore()).to.be.equal(0)
+		expect(set2.getLoserScore()).to.be.equal(1)
 	})
 	it('should give the correct Loser score 3', () => {
 		expect(set3.getLoserScore()).to.be.equal(1)

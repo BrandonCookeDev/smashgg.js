@@ -80,7 +80,8 @@ export const tournamentAttendeeSearch = `query SearchTournamentAttendeesQuery($i
         }
       }
     }
-  }`
+  }
+`
 
 export const tournamentAttendeeSearchByPrefix =
 `query SearchTournamentAttendeesBySponsorQuery($id:ID!, $sponsor:String){
@@ -101,7 +102,8 @@ export const tournamentAttendeeSearchByPrefix =
         }
       }
     }
-  }`
+  }
+`
 
 export const tournamentEvents = `query TournamentEvents($id: ID!){
     tournament(id: $id){

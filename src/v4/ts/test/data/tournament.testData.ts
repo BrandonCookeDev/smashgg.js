@@ -56,54 +56,55 @@ export const organizer3: IOrganizerData = {
 
 
 export const tournament1: ITournamentData = {
-	id: 6620,
-	name: 'Tipped Off 12 , Presented by The Lab Gaming Center!',
-	slug: 'tournament/tipped-off-12-presented-by-the-lab-gaming-center',
-	city: 'Atlanta',
-	postalCode: '30339',
-	addrState: 'GA',
-	countryCode: 'US',
-	venueAddress: '2 Galleria Pkwy SE, Atlanta, GA 30339, USA',
-	venueName: 'The Cobb Galleria',
-	lat: 33.8835141,
-	lng: -84.4655017,
-	timezone: 'America/New_York',
-	startAt: 1510401600,
-	endAt: 1510549140
+    id: 432884,
+    name: "Port Priority 7",
+    slug: "tournament/port-priority-7",
+    city: "Auburn",
+    postalCode: "98002",
+    addrState: "WA",
+    countryCode: "US",
+    venueAddress: "2402 Auburn Way S, Auburn, WA 98002, USA",
+    venueName: null,
+    lat: 47.291025,
+    lng: -122.1951867,
+//     primaryContact: "https://discord.gg/PEmUtBygdH",
+    timezone: "America/Los_Angeles",
+    startAt: 1668276000,
+    endAt: 1668400200
 }
 
 export const tournament2: ITournamentData = {
-	id: 63515,
-	name: '21XX: cameron\'s birthday bash',
-	slug: 'tournament/21xx-cameron-s-birthday-bash-1',
-	city: 'Marietta',
-	postalCode: '30062',
-	addrState: 'GA',
-	countryCode: 'US',
-	venueAddress: '2860 Meadow Dr, Marietta, GA 30062, USA',
-	venueName: null,
-	lat: 34.0219068,
-	lng: -84.445532,
-	timezone: 'America/New_York',
-	startAt: 1532210400,
-	endAt: 1532231940
+    id: 438800,
+    name: "Genesis 9",
+    slug: "tournament/genesis-9-1",
+    city: "San Jose",
+    postalCode: "95113",
+    addrState: "CA",
+    countryCode: "US",
+    venueAddress: "150 W San Carlos St, San Jose, CA 95113, USA",
+    venueName: null,
+    lat: 37.3290778,
+    lng: -121.888984,
+    timezone: "America/Los_Angeles",
+    startAt: 1674234000,
+    endAt: 1674457200
 }
 
 export const tournament3: ITournamentData = {
-	id: 1609,
-	name: 'CEO 2016',
-	slug: 'tournament/ceo-2016',
-	city: 'Orlando',
-	postalCode: '32819',
-	addrState: 'FL',
-	countryCode: 'US',
-	venueAddress: '8001 International Dr, Orlando, FL 32819, USA',
-	venueName: 'Wyndham Orlando Resort',
-	lat: 28.448578,
-	lng: -81.4682618,
-	timezone: 'America/New_York',
-	startAt: 1466740800,
-	endAt: 1467000000
+    id: 449011,
+    name: "Let's Make BIG Moves 2023",
+    slug: "tournament/let-s-make-big-moves-2023",
+    city: "New York",
+    postalCode: "10001",
+    addrState: "NY",
+    countryCode: "US",
+    venueAddress: "481 8th Ave, New York, NY 10001, USA",
+    venueName: "Eternal Life Community Center",
+    lat: 40.7526434,
+    lng: -73.99341570000001,
+    timezone: "America/New_York",
+    startAt: 1673024400,
+    endAt: 1673236800
 }
 
 export const tournamentData1 = {

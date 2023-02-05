@@ -232,36 +232,39 @@ export class Tournament implements ITournament{
 		log.info('Searching Tournament [%s :: %s] with smashtag: %s', this.id, this.name, theSmashtag)
 
 		const results = await NI.query(queries.tournamentAttendeeSearch, {id: this.id, smashtag: theSmashtag})
-
 		try{
 			const nodes: IAttendeeData[] = results.tournament.participants.nodes
-			if(nodes.length === 0)
+			if(nodes.length === 0) {
+			    console.log("No attendees found")
 				return null
-
-			const matchingAttendees: IAttendee[] = nodes.map((element: IAttendeeData) => Attendee.parse(element))
+			}
+		    const matchingAttendees: IAttendee[] = nodes.map((element: IAttendeeData) => Attendee.parse(element))
 			return _.uniqBy(matchingAttendees, 'id')
 		} catch {
+		    console.log("Error found when searching for attendees")
 			return null // bad parse, no attendee
 		}
 	}
 
-	public async searchAttendeesBySponsorTag(sponsorTag: string): Promise<IAttendee[] | null>{
-		log.info('Searching Tournament [%s :: %s] with smashtag: %s', this.id, this.name, sponsorTag)
-
-		const results = 
-			await NI.query(queries.tournamentAttendeeSearchByPrefix, {id: this.id, sponsor: sponsorTag.toLowerCase()})
-
-		try{
-			const nodes: IAttendeeData[] = results.tournament.participants.nodes
-			if(nodes.length === 0)
-				return null
-
-			const matchingAttendees: IAttendee[] = nodes.map((element: IAttendeeData) => Attendee.parse(element))
-			return _.uniqBy(matchingAttendees, 'id')
-		} catch {
-			return null // bad parse, no attendee
-		}
-	}
+// Currently does not work, even trying start.gg example returns incorrect results
+// 	public async searchAttendeesBySponsorTag(sponsorTag: string): Promise<IAttendee[] | null>{
+// 		log.info('Searching Tournament [%s :: %s] with smashtag: %s', this.id, this.name, sponsorTag)
+//
+// 		const results =
+// 			await NI.query(queries.tournamentAttendeeSearchByPrefix, {id: this.id, sponsor: sponsorTag.toLowerCase()})
+//
+// 		try{
+// 			const nodes: IAttendeeData[] = results.tournament.participants.nodes
+// 			if(nodes.length === 0) {
+// 				return null
+// 		    }
+//
+// 			const matchingAttendees: IAttendee[] = nodes.map((element: IAttendeeData) => Attendee.parse(element))
+// 			return _.uniqBy(matchingAttendees, 'id')
+// 		} catch {
+// 			return null // bad parse, no attendee
+// 		}
+// 	}
 
 	/*
 	async getSets2(options: IGGSet.SetOptions = IGGSet.getDefaultSetOptions()) : Promise<GGSet[]> {

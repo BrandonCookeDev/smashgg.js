@@ -100,7 +100,8 @@ nameFirst
 nameLast
 state
 stateId
-zipcode`
+zipcode
+`
 
 // start.gg participant
 export const attendee = `

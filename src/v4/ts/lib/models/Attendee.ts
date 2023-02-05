@@ -21,8 +21,7 @@ import { PhaseGroup } from './PhaseGroup'
 
 export class Attendee implements IAttendee{
 	public static parse(data: IAttendeeData): IAttendee {
-		const eventIds = data.events.map(event => event.id)
-		
+        const eventIds = data.events ? data.events.map(event => event.id) : null
 		return new Attendee(
 			data.id,
 			data.gamerTag,

@@ -1,3 +1,4 @@
+// No Prize model found in current Start.gg GraphQL Schemas
 export interface IPrize{
 	/*
 	markdown: string | null

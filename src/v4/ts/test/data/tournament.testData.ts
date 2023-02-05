@@ -7,6 +7,54 @@ import {ITournamentData} from '../../lib/interfaces/ITournament'
 import {Organizer} from '../../lib/models/Organizer'
 import {Venue} from '../../lib/models/Venue'
 
+// Organizers test data not related to tournament test data
+export const organizer1: IOrganizerData = {
+        tournament: {
+            owner: {
+                id: 26459,
+                bio: "wa to / port priority lead / wga smash founder / satellite smash founder / rob main",
+                email: null,
+                genderPronoun: "he/him",
+                player: {
+                    gamerTag: "Gyromight!"
+                }
+            }
+    }
+}
+
+export const organizer2: IOrganizerData = {
+        tournament: {
+            owner: {
+                id: 39,
+                bio: "Lead TO/co-owner of Genesis, MIOM co-founder, researcher USC Price CID",
+                email: null,
+                genderPronoun: null,
+                player: {
+                    gamerTag: "Dr. Z"
+                }
+            }
+    }
+}
+
+export const organizer3: IOrganizerData = {
+        tournament: {
+            owner: {
+                id: 531994,
+                bio: null,
+                email: null,
+                genderPronoun: null,
+                player: {
+                    gamerTag: "Mr. Gamer"
+                }
+            }
+    }
+}
+
+
+// ----
+
+
+
 export const tournament1: ITournamentData = {
 	id: 6620,
 	name: 'Tipped Off 12 , Presented by The Lab Gaming Center!',

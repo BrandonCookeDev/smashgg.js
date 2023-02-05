@@ -10,11 +10,14 @@ export const tournamentBySlug = `query TournamentQuery($slug: String) {
     }
 }`
 
-export const tournamentOrganizer = `query tournamentOrganizer($id: ID!){
-    tournament(id: $id){
-        ${Schema.organizer}
-    }   
-}`
+export const tournamentOrganizer = `query organizerQuery($slug: String!){
+    tournament(slug: $slug){
+        owner{
+            ${Schema.organizer}
+        }
+    }
+}
+`
 
 export const tournamentVenue = `query tournamentVenue($id: ID!){
     tournament(id: $id){

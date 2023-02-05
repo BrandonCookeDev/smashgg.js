@@ -7,55 +7,55 @@ export class Organizer implements IOrganizer{
 
 	public static parse(data: IOrganizerData): IOrganizer{
 		const organizer = new Organizer(
-			data.data.tournament.ownerId, data.data.tournament.contactEmail, data.data.tournament.contactPhone,
-			data.data.tournament.contactTwitter, data.data.tournament.contactInfo
+			data.tournament.owner.id, data.tournament.owner.bio, data.tournament.owner.email,
+			data.tournament.owner.genderPronoun, data.tournament.owner.player.gamerTag
 		)
 		return organizer
 	}
 	
 	public static async getByTournament(tournamentSlug: string): Promise<IOrganizer> {
+	    console.log('Getting organizer data for tournament with slug: %s', tournamentSlug)
 		const data = await NI.query(queries.tournamentOrganizer, {slug: tournamentSlug})
 		return Organizer.parse(data)
 	}
 
 	private id: number | null
+	private bio: string | null
 	private email: string | null
-	private phone: string | null
-	private twitter: string | null
-	private info: string | null
+	private genderPronoun: string | null
+	private gamerTag: string | null
 
 	constructor(
 		id: number | null, 
-		email: string | null, 
-		phone: string | null, 
-		twitter: string | null, 
-		info: string | null
+		bio: string | null,
+		email: string | null,
+		genderPronoun: string | null,
+		gamerTag: string | null
 	){
 		this.id = id
+		this.bio = bio
 		this.email = email
-		this.phone = phone
-		this.twitter = twitter
-		this.info = info
+		this.genderPronoun = genderPronoun
+		this.gamerTag = gamerTag
 	}
 
 	public getId() {
 		return this.id
 	}
 
+	public getBio() {
+		return this.bio
+	}
+	
 	public getEmail() {
 		return this.email
 	}
 	
-	public getPhone() {
-		return this.phone
-	}
-	
-	public getTwitter() {
-		return this.twitter
+	public getGenderPronoun() {
+		return this.genderPronoun
 	}
 
-	public getInfo() {
-		return this.info
+	public getGamerTag() {
+		return this.gamerTag
 	}
-
 }

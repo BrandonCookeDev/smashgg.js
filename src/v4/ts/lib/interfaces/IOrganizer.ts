@@ -1,4 +1,4 @@
-
+// Organizer is just a User
 export interface IOrganizer{
 	/*
 	id: number | null
@@ -9,20 +9,22 @@ export interface IOrganizer{
 	*/
 	
 	getId(): number | null
+	getBio(): string | null
 	getEmail(): string | null
-	getPhone(): string | null
-	getTwitter(): string | null
-	getInfo(): string | null
+	getGenderPronoun(): string | null
+	getGamerTag(): string | null
 }
 
-export interface IOrganizerData{
-	data: {
+export interface IOrganizerData {
 		tournament: {
-			ownerId: number
-			contactEmail: string
-			contactPhone: string
-			contactTwitter: string
-			contactInfo: string
-		}
-	}
+		    owner: {
+		        id: number,
+		        bio: string | null,
+		        email: string | null,
+		        genderPronoun: string | null,
+		        player: {
+		            gamerTag: string | null
+	            }
+            }
+        }
 }

@@ -246,12 +246,16 @@ city
 addrState
 countryCode`
 
+// Subset of User for Organizer info
 export const organizer = `
-ownerId
-contactEmail
-contactTwitter
-contactPhone
-contactInfo`
+id
+bio
+email
+genderPronoun
+player {
+    gamerTag
+}
+`
 
 export const streams = `
 id

@@ -1,17 +1,18 @@
 import chai from 'chai'
+const util = require('util')
 const {expect} = chai
 
 import {Character} from '../lib/models/Character'
 import Cache from '../lib/util/Cache'
 
-const MELEE_CHAR_COUNT = 27
-const PM_CHAR_COUNT = 42
+const MELEE_CHAR_COUNT = 28
+const PM_CHAR_COUNT = 43
 const BOWSER_ID = 1
 const MELEE_ID = 1
 const WOLF_ID = 116
 const PM_ID = 2
 
-describe('Smashgg Character', () => {
+describe('startgg Character', () => {
 
 	beforeEach(async () => {
 		await Cache.getInstance().flushAll()
@@ -49,6 +50,7 @@ describe('Smashgg Character', () => {
 		this.timeout(10000)
 
 		const meleeCharacters = await Character.getByGameId(MELEE_ID)
+		console.log(util.inspect(meleeCharacters, {showHidden: false, depth: null, colors: true}))
 		const pmCharacters = await Character.getByGameId(PM_ID)
 
 		expect(meleeCharacters.length).to.be.equal(MELEE_CHAR_COUNT)

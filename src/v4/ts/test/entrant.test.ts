@@ -14,7 +14,7 @@ import Initializer from '../lib/util/Initializer'
 import * as testData from './data/player.testData'
 let player1: Entrant, player2: Entrant, player3: Entrant
 
-describe('smashgg Player (Entrant) Singles', () => {
+describe('startgg Player (Entrant) Singles', () => {
 	before(async () => {
 		await Initializer(process.env.API_TOKEN!)
 		player1 = Entrant.parse(testData.player1Data) as Entrant

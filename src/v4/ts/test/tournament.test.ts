@@ -36,7 +36,7 @@ const TOURNAMENT_SLUG_2 = 'tournament/genesis-9-1'
 const TOURNAMENT_ID_3 = 449011
 const TOURNAMENT_SLUG_3 = 'tournament/let-s-make-big-moves-2023'
 
-describe('smashgg Tournament', function() {
+describe('startgg Tournament', function() {
 	this.timeout(10000)
 
 	before(async function() {

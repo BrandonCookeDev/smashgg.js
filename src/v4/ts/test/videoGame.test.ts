@@ -108,7 +108,7 @@ function eq(original: any, other: IVideoGame): boolean {
 		other.getSlug() === original.slug
 }
 
-describe('StartGG VideoGame', () => {
+describe('startgg VideoGame', () => {
 
 	before(async () => {
 		Cache.flush()

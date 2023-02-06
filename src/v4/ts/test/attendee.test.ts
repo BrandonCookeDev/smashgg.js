@@ -18,7 +18,7 @@ import * as testData from './data/attendee.testData'
 import * as testUser from './data/user.testData'
 let attendee1: IAttendee, attendee2: IAttendee, attendee3: IAttendee
 
-describe('smash.gg Attendee (Participant)', () => {
+describe('startgg Attendee (Participant)', () => {
 	before(async () => {
 		await Initializer(process.env.API_TOKEN!)
 		attendee1 = Attendee.parseFull(testData.attendee1Data)

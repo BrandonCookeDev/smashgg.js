@@ -31,7 +31,7 @@ const SET_ID_1 = +'54170233'
 const SET_ID_2 = +'51002303'
 const SET_ID_3 = +'56194829'
 
-describe('Smash GG Set', function() {
+describe('Smash GG Set (has still pending)', function() {
 	this.timeout(10000)
 
 	before(async () => {

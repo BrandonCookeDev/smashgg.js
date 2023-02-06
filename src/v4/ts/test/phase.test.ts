@@ -51,7 +51,7 @@ let phase2: IPhase
 let phase3: IPhase
 // let concurrency = 4
 
-describe('Smash GG Phase', function() {
+describe('smashgg Phase', function() {
 	this.timeout(10000)
 
 	before(async () => {

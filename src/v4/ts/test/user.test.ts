@@ -114,7 +114,7 @@ const J00T_PLACEMENTS = [
         }
       ]
 
-describe('startgg User', () => {
+describe('startgg User (has some pending)', () => {
 	before(async function() {
 		this.timeout(15000)
 		await Initializer(process.env.API_TOKEN!)

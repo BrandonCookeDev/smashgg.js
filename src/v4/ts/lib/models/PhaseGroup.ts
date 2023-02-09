@@ -27,7 +27,8 @@ export class PhaseGroup implements IPhaseGroup{
 	public static parse(data: IPhaseGroupData): IPhaseGroup{
 		return new PhaseGroup(
 			data.id,
-			data.phaseId,
+			data.phase.id,
+			data.phase.name,
 			data.displayIdentifier,
 			data.firstRoundTime,
 			data.state,
@@ -50,17 +51,19 @@ export class PhaseGroup implements IPhaseGroup{
 		return PhaseGroup.parse(data.phaseGroup)
 	}
 
-	public id: number
-	public phaseId: number
-	public displayIdentifier: string | null
-	public firstRoundTime: number | null
-	public state: number | null
-	public waveId: number | null
-	public tiebreakOrder: object | null
+	private id: number
+	private phaseId: number | null
+	private phaseName: string | null
+	private displayIdentifier: string | null
+	private firstRoundTime: number | null
+	private state: number | null
+	private waveId: number | null
+	private tiebreakOrder: object | null
 
 	constructor(
 		id: number,
-		phaseId: number,
+		phaseId: number | null,
+		phaseName: string | null,
 		displayIdentifier: string | null,
 		firstRoundTime: number | null,
 		state: number | null,
@@ -69,6 +72,7 @@ export class PhaseGroup implements IPhaseGroup{
 	){
 		this.id = id 
 		this.phaseId = phaseId
+		this.phaseName = phaseName
 		this.displayIdentifier = displayIdentifier  
 		this.firstRoundTime = firstRoundTime  
 		this.state = state  
@@ -80,9 +84,13 @@ export class PhaseGroup implements IPhaseGroup{
 		return this.id
 	}
 
-	public getPhaseId(): number{
+	public getPhaseId(): number | null{
 		return this.phaseId
 	}
+
+	public getPhaseName(): string | null{
+    		return this.phaseName
+    	}
 
 	public getDisplayIdentifier(): string | null{
 		return this.displayIdentifier

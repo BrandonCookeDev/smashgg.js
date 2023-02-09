@@ -1,24 +1,27 @@
 import {IPhaseData, IPhaseDataFull} from '../../lib/interfaces/IPhase'
 
+// NXT LVL 55
 export const phase1: IPhaseData = {
-	id: 111483,
-	name: 'Pools',
-	numSeeds: 156,
-	groupCount: 16
+    id: 1255604,
+    name: "Bracket",
+    numSeeds: 31,
+    groupCount: 1,
 }
 
+// Port Priority 7 - Top 128
 export const phase2: IPhaseData = {
-	id: 45262,
-	name: 'Pools',
-	numSeeds: 678,
-	groupCount: 32
+    id: 1242261,
+    name: "Top 128",
+    numSeeds: 128,
+    groupCount: 2
 }
 
+// Port Priority 7 - Top 8
 export const phase3: IPhaseData = {
-	id: 100046,
-	name: 'Bracket Pools',
-	numSeeds: 226,
-	groupCount: 16
+    id: 1242262,
+    name: "Top 8",
+    numSeeds: 8,
+    groupCount: 1
 }
 
 // 'event id': 25545,

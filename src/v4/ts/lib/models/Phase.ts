@@ -26,7 +26,7 @@ import {Seed} from './Seed'
 import {GGSet} from './GGSet'
 import {Attendee} from './Attendee'
 import {Entrant} from './Entrant'
-import {PhaseGroup} from './PhaseGroup' 
+import {PhaseGroup} from './PhaseGroup'
 
 export class Phase implements IPhase{
 
@@ -90,7 +90,7 @@ export class Phase implements IPhase{
 		log.info('Getting phase groups for phase %s', this.id)
 		const data: IPhaseGroupEventData = await NI.query(queries.phasePhaseGroups2, {eventId: this.eventId})
 		const phaseGroupData: IPhaseGroupData[] = 
-			data.event.phaseGroups.filter(pgData => pgData.phaseId === this.id)
+			data.event.phaseGroups.filter(pgData => pgData.phase.id === this.id)
 		const phaseGroups: IPhaseGroup[] = phaseGroupData.map(pg => PhaseGroup.parse(pg))
 		return phaseGroups
 	}
@@ -98,8 +98,8 @@ export class Phase implements IPhase{
 	public async getPhaseGroups(): Promise<IPhaseGroup[]> {
 		log.info('Getting phase groups for phase %s', this.id)
 		const data: IPhasePaginatedData = await NI.query(queries.phasePhaseGroups, {id: this.id})
-		const phaseGroupData: IPhaseGroupData[] = 
-			data.phase.phaseGroups.nodes.filter(pgData => pgData.phaseId === this.id)
+		const phaseGroupData: IPhaseGroupData[] =
+			data.phase.phaseGroups.nodes.filter(pgData => pgData.phase.id === this.id)
 		const phaseGroups: IPhaseGroup[] = phaseGroupData.map(pg => PhaseGroup.parse(pg))
 		return phaseGroups
 	}
@@ -134,7 +134,7 @@ export class Phase implements IPhase{
 	public async getSets(options: IGGSetOptions = GGSet.getDefaultSetOptions()): Promise<IGGSet[]> {
 		log.info('Getting sets for phase %s', this.id)
 
-		// get all phase group objects, then promise all over the array pf phpase groups
+		// get all phase group objects, then promise all over the array pf phase groups
 		// getting their respective sets for time efficiency
 		const pgs = await this.getPhaseGroups()
 		const pgSets = await NI.clusterQuery(pgs, 'getSets', options)

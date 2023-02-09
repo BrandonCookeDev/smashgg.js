@@ -111,16 +111,16 @@ describe('smash.gg PhaseGroup', function() {
 
 	// phase id
 	it('should return the correct phase id 1', () => {
-		expect(phaseGroup1.getPhaseId()).to.be.equal(testData.pg1.phaseId)
+		expect(phaseGroup1.getPhaseId()).to.be.equal(testData.pg1.phase.id)
 	})
 	it('should return the correct phase id 2', () => {
-		expect(phaseGroup2.getPhaseId()).to.be.equal(testData.pg2.phaseId)
+		expect(phaseGroup2.getPhaseId()).to.be.equal(testData.pg2.phase.id)
 	})
 	it('should return the correct phase id 3', () => {
-		expect(phaseGroup3.getPhaseId()).to.be.equal(testData.pg3.phaseId)
+		expect(phaseGroup3.getPhaseId()).to.be.equal(testData.pg3.phase.id)
 	})
 	it('should return the correct phase id 4', () => {
-		expect(phaseGroup4.getPhaseId()).to.be.equal(testData.pg4.phaseId)
+		expect(phaseGroup4.getPhaseId()).to.be.equal(testData.pg4.phase.id)
 	})
 
 	// displayIdentifier

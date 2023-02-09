@@ -15,7 +15,8 @@ export interface IPhaseGroup{
 	*/
 
 	getId(): number
-	getPhaseId(): number
+	getPhaseId(): number | null
+	getPhaseName(): string | null
 	getDisplayIdentifier(): string | null
 	getFirstRoundTime(): number | null
 	getState(): number | null
@@ -42,7 +43,10 @@ export interface IPhaseGroupEventData{
 
 export interface IPhaseGroupData{
 	id: number
-	phaseId: number
+	phase: {
+	    id: number | null
+	    name: string | null
+	}
 	displayIdentifier: string | null
 	firstRoundTime: number | null
 	state: number | null

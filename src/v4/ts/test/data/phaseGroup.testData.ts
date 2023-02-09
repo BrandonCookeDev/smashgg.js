@@ -5,7 +5,10 @@ export const pg1: IPhaseGroupData = {
 	displayIdentifier: 'A1',
 	firstRoundTime: null,
 	state: 3,
-	phaseId: 100046,
+	phase: {
+	    id: 100046,
+	    name: "pools"
+	},
 	waveId: 17271,
 	tiebreakOrder: null
 }
@@ -15,7 +18,10 @@ export const pg2: IPhaseGroupData = {
 	displayIdentifier: 'F16',
 	firstRoundTime: null,
 	state: 3,
-	phaseId: 519506,
+	phase: {
+	    id: 519506,
+	    name: "pools"
+	},
 	waveId: 30123,
 	tiebreakOrder: []
 }
@@ -25,7 +31,10 @@ export const pg3: IPhaseGroupData = {
 	displayIdentifier: 'A7',
 	firstRoundTime: null,
 	state: 3,
-	phaseId: 12883,
+	phase: {
+	    id: 12883,
+	    name: "pools"
+	},
 	waveId: 7330,
 	tiebreakOrder: null
 }
@@ -35,7 +44,10 @@ export const pg4: IPhaseGroupData = {
 	displayIdentifier: '1',
 	firstRoundTime: null,
 	state: 2,
-	phaseId: 291494,
+	phase: {
+	    id: 291494,
+	    name: "bracket"
+	},
 	waveId: null,
 	tiebreakOrder: []
 }

@@ -203,7 +203,9 @@ winnerId
 
 export const seeds = `
 id
-entrantId
+entrant{
+    id
+}
 isBye
 placeholderName
 placement

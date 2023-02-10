@@ -21,6 +21,8 @@ export interface IPhaseGroup{
 	getFirstRoundTime(): number | null
 	getState(): number | null
 	getWaveId(): number | null
+	getWaveIdentifier(): string | null
+	getWaveStartAt(): number | null
 	getTiebreakOrder(): object | null
 	getSeeds(options?: ISeedOptions): Promise<ISeed[]>
 	getEntrants(options?: IEntrantOptions): Promise<IEntrant[]>
@@ -50,7 +52,11 @@ export interface IPhaseGroupData{
 	displayIdentifier: string | null
 	firstRoundTime: number | null
 	state: number | null
-	waveId: number | null
+	wave: {
+	    id: number | null
+	    identifier: string | null
+	    startAt: number | null
+	} | null
 	tiebreakOrder: object | null
 }
 

@@ -9,7 +9,11 @@ export const pg1: IPhaseGroupData = {
 	    id: 100046,
 	    name: "pools"
 	},
-	waveId: 17271,
+	wave: {
+	    id: 17271,
+        identifier: "A",
+        startAt: 1510416000
+	},
 	tiebreakOrder: null
 }
 
@@ -22,7 +26,11 @@ export const pg2: IPhaseGroupData = {
 	    id: 519506,
 	    name: "pools"
 	},
-	waveId: 30123,
+	wave: {
+        id: 30123,
+        identifier: "F",
+        startAt: 1549080000
+    },
 	tiebreakOrder: []
 }
 
@@ -35,7 +43,11 @@ export const pg3: IPhaseGroupData = {
 	    id: 12883,
 	    name: "pools"
 	},
-	waveId: 7330,
+	wave: {
+        id: 7330,
+        identifier: "A",
+        startAt: 1466776800
+    },
 	tiebreakOrder: null
 }
 
@@ -48,7 +60,7 @@ export const pg4: IPhaseGroupData = {
 	    id: 291494,
 	    name: "bracket"
 	},
-	waveId: null,
+	wave: null,
 	tiebreakOrder: []
 }
 

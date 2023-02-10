@@ -25,16 +25,33 @@ import { Seed } from './Seed'
 export class PhaseGroup implements IPhaseGroup{
 
 	public static parse(data: IPhaseGroupData): IPhaseGroup{
-		return new PhaseGroup(
+	    if(data.wave === null){
+	        return new PhaseGroup(
 			data.id,
 			data.phase.id,
 			data.phase.name,
 			data.displayIdentifier,
 			data.firstRoundTime,
 			data.state,
-			data.waveId,
+			null,
+			null,
+			null,
 			data.tiebreakOrder
 		)
+	    } else {
+		    return new PhaseGroup(
+		    	data.id,
+	    		data.phase.id,
+    			data.phase.name,
+			    data.displayIdentifier,
+			    data.firstRoundTime,
+		    	data.state,
+	    		data.wave.id,
+	    		data.wave.identifier,
+	    		data.wave.startAt,
+    			data.tiebreakOrder
+		    )
+		}
 	}
 
 	public static parseFull(data: IPhaseGroupDataFull): IPhaseGroup {
@@ -48,6 +65,7 @@ export class PhaseGroup implements IPhaseGroup{
 	public static async get(theId: number): Promise<IPhaseGroup> {
 		log.info('Getting Phase Group with id %s', theId)
 		const data: IPhaseGroupDataFull = await NI.query(queries.phaseGroup, {id: theId})
+		console.log(util.inspect(data, {showHidden: false, depth: null, colors: true}))
 		return PhaseGroup.parse(data.phaseGroup)
 	}
 
@@ -58,6 +76,8 @@ export class PhaseGroup implements IPhaseGroup{
 	private firstRoundTime: number | null
 	private state: number | null
 	private waveId: number | null
+	private waveIdentifier: string | null
+	private waveStartAt: number | null
 	private tiebreakOrder: object | null
 
 	constructor(
@@ -68,6 +88,8 @@ export class PhaseGroup implements IPhaseGroup{
 		firstRoundTime: number | null,
 		state: number | null,
 		waveId: number | null,
+		waveIdentifier: string | null,
+		waveStartAt: number | null,
 		tiebreakOrder: object | null
 	){
 		this.id = id 
@@ -75,8 +97,10 @@ export class PhaseGroup implements IPhaseGroup{
 		this.phaseName = phaseName
 		this.displayIdentifier = displayIdentifier  
 		this.firstRoundTime = firstRoundTime  
-		this.state = state  
-		this.waveId = waveId  
+		this.state = state
+		this.waveId = waveId
+		this.waveIdentifier = waveIdentifier
+		this.waveStartAt = waveStartAt
 		this.tiebreakOrder = tiebreakOrder  
 	}
 
@@ -106,6 +130,14 @@ export class PhaseGroup implements IPhaseGroup{
 
 	public getWaveId(): number | null{
 		return this.waveId
+	}
+
+	public getWaveIdentifier(): string | null{
+		return this.waveIdentifier
+	}
+
+	public getWaveStartAt(): number | null{
+		return this.waveStartAt
 	}
 
 	public getTiebreakOrder(): object | [] | null{

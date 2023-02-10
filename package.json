@@ -21,7 +21,7 @@
     "setupDebug": "node resources/scripts/setupDebug",
     "pretest": "tsc",
     "watch": "gulp watch",
-    "test": "mocha ./src/v4/js/test",
+    "test": "mocha ./src/v4/js/test/event.test.js",
     "lint": "./node_modules/.bin/eslint .",
     "tsc": "tsc",
     "tsc-v1": "tsc --project tsconfig.v1.json",

@@ -3,7 +3,8 @@ export const phaseGroup = `query PhaseGroupQuery($id: ID!){
 	phaseGroup(id: $id){
 		${Schema.phaseGroup}
 	}
-}`
+}
+`
 
 export const phaseGroupSeeds = 
 `query PhaseGroupSeedsQuery($id: ID!, $page: Int, $perPage: Int, $sortBy: String, $filter: SeedPageFilter){
@@ -20,7 +21,8 @@ export const phaseGroupSeeds =
 			}
 		}
 	}
-}`
+}
+`
 
 export const phaseGroupSeedStandings = 
 `query PhaseGroupSeedsQuery($id: ID!, $page: Int, $perPage: Int, $orderBy: String, $filter: SeedPageFilter){

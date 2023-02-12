@@ -65,7 +65,6 @@ export class PhaseGroup implements IPhaseGroup{
 	public static async get(theId: number): Promise<IPhaseGroup> {
 		log.info('Getting Phase Group with id %s', theId)
 		const data: IPhaseGroupDataFull = await NI.query(queries.phaseGroup, {id: theId})
-		console.log(util.inspect(data, {showHidden: false, depth: null, colors: true}))
 		return PhaseGroup.parse(data.phaseGroup)
 	}
 

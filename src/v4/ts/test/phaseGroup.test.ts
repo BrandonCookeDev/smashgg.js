@@ -82,7 +82,7 @@ const PG_4_INCOMPLETE_SET_COUNT = 5
 
 const LOG_LEVEL = log.levels.VERBOSE
 
-describe('smash.gg PhaseGroup', function() {
+describe('startgg PhaseGroup', function() {
 	this.timeout(15000)
 
 	before(async () => {

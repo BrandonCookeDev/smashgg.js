@@ -39,7 +39,8 @@ checkInDuration
 checkInEnabled
 isOnline
 teamNameAllowed
-teamManagementDeadline`
+teamManagementDeadline
+`
 
 export const phase = `
 id

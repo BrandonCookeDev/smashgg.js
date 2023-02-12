@@ -1,11 +1,12 @@
 {
   "name": "startgg.js",
   "author": {
-    "name": "Ricardo Maury",
-    "url": "www.linkedin.com/in/RicardoMauryDev"
+    "name": "Brandon L Cooke",
+    "email": "brandoncookedev@gmail.com",
+    "url": "http://linkedin.com/in/BrandonCookeDev"
   },
   "contributors": [
-    "Brandon L Cooke <brandoncookedev@gmail.com> (http://linkedin.com/in/BrandonCookeDev)"
+    "Ricardo Maury (www.linkedin.com/in/RicardoMauryDev)"
   ],
   "version": "0.0.1",
   "description": "Node.JS wrapper for the start.gg public API",
@@ -21,7 +22,7 @@
     "setupDebug": "node resources/scripts/setupDebug",
     "pretest": "tsc",
     "watch": "gulp watch",
-    "test": "mocha ./src/v4/js/test/event.test.js",
+    "test": "mocha ./src/v4/js/test",
     "lint": "./node_modules/.bin/eslint .",
     "tsc": "tsc",
     "tsc-v1": "tsc --project tsconfig.v1.json",

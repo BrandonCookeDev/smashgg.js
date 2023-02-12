@@ -4,7 +4,8 @@ export const event = `query EventQuery($id: ID!){
     event(id:$id){   
         ${Schema.event}
     }
-}`
+}
+`
 
 export const eventSlug = `query EventQuery($slug:String){
     event(slug:$slug){
@@ -26,7 +27,8 @@ export const eventPhaseGroups = `query EventPhaseGroups($id: ID!){
             ${Schema.phaseGroup}
         }
     }   
-}`
+}
+`
 
 export const eventSets = 
 `query EventSets(

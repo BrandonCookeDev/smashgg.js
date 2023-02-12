@@ -30,15 +30,15 @@ import * as testData from './data/event.testData'
 
 let event1: IEvent, event2: IEvent, event3: IEvent
 
-const EVENT_1_ID = 133902
-const EVENT_1_SLUG = 'tournament/21xx-cameron-s-birthday-bash-1/event/melee-singles'
-const EVENT_1_TOURNAMENT_SLUG='21xx-cameron-s-birthday-bash-1'
-const EVENT_1_EVENT_SLUG='melee-singles'
+const EVENT_1_ID = 822160
+const EVENT_1_SLUG = 'tournament/nxt-lvl-55/event/ultimate-singles'
+const EVENT_1_TOURNAMENT_SLUG='nxt-lvl-55'
+const EVENT_1_EVENT_SLUG='ultimate-singles'
 const EVENT_1_PHASE_COUNT = 1
 const EVENT_1_PHASE_GROUP_COUNT = 1
-const EVENT_1_ENTRANT_COUNT = 39
-const EVENT_1_ATTENDEE_COUNT = 39
-const EVENT_1_SET_COUNT = 77
+const EVENT_1_ENTRANT_COUNT = 31
+const EVENT_1_ATTENDEE_COUNT = 31
+const EVENT_1_SET_COUNT = 61
 
 const EVENT_2_ID = 23597
 const EVENT_2_SLUG = 'tournament/tipped-off-12-presented-by-the-lab-gaming-center/event/melee-doubles'
@@ -48,7 +48,7 @@ const EVENT_2_PHASE_COUNT = 2
 const EVENT_2_PHASE_GROUP_COUNT = 9
 const EVENT_2_ENTRANT_COUNT = 60
 const EVENT_2_ATTENDEE_COUNT = 120
-const EVENT_2_SET_COUNT = 77
+const EVENT_2_SET_COUNT = 121
 
 const EVENT_3_ID = 11787
 const EVENT_3_SLUG = 'tournament/ceo-2016/event/melee-singles'
@@ -74,14 +74,17 @@ describe('smashgg Event', function() {
 		this.timeout(20000)
 		await Initializer(process.env.API_TOKEN!)
 
+        console.log("Getting events by getById...")
 		const ei1 = await Event.getById(EVENT_1_ID)
 		const ei2 = await Event.getById(EVENT_2_ID)
 		const ei3 = await Event.getById(EVENT_3_ID)
 
+        console.log("Getting events by getBySlug...")
 		const es1 = await Event.getBySlug(EVENT_1_SLUG)
 		const es2 = await Event.getBySlug(EVENT_2_SLUG)
 		const es3 = await Event.getBySlug(EVENT_3_SLUG)
 
+        console.log("Getting events by get()...")
 		const e1 = await Event.get(EVENT_1_TOURNAMENT_SLUG, EVENT_1_EVENT_SLUG)
 		const e2 = await Event.get(EVENT_2_TOURNAMENT_SLUG, EVENT_2_EVENT_SLUG)
 		const e3 = await Event.get(EVENT_3_TOURNAMENT_SLUG, EVENT_3_EVENT_SLUG)
@@ -297,6 +300,7 @@ describe('smashgg Event', function() {
 	})
 	it('should return the correct list of Sets in the Event 2', async function() {
 		this.timeout(60000)
+		console.log("GONNA SEND: " + EVENT_2_SET_COUNT)
 		await testSets(event2, EVENT_2_SET_COUNT)
 		return true
 	})
@@ -360,6 +364,7 @@ async function testAttendees(event: IEvent, expected: number){
 }
 
 async function testSets(event: IEvent, expected: number){
+console.log("THE NUMBER: " + expected)
 	const sets: IGGSet[] = await event.getSets()
 
 	sets.forEach(set => {
@@ -369,5 +374,5 @@ async function testSets(event: IEvent, expected: number){
 			'Set array must not have duplicates! Found: ' + set.getId()
 		).to.be.equal(1)
 	})
-	expect(sets.length).to.be.equal(EVENT_1_SET_COUNT)
+	expect(sets.length).to.be.equal(expected)
 }

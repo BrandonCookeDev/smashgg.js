@@ -4,19 +4,20 @@ import {
 	IEventDataFull
 } from '../../lib/interfaces/IEvent'
 
+// NXT-LVL-55
 export const event1: IEventData = {
-	id: 133902,
-	name: 'Melee Singles',
-	slug: 'tournament/21xx-cameron-s-birthday-bash-1/event/melee-singles',
-	state: 'ACTIVE',
-	startAt: 1532210400,
-	numEntrants: 39,
-	checkInBuffer: 900,
-	checkInDuration: 0,
-	checkInEnabled: false,
-	isOnline: false,
-	teamNameAllowed: false,
-	teamManagementDeadline: null
+    id: 822160,
+    name: "Ultimate Singles",
+    slug: "tournament/nxt-lvl-55/event/ultimate-singles",
+    state: "COMPLETED",
+    startAt: 1669424400,
+    numEntrants: 31,
+    checkInBuffer: 900,
+    checkInDuration: 0,
+    checkInEnabled: false,
+    isOnline: false,
+    teamNameAllowed: false,
+    teamManagementDeadline: null
 }
 
 export const event2: IEventData = {

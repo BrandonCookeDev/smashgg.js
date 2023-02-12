@@ -9,13 +9,13 @@ const API_TOKEN = '52292a2848052df2834aad11156f66ee6'
 
 const HEADERS = {
 	headers: {
-		'X-Source': 'smashgg.js',
+		'X-Source': 'startgg.js',
 		'Content-Type': 'application/json',
 		'Authorization': `Bearer ${API_TOKEN}`
 	}
 }
 
-describe('smashgg GQL Client', () => {
+describe('startgg GQL Client', () => {
 
 	before(() => {
 		TokenHandler.setToken(API_TOKEN)

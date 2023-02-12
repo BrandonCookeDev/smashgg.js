@@ -81,7 +81,7 @@ export class GGSet extends EventEmitter implements IGGSet.GGSet{
 			let req = {
 				uri: format(API_URL, id),
 				headers:{
-					'X-SOURCE': 'smashgg.js'
+					'X-SOURCE': 'startgg.js'
 				},
 				method: 'GET'
 			};

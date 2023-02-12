@@ -51,7 +51,7 @@ export default class StaggeredRequestQueue extends EventEmitter {
 	 * 
 	 * kicks off a while loop that executes until the queue is empty.
 	 * continuously runs function elements staggered by a standard milisecond
-	 * rate limit set by smashgg.
+	 * rate limit set by startgg.
 	 */
 	public async processQueue(){
 		if(!StaggeredRequestQueue.processing){

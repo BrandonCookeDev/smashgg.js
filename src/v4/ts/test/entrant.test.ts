@@ -251,7 +251,7 @@ describe('startgg Player (Entrant) Singles', () => {
 })
 
 /*
-describe('smashgg Player (Entrant) Doubles', () => {
+describe('startgg Player (Entrant) Doubles', () => {
 	before(async () => {
 		//player1 = Player.parse(testData.player1Data)
 		//player2 = Player.parse(testData.player2Data)

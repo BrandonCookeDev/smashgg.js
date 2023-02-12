@@ -8,7 +8,7 @@ const BAD_TOKEN_2 = '68x91e2848052ed278a3d88656f66ff6'
 const BAD_TOKEN_3 = '68x91e2848052ed278a3d88656f66ff6THISTOKENISTOOLONG'
 const GOOD_TOKEN = '52292a2848052df2834aad11156f66ee6'
 
-describe('smashgg Token Handler', () => {
+describe('startgg Token Handler', () => {
 
 	it('should deny a key shorter than 32 characters', () => {
 		assert.throws(() => TokenHandler.setToken(BAD_TOKEN_1))

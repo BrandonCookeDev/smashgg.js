@@ -65,7 +65,7 @@ export class Player extends EventEmitter implements IPlayer.Player{
 			let req = {
 				uri: format(API_URL, id),
 				headers:{
-					'X-SOURCE': 'smashgg.js'
+					'X-SOURCE': 'startgg.js'
 				},
 				method: 'GET'
 			};

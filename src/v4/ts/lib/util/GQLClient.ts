@@ -18,7 +18,7 @@ export default class GQLClient{
 		
 		return { 
 			headers:{
-				'X-Source': 'smashgg.js',
+				'X-Source': 'startgg.js',
 				'Content-Type': 'application/json',
 				'Authorization': `Bearer ${token}`
 			}

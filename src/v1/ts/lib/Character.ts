@@ -57,7 +57,7 @@ export class Character implements ICharacter.Character{
 			let req = {
 				uri: API_URL,
 				headers:{
-					'X-SOURCE': 'smashgg.js'
+					'X-SOURCE': 'start.js'
 				},
 				method: 'GET'
 			}

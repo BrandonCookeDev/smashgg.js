@@ -34,7 +34,7 @@ export class Character implements ICharacter{
 			const req = {
 				uri: API_URL,
 				headers:{
-					'X-SOURCE': 'smashgg.js'
+					'X-SOURCE': 'startgg.js'
 				},
 				method: 'GET'
 			}

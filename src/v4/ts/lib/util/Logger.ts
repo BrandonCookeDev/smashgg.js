@@ -1,6 +1,6 @@
 import winston from 'winston'
 
-const smashggJsLevels = {
+const startggJsLevels = {
 	levels: {
 		error: 0,
 		warn: 1,
@@ -21,7 +21,7 @@ const smashggJsLevels = {
 
 const tempLogger = winston.createLogger({
 	level: 'info',
-	levels: smashggJsLevels.levels,
+	levels: startggJsLevels.levels,
 	format: winston.format.combine(
 		winston.format.splat(),
 		winston.format.simple(),
@@ -40,7 +40,7 @@ const logger = Object.assign(tempLogger, { queries: logQuery })
 
 export default logger
 
-winston.addColors(smashggJsLevels.colors)
+winston.addColors(startggJsLevels.colors)
 
 export function setLogLevel(level: string): void {
 	logger.level = level

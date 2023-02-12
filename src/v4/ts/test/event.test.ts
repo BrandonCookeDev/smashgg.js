@@ -67,7 +67,7 @@ const TOP_8_LABELS = [
 ]
 const GRAND_FINAL_RESET_TOKEN = 'Grand Final Reset'
 
-describe('smashgg Event', function() {
+describe('startgg Event', function() {
 	this.timeout(10000)
 
 	before(async function() {

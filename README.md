@@ -1,22 +1,22 @@
-# <img src="resources/images/smashgg.png" height="75" width="75" alt="smash.gg logo" /> **smashgg.js**
+# <img src="resources/images/smashgg.png" height="75" width="75" alt="smash.gg logo" /> **startgg.js**
 
-![node version](https://shields-staging.herokuapp.com/node/v/smashgg.js.svg)
-![package version](https://img.shields.io/npm/v/smashgg.js.svg) 
-![downloads](https://img.shields.io/npm/dt/smashgg.js.svg) 
-![last commit](https://img.shields.io/github/last-commit/BrandonCookeDev/smashgg.js/master.svg)
-![minizipp size](https://img.shields.io/bundlephobia/minzip/smashgg.js.svg)
-![repo size](https://img.shields.io/github/repo-size/BrandonCookeDev/smashgg.js.svg)
-![license](https://img.shields.io/npm/l/smashgg.js.svg)
+<!--![node version](https://shields-staging.herokuapp.com/node/v/smashgg.js.svg) -->
+![package version](https://img.shields.io/npm/v/startgg.js.svg) 
+![downloads](https://img.shields.io/npm/dt/startgg.js.svg) 
+![last commit](https://img.shields.io/github/last-commit/rmaur012/startgg.js/master.svg)
+![minizipp size](https://img.shields.io/bundlephobia/minzip/startgg.js.svg)
+![repo size](https://img.shields.io/github/repo-size/rmaur012/startgg.js.svg)
+![license](https://img.shields.io/npm/l/startgg.js.svg)
 
-Node.js SDK for the public Smash.gg API, which is rich
+Node.js SDK for the public Start.gg API, which is rich
 with data about tournament brackets that have occurred on their platform.
  
 ```js
 require('colors');
-const smashgg = require('smashgg.js');
-const {Event} = smashgg;
+const startgg = require('startgg.js');
+const {Event} = startgg;
 
-smashgg.initialize('<your api key>');
+startgg.initialize('<your api key>');
 
 (async function(){
     let tournamentSlug = 'function-1-recursion-regional';
@@ -41,18 +41,20 @@ smashgg.initialize('<your api key>');
 Results: 
 ![example](resources/images/smashgg.js.v4.png)
 
-## Author: Brandon Cooke
-* Organization: [RecursionGG](http://recursion.gg)
+## StartGG.js Author: Ricardo Maury
+* Twitter: @RickoModeStar
+
+## Founding Author (smashgg.js): Brandon Cooke
 * Email: BrandonCookeDev@gmail.com
 * Discord: cookiE#7679
 
 ## Installation
 ```bash
-npm install --save smashgg.js
+npm install --save startgg.js
 ```
 
 ## Issues
-* Please submit any issues or feature requests to the [Issues Section of the Github](https://github.com/BrandonCookeDev/smashgg.js/issues)
+* Please submit any issues or feature requests to the [Issues Section of the Github](https://github.com/rmaur012/startgg.js/issues)
 
 ## Contents
 - [Getting Started](#getting-started)
@@ -86,16 +88,16 @@ Once you have this key, you may use the following function to authenticate with 
 and then you may move on
 ```js
 // import the SDK
-const smashgg = require('smashgg.js');
+const startgg = require('startgg.js');
 
 // authenticate with key
-smashgg.initialize('<your api key here>');
+startgg.initialize('<your api key here>');
 ```
 
 ---
 
 ## Limitations
-Currently, `smashgg.js` is limited by Smash.gg's rate limiting rules. Those are currently
+Currently, `startgg.js` is limited by start.gg's rate limiting rules. Those are currently
 80 requests per 60 seconds. That is, every request made to the API starts a 60 second timer. 
 If 80 requests are made before the first 60 second timer is completed, your next request will 
 be dropped.
@@ -115,7 +117,7 @@ to make the original SDK available to people so that they may maintain their app
 to move into V4. You may access v1-v3 SDK as follows:
 
 ```js
-let smashggV1 = require('smashgg.js/src/v1');
+let startggV1 = require('startgg.js/src/v1');
 ```
 
 ---
@@ -124,25 +126,25 @@ let smashggV1 = require('smashgg.js/src/v1');
 ### Winston
 You can access the built in Winston logger by using the following methods
 ```javascript
-const smashgg = require('smashgg.js');
-let log = smashgg.Log;
+const startgg = require('startgg.js');
+let log = startgg.Log;
 
 log.info('Here\'s some text')
 log.debug('Don\'t print this here')
 
-smashgg.setLogLevel('debug')
+startgg.setLogLevel('debug')
 log.info('Print everything now!!')
 log.verbose('Not to be verbose...')
 log.debug('but i\'m trying to debug :)')
 
-smashgg.setLogLevel('warn');
+startgg.setLogLevel('warn');
 ```
 You can also add a Logger of your own, say if you'd like a File logger added
 ```javascript
-const smashgg = require('smashgg.js')
-let log = smashgg.Log
+const startgg = require('startgg.js')
+let log = startgg.Log
 
-smashgg.addLog('file', {
+startgg.addLog('file', {
     filename: '/tmp/log',
     level: 'verbose',
     format: winston.format.combin(
@@ -205,7 +207,7 @@ Sunset. See that section for more details.
 
 ### V2 to V3
 In order to transition successfully from V2 to V3, please ensure the following 
-All `Set` objects created by smashgg.js are renamed to GGSet
+All `Set` objects created by startgg.js are renamed to GGSet
 
 ### V1 to V2
 In order to transition successfully from V1 to V2, please ensure the following 

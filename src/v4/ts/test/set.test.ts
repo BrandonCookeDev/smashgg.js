@@ -233,7 +233,7 @@ describe('startgg Set (has still pending)', function() {
 		expect(set1.getLoserId()).to.deep.equal(testData.p2.entrantId)
 	})
 	it('should give the correct Loser ID 2', () => {
-	    console.log("--" + set2.getLoserId() + " and " + testData.p3.entrantId)
+	    //console.log("--" + set2.getLoserId() + " and " + testData.p3.entrantId)
 		expect(set2.getLoserId()).to.deep.equal(testData.p3.entrantId)
 	})
 	it('should give the correct Loser ID 3', () => {

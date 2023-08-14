@@ -50,7 +50,7 @@ describe('startgg Character', () => {
 		this.timeout(10000)
 
 		const meleeCharacters = await Character.getByGameId(MELEE_ID)
-		console.log(util.inspect(meleeCharacters, {showHidden: false, depth: null, colors: true}))
+		//console.log(util.inspect(meleeCharacters, {showHidden: false, depth: null, colors: true}))
 		const pmCharacters = await Character.getByGameId(PM_ID)
 
 		expect(meleeCharacters.length).to.be.equal(MELEE_CHAR_COUNT)
@@ -93,8 +93,8 @@ describe('startgg Character', () => {
 		const bowser = await Character.getByName('bowser')
 		const wolf = await Character.getByName('wolf')
 
-		expect(bowser.length).to.be.equal(7)
-		expect(wolf.length).to.be.equal(3)
+		expect(bowser.length).to.be.equal(8)
+		expect(wolf.length).to.be.equal(4)
 
 		bowser.forEach(character => {
 			expect(character).to.be.instanceof(Character)

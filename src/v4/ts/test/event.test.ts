@@ -300,7 +300,7 @@ describe('startgg Event', function() {
 	})
 	it('should return the correct list of Sets in the Event 2', async function() {
 		this.timeout(60000)
-		console.log("GONNA SEND: " + EVENT_2_SET_COUNT)
+		//console.log("GONNA SEND: " + EVENT_2_SET_COUNT)
 		await testSets(event2, EVENT_2_SET_COUNT)
 		return true
 	})
@@ -364,7 +364,7 @@ async function testAttendees(event: IEvent, expected: number){
 }
 
 async function testSets(event: IEvent, expected: number){
-console.log("THE NUMBER: " + expected)
+    // console.log("THE NUMBER: " + expected)
 	const sets: IGGSet[] = await event.getSets()
 
 	sets.forEach(set => {

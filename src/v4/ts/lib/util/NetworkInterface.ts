@@ -1,5 +1,5 @@
 import request from 'request-promise'
-import { GraphQLClient } from 'graphql-request'
+import { GraphQLClient, Variables } from 'graphql-request'
 import {EventEmitter} from 'events'
 
 import {
@@ -56,32 +56,32 @@ export default class NetworkInterface{
 	 * @param  {object} variables 
 	 * @returns {promise} resolving the results of the query after being staggered in the request queue
 	 */
-	public static query(query: string, variables: object): Promise<any>{
+	public static query(query: string, variables: Variables): Promise<any>{
 		return new Promise((resolve, reject) => {
 			log.queries('Query: ' + JSON.stringify(query) + ':\n' + JSON.stringify(variables))
 			QueryQueue.getInstance().add(() => {
-				return NetworkInterface.client.request(query, {variables})
+				return NetworkInterface.client.request(query, variables)
 						.then(resolve)
 						.catch(reject)
 			})
 		})
 	}
 
-	public static rawQuery(query: string, variables: object): Promise<any>{
+	public static rawQuery(query: string, variables: Variables): Promise<any>{
 		return new Promise((resolve, reject) => {
 			log.queries('Raw Query: ' + JSON.stringify(query) + ':\n' + JSON.stringify(variables))
 			QueryQueue.getInstance().add(() => {
-				return NetworkInterface.client.rawRequest(query, {variables})
+				return NetworkInterface.client.rawRequest(query, variables)
 					.then(resolve)
 					.catch(reject)
 			})
 		})
 	}
 
-	public static staggeredQuery(query: string, variables: object): Promise<any>{
+	public static staggeredQuery(query: string, variables: Variables): Promise<any>{
 		return new Promise((resolve, reject) => { 
 			SRQ.getInstance().add(() => {
-				return NetworkInterface.client.request(query, {variables})
+				return NetworkInterface.client.request(query, variables)
 					.then(resolve)
 					.catch(reject)
 			})
@@ -96,9 +96,9 @@ export default class NetworkInterface{
 		}))
 	}
 
-	public static async singleQuery(query: string, variables: object): Promise<any>{
+	public static async singleQuery(query: string, variables: Variables): Promise<any>{
 		await Common.sleep(+RATE_LIMIT_MS_TIME)
-		return await NetworkInterface.client.request(query, {variables})
+		return await NetworkInterface.client.request(query, variables)
 	}
 
 	public static async paginatedQuery(
@@ -135,12 +135,12 @@ export default class NetworkInterface{
 		if(isSinglePage){
 			params = Object.assign(params, queryOptions)
 			const singlePageQuery = mergeQuery(queryString, queryOptions)
-			return [await NetworkInterface.query(singlePageQuery, params)]
+			return [await NetworkInterface.query(singlePageQuery, params as Variables)]
 		}
 
 		// otherwise, calculate the most optimal pagination count
 		const preflightQuery = mergeQuery(queryString, queryOptions)
-		const preflightData = [await NetworkInterface.rawQuery(preflightQuery, params)] as any[]
+		const preflightData = [await NetworkInterface.rawQuery(preflightQuery, params as Variables)] as any[]
 		if(preflightData.length <= 0)
 			throw new Error(`${operationName}: No data returned from query for operation`)
 

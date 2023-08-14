@@ -60,7 +60,7 @@ export default class NetworkInterface{
 		return new Promise((resolve, reject) => {
 			log.queries('Query: ' + JSON.stringify(query) + ':\n' + JSON.stringify(variables))
 			QueryQueue.getInstance().add(() => {
-				return NetworkInterface.client.request(query, variables)
+				return NetworkInterface.client.request(query, {variables})
 						.then(resolve)
 						.catch(reject)
 			})
@@ -71,7 +71,7 @@ export default class NetworkInterface{
 		return new Promise((resolve, reject) => {
 			log.queries('Raw Query: ' + JSON.stringify(query) + ':\n' + JSON.stringify(variables))
 			QueryQueue.getInstance().add(() => {
-				return NetworkInterface.client.rawRequest(query, variables)
+				return NetworkInterface.client.rawRequest(query, {variables})
 					.then(resolve)
 					.catch(reject)
 			})
@@ -81,7 +81,7 @@ export default class NetworkInterface{
 	public static staggeredQuery(query: string, variables: object): Promise<any>{
 		return new Promise((resolve, reject) => { 
 			SRQ.getInstance().add(() => {
-				return NetworkInterface.client.request(query, variables)
+				return NetworkInterface.client.request(query, {variables})
 					.then(resolve)
 					.catch(reject)
 			})
@@ -98,7 +98,7 @@ export default class NetworkInterface{
 
 	public static async singleQuery(query: string, variables: object): Promise<any>{
 		await Common.sleep(+RATE_LIMIT_MS_TIME)
-		return await NetworkInterface.client.request(query, variables)
+		return await NetworkInterface.client.request(query, {variables})
 	}
 
 	public static async paginatedQuery(

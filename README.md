@@ -1,4 +1,4 @@
-# <img src="resources/images/smashgg.png" height="75" width="75" alt="smash.gg logo" /> **startgg.js**
+# <img src="resources/images/startgg.png" height="75" width="75" alt="smash.gg logo" /> **startgg.js**
 
 <!--![node version](https://shields-staging.herokuapp.com/node/v/smashgg.js.svg) -->
 ![package version](https://img.shields.io/npm/v/startgg.js.svg) 

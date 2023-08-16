@@ -1,5 +1,5 @@
 import log from '../util/Logger'
-import request from 'request-promise'
+import axios from 'axios'
 import {format} from 'util'
 
 import {
@@ -32,14 +32,15 @@ export class Character implements ICharacter{
 			}
 
 			const req = {
-				uri: API_URL,
+				url: API_URL,
 				headers:{
 					'X-SOURCE': 'startgg.js'
 				},
 				method: 'GET'
 			}
 
-			const data: ICharacterData = JSON.parse(await request(req))
+            const res = await axios(req);
+			const data: ICharacterData = JSON.parse(JSON.stringify(res.data))
 			const characters = data.entities.character.map((e: ICharacterEntity ) => {
 				return new Character(
 					e.id,

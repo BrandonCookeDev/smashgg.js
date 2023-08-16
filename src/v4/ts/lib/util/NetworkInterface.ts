@@ -1,4 +1,3 @@
-import request from 'request-promise'
 import { GraphQLClient, Variables } from 'graphql-request'
 import {EventEmitter} from 'events'
 

@@ -1,4 +1,4 @@
-import request from 'request-promise'
+import axios from 'axios'
 import { format } from 'util'
 import Cache from '../util/Cache'
 
@@ -38,8 +38,9 @@ export class VideoGame implements IVideoGame{
 				const cached: VideoGame[] = await Cache.getInstance().get(cacheKey) as VideoGame[]
 				if(cached) return cached
 			}
-			
-			const data: IVideoGameDataFull = JSON.parse(await request(API_URL))
+
+			const res = await axios(API_URL);
+			const data: IVideoGameDataFull = JSON.parse(JSON.stringify(res.data))
 			const videoGames = data.entities.videogame.map((vg: IVideoGameData) => VideoGame.resolve(vg))
 
 			if(options.isCached) await Cache.getInstance().set(cacheKey, videoGames)

@@ -4,8 +4,8 @@ import 'colors'
 import * as Common from './Common'
 import {EventEmitter} from 'events'
 
-const RATE_LIMIT_MS_TIME = process.env.SRQRateLimitMsTime || 1100
-const RETRY_RATE = process.env.SRQRetryRate || 3
+const RATE_LIMIT_MS_TIME = process.env.SRQRateLimitMsTime ?? 1100
+const RETRY_RATE = process.env.SRQRetryRate ?? 3
 
 export default class StaggeredRequestQueue extends EventEmitter {
 
@@ -18,7 +18,7 @@ export default class StaggeredRequestQueue extends EventEmitter {
 			StaggeredRequestQueue.instance = new StaggeredRequestQueue()
 			StaggeredRequestQueue.processing = false
 
-			StaggeredRequestQueue.instance.on('add', async () => {
+			StaggeredRequestQueue.instance.on('add', () => {
 				if(!StaggeredRequestQueue.processing)
 					StaggeredRequestQueue.getInstance().processQueue()
 			})

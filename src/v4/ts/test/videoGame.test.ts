@@ -46,7 +46,7 @@ const expected = {
 		},
 		name: 'Super Smash Bros. Melee',
 		displayName: 'Melee',
-		slug: 'game\/melee',
+		slug: 'game/melee',
 		rawEncoding: 'json'
 	},
 	PM: {
@@ -86,7 +86,7 @@ const expected = {
 		},
 		name: 'Project M',
 		displayName: 'PM',
-		slug: 'game\/pm',
+		slug: 'game/pm',
 		rawEncoding: 'json'
 	}
 }

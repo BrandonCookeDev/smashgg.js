@@ -1,6 +1,6 @@
 import {IStreamQueueData, IStreamQueueDataFull} from '../../lib/interfaces/IStreamQueue'
-import {IStreamsData, IStreamsDataFull} from '../../lib/interfaces/IStreams'
-import {IGGSetData, IGGSetDataFull} from '../../lib/interfaces/IGGSet'
+import {IStreamsData} from '../../lib/interfaces/IStreams'
+import {IGGSetData} from '../../lib/interfaces/IGGSet'
 
 export const stream1: IStreamsData = {
 	id: 10493,

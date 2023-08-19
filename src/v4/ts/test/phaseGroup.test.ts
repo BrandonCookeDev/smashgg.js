@@ -5,9 +5,7 @@ config({path: ROOT})
 
 import '../lib/util/ErrorHandler'
 
-import _ from 'lodash'
 import moment from 'moment'
-import sinon from 'sinon'
 import chai from 'chai'
 import cap from 'chai-as-promised'
 chai.use(cap)
@@ -87,7 +85,7 @@ describe('startgg PhaseGroup', function() {
 
 	before(async () => {
 		log.setLogLevel(LOG_LEVEL)
-		await Initializer(process.env.API_TOKEN!)
+		Initializer(process.env.API_TOKEN!)
 		phaseGroup1 = await PhaseGroup.get(ID1)
 		phaseGroup2 = await PhaseGroup.get(ID2)
 		phaseGroup3 = await PhaseGroup.get(ID3)

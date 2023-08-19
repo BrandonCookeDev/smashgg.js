@@ -1,6 +1,6 @@
 'use strict'
 
-import {expect, assert} from 'chai'
+import {expect} from 'chai'
 import GQLClient from '../../lib/util/GQLClient'
 import TokenHandler from '../../lib/util/TokenHandler'
 

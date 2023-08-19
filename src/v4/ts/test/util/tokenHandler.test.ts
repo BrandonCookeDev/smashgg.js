@@ -1,5 +1,3 @@
-import '../../lib/util/TokenHandler'
-
 import {expect, assert} from 'chai'
 import TokenHandler from '../../lib/util/TokenHandler'
 

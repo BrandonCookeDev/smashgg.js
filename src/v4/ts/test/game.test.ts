@@ -2,8 +2,7 @@ import path from 'path'
 const ROOT = path.join(__dirname, '..', '..', '..', '..', '.env')
 import {config} from 'dotenv'
 config({path: ROOT})
-import {expect, assert} from 'chai'
-import sinon from 'sinon'
+import {expect} from 'chai'
 
 import '../lib/util/ErrorHandler'
 
@@ -19,7 +18,7 @@ let selections1: ISelections, selections2: ISelections, selections3: ISelections
 
 describe('startgg Game', () => {
 	before(async () => {
-		await Initializer(process.env.API_TOKEN!)
+		Initializer(process.env.API_TOKEN!)
 		games1 = Game.parseFull(testData.games1Full)
 		games2 = Game.parseFull(testData.games2Full)
 		games3 = Game.parseFull(testData.games3Full)

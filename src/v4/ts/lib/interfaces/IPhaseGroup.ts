@@ -1,4 +1,4 @@
-import {IEntrant, IEntrantData, IEntrantDataFull, IEntrantOptions} from './IEntrant'
+import {IEntrant, IEntrantDataFull, IEntrantOptions} from './IEntrant'
 import {IAttendee, IAttendeeData, IAttendeeOptions} from './IAttendee'
 import {IGGSet, IGGSetData, IGGSetOptions} from './IGGSet'
 import {ISeed, ISeedData, ISeedOptions} from './ISeed'

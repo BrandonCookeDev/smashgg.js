@@ -1,5 +1,4 @@
 import {
-	IEvent,
 	IEventData,
 	IEventDataFull
 } from '../../lib/interfaces/IEvent'

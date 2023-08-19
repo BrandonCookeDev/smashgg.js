@@ -9,10 +9,9 @@ import {
 	IStreamsDataFull
 } from '../interfaces/IStreams'
 
-export class Streams implements IStreams{
+type StreamSource = 'TWITCH' | 'HITBOX' | 'STREAMME' | 'MIXER' | null
 
-    //SonarLint doesnt work with this for some reason. Comment to see
-    type StreamSource = 'TWITCH' | 'HITBOX' | 'STREAMME' | 'MIXER' | null
+export class Streams implements IStreams{
 
 	public static parseFull(data: IStreamsDataFull): Streams {
 		return Streams.parse(data.stream)

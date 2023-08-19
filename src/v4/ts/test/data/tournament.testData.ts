@@ -1,10 +1,9 @@
 
-import {IVenue, IVenueData} from '../../lib/interfaces/IVenue'
-import {IOrganizer, IOrganizerData} from '../../lib/interfaces/IOrganizer'
+import {IVenue} from '../../lib/interfaces/IVenue'
+import {IOrganizerData} from '../../lib/interfaces/IOrganizer'
 import {ITournamentData} from '../../lib/interfaces/ITournament'
 // import {   } from '../../lib/scripts/schema'
 
-import {Organizer} from '../../lib/models/Organizer'
 import {Venue} from '../../lib/models/Venue'
 
 // Organizers test data not related to tournament test data

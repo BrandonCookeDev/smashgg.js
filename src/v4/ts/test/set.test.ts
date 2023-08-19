@@ -5,7 +5,6 @@ config({path: ROOT})
 
 import '../lib/util/ErrorHandler'
 
-import _ from 'lodash'
 import moment from 'moment'
 import chai from 'chai'
 import cap from 'chai-as-promised'
@@ -13,7 +12,6 @@ chai.use(cap)
 const {expect} = chai
 
 import { IGGSet } from '../lib/interfaces/IGGSet'
-import { IGame } from '../lib/interfaces/IGame'
 import {IEntrant} from '../lib/interfaces/IEntrant'
 import {IAttendee} from '../lib/interfaces/IAttendee'
 
@@ -21,7 +19,6 @@ import {GGSet} from '../lib/models/GGSet'
 import {Game} from '../lib/models/Game'
 import {Entrant} from '../lib/models/Entrant'
 import {Attendee} from '../lib/models/Attendee'
-import Cache from '../lib/util/Cache'
 import * as testData from './data/sets.testData'
 import * as gameData from './data/games.testData'
 import Initializer from '../lib/util/Initializer'
@@ -35,7 +32,7 @@ describe('startgg Set (has still pending)', function() {
 	this.timeout(10000)
 
 	before(async () => {
-		await Initializer(process.env.API_TOKEN!)
+		Initializer(process.env.API_TOKEN!)
 
 		console.log('Testing displayScore parsing first...')
 		expect(GGSet.parseDisplayScore(testData.set1.displayScore!)).to.deep.equal(testData.parsedDisplayScore1)
@@ -96,15 +93,15 @@ describe('startgg Set (has still pending)', function() {
 	// completed at time date
 	it('should return the correct completed Datetime 1', () => {
 		const expected = moment.unix(testData.set1.completedAt!).toDate()
-		expect(moment(set1.getCompletedAt()!).isSame(expected)).to.to.true
+		expect(moment(set1.getCompletedAt()).isSame(expected)).to.to.true
 	})
 	it('should return the correct completed Datetime 2', () => {
 		const expected = moment.unix(testData.set2.completedAt!).toDate()
-		expect(moment(set2.getCompletedAt()!).isSame(expected)).to.to.true
+		expect(moment(set2.getCompletedAt()).isSame(expected)).to.to.true
 	})
 	it('should return the correct completed Datetime 3', () => {
 		const expected = moment.unix(testData.set3.completedAt!).toDate()
-		expect(moment(set3.getCompletedAt()!).isSame(expected)).to.to.true
+		expect(moment(set3.getCompletedAt()).isSame(expected)).to.to.true
 	})
 
 	// display score
@@ -309,7 +306,7 @@ describe('startgg Set (has still pending)', function() {
 	it('should get the list of games played in the set 3', async () => {
 		const expected = gameData.games3.map(data => Game.parse(data))
 		expect(await set3.getGames()).to.have.deep.members(expected)
-		return true		
+		return true
 	})
 
 	// entrants
@@ -356,7 +353,7 @@ describe('startgg Set (has still pending)', function() {
 		let winner2 = set2.getWinner() as Player
 		let data2 = winner2.data as IPlayer.Entity
 		expect(set2.getWinnersTournamentPlacement()).to.be.equal(data2.finalPlacement)
-		
+
 		done()
 		*/
 	})

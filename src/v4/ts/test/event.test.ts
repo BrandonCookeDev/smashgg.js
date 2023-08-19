@@ -4,10 +4,8 @@ import {config} from 'dotenv'
 config({path: ROOT})
 
 import '../lib/util/ErrorHandler'
-import * as log from '../lib/util/Logger'
+//import * as log from '../lib/util/Logger'
 
-import _ from 'lodash'
-import moment from 'moment'
 import chai from 'chai'
 import cap from 'chai-as-promised'
 chai.use(cap)
@@ -72,7 +70,7 @@ describe('startgg Event', function() {
 
 	before(async function() {
 		this.timeout(20000)
-		await Initializer(process.env.API_TOKEN!)
+		Initializer(process.env.API_TOKEN!)
 
         console.log("Getting events by getById...")
 		const ei1 = await Event.getById(EVENT_1_ID)

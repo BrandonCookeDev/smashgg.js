@@ -6,8 +6,6 @@ config({path: ROOT})
 import '../lib/util/ErrorHandler'
 import * as log from '../lib/util/Logger'
 
-import _ from 'lodash'
-import moment from 'moment'
 import chai from 'chai'
 import cap from 'chai-as-promised'
 chai.use(cap)
@@ -56,11 +54,10 @@ describe('startgg Phase', function() {
 
 	before(async () => {
 		log.setLogLevel(LOG_LEVEL)
-		await Initializer(process.env.API_TOKEN!)
+		Initializer(process.env.API_TOKEN!)
 		phase1 = await Phase.get(ID1, EVENT_ID_1)
 		phase2 = await Phase.get(ID2, EVENT_ID_2)
 		phase3 = await Phase.get(ID3, EVENT_ID_3)
-		return
 	})
 
 	// id

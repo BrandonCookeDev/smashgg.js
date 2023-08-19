@@ -3,8 +3,7 @@ const ROOT = path.join(__dirname, '..', '..', '..', '..', '.env')
 import {config} from 'dotenv'
 config({path: ROOT})
 
-import sinon from 'sinon'
-import {expect, assert} from 'chai'
+import {expect} from 'chai'
 
 import {IAttendee} from '../lib/interfaces/IAttendee'
 
@@ -15,12 +14,11 @@ import {PhaseGroup} from '../lib/models/PhaseGroup'
 import Initializer from '../lib/util/Initializer'
 
 import * as testData from './data/attendee.testData'
-import * as testUser from './data/user.testData'
 let attendee1: IAttendee, attendee2: IAttendee, attendee3: IAttendee
 
 describe('startgg Attendee (Participant)', () => {
 	before(async () => {
-		await Initializer(process.env.API_TOKEN!)
+		Initializer(process.env.API_TOKEN!)
 		attendee1 = Attendee.parseFull(testData.attendee1Data)
 		attendee2 = Attendee.parseFull(testData.attendee2Data)
 		attendee3 = Attendee.parseFull(testData.attendee3Data)

@@ -4,10 +4,8 @@ import {config} from 'dotenv'
 config({path: ROOT})
 
 import '../lib/util/ErrorHandler'
-import * as log from '../lib/util/Logger'
+//import * as log from '../lib/util/Logger'
 
-import _ from 'lodash'
-import moment from 'moment'
 import chai from 'chai'
 import cap from 'chai-as-promised'
 chai.use(cap)
@@ -29,7 +27,7 @@ describe('startgg Stream', function() {
 	this.timeout(10000)
 	
 	before(async () => {
-		await Initializer(process.env.API_TOKEN!)
+		Initializer(process.env.API_TOKEN!)
 
 		stream1 = await Streams.get(STREAM_ID_1)
 		stream2 = await Streams.get(STREAM_ID_2)

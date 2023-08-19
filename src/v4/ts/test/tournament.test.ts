@@ -4,9 +4,8 @@ import {config} from 'dotenv'
 config({path: ROOT})
 
 import '../lib/util/ErrorHandler'
-import * as log from '../lib/util/Logger'
+//import * as log from '../lib/util/Logger'
 
-import _ from 'lodash'
 import moment from 'moment'
 import chai from 'chai'
 import cap from 'chai-as-promised'
@@ -17,13 +16,8 @@ import {ITournament} from '../lib/interfaces/ITournament'
 import {IAttendee} from '../lib/interfaces/IAttendee'
 
 import {Tournament} from '../lib/models/Tournament'
-import {Event} from '../lib/models/Event'
-import {GGSet} from '../lib/models/GGSet'
-import {Entrant} from '../lib/models/Entrant'
-import {Attendee} from '../lib/models/Attendee'
 import Initializer from '../lib/util/Initializer'
 import * as testData from './data/tournament.testData'
-import { Venue } from '../lib/models/Venue'
 
 let tournament1: ITournament, tournament2: ITournament, tournament3: ITournament
 
@@ -42,7 +36,7 @@ describe('startgg Tournament', function() {
 	before(async function() {
 		this.timeout(20000)
 
-		await Initializer(process.env.API_TOKEN!)
+		Initializer(process.env.API_TOKEN!)
 		console.log("Getting tourneys by id...")
 		const ti1 = await Tournament.getById(TOURNAMENT_ID_1)
 		const ti2 = await Tournament.getById(TOURNAMENT_ID_2)
@@ -109,13 +103,13 @@ describe('startgg Tournament', function() {
 
 	// start time
 	it('should get the correct tournament end time 1', () => {
-		expect(moment(tournament1.getStartTime()!).isSame(moment.unix(testData.tournament1.startAt!).toDate())).to.be.true
+		expect(moment(tournament1.getStartTime()).isSame(moment.unix(testData.tournament1.startAt!).toDate())).to.be.true
 	})
 	it('should get the correct tournament end time 2', () => {
-		expect(moment(tournament2.getStartTime()!).isSame(moment.unix(testData.tournament2.startAt!).toDate())).to.be.true
+		expect(moment(tournament2.getStartTime()).isSame(moment.unix(testData.tournament2.startAt!).toDate())).to.be.true
 	})
 	it('should get the correct tournament end time 3', () => {
-		expect(moment(tournament3.getStartTime()!).isSame(moment.unix(testData.tournament3.startAt!).toDate())).to.be.true
+		expect(moment(tournament3.getStartTime()).isSame(moment.unix(testData.tournament3.startAt!).toDate())).to.be.true
 	})
 
 	// start time string
@@ -131,13 +125,13 @@ describe('startgg Tournament', function() {
 
 	// end time
 	it('should get the correct tournament end time 1', () => {
-		expect(moment(tournament1.getEndTime()!).isSame(moment.unix(testData.tournament1.endAt!).toDate())).to.be.true
+		expect(moment(tournament1.getEndTime()).isSame(moment.unix(testData.tournament1.endAt!).toDate())).to.be.true
 	})
 	it('should get the correct tournament end time 2', () => {
-		expect(moment(tournament2.getEndTime()!).isSame(moment.unix(testData.tournament2.endAt!).toDate())).to.be.true
+		expect(moment(tournament2.getEndTime()).isSame(moment.unix(testData.tournament2.endAt!).toDate())).to.be.true
 	})
 	it('should get the correct tournament end time 3', () => {
-		expect(moment(tournament3.getEndTime()!).isSame(moment.unix(testData.tournament3.endAt!).toDate())).to.be.true
+		expect(moment(tournament3.getEndTime()).isSame(moment.unix(testData.tournament3.endAt!).toDate())).to.be.true
 	})
 
 	// end time string

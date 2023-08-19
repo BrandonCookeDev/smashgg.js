@@ -7,7 +7,6 @@ import '../lib/util/ErrorHandler'
 import * as log from '../lib/util/Logger'
 
 import _ from 'lodash'
-import moment from 'moment'
 import chai from 'chai'
 import cap from 'chai-as-promised'
 chai.use(cap)

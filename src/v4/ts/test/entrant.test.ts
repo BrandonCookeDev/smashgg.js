@@ -5,8 +5,7 @@ config({path: ROOT})
 
 import '../lib/util/ErrorHandler'
 
-import sinon from 'sinon'
-import {expect, assert} from 'chai'
+import {expect} from 'chai'
 import {Entrant} from '../lib/models/Entrant'
 import {Attendee} from '../lib/models/Attendee'
 import Initializer from '../lib/util/Initializer'
@@ -16,10 +15,10 @@ let player1: Entrant, player2: Entrant, player3: Entrant
 
 describe('startgg Player (Entrant) Singles', () => {
 	before(async () => {
-		await Initializer(process.env.API_TOKEN!)
-		player1 = Entrant.parse(testData.player1Data) as Entrant
-		player2 = Entrant.parse(testData.player2Data) as Entrant
-		player3 = Entrant.parse(testData.player3Data) as Entrant
+		Initializer(process.env.API_TOKEN!)
+		player1 = Entrant.parse(testData.player1Data)
+		player2 = Entrant.parse(testData.player2Data)
+		player3 = Entrant.parse(testData.player3Data)
 		return true
 	})
 

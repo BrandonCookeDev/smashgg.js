@@ -1,11 +1,11 @@
 {
   "name": "startgg.js",
   "author": {
-    "name": "Brandon L Cooke",
-    "email": "brandoncookedev@gmail.com"
+    "name": "Ricardo Maury",
+    "linkedIn": "www.linkedin.com/in/RicardoMauryDev"
   },
   "contributors": [
-    "Ricardo Maury (www.linkedin.com/in/RicardoMauryDev)"
+    "Brandon L Cooke"
   ],
   "version": "1.0.1",
   "description": "Node.JS wrapper for the start.gg public API",

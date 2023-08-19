@@ -5,7 +5,6 @@ config({path: ROOT})
 
 import '../lib/util/ErrorHandler'
 
-import sinon from 'sinon'
 import {expect} from 'chai'
 import {User} from '../lib/models/User'
 import Initializer from '../lib/util/Initializer'
@@ -117,7 +116,7 @@ const J00T_PLACEMENTS = [
 describe('startgg User (has some pending)', () => {
 	before(async function() {
 		this.timeout(15000)
-		await Initializer(process.env.API_TOKEN!)
+		Initializer(process.env.API_TOKEN!)
 		user1 = await User.getById(USER_ID_1)
 		user2 = await User.getById(USER_ID_2)
 		user3 = await User.getById(USER_ID_3)

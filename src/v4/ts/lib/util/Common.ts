@@ -6,8 +6,6 @@ import log from './Logger'
 import {ICommonOptions} from '../interfaces/ICommon'
 import {IGGSet} from '../interfaces/IGGSet'
 
-import { GGSet } from '../models/GGSet'
-
 const DEFAULT_CONCURRENCY = 4
 
 const TOP_8_LABELS = [
@@ -23,7 +21,7 @@ const TOP_8_LABELS_STANDALONE = [
 	'Losers Round 1'
 ]
 
-const losersRoundRegex = new RegExp(/Losers Round ([0-9])/)
+const losersRoundRegex = new RegExp(/Losers Round (\d)/)
 
 export function merge(target: string, obj: any): string{
 	let ret = _.clone(target)
@@ -48,7 +46,7 @@ export function mergeQuery(target: string, obj: any): string{
 		}
 	}
 
-	const orphanedVarsRegex = new RegExp(/\{[\S]*\}/, 'g')
+	const orphanedVarsRegex = new RegExp(/\{\S*\}/, 'g')
 	const orphanedVars = orphanedVarsRegex.exec(ret)
 	if(orphanedVars){
 		log.warn('Variables orphaned by this query: [%s]', orphanedVars.join(','))
@@ -115,7 +113,7 @@ export function orderTop8(sets: IGGSet[]): IGGSet[]{
 export function parseOptions(options: ICommonOptions): ICommonOptions {
 	return {
 		isCached: options.isCached !== undefined ? options.isCached === true : true,
-		concurrency: options.concurrency || DEFAULT_CONCURRENCY,
+		concurrency: options.concurrency ?? DEFAULT_CONCURRENCY,
 		rawEncoding: Encoder.determineEncoding(options.rawEncoding)
 	}
 }

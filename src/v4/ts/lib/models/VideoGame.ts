@@ -81,7 +81,7 @@ export class VideoGame implements IVideoGame{
 		log.debug('VideoGame getByName called [%s]', name)
 		try{
 			// parse options
-			const isCached = options.isCached || true
+			const isCached = options.isCached ?? true
 
 			const cacheKey = format('VideoGame::name::%s', name)
 			if(isCached){
@@ -136,7 +136,7 @@ export class VideoGame implements IVideoGame{
 		const encoded = encoding === 'json' ? 
 			data 
 			: 
-			new Buffer(JSON.stringify(data)).toString(encoding)
+			Buffer.from(JSON.stringify(data)).toString(encoding)
 		this.data = encoded
 		return encoded
 	}
@@ -145,7 +145,7 @@ export class VideoGame implements IVideoGame{
 		const decoded = this.rawEncoding === 'json' ? 
 			data 
 			: 
-			JSON.parse(new Buffer(data.toString(), encoding).toString('utf8'))
+			JSON.parse(Buffer.from(data.toString(), encoding).toString('utf8'))
 		return decoded
 	}
 

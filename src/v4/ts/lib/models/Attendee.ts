@@ -3,7 +3,6 @@ import Log from '../util/Logger'
 import * as queries from '../scripts/attendeeQueries'
 import NI from '../util/NetworkInterface'
 
-import {IUser} from '../interfaces/IUser'
 import {IContactInfo} from '../interfaces/IContactInfo'
 import {IAttendee, 
 	IAttendeeData, 
@@ -69,6 +68,7 @@ export class Attendee implements IAttendee{
 	private contactInfo: IContactInfo | null
 	private eventIds: number[] | null
 
+    // SonarLint TODO: Need restructuring so we dont have as many parameters
 	constructor(
 		id: number,
 		gamerTag: string,
@@ -196,7 +196,7 @@ export class Attendee implements IAttendee{
 	*/
 
 	public async getUserAccount(): Promise<User> {
-		Log.info('Getting User account that Attendee %s (Participant %s) entered', this.gamerTag, this.id!)
+		Log.info('Getting User account that Attendee %s (Participant %s) entered', this.gamerTag, this.id)
 		return await User.getById(this.playerId!)
 	}
 

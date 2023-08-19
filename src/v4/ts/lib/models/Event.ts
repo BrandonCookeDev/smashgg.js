@@ -92,6 +92,7 @@ export class Event extends EventEmitter implements IEvent{
 	private teamNameAllowed: boolean | null
 	private teamManagementDeadline: number | null
 
+    // SonarLint TODO: Need restructuring so we dont have as many parameters
 	constructor(
 		id: number ,
 		name: string,

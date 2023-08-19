@@ -1,10 +1,7 @@
 import { GraphQLClient, Variables } from 'graphql-request'
-import {EventEmitter} from 'events'
 
 import {
-	IPaginatedQueryOptions,
-	IPaginatedQueryPageInfoData,
-	IPaginatedQueryFilters
+	IPaginatedQueryOptions
 } from '../interfaces/IPaginatedQuery'
 
 import log from './Logger'
@@ -12,14 +9,13 @@ import * as Common from './Common'
 import SRQ from './StaggeredRequestQueue'
 import GQLClient from './GQLClient'
 import QueryQueue from './QueryQueue'
-import TokenHandler from './TokenHandler'
-import {merge, mergeQuery} from './Common'
+import {mergeQuery} from './Common'
 
 // import {ITournament, IEvent, IPhase, IPhaseGroup, IPlayer, IGGSet} from '../internal'
 
-const RATE_LIMIT_MS_TIME = process.env.RateLimitMsTime || 1000
-const TOTAL_PAGES_REGEX_JSON = new RegExp(/"pageInfo":[\s]?{[\n\s]*?"totalPages": ([0-9]*)/)
-const TOTAL_PAGES_REGEX_STRING = new RegExp(/"pageInfo":{"totalPages":([0-9]*)}/)
+const RATE_LIMIT_MS_TIME = process.env.RateLimitMsTime ?? 1000
+const TOTAL_PAGES_REGEX_JSON = new RegExp(/"pageInfo":\s?{[\n\s]*?"totalPages": (\d*)/)
+const TOTAL_PAGES_REGEX_STRING = new RegExp(/"pageInfo":{"totalPages":(\d*)}/)
 const MAX_COMPLEXITY = 1000
 
 export default class NetworkInterface{
@@ -89,7 +85,7 @@ export default class NetworkInterface{
 
 	public static clusterQuery(keys: any[], fcn: string, options: any): Promise<any[]>{
 		return Promise.all(keys.map(key => {
-			if(!key.hasOwnProperty(fcn) && !key.__proto__.hasOwnProperty(fcn))
+			if(!key.hasOwnProperty(fcn) && !Object.getPrototypeOf(key).hasOwnProperty(fcn))
 				throw new Error(`${fcn} is not a function in type ${typeof key}`)
 			return key[fcn](options)
 		}))
@@ -114,10 +110,10 @@ export default class NetworkInterface{
 		const results = []
 
 		// parse options
-		const isSinglePage = options !== undefined && options.page
-		const curPage = options !== undefined && options.page ? options.page : 1
-		const curFilters = options !== undefined && options.filters  ? options.filters : null
-		let curPerPage = options !== undefined && options.perPage ? options.perPage : null
+		const isSinglePage = options?.page
+		const curPage = options?.page ? options.page : 1
+		const curFilters = options?.filters  ? options.filters : null
+		let curPerPage = options?.perPage ? options.perPage : null
 
 		// preflight query
 		// first paginated query should get the total page count w/ data
@@ -146,7 +142,7 @@ export default class NetworkInterface{
 		const totalPages = NetworkInterface.parseTotalPages(operationName, preflightData)
 		const onePageComplexity = preflightData[0].extensions.queryComplexity - complexitySubtraction
 		log.info('Total Pages using 1 perPage: %s, Object Complexity per Page: %s', totalPages, onePageComplexity)
-		curPerPage = NetworkInterface.calculateOptimalPerPagecount(onePageComplexity, totalPages)
+		//curPerPage = NetworkInterface.calculateOptimalPerPagecount(onePageComplexity, totalPages)
 			
 		// after, leave off the total page count to minimize complexity
 		
@@ -177,7 +173,7 @@ export default class NetworkInterface{
 	}
 
 	public static calculateOptimalPerPagecount(objectComplexity: number, totalPages: number): number{
-		const totalComplexity = objectComplexity * totalPages
+		//const totalComplexity = objectComplexity * totalPages
 		
 		return MAX_COMPLEXITY / objectComplexity
 		/*
@@ -199,29 +195,29 @@ export default class NetworkInterface{
 		
 		const nextArgs = []
 		for(const i in objects){
-			if(i){
-				// add 1 for each object passed into the function arg array
-				complexity++
+		    if(!i){
+		        continue
+		    }
+			// add 1 for each object passed into the function arg array
+			complexity++
 
-				const cur = objects[i]
-				for(const key in cur) {
-					if(key === 'pageInfo') continue
-					else if(typeof cur[key] === 'object' && cur[key] != null){
-						// if array, calculate the first object then multiple by how many perPage
-						// otherwise add object to nextArgs and dig
-						if(Array.isArray(cur[key])){
-							complexity *= cur[key].length
-							nextArgs.push(cur[key][0])
-						}
-						else{
-							nextArgs.push(cur[key])
-						}
+			const cur = objects[i]
+			let curKeyVal;
+			for(const key in cur) {
+				if(key === 'pageInfo' || cur[key] == null) continue
+				else if(typeof cur[key] === 'object'){
+				    curKeyVal = cur[key];
+					// if array, calculate the first object then multiple by how many perPage
+					// otherwise add object to nextArgs and dig
+					if(Array.isArray(cur[key])){
+						complexity *= cur[key].length
+						curKeyVal = cur[key][0]
 					}
+					nextArgs.push(curKeyVal)
 				}
 			}
 		}
 
-		if(nextArgs.length === 0) return complexity
-		else return complexity + NetworkInterface.determineComplexity(nextArgs)
+		return nextArgs.length === 0 ? complexity : complexity + NetworkInterface.determineComplexity(nextArgs)
 	}
 }

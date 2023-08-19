@@ -1,7 +1,6 @@
 'use strict'
 
 import 'colors'
-import * as Common from './Common'
 import log from './Logger'
 import moment from 'moment'
 import {EventEmitter} from 'events'
@@ -26,13 +25,13 @@ export default class QueryQueue extends EventEmitter{
 			QueryQueue.instance = new QueryQueue()
 			QueryQueue.processing = false
 
-			QueryQueue.instance.on('add', async () => {
+			QueryQueue.instance.on('add', () => {
 				if(!QueryQueue.processing)
 					QueryQueue.instance.processQueue()
 				return true
 			})
 
-			QueryQueue.instance.on('empty', async () => {
+			QueryQueue.instance.on('empty', () => {
 				QueryQueue.processing = false
 				clearInterval(QueryQueue.processInterval)
 			})
@@ -80,8 +79,8 @@ export default class QueryQueue extends EventEmitter{
 		// mange removing elements from the queue
 		QueryQueue.processInterval = setInterval(() => {
 			if(thisQueue.queue.length > 0){
-				const beginMoment = moment(thisQueue.queue[0].timestamp!)
-				const minuteAfter = moment(thisQueue.queue[0].timestamp!).add(1, 'minute')
+				//const beginMoment = moment(thisQueue.queue[0].timestamp)
+				const minuteAfter = moment(thisQueue.queue[0].timestamp).add(1, 'minute')
 				const shouldBePopped = moment().isSameOrAfter(minuteAfter)
 
 				// pop element if needed and then set the DELINQUENCY_RATE'th element
@@ -97,10 +96,10 @@ export default class QueryQueue extends EventEmitter{
 			// notify users of when the next query will fire if client is delinquent
 			if(thisQueue.queue.length >= DELINQUENCY_RATE && !QueryQueue.notificationInterval){
 				QueryQueue.notificationInterval = setInterval(() => {
-					const minuteAfter = moment(thisQueue.queue[0].timestamp!).add(1, 'minute')
+					const minuteAfter = moment(thisQueue.queue[0].timestamp).add(1, 'minute')
 					const timeToNext = moment.duration(minuteAfter.diff(moment()))
 
-					log.debug('element 0 timestamp: %s', moment(thisQueue.queue[0].timestamp!).format())
+					log.debug('element 0 timestamp: %s', moment(thisQueue.queue[0].timestamp).format())
 					log.debug('minuteAfter: %s', minuteAfter.format())
 
 					log.info('next query firing in %s seconds', timeToNext.seconds())

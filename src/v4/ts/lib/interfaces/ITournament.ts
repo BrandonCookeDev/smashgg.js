@@ -1,12 +1,11 @@
 
 import {IVenue} from './IVenue'
-import {IOrganizer} from './IOrganizer'
 import {IEvent, IEventData} from './IEvent'
 import {IPhase, IPhaseData} from './IPhase'
 import {IPhaseGroup, IPhaseGroupData} from './IPhaseGroup'
-import {IEntrant, IEntrantData} from './IEntrant'
+import {IEntrantData} from './IEntrant'
 import {IAttendee, IAttendeePaginatedData} from './IAttendee'
-import {IGGSet, IGGSetData} from './IGGSet'
+import {IGGSetData} from './IGGSet'
 
 export interface ITournament{
 	// id: number

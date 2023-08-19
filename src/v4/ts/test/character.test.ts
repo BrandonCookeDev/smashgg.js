@@ -15,7 +15,7 @@ const PM_ID = 2
 describe('startgg Character', () => {
 
 	beforeEach(async () => {
-		await Cache.getInstance().flushAll()
+		Cache.getInstance().flushAll()
 	})
 
 	it('should get all characters', async function() {

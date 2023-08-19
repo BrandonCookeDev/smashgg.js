@@ -13,8 +13,8 @@ import {IPhaseGroup,
 	IPhaseGroupSetData	
 } from '../interfaces/IPhaseGroup'
 import {IAttendee, IAttendeeData,IAttendeeOptions} from '../interfaces/IAttendee'
-import {IEntrant, IEntrantData, IEntrantDataFull, IEntrantOptions} from '../interfaces/IEntrant'
-import {IGGSet, IGGSetData, IGGSetOptions} from '../interfaces/IGGSet'
+import {IEntrant, IEntrantDataFull, IEntrantOptions} from '../interfaces/IEntrant'
+import {IGGSet, IGGSetOptions} from '../interfaces/IGGSet'
 import {ISeed, ISeedData, ISeedOptions} from '../interfaces/ISeed'
 
 import { Attendee } from './Attendee'
@@ -79,7 +79,8 @@ export class PhaseGroup implements IPhaseGroup{
 	private waveStartAt: number | null
 	private tiebreakOrder: object | null
 
-	constructor(
+    // SonarLint TODO: Need restructuring so we dont have as many parameters
+    constructor(
 		id: number,
 		phaseId: number | null,
 		phaseName: string | null,

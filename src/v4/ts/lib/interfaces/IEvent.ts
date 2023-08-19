@@ -4,7 +4,7 @@ import {IPhaseGroup, IPhaseGroupData} from './IPhaseGroup'
 import {IGGSet, IGGSetOptions, IGGSetData} from './IGGSet'
 import {IEntrant, IEntrantOptions, IEntrantData} from './IEntrant'
 import {IAttendee, IAttendeeOptions, IAttendeeData} from './IAttendee'
-import {IStanding, IStandingData} from './IStanding'
+import {IStandingData} from './IStanding'
 
 export interface IEvent{
 	// id: number 

@@ -91,8 +91,6 @@ export interface IAttendeeWithPhaseGroupsData{
 	}
 }
 
-// export interface IAttendeeConnectedAccount{ }
-
 export interface IAttendeeOptions{
 	areSeedsPublished?: boolean,
 	isVerified?: boolean,

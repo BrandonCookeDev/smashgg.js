@@ -2,7 +2,7 @@
 import { GraphQLClient } from 'graphql-request'
 import TokenHandler from './TokenHandler'
 
-const API_URL = process.env.ApiUrl || 'https://api.smash.gg/gql/alpha'
+const API_URL = process.env.ApiUrl ?? 'https://api.smash.gg/gql/alpha'
 
 export default class GQLClient{
 

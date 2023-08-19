@@ -1,9 +1,9 @@
 import log from './Logger'
 import NodeCache from 'node-cache'
-import { promisifyAll } from 'bluebird'
+//import { promisifyAll } from 'bluebird'
 
-const TTL = process.env.CacheTTL || 600
-const CHECK_PERIOD = process.env.CacheCheckPeriod || 60
+const TTL = process.env.CacheTTL ?? 600
+const CHECK_PERIOD = process.env.CacheCheckPeriod ?? 60
 
 export default class Cache{
 
@@ -37,7 +37,7 @@ export default class Cache{
 		return new Promise((resolve, reject) => {
 			log.debug('Fetching (%s) from cache', key)
             try{
-                var result = Cache.getInstance().get(key)
+                const result = Cache.getInstance().get(key)
                 resolve(result)
             }
             catch(err){
@@ -51,7 +51,7 @@ export default class Cache{
 		return new Promise((resolve, reject) => {
 			log.debug('Setting (%s) to value [%s]', key, val)
 			try{
-                var result = Cache.getInstance().set(key, val)
+                const result = Cache.getInstance().set(key, val)
                 resolve(result)
             }
             catch(err){
@@ -65,7 +65,7 @@ export default class Cache{
 		return new Promise((resolve, reject) => {
 			log.debug('returning keys')
             try{
-                var result = Cache.getInstance().keys()
+                const result = Cache.getInstance().keys()
                 resolve(result)
             }
             catch(err){

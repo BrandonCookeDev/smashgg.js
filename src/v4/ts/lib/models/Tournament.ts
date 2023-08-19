@@ -14,7 +14,6 @@ import {
 	ITournamentAttendeeData
 } from '../interfaces/ITournament'
 import {IVenue} from '../interfaces/IVenue'
-import {IOrganizer} from '../interfaces/IOrganizer'
 import {IEvent} from '../interfaces/IEvent'
 import {IPhase} from '../interfaces/IPhase'
 import {IPhaseGroup} from '../interfaces/IPhaseGroup'
@@ -23,11 +22,9 @@ import {IEntrant, IEntrantOptions} from '../interfaces/IEntrant'
 import {IAttendee, IAttendeeOptions, IAttendeeData, IAttendeePaginatedData} from '../interfaces/IAttendee'
 
 import {Venue} from './Venue'
-import {Organizer} from './Organizer'
 import {Event} from './Event'
 import {Phase} from './Phase'
 import {PhaseGroup} from './PhaseGroup'
-import {User} from './User'
 import {Entrant} from './Entrant'
 import {Attendee} from './Attendee'
 import {GGSet} from './GGSet'
@@ -35,8 +32,8 @@ import {GGSet} from './GGSet'
 export class Tournament implements ITournament{
 	
 	public static parse(data: ITournamentData): ITournament{
-		const startTimeDate =  data.startAt ? moment.unix(data.startAt!).toDate() : null
-		const endTimeDate = data.endAt ? moment.unix(data.endAt!).toDate() : null
+		const startTimeDate =  data.startAt ? moment.unix(data.startAt).toDate() : null
+		const endTimeDate = data.endAt ? moment.unix(data.endAt).toDate() : null
 
 		const venue = new Venue(
 			data.venueName, data.venueAddress, data.city,

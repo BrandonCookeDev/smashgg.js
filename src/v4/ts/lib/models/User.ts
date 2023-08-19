@@ -1,5 +1,4 @@
 import NI from '../util/NetworkInterface'
-import * as Common from '../util/Common'
 import * as queries from '../scripts/userQueries'
 import Log from '../util/Logger'
 
@@ -50,7 +49,8 @@ export class User implements IUser{
     private playerId: number | null
     private playerGamertag: string | null
     private playerPrefix: string | null
-		
+
+	// SonarLint TODO: Need restructuring so we dont have as many parameters
 	constructor(
 		id: number | null,
         bio: string | null,
@@ -62,14 +62,14 @@ export class User implements IUser{
         playerGamertag: string | null,
         playerPrefix: string | null
 	){
-		this.id = id,
-        this.bio = bio,
-        this.discriminator = discriminator,
-        this.email = email,
-        this.genderPronoun = genderPronoun,
-        this.name = name,
-        this.playerId = playerId,
-        this.playerGamertag = playerGamertag,
+		this.id = id
+        this.bio = bio
+        this.discriminator = discriminator
+        this.email = email
+        this.genderPronoun = genderPronoun
+        this.name = name
+        this.playerId = playerId
+        this.playerGamertag = playerGamertag
         this.playerPrefix = playerPrefix
 	}
 

@@ -17,8 +17,8 @@ import {
 	IPhaseGroupData,
 	IPhaseGroupEventData,
 } from '../interfaces/IPhaseGroup'
-import {IGGSet, IGGSetOptions, IGGSetData} from '../interfaces/IGGSet'
-import {IAttendee, IAttendeeData, IAttendeeOptions} from '../interfaces/IAttendee'
+import {IGGSet, IGGSetOptions} from '../interfaces/IGGSet'
+import {IAttendee, IAttendeeOptions} from '../interfaces/IAttendee'
 import {IEntrant, IEntrantData, IEntrantOptions} from '../interfaces/IEntrant'
 import {ISeed, ISeedData, ISeedOptions} from '../interfaces/ISeed'
 

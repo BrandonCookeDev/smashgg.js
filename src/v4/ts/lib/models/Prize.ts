@@ -1,4 +1,4 @@
-import {IPrize, IPrizing, IPrizeData, IPrizeDataFull} from '../interfaces/IPrize'
+import {IPrize, IPrizing} from '../interfaces/IPrize'
 
 export class Prize implements IPrize{
 	

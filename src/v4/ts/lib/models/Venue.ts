@@ -28,6 +28,7 @@ export class Venue implements IVenue{
 	private latitude: number | null
 	private longitude: number | null
 
+	// SonarLint TODO: Need restructuring so we dont have as many parameters
 	constructor(
 		name: string | null, address: string | null, city: string | null, 
 		state: string | null, countryCode: string | null,

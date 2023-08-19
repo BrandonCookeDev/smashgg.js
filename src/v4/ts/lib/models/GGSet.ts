@@ -24,7 +24,7 @@ import {Attendee} from './Attendee'
 import {Entrant} from './Entrant'
 import {PlayerLite} from './PlayerLite'
 
-const DISPLAY_SCORE_REGEX = new RegExp(/^([\S\s]*) ([0-9]{1,3}) - ([\S\s]*) ([0-9]{1,3})$/)
+const DISPLAY_SCORE_REGEX = new RegExp(/^([\S\s]*) (\d{1,3}) - ([\S\s]*) (\d{1,3})$/)
 
 export class GGSet extends EventEmitter implements IGGSet{
 
@@ -38,10 +38,10 @@ export class GGSet extends EventEmitter implements IGGSet{
 			score2 = +parsed[4]
 		}
 		return {
-			tag1: tag1 || null,
-			tag2: tag2 || null,
-			score1: score1 || 0,
-			score2: score2 || 0
+			tag1: tag1 ?? null,
+			tag2: tag2 ?? null,
+			score1: score1 ?? 0,
+			score2: score2 ?? 0
 		}
 	}
 
@@ -165,6 +165,7 @@ export class GGSet extends EventEmitter implements IGGSet{
 	public score1: number | null
 	public score2: number | null
 
+    // SonarLint TODO: Need restructuring so we dont have as many parameters
 	constructor(
 		id: number,
 		completedAt: number | null,
@@ -308,14 +309,14 @@ export class GGSet extends EventEmitter implements IGGSet{
 	}
 
 	public getIsComplete(): boolean | null{
-		return this.completedAt ? true : false
+		return this.completedAt != null
 	}
 
-	public getCompletedTime(): Date | null{
-		if(this.completedAt)
-			return moment.unix(this.completedAt).toDate()
-		else return null
-	}
+// 	public getCompletedTime(): Date | null{
+// 		if(this.completedAt)
+// 			return moment.unix(this.completedAt).toDate()
+// 		else return null
+// 	}
 
 	public getPlayer1Score(): number | null{
 		if(this.score1)
@@ -361,7 +362,7 @@ export class GGSet extends EventEmitter implements IGGSet{
 	}
 
 	public getBestOfCount(): number {
-		return this.totalGames || 0
+		return this.totalGames ?? 0
 	}
 
 	public getWinnerScore(): number {
@@ -369,7 +370,7 @@ export class GGSet extends EventEmitter implements IGGSet{
 			throw new Error('Cannot get winner score of incomplete set')
 		else if(this.score1 == null || this.score2 == null){
 			if(this.score1 == null) return this.score2!
-			else return this.score2!
+			else return this.score1
 		}
 		else return this.score1 > this.score2 ? this.score1 : this.score2
 	}
@@ -427,7 +428,7 @@ export class GGSet extends EventEmitter implements IGGSet{
 		const data: IGGSetSlotAttendeeData = await NI.query(queries.attendees, {id: this.id})
 		const entrants = data.set.slots.map(slot => slot.entrant).filter(entrant => entrant != null)
 		const participants = 
-			_.flatten(entrants.map(entrant => entrant!.participants)).filter(participant => participant != null)
+			_.flatten(entrants.map(entrant => entrant?.participants)).filter(participant => participant != null)
 		const attendees: IAttendee[] = participants.map(participant => Attendee.parse(participant!))
 		return attendees
 	}

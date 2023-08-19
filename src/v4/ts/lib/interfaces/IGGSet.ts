@@ -43,7 +43,7 @@ export interface IGGSet{
 	getWinnerId(): number | null
 	getLoserId(): number | null
 	getIsComplete(): boolean | null
-	getCompletedTime(): Date | null
+	//getCompletedTime(): Date | null
 	getPlayer1Score(): number | null
 	getPlayer2Score(): number | null
 	getWinner(): IPlayerLite | undefined

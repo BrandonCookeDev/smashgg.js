@@ -176,9 +176,9 @@ export class Tournament implements ITournament{
 		log.info('Getting Sets for Tournament [%s :: %s]', this.id, this.name)
 
 		log.warn(
-			'Puilling Sets for large or massive Tournaments may ' +
+			'Pulling Sets for large or massive Tournaments may ' +
 			'lead to long execution times and lowered usability. It ' +
-			'is recommended to pull from Event if you are targetting ' +
+			'is recommended to pull from Event if you are targeting ' +
 			'a single event\'s Sets')
 
 		const pgs = await this.getPhaseGroups()
@@ -192,9 +192,9 @@ export class Tournament implements ITournament{
 		log.info('Getting Entrants for Tournament [%s :: %s]', this.id, this.name)
 
 		log.warn(
-			'Puilling Entrants for large or massive Tournaments may ' +
+			'Pulling Entrants for large or massive Tournaments may ' +
 			'lead to long execution times and lowered usability. It is ' + 
-			'recommended to pull from Event if you are targetting a ' +
+			'recommended to pull from Event if you are targeting a ' +
 			'single event\'s Entrants')
 		
 		const pgs = await this.getPhaseGroups()

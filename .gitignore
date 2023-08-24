@@ -5,6 +5,7 @@
 node_modules/
 src/v4/js/
 src/v1/js/
+mochawesome-report/
 
 *.tgz
 .env

@@ -136,16 +136,16 @@ export class VideoGame implements IVideoGame{
 		const encoded = encoding === 'json' ? 
 			data 
 			: 
-			Buffer.from(JSON.stringify(data)).toString(encoding)
-		this.data = encoded
-		return encoded
+			Buffer.from(JSON.stringify(data), encoding as BufferEncoding)
+		this.data = encoded.toString()
+		return encoded.toString()
 	}
 
 	public getData(data: IVideoGameData, encoding: string): IVideoGameData {
 		const decoded = this.rawEncoding === 'json' ? 
 			data 
 			: 
-			JSON.parse(Buffer.from(data.toString(), encoding).toString('utf8'))
+			JSON.parse(Buffer.from(JSON.stringify(data), encoding as BufferEncoding).toString('utf8'))
 		return decoded
 	}
 

@@ -10,12 +10,12 @@ export default class Encoder{
 	}
 
 	public static encode(data: object, encoding: string=DEFAULT_ENCODING): object | string {
-		const encoded = encoding === 'json' ? data : Buffer.from(JSON.stringify(data)).toString(encoding)
+		const encoded = encoding === 'json' ? data : Buffer.from(JSON.stringify(data)).toString(encoding as BufferEncoding)
 		return encoded
 	}
 
 	public static decode(data: object | string, encoding: string=DEFAULT_ENCODING): object {
-		const decoded = encoding === 'json' ? data : JSON.parse(Buffer.from(data.toString(), encoding).toString('utf8'))
+		const decoded = encoding === 'json' ? data : JSON.parse(Buffer.from(data.toString(), encoding as BufferEncoding).toString('utf8'))
 		return decoded
 	}
 }

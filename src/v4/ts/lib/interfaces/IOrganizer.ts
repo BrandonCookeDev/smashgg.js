@@ -2,7 +2,6 @@
 export interface IOrganizer{
 	/*
 	id: number | null
-	email: string | null
 	phone: string | null
 	twitter: string | null
 	info: string | null
@@ -10,7 +9,6 @@ export interface IOrganizer{
 	
 	getId(): number | null
 	getBio(): string | null
-	getEmail(): string | null
 	getGenderPronoun(): string | null
 	getGamerTag(): string | null
 }
@@ -20,7 +18,6 @@ export interface IOrganizerData {
 		    owner: {
 		        id: number,
 		        bio: string | null,
-		        email: string | null,
 		        genderPronoun: string | null,
 		        player: {
 		            gamerTag: string | null

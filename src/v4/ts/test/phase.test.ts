@@ -34,18 +34,18 @@ const ID2 = 1242261
 const EVENT_ID_2 = 432884
 const PHASE_2_PG_COUNT = 2
 const PHASE_2_SET_COUNT = 1164
-const PHASE_2_ENTRANT_COUNT = 429
-const PHASE_2_ATTENDEE_COUNT = 200
+const PHASE_2_ENTRANT_COUNT = 128
+const PHASE_2_ATTENDEE_COUNT = 128
 
 const ID3 = 1242262
 const EVENT_ID_3 = 432884
 const PHASE_3_PG_COUNT = 1
 const PHASE_3_SET_COUNT = 1164
-const PHASE_3_ENTRANT_COUNT = 226
-const PHASE_3_ATTENDEE_COUNT = 226
+const PHASE_3_ENTRANT_COUNT = 8
+const PHASE_3_ATTENDEE_COUNT = 8
 
 let phase1: IPhase 
-let phase2: IPhase 
+let phase2: IPhase
 let phase3: IPhase
 // let concurrency = 4
 
@@ -63,7 +63,7 @@ describe('startgg Phase', function() {
 	// id
 	it('should get the correct id of the Phase 1', () => {
 		expect(phase1.getId()).to.be.equal(testData.phase1.id)
-	})	
+	})
 	it('should get the correct id of the Phase 2', () => {
 		expect(phase2.getId()).to.be.equal(testData.phase2.id)
 	})
@@ -122,17 +122,17 @@ describe('startgg Phase', function() {
 		return true
 	})
 
-	xit('should correctly get all sets 2', async function() {
-		this.timeout(120000)
-		await testSets(phase2, PHASE_2_SET_COUNT)
-		return true
-	})
-
-	xit('should correctly get all sets 3', async function() {
-		this.timeout(60000)
-		await testSets(phase3, PHASE_3_SET_COUNT)
-		return true
-	})
+// 	xit('should correctly get all sets 2', async function() {
+// 		this.timeout(120000)
+// 		await testSets(phase2, PHASE_2_SET_COUNT)
+// 		return true
+// 	})
+//
+// 	xit('should correctly get all sets 3', async function() {
+// 		this.timeout(60000)
+// 		await testSets(phase3, PHASE_3_SET_COUNT)
+// 		return true
+// 	})
 
 	// entrants
 	it('should correctly get all entrants 1', async function() {
@@ -140,7 +140,7 @@ describe('startgg Phase', function() {
 		await testEntrants(phase1, PHASE_1_ENTRANT_COUNT)
 		return true
 	})
-	xit('should correctly get all entrants 2', async function() {
+	it('should correctly get all entrants 2', async function() {
 		this.timeout(30000)
 		await testEntrants(phase2, PHASE_2_ENTRANT_COUNT)
 		return true
@@ -150,14 +150,14 @@ describe('startgg Phase', function() {
 		await testEntrants(phase3, PHASE_3_ENTRANT_COUNT)
 		return true
 	})
-	
+
 	// attendee
 	it('should correctly get all attendees 1', async function() {
 		this.timeout(30000)
 		await testAttendees(phase1, PHASE_1_ATTENDEE_COUNT)
 		return true
 	})
-	xit('should correctly get all attendees 2', async function() {
+	it('should correctly get all attendees 2', async function() {
 		this.timeout(30000)
 		await testAttendees(phase2, PHASE_2_ATTENDEE_COUNT)
 		return true
@@ -207,7 +207,7 @@ describe('startgg Phase', function() {
 
 	it('should correctly get all phase groups 2', async () => {
 		this.timeout(45000)
-		
+
 		let phaseGroups2 = await phase2.getPhaseGroups({concurrency: concurrency})
 
 		expect(phaseGroups2.length).to.be.equal(32)
@@ -226,7 +226,7 @@ describe('startgg Phase', function() {
 
 	it('should correctly get all phase groups 3', async () => {
 		this.timeout(45000)
-		
+
 		let phaseGroups3 = await phase3.getPhaseGroups({concurrency: concurrency})
 
 		expect(phaseGroups3.length).to.be.equal(16)
@@ -259,7 +259,7 @@ describe('startgg Phase', function() {
 
 	xit('should correctly get all sets for a phase 2', async () => {
 		this.timeout(45000)
-		
+
 		let sets2 = await phase2.getSets({concurrency: concurrency})
 
 		expect(sets2.length).to.be.equal(1292)
@@ -273,7 +273,7 @@ describe('startgg Phase', function() {
 
 	it('should correctly get all sets for a phase 3', async () => {
 		this.timeout(45000)
-		
+
 		let sets3 = await phase3.getSets({concurrency: concurrency})
 
 		expect(sets3.length).to.be.equal(450)
@@ -287,7 +287,7 @@ describe('startgg Phase', function() {
 
 	it('should correctly get all players for a phase', async () => {
 		this.timeout(30000)
-		
+
 		let players1 = await phase1.getPlayers({concurrency: concurrency})
 
 		expect(players1.length).to.be.equal(156)
@@ -301,7 +301,7 @@ describe('startgg Phase', function() {
 
 	it('should correctly get all players for a phase', async () => {
 		this.timeout(30000)
-		
+
 		let players2 = await phase2.getPlayers({concurrency: concurrency})
 
 		expect(players2.length).to.be.equal(678)

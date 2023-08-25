@@ -265,16 +265,6 @@ describe('Smash GG Tournament', function(){
 		done();
 	});
 
-	it('should return the correct contact email', function(done){
-		let email1 = tournament1.getContactEmail();
-		let email2 = tournament2.getContactEmail();
-
-		expect(email1).to.be.equal('contact@recursion.gg');
-		expect(email2).to.be.equal('ceogaming@gmail.com');
-
-		done()
-	});
-
 	it('should return the correct contact twitter', function(done){
 		let twitter1 = tournament1.getContactTwitter();
 		let twitter2 = tournament2.getContactTwitter();

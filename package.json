@@ -7,7 +7,7 @@
   "contributors": [
     "Brandon L Cooke"
   ],
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Node.JS wrapper for the start.gg public API",
   "main": "index.js",
   "engines": {
@@ -21,7 +21,7 @@
     "setupDebug": "node resources/scripts/setupDebug",
     "pretest": "tsc",
     "watch": "gulp watch",
-    "test": "mocha ./src/v4/js/test --reporter mochawesome",
+    "test": "mocha ./src/v4/js/test --reporter mochawesome --exit",
     "lint": "./node_modules/.bin/eslint .",
     "tsc": "tsc",
     "tsc-v1": "tsc --project tsconfig.v1.json",

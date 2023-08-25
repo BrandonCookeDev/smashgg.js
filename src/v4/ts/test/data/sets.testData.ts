@@ -156,12 +156,6 @@ export const set2WithGames: IGGSetDataWithGames = {
 	}
 }
 
-export const set3WithGames: IGGSetDataWithGames = {
-	set: {
-		games: gameData.games3
-	}
-}
-
 export const set1Full: IGGSetDataFull = {
 	set: set1
 }

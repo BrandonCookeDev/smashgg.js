@@ -7,7 +7,7 @@ export class Organizer implements IOrganizer{
 
 	public static parse(data: IOrganizerData): IOrganizer{
 		const organizer = new Organizer(
-			data.tournament.owner.id, data.tournament.owner.bio, data.tournament.owner.email,
+			data.tournament.owner.id, data.tournament.owner.bio,
 			data.tournament.owner.genderPronoun, data.tournament.owner.player.gamerTag
 		)
 		return organizer
@@ -21,20 +21,17 @@ export class Organizer implements IOrganizer{
 
 	private id: number | null
 	private bio: string | null
-	private email: string | null
 	private genderPronoun: string | null
 	private gamerTag: string | null
 
 	constructor(
 		id: number | null, 
 		bio: string | null,
-		email: string | null,
 		genderPronoun: string | null,
 		gamerTag: string | null
 	){
 		this.id = id
 		this.bio = bio
-		this.email = email
 		this.genderPronoun = genderPronoun
 		this.gamerTag = gamerTag
 	}
@@ -45,10 +42,6 @@ export class Organizer implements IOrganizer{
 
 	public getBio() {
 		return this.bio
-	}
-	
-	public getEmail() {
-		return this.email
 	}
 	
 	public getGenderPronoun() {

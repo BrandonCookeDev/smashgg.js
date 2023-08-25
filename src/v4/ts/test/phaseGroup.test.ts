@@ -188,17 +188,17 @@ describe('startgg PhaseGroup', function() {
 		await testSeeds(phaseGroup2, PG_2_SEED_COUNT)
 		return true
 	})
-	xit('should return the correct seeds 3', async function() {
-		this.timeout(30000)
-		await testSeeds(phaseGroup3, PG_3_SEED_COUNT)
-		return true
-	})
-	// Bracket was deleted? Might wanna change to different test case in the future
-	xit('should return the correct seeds 4', async function() {
-		this.timeout(30000)
-		await testSeeds(phaseGroup4, PG_4_SEED_COUNT)
-		return true
-	})
+// 	xit('should return the correct seeds 3', async function() {
+// 		this.timeout(30000)
+// 		await testSeeds(phaseGroup3, PG_3_SEED_COUNT)
+// 		return true
+// 	})
+// 	// Bracket was deleted? Might wanna change to different test case in the future
+// 	xit('should return the correct seeds 4', async function() {
+// 		this.timeout(30000)
+// 		await testSeeds(phaseGroup4, PG_4_SEED_COUNT)
+// 		return true
+// 	})
 
 	// entrants
 	it('should return the correct entrants 1', async function() {
@@ -211,17 +211,17 @@ describe('startgg PhaseGroup', function() {
 		await testEntrants(phaseGroup2, PG_2_ENTRANT_COUNT)
 		return true
 	})
-	xit('should return the correct entrants 3', async function() {
-		this.timeout(30000)
-		await testEntrants(phaseGroup3, PG_3_ENTRANT_COUNT)
-		return true
-	})
-	// Bracket was deleted? Might wanna change to different test case in the future
-	xit('should return the correct entrants 4', async function() {
-		this.timeout(30000)
-		await testEntrants(phaseGroup4, PG_4_ENTRANT_COUNT)
-		return true
-	})
+// 	xit('should return the correct entrants 3', async function() {
+// 		this.timeout(30000)
+// 		await testEntrants(phaseGroup3, PG_3_ENTRANT_COUNT)
+// 		return true
+// 	})
+// 	// Bracket was deleted? Might wanna change to different test case in the future
+// 	xit('should return the correct entrants 4', async function() {
+// 		this.timeout(30000)
+// 		await testEntrants(phaseGroup4, PG_4_ENTRANT_COUNT)
+// 		return true
+// 	})
 	
 	// participants
 	it('should return the correct attendees 1', async function() {
@@ -234,17 +234,17 @@ describe('startgg PhaseGroup', function() {
 		await testAttendees(phaseGroup2, PG_2_ATTENDEE_COUNT)
 		return true
 	})
-	xit('should return the correct attendees 3', async function() {
-		this.timeout(30000)
-		await testAttendees(phaseGroup3, PG_3_ATTENDEE_COUNT)
-		return true
-	})
-	// Bracket was deleted? Might wanna change to different test case in the future
-	xit('should return the correct attendees 4', async function() {
-		this.timeout(30000)
-		await testAttendees(phaseGroup4, PG_4_ATTENDEE_COUNT)
-		return true
-	})
+// 	xit('should return the correct attendees 3', async function() {
+// 		this.timeout(30000)
+// 		await testAttendees(phaseGroup3, PG_3_ATTENDEE_COUNT)
+// 		return true
+// 	})
+// 	// Bracket was deleted? Might wanna change to different test case in the future
+// 	xit('should return the correct attendees 4', async function() {
+// 		this.timeout(30000)
+// 		await testAttendees(phaseGroup4, PG_4_ATTENDEE_COUNT)
+// 		return true
+// 	})
 
 	// set
 	it('should return the correct Sets 1', async function() {
@@ -257,17 +257,17 @@ describe('startgg PhaseGroup', function() {
 		await testSets(phaseGroup2, PG_2_SET_COUNT)
 		return true
 	})
-	xit('should return the correct Sets 3', async function() {
-		this.timeout(30000)
-		await testSets(phaseGroup3, PG_3_SET_COUNT)
-		return true
-	})
-	// Bracket was deleted? Might wanna change to different test case in the future
-	xit('should return the correct Sets 4', async function() {
-		this.timeout(30000)
-		await testSets(phaseGroup4, PG_4_SET_COUNT)
-		return true
-	})
+// 	xit('should return the correct Sets 3', async function() {
+// 		this.timeout(30000)
+// 		await testSets(phaseGroup3, PG_3_SET_COUNT)
+// 		return true
+// 	})
+// 	// Bracket was deleted? Might wanna change to different test case in the future
+// 	xit('should return the correct Sets 4', async function() {
+// 		this.timeout(30000)
+// 		await testSets(phaseGroup4, PG_4_SET_COUNT)
+// 		return true
+// 	})
 
 	// sets filter dq
 	it('should return the correct DQ filtered Sets 1', async function() {
@@ -288,11 +288,11 @@ describe('startgg PhaseGroup', function() {
 		return true
 	})
 	// Bracket was deleted? Might wanna change to different test case in the future
-	xit('should return the correct Reset filtered Sets 4', async function() {
-		this.timeout(30000)
-		await testSetsFilterResets(phaseGroup4, PG_4_RESET_FILTERED_SET_COUNT)
-		return true
-	})
+// 	xit('should return the correct Reset filtered Sets 4', async function() {
+// 		this.timeout(30000)
+// 		await testSetsFilterResets(phaseGroup4, PG_4_RESET_FILTERED_SET_COUNT)
+// 		return true
+// 	})
 	
 	// completed sets
 	it('should get the correct number of completed sets 1', async function() {
@@ -301,11 +301,11 @@ describe('startgg PhaseGroup', function() {
 		return true
 	})
 	// Bracket was deleted? Might wanna change to different test case in the future
-	xit('should get the correct number of completed sets 4', async function() {
-		this.timeout(30000)
-		await testSetsCompleted(phaseGroup4, PG_4_COMPLETED_SET_COUNT)
-		return true
-	})
+// 	xit('should get the correct number of completed sets 4', async function() {
+// 		this.timeout(30000)
+// 		await testSetsCompleted(phaseGroup4, PG_4_COMPLETED_SET_COUNT)
+// 		return true
+// 	})
 
 	// incompleted sets
 	it('should get the correct number of incomplete sets 1', async function() {
@@ -314,11 +314,11 @@ describe('startgg PhaseGroup', function() {
 		return true
 	})
 	// Bracket was deleted? Might wanna change to different test case in the future
-	xit('should get the correct number of incomplete sets 4', async function() {
-		this.timeout(30000)
-		await testSetsIncomplete(phaseGroup4, PG_4_INCOMPLETE_SET_COUNT)
-		return true
-	})
+// 	xit('should get the correct number of incomplete sets 4', async function() {
+// 		this.timeout(30000)
+// 		await testSetsIncomplete(phaseGroup4, PG_4_INCOMPLETE_SET_COUNT)
+// 		return true
+// 	})
 
 	// finished x minutes ago
 	/*

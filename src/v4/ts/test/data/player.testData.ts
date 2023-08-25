@@ -17,20 +17,9 @@ export const player2Data: IEntrantData = {
 	participants: [AttendeeData.participant2Data]
 }
 
-export const player3Data: IEntrantData = {
-	id: 1128945,
-	name: 'bobby big ballz',
-	eventId: 23596,
-	skill: 6,
-	participants: [AttendeeData.participant3Data]
-}
-
 export const entrant1: IEntrantDataFull = {
 	entrant: player1Data
 }
 export const entrant2: IEntrantDataFull = {
 	entrant: player2Data
-}
-export const entrant3: IEntrantDataFull = {
-	entrant: player3Data
 }

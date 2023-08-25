@@ -14,14 +14,13 @@ import {PhaseGroup} from '../lib/models/PhaseGroup'
 import Initializer from '../lib/util/Initializer'
 
 import * as testData from './data/attendee.testData'
-let attendee1: IAttendee, attendee2: IAttendee, attendee3: IAttendee
+let attendee1: IAttendee, attendee2: IAttendee
 
 describe('startgg Attendee (Participant)', () => {
 	before(async () => {
 		Initializer(process.env.API_TOKEN!)
 		attendee1 = Attendee.parseFull(testData.attendee1Data)
 		attendee2 = Attendee.parseFull(testData.attendee2Data)
-		attendee3 = Attendee.parseFull(testData.attendee3Data)
 		return true
 	})
 
@@ -32,9 +31,6 @@ describe('startgg Attendee (Participant)', () => {
 	it('should get the correct attendee Attendee (smash.gg Participant) id 2', () => {
 		expect(attendee2.getId()).to.be.equal(testData.attendee2Data.participant.id)
 	})
-	it('should get the correct attendee Attendee (smash.gg Participant) id 3', () => {
-		expect(attendee3.getId()).to.be.equal(testData.attendee3Data.participant.id)
-	})
 
 	// gamer tag
 	it('should get the correct attendee Attendee (smash.gg Participant) gamer tag 1', () => {
@@ -42,9 +38,6 @@ describe('startgg Attendee (Participant)', () => {
 	})
 	it('should get the correct attendee Attendee (smash.gg Participant) gamer tag 2', () => {
 		expect(attendee2.getGamerTag()).to.be.equal(testData.attendee2Data.participant.gamerTag)
-	})
-	it('should get the correct attendee Attendee (smash.gg Participant) gamer tag 3', () => {
-		expect(attendee3.getGamerTag()).to.be.equal(testData.attendee3Data.participant.gamerTag)
 	})
 
 	// sponsor
@@ -54,9 +47,6 @@ describe('startgg Attendee (Participant)', () => {
 	it('should get the correct attendee Attendee (smash.gg Participant) sponsor 2', () => {
 		expect(attendee2.getSponsor()).to.be.equal(testData.attendee2Data.participant.prefix)
 	})
-	it('should get the correct attendee Attendee (smash.gg Participant) sponsor 3', () => {
-		expect(attendee3.getSponsor()).to.be.equal(testData.attendee3Data.participant.prefix)
-	})
 
 	// phone number
 	it('should get the correct attendee Attendee (smash.gg Participant) phone number 1', () => {
@@ -65,18 +55,12 @@ describe('startgg Attendee (Participant)', () => {
 	it('should get the correct attendee Attendee (smash.gg Participant) phone number 2', () => {
 		expect(attendee2.getPhoneNumber()).to.be.equal(testData.attendee2Data.participant.phoneNumber)
 	})
-	it('should get the correct attendee Attendee (smash.gg Participant) phone number 3', () => {
-		expect(attendee3.getPhoneNumber()).to.be.equal(testData.attendee3Data.participant.phoneNumber)
-	})
 
 	// contact info
 	it('should get the correct attendee Attendee (smash.gg Participant) contact info 1', () => {
 		expect(attendee1.getContactInfo()).to.deep.equal(testData.attendee1Data.participant.contactInfo)
 	})
 	it('should get the correct attendee Attendee (smash.gg Participant) contact info 2', () => {
-		expect(attendee1.getContactInfo()).to.deep.equal(testData.attendee1Data.participant.contactInfo)
-	})
-	it('should get the correct attendee Attendee (smash.gg Participant) contact info 3', () => {
 		expect(attendee1.getContactInfo()).to.deep.equal(testData.attendee1Data.participant.contactInfo)
 	})
 
@@ -87,9 +71,6 @@ describe('startgg Attendee (Participant)', () => {
 	it('should get the correct attendee Attendee (smash.gg Participant) city 2', () => {
 		expect(attendee2.getCity()).to.be.equal(testData.attendee2Data.participant.contactInfo!.city)
 	})
-	it('should get the correct attendee Attendee (smash.gg Participant) city 3', () => {
-		expect(attendee3.getCity()).to.be.equal(testData.attendee3Data.participant.contactInfo!.city)
-	})
 
 	// state 
 	it('should get the correct attendee Attendee (smash.gg Participant) state 1', () => {
@@ -97,9 +78,6 @@ describe('startgg Attendee (Participant)', () => {
 	})
 	it('should get the correct attendee Attendee (smash.gg Participant) state 2', () => {
 		expect(attendee2.getState()).to.be.equal(testData.attendee2Data.participant.contactInfo!.state)
-	})
-	it('should get the correct attendee Attendee (smash.gg Participant) state 3', () => {
-		expect(attendee3.getState()).to.be.equal(testData.attendee3Data.participant.contactInfo!.state)
 	})
 
 	// state id
@@ -109,9 +87,6 @@ describe('startgg Attendee (Participant)', () => {
 	it('should get the correct attendee Attendee (smash.gg Participant) state id 2', () => {
 		expect(attendee2.getStateId()).to.be.equal(testData.attendee2Data.participant.contactInfo!.stateId)
 	})
-	it('should get the correct attendee Attendee (smash.gg Participant) state id 3', () => {
-		expect(attendee3.getStateId()).to.be.equal(testData.attendee3Data.participant.contactInfo!.stateId)
-	})
 
 	// country
 	it('should get the correct attendee Attendee (smash.gg Participant) country 1', () => {
@@ -119,9 +94,6 @@ describe('startgg Attendee (Participant)', () => {
 	})
 	it('should get the correct attendee Attendee (smash.gg Participant) country 2', () => {
 		expect(attendee2.getCountry()).to.be.equal(testData.attendee2Data.participant.contactInfo!.country)
-	})
-	it('should get the correct attendee Attendee (smash.gg Participant) country 3', () => {
-		expect(attendee3.getCountry()).to.be.equal(testData.attendee3Data.participant.contactInfo!.country)
 	})
 
 	// country id
@@ -131,9 +103,6 @@ describe('startgg Attendee (Participant)', () => {
 	it('should get the correct attendee Attendee (smash.gg Participant) country id 2', () => {
 		expect(attendee2.getStateId()).to.be.equal(testData.attendee2Data.participant.contactInfo!.countryId)
 	})
-	it('should get the correct attendee Attendee (smash.gg Participant) country id 3', () => {
-		expect(attendee3.getStateId()).to.be.equal(testData.attendee3Data.participant.contactInfo!.countryId)
-	})
 
 	// contact name
 	it('should get the correct attendee Attendee (smash.gg Participant) contact name 1', () => {
@@ -141,9 +110,6 @@ describe('startgg Attendee (Participant)', () => {
 	})
 	it('should get the correct attendee Attendee (smash.gg Participant) contact name 2', () => {
 		expect(attendee2.getContactName()).to.be.equal(testData.attendee2Data.participant.contactInfo!.name)
-	})
-	it('should get the correct attendee Attendee (smash.gg Participant) contact name 3', () => {
-		expect(attendee3.getContactName()).to.be.equal(testData.attendee3Data.participant.contactInfo!.name)
 	})
 
 	// first name
@@ -153,9 +119,6 @@ describe('startgg Attendee (Participant)', () => {
 	it('should get the correct attendee Attendee (smash.gg Participant) first name 2', () => {
 		expect(attendee2.getFirstName()).to.be.equal(testData.attendee2Data.participant.contactInfo!.nameFirst)
 	})
-	it('should get the correct attendee Attendee (smash.gg Participant) first name 3', () => {
-		expect(attendee3.getFirstName()).to.be.equal(testData.attendee3Data.participant.contactInfo!.nameFirst)
-	})
 
 	// last name
 	it('should get the correct attendee Attendee (smash.gg Participant) last name 1', () => {
@@ -164,9 +127,6 @@ describe('startgg Attendee (Participant)', () => {
 	it('should get the correct attendee Attendee (smash.gg Participant) last name 2', () => {
 		expect(attendee2.getLastName()).to.be.equal(testData.attendee2Data.participant.contactInfo!.nameLast)
 	})
-	it('should get the correct attendee Attendee (smash.gg Participant) last name 3', () => {
-		expect(attendee3.getLastName()).to.be.equal(testData.attendee3Data.participant.contactInfo!.nameLast)
-	})
 
 	// zipcode
 	it('should get the correct attendee Attendee (smash.gg Participant) zipcode 1', () => {
@@ -174,9 +134,6 @@ describe('startgg Attendee (Participant)', () => {
 	})
 	it('should get the correct attendee Attendee (smash.gg Participant) zipcode 2', () => {
 		expect(attendee2.getZipcode()).to.be.equal(testData.attendee2Data.participant.contactInfo!.zipcode)
-	})
-	it('should get the correct attendee Attendee (smash.gg Participant) zipcode 3', () => {
-		expect(attendee3.getZipcode()).to.be.equal(testData.attendee3Data.participant.contactInfo!.zipcode)
 	})
 
 	// user account

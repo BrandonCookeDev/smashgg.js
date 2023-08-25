@@ -59,8 +59,6 @@ export namespace ITournament{
 		
 		getZipCode() : string
 		
-		getContactEmail() : string
-		
 		getContactTwitter() : string
 		
 		getOwnerId() : string 
@@ -624,10 +622,6 @@ export class Tournament extends EventEmitter implements ITournament.Tournament{
 
 	getZipCode() : string {
 		return this.getFromDataEntities('postalCode');
-	}
-
-	getContactEmail() : string {
-		return this.getFromDataEntities('contactEmail');
 	}
 
 	getContactTwitter() : string {

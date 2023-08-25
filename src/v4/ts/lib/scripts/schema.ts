@@ -12,7 +12,6 @@ numAttendees
 owner{
     id
     discriminator
-    email
     name
 }
 postalCode
@@ -80,7 +79,6 @@ export const user = `
 id
 bio
 discriminator
-email
 genderPronoun
 name
 player{
@@ -254,7 +252,6 @@ countryCode`
 export const organizer = `
 id
 bio
-email
 genderPronoun
 player {
     gamerTag

@@ -76,46 +76,10 @@ export const participant2Data: IAttendeeData = {
 	]
 }
 
-export const participant3Data: IAttendeeData = {
-	id: 1170540,
-	gamerTag: 'bobby big ballz',
-	prefix: null,
-	createdAt: 1507935829,
-	claimed: true,
-	verified: true,
-	playerId: 65777,
-	phoneNumber: null,
-	contactInfo: {
-		id: 'participants_1170540',
-		city: 'fudge floaties forever',
-		state: 'MD',
-		stateId: null,
-		country: 'United States',
-		countryId: null,
-		name: '',
-		nameFirst: 'Isaac',
-		nameLast: 'P',
-		zipcode: null
-	},
-	connectedAccounts: null,
-	events: [
-		{
-		id: 23596
-		},
-		{
-		id: 23597
-		}
-	]
-}
-
 export const attendee1Data: IAttendeeDataFull = {
 	participant: participant1Data
 }
 
 export const attendee2Data: IAttendeeDataFull = {
 	participant: participant2Data
-}
-
-export const attendee3Data: IAttendeeDataFull = {
-	participant: participant3Data
 }

@@ -4,7 +4,6 @@ export const user1: IUserData = {
       "id": 95277,
       "bio": null,
       "discriminator": "cf0c24c0",
-      "email": null,
       "genderPronoun": null,
       "name": "David S",
       "player": {
@@ -18,7 +17,6 @@ export const user2: IUserData = {
       "id": 25927,
       "bio": null,
       "discriminator": "ed085f78",
-      "email": null,
       "genderPronoun": null,
       "name": "Michael Gray",
       "player": {
@@ -32,7 +30,6 @@ export const user3: IUserData =  {
       "id": 4027,
       "bio": null,
       "discriminator": "eb893c0e",
-      "email": null,
       "genderPronoun": null,
       "name": "John William Turner",
       "player": {
@@ -46,7 +43,6 @@ export const user4: IUserData = {
       "id": 21004,
       "bio": null,
       "discriminator": "2c8bf122",
-      "email": null,
       "genderPronoun": null,
       "name": "Jason Zimmerman",
       "player": {
@@ -60,7 +56,6 @@ export const user5: IUserData = {
       "id": 77848,
       "bio": null,
       "discriminator": "",
-      "email": null,
       "genderPronoun": null,
       "name": null,
       "player": {
@@ -74,7 +69,6 @@ export const user6: IUserData = {
       "id": 48446,
       "bio": null,
       "discriminator": "8ab7ba54",
-      "email": null,
       "genderPronoun": null,
       "name": null,
       "player": {

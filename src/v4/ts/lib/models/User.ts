@@ -21,7 +21,6 @@ export class User implements IUser{
 			data.id,
 	        data.bio,
 	        data.discriminator,
-	        data.email,
 	        data.genderPronoun,
 	        data.name,
 	        data.player.id,
@@ -43,7 +42,6 @@ export class User implements IUser{
 	private id: number | null
     private bio: string | null
     private discriminator: string | null
-    private email: string | null
     private genderPronoun: string | null
     private name: string | null
     private playerId: number | null
@@ -55,7 +53,6 @@ export class User implements IUser{
 		id: number | null,
         bio: string | null,
         discriminator: string | null,
-        email: string | null,
         genderPronoun: string | null,
         name: string | null,
         playerId: number | null,
@@ -65,7 +62,6 @@ export class User implements IUser{
 		this.id = id
         this.bio = bio
         this.discriminator = discriminator
-        this.email = email
         this.genderPronoun = genderPronoun
         this.name = name
         this.playerId = playerId
@@ -83,10 +79,6 @@ export class User implements IUser{
 
 	public getDiscriminator() {
         return this.discriminator
-    }
-
-    public getEmail() {
-        return this.email
     }
 
     public getGenderPronoun() {

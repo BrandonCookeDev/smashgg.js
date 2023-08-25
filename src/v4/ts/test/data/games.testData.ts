@@ -271,113 +271,6 @@ export const games2: IGameData[] = [
         }
       ]
 
-export const games3: IGameData[] = [
-        {
-          id: 15505421,
-          orderNum: 1,
-          selections: [
-            {
-              id: 21874643,
-              selectionType: "CHARACTER",
-              selectionValue: 1317,
-              entrant: {
-                id: 11230457
-              },
-              participant: null
-            },
-            {
-              id: 21874644,
-              selectionType: "CHARACTER",
-              selectionValue: 1453,
-              entrant: {
-                id: 11947203
-              },
-              participant: null
-            }
-          ],
-          state: 3,
-          winnerId: 11947203
-        },
-        {
-          id: 15505425,
-          orderNum: 2,
-          selections: [
-            {
-              id: 21874651,
-              selectionType: "CHARACTER",
-              selectionValue: 1317,
-              entrant: {
-                id: 11230457
-              },
-              participant: null
-            },
-            {
-              id: 21874652,
-              selectionType: "CHARACTER",
-              selectionValue: 1453,
-              entrant: {
-                id: 11947203
-              },
-              participant: null
-            }
-          ],
-          state: 3,
-          winnerId: 11947203
-        },
-        {
-          id: 15505426,
-          orderNum: 3,
-          selections: [
-            {
-              id: 21874653,
-              selectionType: "CHARACTER",
-              selectionValue: 1317,
-              entrant: {
-                id: 11230457
-              },
-              participant: null
-            },
-            {
-              id: 21874654,
-              selectionType: "CHARACTER",
-              selectionValue: 1453,
-              entrant: {
-                id: 11947203
-              },
-              participant: null
-            }
-          ],
-          state: 3,
-          winnerId: 11230457
-        },
-        {
-          id: 15505427,
-          orderNum: 4,
-          selections: [
-            {
-              id: 21874655,
-              selectionType: "CHARACTER",
-              selectionValue: 1317,
-              entrant: {
-                id: 11230457
-              },
-              participant: null
-            },
-            {
-              id: 21874656,
-              selectionType: "CHARACTER",
-              selectionValue: 1453,
-              entrant: {
-                id: 11947203
-              },
-              participant: null
-            }
-          ],
-          state: 3,
-          winnerId: 11947203
-        }
-      ]
-
 export const games1Full: IGameDataFull = {
 	set: {
 		games: games1
@@ -387,11 +280,5 @@ export const games1Full: IGameDataFull = {
 export const games2Full: IGameDataFull = {
 	set: {
 		games: games2
-	}
-}
-
-export const games3Full: IGameDataFull = {
-	set: {
-		games: games3
 	}
 }

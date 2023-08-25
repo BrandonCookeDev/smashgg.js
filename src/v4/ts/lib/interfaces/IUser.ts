@@ -6,7 +6,6 @@ export interface IUser{
 	id: number,
 	bio: string
 	discriminator: string,
-	email: string,
 	genderPronoun: string,
 	name: string,
 	playerId: string,
@@ -26,7 +25,6 @@ export interface IUser{
 	getId(): number | null,
     getBio(): string | null,
     getDiscriminator(): string | null,
-    getEmail(): string | null,
     getGenderPronoun(): string | null,
     getName(): string | null,
     getPlayerId(): number | null,
@@ -57,7 +55,6 @@ export interface IUserData{
 	id: number | null,
 	bio: string | null,
 	discriminator: string | null,
-	email: string | null,
 	genderPronoun: string | null,
 	name: string | null,
 	player: {
